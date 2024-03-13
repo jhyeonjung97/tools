@@ -93,6 +93,7 @@ nbands = get_bands(atoms)
 kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
 
 atoms.calc = vasp_calculator.Vasp(
+                    istart=0,
                     encut=600,
                     xc='PBE',
                     gga='PE',
@@ -143,4 +144,3 @@ Trajectory(f'restart.traj','w').write(atoms)
 subprocess.call(f'cp restart.traj final_{name}.traj', shell=True)
 subprocess.call(f'ase convert -f final_{name}.traj final_{name}.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
-# subprocess.run(['python', path.expanduser('~/bin/verve/err.py')])
