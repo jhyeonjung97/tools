@@ -15,23 +15,23 @@ name = 'opt_bulk3_afm_high'
 
 effective_length = 25
 
-spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4, 
-                    'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 2,
-                    'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4, 
-                    'Pd': 3, 'Rh': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
-                    'Hf': 1, 'Ta': 2, 'W': 3, 'Re': 4, 'Os': 5, 'Ir': 4, 
-                    'Pt': 3, 'Au': 2, 'Hg': 1, 'Tl': 1, 'Pb': 1, 'La': 2,
-                   }
+spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
+                      'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 2,
+                      'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4,
+                      'Rh': 3, 'Pd': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
+                      'La': 1, 'Hf': 2, 'Ta': 3, 'W': 4, 'Re': 5, 'Os': 4,
+                      'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2,
+                      }
 
 ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
-          'V': {'L':2,  'U':3.25, 'J':0.0},
-          'Cr':{'L':2,  'U':3.5,  'J':0.0},
-          'Mn':{'L':2,  'U':3.75, 'J':0.0},
-          'Fe':{'L':2,  'U':4.3,  'J':0.0},
-          'Co':{'L':2,  'U':3.32, 'J':0.0},
-          'Ni':{'L':2,  'U':6.45, 'J':0.0},
-          'Cu':{'L':2, 'U':3.0,  'J':0.0},
-         }
+            'V': {'L':2,  'U':3.25, 'J':0.0},
+            'Cr':{'L':2,  'U':3.5,  'J':0.0},
+            'Mn':{'L':2,  'U':3.75, 'J':0.0},
+            'Fe':{'L':2,  'U':4.3,  'J':0.0},
+            'Co':{'L':2,  'U':3.32, 'J':0.0},
+            'Ni':{'L':2,  'U':6.45, 'J':0.0},
+            'Cu':{'L':2, 'U':3.0,  'J':0.0},
+            }
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
@@ -41,7 +41,7 @@ else:
     for a in atoms:
         if a.symbol in spin_states_plus_4:
             a.magmom = i*spin_states_plus_4.get(a.symbol)
-            i *= -1 # set AFM, only for pure oxides
+            i *= -1 # set AFM
 
 for a in atoms:
     if a.symbol not in ldau_luj:
@@ -67,7 +67,7 @@ def get_bands(atoms):
                 nbands += 5
             elif 'f' in c:
                 nbands += 7
-    return nbands*2
+    return nbands
 
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """
@@ -116,9 +116,10 @@ atoms.calc = vasp_calculator.Vasp(
                     prec='Normal',
                     nsw=200,
                     lvtot=False,
-                    nbands=nbands,
+                    # nbands=nbands,
                     ispin=2,
-                    setups='recommended',
+                    setups={'base': 'recommended',
+                            'W': '_sv'},
                     ldau=True,
                     ldautype=2,
                     laechg=True,
@@ -142,3 +143,4 @@ Trajectory(f'restart.traj','w').write(atoms)
 subprocess.call(f'cp restart.traj final_{name}.traj', shell=True)
 subprocess.call(f'ase convert -f final_{name}.traj final_{name}.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
+subprocess.run(['python', path.expanduser('~/bin/verve/err.py')])
