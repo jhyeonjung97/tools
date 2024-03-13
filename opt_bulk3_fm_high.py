@@ -13,6 +13,26 @@ import ase.calculators.vasp as vasp_calculator
 
 name = 'opt_bulk3_fm_high'
 
+effective_length = 25
+
+spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4, 
+                    'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 0, 'Ga': 1, 'Ge': 2,
+                    'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4, 
+                    'Pd': 3, 'Rh': 2, 'Ag': 1, 'Cd': 0, 'In': 1, 'Sn': 2,
+                    'Hf': 1, 'Ta': 2, 'W': 3, 'Re': 4, 'Os': 5, 'Ir': 4, 
+                    'Pt': 3, 'Au': 2, 'Hg': 1, 'Tl': 0, 'Pb': 1, 'La': 2,
+                   }
+
+ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
+          'V': {'L':2,  'U':3.25, 'J':0.0},
+          'Cr':{'L':2,  'U':3.5,  'J':0.0},
+          'Mn':{'L':2,  'U':3.75, 'J':0.0},
+          'Fe':{'L':2,  'U':4.3,  'J':0.0},
+          'Co':{'L':2,  'U':3.32, 'J':0.0},
+          'Ni':{'L':2,  'U':6.45, 'J':0.0},
+          'Cu':{'L':2, 'U':3.0,  'J':0.0},
+         }
+
 if path.exists('restart.json'):
     atoms = read('restart.json')
 else:
