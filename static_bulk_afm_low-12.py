@@ -142,3 +142,4 @@ Trajectory(f'final_{name}.traj','w').write(atoms)
 subprocess.call(f'ase convert -f final_{name}.traj final_{name}.json', shell=True)
 # subprocess.call('ase convert -f OUTCAR full_relax.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
+python ~/bin/verve/err.py
