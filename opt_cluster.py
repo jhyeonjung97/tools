@@ -11,13 +11,12 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_water2'
+name = 'opt_cluster'
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
 else:
     atoms = read('start.traj')
-    i = 1
 
 atoms.calc = vasp_calculator.Vasp(
                     encut=400,

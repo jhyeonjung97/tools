@@ -11,13 +11,12 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_water2'
+name = 'opt_cluster'
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
 else:
     atoms = read('start.traj')
-    i = 1
 
 atoms.calc = vasp_calculator.Vasp(
                     encut=400,
@@ -48,3 +47,5 @@ Trajectory(f'restart.traj','w').write(atoms)
 subprocess.call(f'cp restart.traj final_{name}.traj', shell=True)
 subprocess.call(f'ase convert -f final_{name}.traj final_{name}.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
+
+python ~/bin/verve/err.py
