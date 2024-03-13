@@ -16,7 +16,7 @@ name = 'opt_bulk3_low'
 effective_length = 25
 
 spin_states_plus_4 = {'Sc': 0, 'Ti': 0, 'V': 1, 'Cr': 2, 'Mn': 3, 'Fe': 4, 
-                    'Co': 1.2, 'Ni': 0, 'Cu': 3, 'Zn': 2, 'Ga': 1, 'Ge': 0,
+                    'Co': 0.7, 'Ni': 0, 'Cu': 3, 'Zn': 2, 'Ga': 1, 'Ge': 0,
                     'Y': 0, 'Zr': 0, 'Nb': 1, 'Mo': 2, 'Tc': 3, 'Ru': 0, 
                     'Pd': 0, 'Rh': 0, 'Ag': 0, 'Cd': 0, 'In': 0, 'Sn': 0,
                     'Hf': 0, 'Ta': 1, 'W': 2, 'Re': 1, 'Os': 0, 'Ir': 0, 
@@ -67,7 +67,7 @@ def get_bands(atoms):
                 nbands += 5
             elif 'f' in c:
                 nbands += 7
-    return nbands*2
+    return nbands
 
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """

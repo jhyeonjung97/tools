@@ -11,16 +11,16 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk3_low'
+name = 'static_bulk_afm_high'
 
 effective_length = 25
 
-spin_states_plus_4 = {'Sc': 0, 'Ti': 0, 'V': 1, 'Cr': 2, 'Mn': 3, 'Fe': 4, 
-                    'Co': 1.2, 'Ni': 0, 'Cu': 3, 'Zn': 2, 'Ga': 1, 'Ge': 0,
-                    'Y': 0, 'Zr': 0, 'Nb': 1, 'Mo': 2, 'Tc': 3, 'Ru': 0, 
-                    'Pd': 0, 'Rh': 0, 'Ag': 0, 'Cd': 0, 'In': 0, 'Sn': 0,
-                    'Hf': 0, 'Ta': 1, 'W': 2, 'Re': 1, 'Os': 0, 'Ir': 0, 
-                    'Pt': 0, 'Au': 0, 'Hg': 0, 'Tl': 0, 'Pb': 0, 'La': 0,
+spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4, 
+                    'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 0, 'Ga': 1, 'Ge': 2,
+                    'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4, 
+                    'Pd': 3, 'Rh': 2, 'Ag': 1, 'Cd': 0, 'In': 1, 'Sn': 2,
+                    'Hf': 1, 'Ta': 2, 'W': 3, 'Re': 4, 'Os': 5, 'Ir': 4, 
+                    'Pt': 3, 'Au': 2, 'Hg': 1, 'Tl': 0, 'Pb': 1, 'La': 2,
                    }
 
 ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
@@ -42,7 +42,7 @@ else:
         if a.symbol in spin_states_plus_4:
             a.magmom = i*spin_states_plus_4.get(a.symbol)
             i *= -1 # set AFM, only for pure oxides
-
+            
 for a in atoms:
     if a.symbol not in ldau_luj:
         ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
@@ -67,7 +67,7 @@ def get_bands(atoms):
                 nbands += 5
             elif 'f' in c:
                 nbands += 7
-    return nbands*2
+    return nbands
 
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """
@@ -110,11 +110,11 @@ atoms.calc = vasp_calculator.Vasp(
                     sigma=0.05,
                     algo='normal',
                     ibrion=2,
-                    isif=3,
+                    isif=2,
                     ediffg=-0.02,
                     ediff=1e-6,
                     prec='Normal',
-                    nsw=200,
+                    nsw=0,
                     lvtot=False,
                     nbands=nbands,
                     ispin=2,
@@ -126,8 +126,10 @@ atoms.calc = vasp_calculator.Vasp(
                     lasph=True, 
                     ldau_luj=ldau_luj,
                     ldauprint=2,
-                    # isym=0, 
+                    isym=0, 
                     nedos=3000,
+                    emax=30,
+                    emin=-30,
                     lorbit=11,
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
@@ -138,8 +140,8 @@ atoms.calc = vasp_calculator.Vasp(
 eng = atoms.get_potential_energy()
 print ('Calculation Complete, storing the run + calculator to traj file')
 
-Trajectory(f'restart.traj','w').write(atoms)
-subprocess.call(f'cp restart.traj final_{name}.traj', shell=True)
+Trajectory(f'final_{name}.traj','w').write(atoms)
 subprocess.call(f'ase convert -f final_{name}.traj final_{name}.json', shell=True)
+# subprocess.call('ase convert -f OUTCAR full_relax.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
 python ~/bin/verve/err.py

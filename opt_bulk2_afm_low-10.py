@@ -67,7 +67,7 @@ def get_bands(atoms):
                 nbands += 5
             elif 'f' in c:
                 nbands += 7
-    return nbands
+    return nbands*2
 
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """
