@@ -40,7 +40,7 @@ else:
     i = 1
     for a in atoms:
         if a.symbol in spin_states_plus_4:
-            a.magmom = i # *spin_states_plus_4.get(a.symbol)
+            a.magmom = i*1 # spin_states_plus_4.get(a.symbol)
             i *= -1 # set AFM
 
 for a in atoms:
@@ -111,7 +111,7 @@ atoms.calc = vasp_calculator.Vasp(
                     sigma=0.05,
                     algo='normal',
                     ibrion=2,
-                    isif=3,
+                    isif=2,
                     ediffg=-0.02,
                     ediff=1e-6,
                     prec='Normal',
