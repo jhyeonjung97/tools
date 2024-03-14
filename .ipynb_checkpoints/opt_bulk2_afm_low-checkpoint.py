@@ -11,27 +11,27 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk3_low'
+name = 'opt_bulk3_afm_high'
 
 effective_length = 25
 
-spin_states_plus_4 = {'Sc': 0, 'Ti': 0, 'V': 1, 'Cr': 2, 'Mn': 3, 'Fe': 4, 
-                    'Co': 1.2, 'Ni': 0, 'Cu': 3, 'Zn': 2, 'Ga': 1, 'Ge': 0,
-                    'Y': 0, 'Zr': 0, 'Nb': 1, 'Mo': 2, 'Tc': 3, 'Ru': 0, 
-                    'Pd': 0, 'Rh': 0, 'Ag': 0, 'Cd': 0, 'In': 0, 'Sn': 0,
-                    'Hf': 0, 'Ta': 1, 'W': 2, 'Re': 1, 'Os': 0, 'Ir': 0, 
-                    'Pt': 0, 'Au': 0, 'Hg': 0, 'Tl': 0, 'Pb': 0, 'La': 0,
-                   }
+spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
+                      'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 2,
+                      'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4,
+                      'Rh': 3, 'Pd': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
+                      'La': 1, 'Hf': 2, 'Ta': 3, 'W': 4, 'Re': 5, 'Os': 4,
+                      'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2,
+                      }
 
 ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
-          'V': {'L':2,  'U':3.25, 'J':0.0},
-          'Cr':{'L':2,  'U':3.5,  'J':0.0},
-          'Mn':{'L':2,  'U':3.75, 'J':0.0},
-          'Fe':{'L':2,  'U':4.3,  'J':0.0},
-          'Co':{'L':2,  'U':3.32, 'J':0.0},
-          'Ni':{'L':2,  'U':6.45, 'J':0.0},
-          'Cu':{'L':2, 'U':3.0,  'J':0.0},
-         }
+            'V': {'L':2,  'U':3.25, 'J':0.0},
+            'Cr':{'L':2,  'U':3.5,  'J':0.0},
+            'Mn':{'L':2,  'U':3.75, 'J':0.0},
+            'Fe':{'L':2,  'U':4.3,  'J':0.0},
+            'Co':{'L':2,  'U':3.32, 'J':0.0},
+            'Ni':{'L':2,  'U':6.45, 'J':0.0},
+            'Cu':{'L':2, 'U':3.0,  'J':0.0},
+            }
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
@@ -40,8 +40,8 @@ else:
     i = 1
     for a in atoms:
         if a.symbol in spin_states_plus_4:
-            a.magmom = i*spin_states_plus_4.get(a.symbol)
-            i *= -1 # set AFM, only for pure oxides
+            a.magmom = i # *spin_states_plus_4.get(a.symbol)
+            i *= -1 # set AFM
 
 for a in atoms:
     if a.symbol not in ldau_luj:
@@ -67,7 +67,7 @@ def get_bands(atoms):
                 nbands += 5
             elif 'f' in c:
                 nbands += 7
-    return nbands*2
+    return nbands
 
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """
@@ -93,6 +93,7 @@ nbands = get_bands(atoms)
 kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
 
 atoms.calc = vasp_calculator.Vasp(
+                    istart=0,
                     encut=600,
                     xc='PBE',
                     gga='PE',
@@ -101,11 +102,11 @@ atoms.calc = vasp_calculator.Vasp(
                     npar=1,
                     gamma=True,
                     ismear=0,
-                    inimix=0,
-                    amix=0.05,
-                    bmix=0.0001,
-                    amix_mag=0.05,
-                    bmix_mag=0.0001,
+                    # inimix=0,
+                    # amix=0.05,
+                    # bmix=0.0001,
+                    # amix_mag=0.05,
+                    # bmix_mag=0.0001,
                     nelm=800,
                     sigma=0.05,
                     algo='normal',
@@ -116,9 +117,10 @@ atoms.calc = vasp_calculator.Vasp(
                     prec='Normal',
                     nsw=200,
                     lvtot=False,
-                    nbands=nbands,
+                    # nbands=nbands,
                     ispin=2,
-                    setups='recommended',
+                    setups={'base': 'recommended',
+                            'W': '_sv'},
                     ldau=True,
                     ldautype=2,
                     laechg=True,
@@ -142,4 +144,3 @@ Trajectory(f'restart.traj','w').write(atoms)
 subprocess.call(f'cp restart.traj final_{name}.traj', shell=True)
 subprocess.call(f'ase convert -f final_{name}.traj final_{name}.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
-python ~/bin/verve/err.py

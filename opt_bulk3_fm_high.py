@@ -11,7 +11,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk3_fm_high'
+name = 'opt_bulk3_afm_high'
 
 effective_length = 25
 
@@ -144,4 +144,3 @@ Trajectory(f'restart.traj','w').write(atoms)
 subprocess.call(f'cp restart.traj final_{name}.traj', shell=True)
 subprocess.call(f'ase convert -f final_{name}.traj final_{name}.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
-subprocess.run(['python', path.expanduser('~/bin/verve/err.py')])
