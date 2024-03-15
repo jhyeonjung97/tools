@@ -41,7 +41,7 @@ if path.exists('restart.json'):
             a.magmom = i*spin_states_plus_4.get(a.symbol)
             # i *= -1 # set AFM
 else:
-    raise ValueError'Where is restart.json'
+    raise ValueError('Where is restart.json')
     
 for a in atoms:
     if a.symbol not in ldau_luj:
