@@ -33,16 +33,16 @@ ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
             'Cu':{'L':2, 'U':3.0,  'J':0.0},
             }
 
-if path.exists('restart.json'):
-    atoms = read('restart.json')
-else:
+if path.exists('start.traj'):
     atoms = read('start.traj')
     i = 0.5
     for a in atoms:
         if a.symbol in spin_states_plus_4:
             a.magmom = i # *spin_states_plus_4.get(a.symbol)
             # i *= -1 # set AFM
-
+else:
+    raise ValueError'Where is start.traj'
+    
 for a in atoms:
     if a.symbol not in ldau_luj:
         ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
