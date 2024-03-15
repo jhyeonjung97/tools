@@ -11,7 +11,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'static_bulk_afm_low'
+name = 'static_bulk_fm_low'
 
 effective_length = 25
 
@@ -41,7 +41,7 @@ else:
     for a in atoms:
         if a.symbol in spin_states_plus_4:
             a.magmom = i #*spin_states_plus_4.get(a.symbol)
-            i *= -1 # set AFM
+            # i *= -1 # set AFM
 
 for a in atoms:
     if a.symbol not in ldau_luj:
