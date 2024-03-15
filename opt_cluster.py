@@ -43,7 +43,6 @@ atoms.calc = vasp_calculator.Vasp(
 eng = atoms.get_potential_energy()
 print ('Calculation Complete, storing the run + calculator to traj file')
 
-Trajectory(f'restart.traj','w').write(atoms)
-subprocess.call(f'cp restart.traj final_{name}.traj', shell=True)
+Trajectory(f'final_{name}.traj','w').write(atoms)
 subprocess.call(f'ase convert -f final_{name}.traj final_{name}.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
