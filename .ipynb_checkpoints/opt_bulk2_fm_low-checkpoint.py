@@ -37,7 +37,7 @@ if path.exists('restart.json'):
     atoms = read('restart.json')
 else:
     atoms = read('start.traj')
-    i = 0.5
+    i = 0.1
     for a in atoms:
         if a.symbol in spin_states_plus_4:
             a.magmom = i # spin_states_plus_4.get(a.symbol)
