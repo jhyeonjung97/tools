@@ -60,13 +60,13 @@ def get_bands(atoms):
         config = config.split()
         for c in config:
             if 's' in c:
-                nbands += 1
+                nbands += 1*int(c[-1])
             elif 'p' in c:
-                nbands += 3
+                nbands += 3*int(c[-1])
             elif 'd' in c:
-                nbands += 5
+                nbands += 5*int(c[-1])
             elif 'f' in c:
-                nbands += 7
+                nbands += 7*int(c[-1])
     return nbands
 
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
