@@ -34,6 +34,8 @@ ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
             }
 
 if path.exists('start.traj'):
+    atoms = read('restart.json')
+else:
     atoms = read('start.traj')
     i = 1
     for a in atoms:
@@ -105,7 +107,7 @@ atoms.calc = vasp_calculator.Vasp(
                     # bmix=0.0001,
                     # amix_mag=0.05,
                     # bmix_mag=0.0001,
-                    nelm=800,
+                    # nelm=800,
                     sigma=0.05,
                     algo='normal',
                     ibrion=2,
