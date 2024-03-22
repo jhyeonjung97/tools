@@ -35,11 +35,11 @@ ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
-    i = 1
-    for a in atoms:
-        if a.symbol in spin_states_plus_4:
-            a.magmom = i*spin_states_plus_4.get(a.symbol)
-            i *= -1 # set AFM
+    # i = 1
+    # for a in atoms:
+    #     if a.symbol in spin_states_plus_4:
+    #         a.magmom = i*spin_states_plus_4.get(a.symbol)
+    #         i *= -1 # set AFM
 else:
     raise ValueError('Where is restart.json')
     
