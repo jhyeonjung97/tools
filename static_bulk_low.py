@@ -142,4 +142,6 @@ print ('Calculation Complete, storing the run + calculator to traj file')
 
 Trajectory(f'final_{name}.traj','w').write(atoms)
 subprocess.call(f'ase convert -f CONTCAR lattice.cif', shell=True)
+
+subprocess.call(f'ase convert -f CONTCAR lattice.cif', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
