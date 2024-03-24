@@ -43,8 +43,11 @@ if path.exists('restart.json'):
 else:
     raise ValueError('Where is restart.json')
     
+lmaxmix = 2
 for a in atoms:
-    if a.symbol not in ldau_luj:
+    if a.symbol in ldau_luj:
+        lmaxmix = 4
+    else:
         ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
 def get_bands(atoms):
@@ -141,5 +144,7 @@ eng = atoms.get_potential_energy()
 print ('Calculation Complete, storing the run + calculator to traj file')
 
 Trajectory(f'final_{name}.traj','w').write(atoms)
+subprocess.call(f'ase convert -f CONTCAR lattice.cif', shell=True)
+
 subprocess.call(f'ase convert -f CONTCAR lattice.cif', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)

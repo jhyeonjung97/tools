@@ -43,8 +43,11 @@ if path.exists('restart.json'):
 else:
     raise ValueError('Where is restart.json')
     
+lmaxmix = 2
 for a in atoms:
-    if a.symbol not in ldau_luj:
+    if a.symbol in ldau_luj:
+        lmaxmix = 4
+    else:
         ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
 def get_bands(atoms):
