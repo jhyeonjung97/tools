@@ -11,7 +11,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'static_bulk_afm_high'
+name = 'static_bulk_afm'
 
 effective_length = 25
 
