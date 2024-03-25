@@ -131,6 +131,7 @@ atoms.calc = vasp_calculator.Vasp(
                     lasph=True, 
                     ldau_luj=ldau_luj,
                     ldauprint=2,
+                    lmaxmix=lmaxmix
                     # isym=0, 
                     nedos=3000,
                     lorbit=11,
