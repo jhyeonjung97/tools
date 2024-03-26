@@ -93,7 +93,6 @@ def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     return((nkx, nky, nkz))
 
 nbands = get_bands(atoms)
-print('nbands: ', nbands)
 kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
 
 atoms.calc = vasp_calculator.Vasp(
