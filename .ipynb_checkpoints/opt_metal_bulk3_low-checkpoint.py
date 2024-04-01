@@ -11,7 +11,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk2_afm'
+name = 'opt_bulk3_low'
 
 effective_length = 25
 
@@ -35,14 +35,14 @@ ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
 
 if path.exists('start.traj'):
     atoms = read('start.traj')
-    i = 1
+    i = 0
     for a in atoms:
         if a.symbol in spin_states_plus_4:
-            a.magmom = i*spin_states_plus_4.get(a.symbol)
+            a.magmom = i # *spin_states_plus_4.get(a.symbol)
             i *= -1 # set AFM
 else:
     raise ValueError('Where is start.traj')
-
+    
 lmaxmix = 2
 for a in atoms:
     if a.symbol in ldau_luj:
@@ -114,11 +114,11 @@ atoms.calc = vasp_calculator.Vasp(
                     sigma=0.05,
                     algo='normal',
                     ibrion=2,
-                    isif=2,
+                    isif=3,
                     ediffg=-0.02,
                     ediff=1e-6,
                     prec='Normal',
-                    nsw=200,
+                    nsw=600,
                     lvtot=False,
                     # nbands=nbands,
                     ispin=2,

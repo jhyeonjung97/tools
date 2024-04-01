@@ -11,7 +11,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk2_low'
+name = 'opt_bulk3_low'
 
 effective_length = 25
 
@@ -33,18 +33,21 @@ ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
             'Cu':{'L':2, 'U':3.0,  'J':0.0},
             }
 
-if path.exists('restart.json'):
-    atoms = read('restart.json')
-else:
+if path.exists('start.traj'):
     atoms = read('start.traj')
     i = 0
     for a in atoms:
         if a.symbol in spin_states_plus_4:
-            a.magmom = i # spin_states_plus_4.get(a.symbol)
+            a.magmom = i # *spin_states_plus_4.get(a.symbol)
             i *= -1 # set AFM
-
+else:
+    raise ValueError('Where is start.traj')
+    
+lmaxmix = 2
 for a in atoms:
-    if a.symbol not in ldau_luj:
+    if a.symbol in ldau_luj:
+        lmaxmix = 4
+    else:
         ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
 def get_bands(atoms):
@@ -107,7 +110,7 @@ atoms.calc = vasp_calculator.Vasp(
                     # bmix=0.0001,
                     # amix_mag=0.05,
                     # bmix_mag=0.0001,
-                    # nelm=800,
+                    # nelm=600,
                     sigma=0.05,
                     algo='normal',
                     ibrion=2,
@@ -128,6 +131,7 @@ atoms.calc = vasp_calculator.Vasp(
                     lasph=True, 
                     ldau_luj=ldau_luj,
                     ldauprint=2,
+                    lmaxmix=lmaxmix,
                     # isym=0, 
                     nedos=3000,
                     lorbit=11,

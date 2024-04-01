@@ -11,7 +11,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk2_afm'
+name = 'opt_bulk3_afm'
 
 effective_length = 25
 
@@ -114,11 +114,11 @@ atoms.calc = vasp_calculator.Vasp(
                     sigma=0.05,
                     algo='normal',
                     ibrion=2,
-                    isif=2,
+                    isif=3,
                     ediffg=-0.02,
                     ediff=1e-6,
                     prec='Normal',
-                    nsw=200,
+                    nsw=600,
                     lvtot=False,
                     # nbands=nbands,
                     ispin=2,
