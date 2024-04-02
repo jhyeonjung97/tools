@@ -114,6 +114,7 @@ atoms.calc = vasp_calculator.Vasp(
                     sigma=0.05,
                     algo='normal',
                     ibrion=5,
+                    potim=0.015,
                     isif=2,
                     ediffg=-0.02,
                     ediff=1e-6,
