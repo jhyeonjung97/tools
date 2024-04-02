@@ -145,5 +145,5 @@ eng = atoms.get_potential_energy()
 print ('Calculation Complete, storing the run + calculator to traj file')
 
 Trajectory(f'final_{name}.traj','w').write(atoms)
-subprocess.call(f'ase convert -f final_{name}.traj restart.json', shell=True)
+# subprocess.call(f'ase convert -f final_{name}.traj restart.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
