@@ -33,8 +33,8 @@ ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
             'Cu':{'L':2, 'U':3.0,  'J':0.0},
             }
 
-if path.exists('start.traj'):
-    atoms = read('start.traj')
+if path.exists('restart.json'):
+    atoms = read('restart.json')
     i = 1
     for a in atoms:
         if a.symbol in spin_states_plus_4:

@@ -33,8 +33,8 @@ ldau_luj = {'Ti': {'L':2,  'U':3.00, 'J':0.0},
             'Cu': {'L':2, 'U':3.0,  'J':0.0},
             }
 
-if path.exists('start.traj'):
-    atoms = read('start.traj')
+if path.exists('restart.json'):
+    atoms = read('restart.json')
     i = 1
     for a in atoms:
         if a.symbol in spin_states_plus_4:
@@ -114,6 +114,7 @@ atoms.calc = vasp_calculator.Vasp(
                     sigma=0.05,
                     algo='normal',
                     ibrion=5,
+                    potim=0.015,
                     isif=2,
                     ediffg=-0.02,
                     ediff=1e-6,
