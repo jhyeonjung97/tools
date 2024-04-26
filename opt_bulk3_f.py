@@ -35,15 +35,15 @@ ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
 
 if path.exists('start.traj'):
     atoms = read('start.traj')
-    mag = spin_states_plus_4.get(atoms[8].symbol)
-    atoms[8].magmom = mag
-    atoms[9].magmom = -mag
-    atoms[10].magmom = -mag
-    atoms[11].magmom = -mag
-    atoms[12].magmom = mag
-    atoms[13].magmom = mag
-    atoms[14].magmom = mag
-    atoms[15].magmom = -mag
+    mag = spin_states_plus_4.get(atoms[0].symbol)
+    atoms[0].magmom = mag
+    atoms[1].magmom = -mag
+    atoms[2].magmom = -mag
+    atoms[3].magmom = -mag
+    atoms[4].magmom = mag
+    atoms[5].magmom = mag
+    atoms[6].magmom = mag
+    atoms[7].magmom = -mag
 else:
     raise ValueError('Where is start.traj')
 
