@@ -11,7 +11,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk3_afm'
+name = 'opt_bulk3_B'
 
 effective_length = 25
 
@@ -36,13 +36,13 @@ ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
 if path.exists('start.traj'):
     atoms = read('start.traj')
     mag = spin_states_plus_4.get(atoms[8].symbol)
-    atoms[8].magmom = -mag
+    atoms[8].magmom = mag
     atoms[9].magmom = mag
-    atoms[10].magmom = -mag
+    atoms[10].magmom = mag
     atoms[11].magmom = mag
-    atoms[12].magmom = -mag
+    atoms[12].magmom = mag
     atoms[13].magmom = mag
-    atoms[14].magmom = -mag
+    atoms[14].magmom = mag
     atoms[15].magmom = mag
 else:
     raise ValueError('Where is start.traj')
