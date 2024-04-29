@@ -35,10 +35,15 @@ ldau_luj = {'Ti': {'L':2,  'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
+Ω
 elif path.exists('start.traj'):
     atoms = read('start.traj')
 else:
     raise ValueError('Where is start.traj')
+
+for a in atoms:
+    if a.symbol in spin_states_plus_4:
+        a.magmom = i*spin_states_plus_4.get(a.symbol)
 
 lmaxmix = 2
 for a in atoms:

@@ -40,6 +40,10 @@ elif path.exists('start.traj'):
 else:
     raise ValueError('Where is start.traj')
 
+for a in atoms:
+    if a.symbol in spin_states_plus_4:
+        a.magmom = i*spin_states_plus_4.get(a.symbol)
+        
 lmaxmix = 2
 for a in atoms:
     if a.symbol in ldau_luj:
