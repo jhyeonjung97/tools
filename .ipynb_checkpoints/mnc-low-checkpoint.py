@@ -13,6 +13,8 @@ import ase.calculators.vasp as vasp_calculator
 
 name = 'mnc'
 
+effective_length = 25
+
 spin_states_plus_4 = {'Sc': 1, 'Ti': 0, 'V': 1, 'Cr': 0, 'Mn': 1, 'Fe': 0,
                       'Co': 1, 'Ni': 0, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 0,
                       'Y': 1, 'Zr': 0, 'Nb': 1, 'Mo': 0, 'Tc': 1, 'Ru': 0,
