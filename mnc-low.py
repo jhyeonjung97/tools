@@ -35,7 +35,6 @@ ldau_luj = {'Ti': {'L':2,  'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
-Ω
 elif path.exists('start.traj'):
     atoms = read('start.traj')
 else:
