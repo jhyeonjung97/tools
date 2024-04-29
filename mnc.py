@@ -11,9 +11,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_slab'
-
-effective_length = 25
+name = 'mnc'
 
 spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
                       'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 2,
@@ -66,25 +64,25 @@ def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     return((nkx, nky, nkz))
 
 # nbands = get_bands(atoms)
-kpoints = get_kpoints(atoms, effective_length=25, bulk=False)
+# kpoints = get_kpoints(atoms, effective_length=25, bulk=False)
 
 atoms.calc = vasp_calculator.Vasp(
                     istart=0,
-                    encut=600,
+                    encut=500,
                     xc='PBE',
                     gga='PE',
-                    kpts=kpoints,
+                    kpts=(5,5,1),
                     kpar=8,
                     npar=1,
                     gamma=True,
                     ismear=0,
+                    sigma=0.05,
                     # inimix=0,
                     # amix=0.05,
                     # bmix=0.0001,
                     # amix_mag=0.05,
                     # bmix_mag=0.0001,
                     # nelm=600,
-                    sigma=0.05,
                     algo='normal',
                     ibrion=2,
                     isif=2,
@@ -92,6 +90,7 @@ atoms.calc = vasp_calculator.Vasp(
                     ediff=1e-6,
                     prec='Normal',
                     nsw=200,
+                    lvhar=True,
                     lvtot=False,
                     # nbands=nbands,
                     ispin=2,
@@ -99,12 +98,12 @@ atoms.calc = vasp_calculator.Vasp(
                             'W': '_sv'},
                     ldau=True,
                     ldautype=2,
-                    laechg=True,
-                    lreal='Auto',
-                    lasph=True, 
                     ldau_luj=ldau_luj,
                     ldauprint=2,
                     lmaxmix=lmaxmix,
+                    lasph=True,
+                    laechg=True,
+                    lreal='Auto',
                     # isym=0, 
                     nedos=3000,
                     lorbit=11,
