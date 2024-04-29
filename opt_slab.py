@@ -33,10 +33,13 @@ ldau_luj = {'Ti': {'L':2,  'U':3.00, 'J':0.0},
             'Cu': {'L':2, 'U':3.0,  'J':0.0},
             }
 
-if path.exists('start.traj'):
+if path.exists('restart.json'):
+    atoms = read('restart.json')
+elif path.exists('start.traj'):
     atoms = read('start.traj')
 else:
     raise ValueError('Where is start.traj')
+
 
 lmaxmix = 2
 for a in atoms:
