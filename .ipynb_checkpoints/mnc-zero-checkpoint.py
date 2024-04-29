@@ -97,7 +97,7 @@ atoms.calc = vasp_calculator.Vasp(
                     lvhar=True,
                     lvtot=False,
                     # nbands=nbands,
-                    ispin=2,
+                    ispin=1,
                     setups={'base': 'recommended',
                             'W': '_sv'},
                     ldau=True,
