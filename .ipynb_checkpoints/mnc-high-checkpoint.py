@@ -42,7 +42,8 @@ else:
 
 for a in atoms:
     if a.symbol in spin_states_plus_4:
-        a.magmom = i*spin_states_plus_4.get(a.symbol)
+        s = spin_states_plus_4.get(a.symbol)
+        a.magmom = (s*(s+2))**0.5
         
 lmaxmix = 2
 for a in atoms:
