@@ -15,12 +15,12 @@ name = 'mnc1'
 
 effective_length = 25
 
-spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 2, 'Mn': 3, 'Fe': 2,
-                      'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 2,
-                      'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 2, 'Tc': 3, 'Ru': 2,
-                      'Rh': 3, 'Pd': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
-                      'La': 1, 'Hf': 2, 'Ta': 3, 'W': 2, 'Re': 3, 'Os': 2,
-                      'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2,
+spin_states_plus_4 = {'Sc': 1, 'Ti': 0, 'V': 1, 'Cr': 0, 'Mn': 1, 'Fe': 0,
+                      'Co': 1, 'Ni': 0, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 0,
+                      'Y': 1, 'Zr': 0, 'Nb': 1, 'Mo': 0, 'Tc': 1, 'Ru': 0,
+                      'Rh': 1, 'Pd': 0, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 0,
+                      'La': 1, 'Hf': 0, 'Ta': 1, 'W': 0, 'Re': 1, 'Os': 0,
+                      'Ir': 1, 'Pt': 0, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 0,
                       }
 
 ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
