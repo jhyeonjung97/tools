@@ -11,7 +11,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'mnc-high'
+name = 'mnc1'
 
 effective_length = 25
 
@@ -23,14 +23,14 @@ spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
                       'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2,
                       }
 
-ldau_luj = {'Ti': {'L':2,  'U':3.00, 'J':0.0},
-            'V': {'L':2,  'U':3.25, 'J':0.0},
-            'Cr': {'L':2,  'U':3.5,  'J':0.0},
-            'Mn': {'L':2,  'U':3.75, 'J':0.0},
-            'Fe': {'L':2,  'U':4.3,  'J':0.0},
-            'Co': {'L':2,  'U':3.32, 'J':0.0},
-            'Ni': {'L':2,  'U':6.45, 'J':0.0},
-            'Cu': {'L':2, 'U':3.0,  'J':0.0},
+ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
+            'V': {'L':2, 'U':3.25, 'J':0.0},
+            'Cr': {'L':2, 'U':3.5, 'J':0.0},
+            'Mn': {'L':2, 'U':3.75, 'J':0.0},
+            'Fe': {'L':2, 'U':4.3, 'J':0.0},
+            'Co': {'L':2, 'U':3.32, 'J':0.0},
+            'Ni': {'L':2, 'U':6.45, 'J':0.0},
+            'Cu': {'L':2, 'U':3.0, 'J':0.0},
             }
 
 if path.exists('restart.json'):
@@ -44,7 +44,6 @@ for a in atoms:
     if a.symbol in spin_states_plus_4:
         s = spin_states_plus_4.get(a.symbol)
         a.magmom = s
-        # a.magmom = ((s*(s+2))**0.5)*1.2
         
 lmaxmix = 2
 for a in atoms:
@@ -120,7 +119,7 @@ atoms.calc = vasp_calculator.Vasp(
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
-                    # nupdown=0
+                    nupdown=s
                     )
 
 eng = atoms.get_potential_energy()
