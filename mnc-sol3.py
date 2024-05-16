@@ -11,15 +11,15 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'mnc5'
+name = 'mnc3'
 
 effective_length = 25
 
-spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
+spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 2, 'Mn': 3, 'Fe': 2,
                       'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 2,
-                      'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4,
+                      'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 2, 'Tc': 3, 'Ru': 2,
                       'Rh': 3, 'Pd': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
-                      'La': 1, 'Hf': 2, 'Ta': 3, 'W': 4, 'Re': 5, 'Os': 4,
+                      'La': 1, 'Hf': 2, 'Ta': 3, 'W': 2, 'Re': 3, 'Os': 2,
                       'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2,
                       }
 
@@ -78,8 +78,8 @@ def get_kpoints(atoms, effective_length=effective_length, bulk=False):
 atoms.calc = vasp_calculator.Vasp(
                     istart=0,
                     encut=500,
-                    xc='PBE',
                     gga='PE',
+                    ivdw=12,
                     kpts=(5,5,1),
                     kpar=8,
                     npar=1,
@@ -96,7 +96,7 @@ atoms.calc = vasp_calculator.Vasp(
                     ibrion=2,
                     isif=2,
                     ediffg=-0.02,
-                    ediff=1e-6,
+                    ediff=1e-5,
                     prec='Normal',
                     nsw=200,
                     lvhar=True,
@@ -119,7 +119,8 @@ atoms.calc = vasp_calculator.Vasp(
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
-                    nupdown=s
+                    nupdown=s,
+                    lsol=True
                     )
 
 eng = atoms.get_potential_energy()

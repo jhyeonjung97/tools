@@ -78,8 +78,8 @@ def get_kpoints(atoms, effective_length=effective_length, bulk=False):
 atoms.calc = vasp_calculator.Vasp(
                     istart=0,
                     encut=500,
-                    xc='PBE',
                     gga='PE',
+                    ivdw=12,
                     kpts=(5,5,1),
                     kpar=8,
                     npar=1,
@@ -96,7 +96,7 @@ atoms.calc = vasp_calculator.Vasp(
                     ibrion=2,
                     isif=2,
                     ediffg=-0.02,
-                    ediff=1e-6,
+                    ediff=1e-5,
                     prec='Normal',
                     nsw=200,
                     lvhar=True,
@@ -119,7 +119,8 @@ atoms.calc = vasp_calculator.Vasp(
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
-                    nupdown=s
+                    nupdown=s,
+                    lsol=True
                     )
 
 eng = atoms.get_potential_energy()
