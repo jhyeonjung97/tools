@@ -126,7 +126,7 @@ atoms.calc = vasp_calculator.Vasp(
 eng = atoms.get_potential_energy()
 print ('Calculation Complete, storing the run + calculator to traj file')
 
-subprocess.call('sh ~/bin/verve/clean-contcar.sh', shell=True)
+subprocess.call('sh ~/bin/verve/correct-contcar.sh', shell=True)
 
 Trajectory(f'final_{name}.traj','w').write(atoms)
 # subprocess.call(f'ase convert -f final_{name}.traj restart.json', shell=True)
