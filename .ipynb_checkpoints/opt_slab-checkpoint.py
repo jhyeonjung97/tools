@@ -115,6 +115,7 @@ atoms.calc = vasp_calculator.Vasp(
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
                     # nupdown=0
+                    lsol=True
                     )
 
 eng = atoms.get_potential_energy()
