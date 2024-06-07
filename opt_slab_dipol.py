@@ -108,12 +108,12 @@ atoms.calc = vasp_calculator.Vasp(
                     ldau_luj=ldau_luj,
                     ldauprint=2,
                     lmaxmix=lmaxmix,
-                    # isym=0,
+                    # isym=0, 
                     nedos=3000,
                     lorbit=11,
-                    # idipol=3,
-                    # dipol=(0, 0, 0.5),
-                    # ldipol=True,
+                    idipol=3,
+                    dipol=(0.5, 0.5, 0.5),
+                    ldipol=True,
                     nupdown=0,
                     lsol=True
                     )
