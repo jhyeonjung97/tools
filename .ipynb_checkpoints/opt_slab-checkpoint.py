@@ -37,9 +37,11 @@ if path.exists('restart.json'):
     atoms = read('restart.json')
 elif path.exists('start.traj'):
     atoms = read('start.traj')
+    for a in atoms:
+        if a.symbol in spin_states_plus_4:
+            a.magmom = spin_states_plus_4.get(a.symbol)
 else:
     raise ValueError('Where is start.traj')
-
 
 lmaxmix = 2
 for a in atoms:
@@ -50,13 +52,13 @@ for a in atoms:
 
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """
-    Return a tuple of k-points derived from the unit cell.
+    Return a tuple of k-points derived from the unit cell
     
     Parameters
     ----------
     atoms : object
     effective_length : k-point*unit-cell-parameter
-    bulk : Whether it is a bulk system.
+    bulk : whether it is a bulk system
     """
     l = effective_length
     cell = atoms.get_cell()
@@ -104,7 +106,7 @@ atoms.calc = vasp_calculator.Vasp(
                     ldautype=2,
                     laechg=True,
                     lreal='Auto',
-                    lasph=True, 
+                    lasph=True,
                     ldau_luj=ldau_luj,
                     ldauprint=2,
                     lmaxmix=lmaxmix,
@@ -114,12 +116,12 @@ atoms.calc = vasp_calculator.Vasp(
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True,
-                    nupdown=0,
+                    # nupdown=0,
                     lsol=True
                     )
 
 eng = atoms.get_potential_energy()
-print ('Calculation Complete, storing the run + calculator to traj file')
+print('Calculation Complete, storing the run + calculator to traj file')
 
 Trajectory(f'final_{name}.traj','w').write(atoms)
 # subprocess.call(f'ase convert -f final_{name}.traj restart.json', shell=True)
