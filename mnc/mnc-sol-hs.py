@@ -129,13 +129,11 @@ atoms.calc = vasp_calculator.Vasp(
                     lsol=True
                     )
 
-eng = atoms.get_potential_energy()
-print ('Calculation Complete, storing the run + calculator to traj file')
-
+e = atoms.get_potential_energy()
+print('Calculation Complete, storing the run + calculator to traj file')
 subprocess.call('sh ~/bin/verve/correct-contcar.sh', shell=True)
 
-Trajectory(f'final_{name}.traj','w').write(atoms)
-subprocess.call(f'ase convert -f final_{name}.traj restart.json', shell=True)
-subprocess.call(f'cp restart.json final_with_calculator.json', shell=True)
+traj_filename = f'final_{name}.traj'
+Trajectory(traj_filename, 'w').write(atoms)
+subprocess.call(f'ase convert -f {traj_filename} final_with_calculator.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
-subprocess.call(f'python /global/cfs/cdirs/m2997/bin/get_restart3', shell=True)

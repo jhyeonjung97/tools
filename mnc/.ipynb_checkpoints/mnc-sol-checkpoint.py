@@ -80,6 +80,5 @@ subprocess.call('sh ~/bin/verve/correct-contcar.sh', shell=True)
 
 traj_filename = f'final_{name}.traj'
 Trajectory(traj_filename, 'w').write(atoms)
-subprocess.call(f'ase convert -f {traj_filename} restart.json', shell=True)
-subprocess.call(f'cp restart.json final_with_calculator.json', shell=True)
+subprocess.call(f'ase convert -f {traj_filename} final_with_calculator.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
