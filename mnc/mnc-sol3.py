@@ -15,14 +15,6 @@ name = 'mnc3'
 
 effective_length = 25
 
-spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 2, 'Mn': 3, 'Fe': 2,
-                      'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 2,
-                      'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 2, 'Tc': 3, 'Ru': 2,
-                      'Rh': 3, 'Pd': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
-                      'La': 1, 'Hf': 2, 'Ta': 3, 'W': 2, 'Re': 3, 'Os': 2,
-                      'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2,
-                      }
-
 ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
             'Cr': {'L':2, 'U':3.5, 'J':0.0},
@@ -37,13 +29,11 @@ if path.exists('restart.json'):
     atoms = read('restart.json')
 elif path.exists('start.traj'):
     atoms = read('start.traj')
+    for atom in atoms:
+        if atom.symbol not in ['C', 'N', 'O', 'H']:
+            atom.magmom = 3
 else:
     raise ValueError('Where is start.traj')
-
-for a in atoms:
-    if a.symbol in spin_states_plus_4:
-        s = spin_states_plus_4.get(a.symbol)
-        a.magmom = s
         
 lmaxmix = 2
 for a in atoms:
@@ -119,14 +109,14 @@ atoms.calc = vasp_calculator.Vasp(
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
-                    nupdown=s,
+                    nupdown=3,
                     lsol=True
                     )
 
 eng = atoms.get_potential_energy()
 print ('Calculation Complete, storing the run + calculator to traj file')
 
-subprocess.call('sh ~/bin/verve/clean-contcar.sh', shell=True)
+subprocess.call('sh ~/bin/verve/correct-contcar.sh', shell=True)
 
 Trajectory(f'final_{name}.traj','w').write(atoms)
 subprocess.call(f'ase convert -f final_{name}.traj restart.json', shell=True)

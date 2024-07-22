@@ -32,6 +32,12 @@ ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
+    magmoms = atoms.get_magnetic_moments()
+    for atom in atoms:
+        atom.magmom = magmoms[atom.index]
+        if atom.symbol not in ['C', 'N', 'O', 'H']:
+            if atom.symbol in spin_states_plus_2:
+                spin = spin_states_plus_2.get(atom.symbol)
 elif path.exists('start.traj'):
     atoms = read('start.traj')
     for atom in atoms:
@@ -80,8 +86,8 @@ atoms.calc = vasp_calculator.Vasp(
                     gga='PE',
                     ivdw=12,
                     kpts=(5,5,1),
-                    kpar=8,
-                    npar=1,
+                    kpar=4,
+                    npar=16,
                     gamma=True,
                     ismear=0,
                     sigma=0.05,

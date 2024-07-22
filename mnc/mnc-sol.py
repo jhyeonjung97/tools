@@ -11,38 +11,27 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'mnc-ls'
+name = 'mnc'
 
 effective_length = 25
 
-spin_states_plus_2 = {'Ti': 0, 'V': 1, 'Cr': 0, 'Mn': 1, 'Fe': 0, 'Co': 1, 'Ni': 0, 'Cu': 1,
-                      'Zr': 0, 'Nb': 1, 'Mo': 0, 'Tc': 1, 'Ru': 0, 'Rh': 1, 'Pd': 0, 
-                      'Hf': 0, 'Ta': 1, 'W': 0, 'Re': 1, 'Os': 0, 'Ir': 1, 'Pt': 0
-                      }
-
 ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
-            'Cr': {'L':2, 'U':3.50, 'J':0.0},
+            'Cr': {'L':2, 'U':3.5, 'J':0.0},
             'Mn': {'L':2, 'U':3.75, 'J':0.0},
-            'Fe': {'L':2, 'U':4.30, 'J':0.0},
+            'Fe': {'L':2, 'U':4.3, 'J':0.0},
             'Co': {'L':2, 'U':3.32, 'J':0.0},
             'Ni': {'L':2, 'U':6.45, 'J':0.0},
-            'Cu': {'L':2, 'U':3.00, 'J':0.0}
+            'Cu': {'L':2, 'U':3.0, 'J':0.0},
             }
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
-elif path.exists('start.traj'):
-    atoms = read('start.traj')
+    magmoms = atoms.get_magnetic_moments()
     for atom in atoms:
-        if atom.symbol not in ['C', 'N', 'O', 'H']:
-            if atom.symbol in spin_states_plus_2:
-                spin = spin_states_plus_2.get(atom.symbol)
-                atom.magmom = spin
-            else:
-                raise ValueError(f"Unexpected atom symbol '{atom.symbol}' found in start.traj")
+        atom.magmom = magmoms[atom.index]
 else:
-    raise ValueError('Where is start.traj')
+    raise ValueError('Where is restart.json')
         
 lmaxmix = 2
 for a in atoms:
@@ -80,8 +69,8 @@ atoms.calc = vasp_calculator.Vasp(
                     gga='PE',
                     ivdw=12,
                     kpts=(5,5,1),
-                    kpar=8,
-                    npar=1,
+                    kpar=4,
+                    npar=16,
                     gamma=True,
                     ismear=0,
                     sigma=0.05,
@@ -117,8 +106,7 @@ atoms.calc = vasp_calculator.Vasp(
                     lorbit=11,
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
-                    # ldipol=True,
-                    nupdown=spin,
+                    # ldipol=True
                     lsol=True
                     )
 
