@@ -32,9 +32,7 @@ if path.exists('restart.json'):
     if calculator_parameters:
         atoms.calc = vasp_calculator.Vasp(**calculator_parameters)
     else:
-        magmoms = atoms.get_magnetic_moments()
         for atom in atoms:
-            atom.magmom = magmoms[atom.index]
             if atom.symbol in ldau_luj:
                 lmaxmix = 4
             else:
