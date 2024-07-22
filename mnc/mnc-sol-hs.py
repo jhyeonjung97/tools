@@ -33,6 +33,7 @@ ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
 if path.exists('restart.json'):
     atoms = read('restart.json')
     magmoms = atoms.get_magnetic_moments()
+    atoms.set_initial_magnetic_moments(magmoms)
     for atom in atoms:
         atom.magmom = magmoms[atom.index]
         if atom.symbol not in ['C', 'N', 'O', 'H']:
