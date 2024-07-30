@@ -16,7 +16,7 @@ name = 'opt_bulk2_a'
 effective_length = 25
 
 spin_states_plus_3 = {'Sc': 0, 'Ti': 1, 'V': 2, 'Cr': 3, 'Mn': 4, 'Fe': 5,
-                      'Co': 4, 'Ni': 3, 'Cu': 2, 'Zn': 1, 'Ga': 0, 'Ge': 1,
+                      'Co': 0, 'Ni': 1, 'Cu': 2, 'Zn': 1, 'Ga': 0, 'Ge': 1,
                       'Y': 0, 'Zr': 1, 'Nb': 2, 'Mo': 3, 'Tc': 4, 'Ru': 5,
                       'Rh': 4, 'Pd': 3, 'Ag': 2, 'Cd': 1, 'In': 0, 'Sn': 1,
                       'La': 0, 'Hf': 1, 'Ta': 2, 'W': 3, 'Re': 4, 'Os': 5,
@@ -51,28 +51,6 @@ for a in atoms:
     else:
         ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
-def get_bands(atoms):
-    """
-    returns the extact number of bands desired by lobster for the pCOHP calculations
-    """
-    nbands = 0
-    for sym in atoms.get_chemical_symbols():
-        if sym == 'H': # H is bugged
-            nbands += 1
-            continue
-        config = element(sym).ec.get_valence().to_str()
-        config = config.split()
-        for c in config:
-            if 's' in c:
-                nbands += 1
-            elif 'p' in c:
-                nbands += 3
-            elif 'd' in c:
-                nbands += 5
-            elif 'f' in c:
-                nbands += 7
-    return nbands
-
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """
     Return a tuple of k-points derived from the unit cell.
@@ -93,7 +71,6 @@ def get_kpoints(atoms, effective_length=effective_length, bulk=False):
         nkz = 1
     return((nkx, nky, nkz))
 
-nbands = get_bands(atoms)
 kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
 
 atoms.calc = vasp_calculator.Vasp(
@@ -106,12 +83,12 @@ atoms.calc = vasp_calculator.Vasp(
                     npar=1,
                     gamma=True,
                     ismear=0,
-                    # inimix=0,
-                    # amix=0.05,
-                    # bmix=0.0001,
-                    # amix_mag=0.05,
-                    # bmix_mag=0.0001,
-                    # nelm=600,
+                    inimix=0,
+                    amix=0.05,
+                    bmix=0.0001,
+                    amix_mag=0.05,
+                    bmix_mag=0.0001,
+                    nelm=250,
                     sigma=0.05,
                     algo='normal',
                     ibrion=2,
@@ -146,7 +123,5 @@ eng = atoms.get_potential_energy()
 print ('Calculation Complete, storing the run + calculator to traj file')
 
 Trajectory(f'final_{name}.traj','w').write(atoms)
-subprocess.call(f'ase convert -f final_{name}.traj restart.json', shell=True)
-subprocess.call(f'cp restart.json final_with_calculator.json', shell=True)
+subprocess.call(f'ase convert -f final_{name}.traj final_with_calculator.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
-subprocess.call(f'python /global/cfs/cdirs/m2997/bin/get_restart3', shell=True)
