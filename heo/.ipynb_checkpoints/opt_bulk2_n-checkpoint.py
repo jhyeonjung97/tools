@@ -11,17 +11,9 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk2'
+name = 'opt_bulk2_x'
 
 effective_length = 25
-
-spin_states_plus_3 = {'Sc': 0, 'Ti': 1, 'V': 2, 'Cr': 3, 'Mn': 4, 'Fe': 5,
-                      'Co': 0, 'Ni': 1, 'Cu': 2, 'Zn': 1, 'Ga': 0, 'Ge': 1,
-                      'Y': 0, 'Zr': 1, 'Nb': 2, 'Mo': 3, 'Tc': 4, 'Ru': 5,
-                      'Rh': 4, 'Pd': 3, 'Ag': 2, 'Cd': 1, 'In': 0, 'Sn': 1,
-                      'La': 0, 'Hf': 1, 'Ta': 2, 'W': 3, 'Re': 4, 'Os': 5,
-                      'Ir': 4, 'Pt': 3, 'Au': 2, 'Hg': 1, 'Tl': 0, 'Pb': 1,
-                      }
 
 ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
@@ -37,10 +29,10 @@ if path.exists('restart.json'):
     atoms = read('restart.json')
 elif path.exists('start.traj'):
     atoms = read('start.traj')
-    for i in [0, 3, 5, 6]:
-        atoms[i+8].magmom = spin_states_plus_3.get(atoms[i+8].symbol)
-    for i in [1, 2, 4, 7]:
-        atoms[i+8].magmom = -spin_states_plus_3.get(atoms[i+8].symbol)
+    for i in [8, 11, 13, 14]:
+        atoms[i].magmom = 1
+    for i in [9, 10, 12, 15]:
+        atoms[i].magmom = -1
 else:
     raise ValueError('Where is start.traj')
     
@@ -102,16 +94,16 @@ atoms.calc = vasp_calculator.Vasp(
                     xc='PBE',
                     gga='PE',
                     kpts=kpoints,
-                    kpar=4,
-                    npar=16,
+                    kpar=8,
+                    npar=1,
                     gamma=True,
                     ismear=0,
-                    inimix=0,
-                    amix=0.05,
-                    bmix=0.0001,
-                    amix_mag=0.05,
-                    bmix_mag=0.0001,
-                    nelm=250,
+                    # inimix=0,
+                    # amix=0.05,
+                    # bmix=0.0001,
+                    # amix_mag=0.05,
+                    # bmix_mag=0.0001,
+                    # nelm=600,
                     sigma=0.05,
                     algo='normal',
                     ibrion=2,
@@ -135,16 +127,18 @@ atoms.calc = vasp_calculator.Vasp(
                     lmaxmix=lmaxmix,
                     # isym=0, 
                     nedos=3000,
-                    lorbit=11
+                    lorbit=11,
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
-                    # nupdown=0
+                    nupdown=0
                     )
 
 eng = atoms.get_potential_energy()
 print ('Calculation Complete, storing the run + calculator to traj file')
 
 Trajectory(f'final_{name}.traj','w').write(atoms)
-subprocess.call(f'ase convert -f final_{name}.traj final_with_calculator.json', shell=True)
+subprocess.call(f'ase convert -f final_{name}.traj restart.json', shell=True)
+subprocess.call(f'cp restart.json final_with_calculator.json', shell=True)
 subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
+subprocess.call(f'python /global/cfs/cdirs/m2997/bin/get_restart3', shell=True)
