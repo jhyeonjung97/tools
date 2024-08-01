@@ -33,7 +33,9 @@ ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
             'Cu':{'L':2, 'U':3.0,  'J':0.0},
             }
 
-if path.exists('start.traj'):
+if path.exists('restart.json'):
+    atoms = read('restart.json')
+elif path.exists('start.traj'):
     atoms = read('start.traj')
     for atom in atoms:
         if atom.index in [0, 1]:
@@ -96,7 +98,6 @@ nbands = get_bands(atoms)
 kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
 
 atoms.calc = vasp_calculator.Vasp(
-                    istart=0,
                     encut=600,
                     xc='PBE',
                     gga='PE',
