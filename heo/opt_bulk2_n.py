@@ -66,7 +66,6 @@ def get_kpoints(atoms, effective_length=effective_length, bulk=False):
 kpoints = get_kpoints(atoms, effective_length=effective_length, bulk=True)
 
 atoms.calc = vasp_calculator.Vasp(
-                    istart=0,
                     encut=600,
                     xc='PBE',
                     gga='PE',
