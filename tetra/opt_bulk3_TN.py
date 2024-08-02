@@ -38,12 +38,14 @@ if path.exists('restart.json'):
 elif path.exists('start.traj'):
     atoms = read('start.traj')
     for atom in atoms:
-        if atom.index in [0, 1]:
-            atom.magmom = spin_states_plus_4.get(atom.symbol)
-        elif atom.index in [2, 3]:
-            atom.magmom = -spin_states_plus_4.get(atom.symbol)
+        if atom.index in [0, 2]:
+            spin = spin_states_plus_4.get(atom.symbol)
+            atom.magmom = sqrt(spin*(spin+1))
+        elif atom.index in [1, 3]:
+            spin = spin_states_plus_4.get(atom.symbol)
+            atom.magmom = -sqrt(spin*(spin+1))
 else:
-    raise ValueError('Where is start.traj')
+    raise ValueError('Neither restart.json nor start.traj file found')
 
 lmaxmix = 2
 for a in atoms:
@@ -142,7 +144,7 @@ atoms.calc = vasp_calculator.Vasp(
                     nupdown=0
                     )
 
-eng = atoms.get_potential_energy()
+energy = atoms.get_potential_energy()
 print ('Calculation Complete, storing the run + calculator to traj file')
 
 Trajectory(f'final_{name}.traj','w').write(atoms)

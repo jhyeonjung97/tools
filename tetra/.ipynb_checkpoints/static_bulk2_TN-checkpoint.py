@@ -3,6 +3,7 @@ import json
 import subprocess
 import numpy as np
 from os import path
+from math import sqrt
 from mendeleev import element
 from ase.io import read, write
 from ase.visualize import view
@@ -11,39 +12,42 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk8'
+name = 'static_bulk2_TN'
 
 effective_length = 25
 
-spin_states_plus_3 = {'Sc': 0, 'Ti': 1, 'V': 2, 'Cr': 3, 'Mn': 4, 'Fe': 5,
-                      'Co': 0, 'Ni': 1, 'Cu': 2, 'Zn': 1, 'Ga': 0, 'Ge': 1,
-                      'Y': 0, 'Zr': 1, 'Nb': 2, 'Mo': 3, 'Tc': 4, 'Ru': 5,
-                      'Rh': 4, 'Pd': 3, 'Ag': 2, 'Cd': 1, 'In': 0, 'Sn': 1,
-                      'La': 0, 'Hf': 1, 'Ta': 2, 'W': 3, 'Re': 4, 'Os': 5,
-                      'Ir': 4, 'Pt': 3, 'Au': 2, 'Hg': 1, 'Tl': 0, 'Pb': 1,
+spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
+                      'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 2,
+                      'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4,
+                      'Rh': 3, 'Pd': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
+                      'La': 1, 'Hf': 2, 'Ta': 3, 'W': 4, 'Re': 5, 'Os': 4,
+                      'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2,
                       }
 
 ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
-            'Cr':{'L':2, 'U':3.50, 'J':0.0},
+            'Cr':{'L':2, 'U':3.5,  'J':0.0},
             'Mn':{'L':2, 'U':3.75, 'J':0.0},
-            'Fe':{'L':2, 'U':4.30, 'J':0.0},
+            'Fe':{'L':2, 'U':4.3,  'J':0.0},
             'Co':{'L':2, 'U':3.32, 'J':0.0},
-            'Ni':{'L':2, 'U':2.00, 'J':0.0},
-            'Cu':{'L':2, 'U':3.00, 'J':0.0},
+            'Ni':{'L':2, 'U':6.45, 'J':0.0},
+            'Cu':{'L':2, 'U':3.0,  'J':0.0},
             }
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
 elif path.exists('start.traj'):
     atoms = read('start.traj')
-    for i in [0, 3, 5, 6]:
-        atoms[i+8].magmom = spin_states_plus_3.get(atoms[i+8].symbol)
-    for i in [1, 2, 4, 7]:
-        atoms[i+8].magmom = -spin_states_plus_3.get(atoms[i+8].symbol)
+    for atom in atoms:
+        if atom.index in [0, 2]:
+            spin = spin_states_plus_4.get(atom.symbol)
+            atom.magmom = sqrt(spin*(spin+1))
+        elif atom.index in [1, 3]:
+            spin = spin_states_plus_4.get(atom.symbol)
+            atom.magmom = -sqrt(spin*(spin+1))
 else:
-    raise ValueError('Where is start.traj')
-    
+    raise ValueError('Neither restart.json nor start.traj file found')
+
 lmaxmix = 2
 for a in atoms:
     if a.symbol in ldau_luj:
@@ -51,7 +55,29 @@ for a in atoms:
     else:
         ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
-def get_kpoints(atoms, effective_length=25, bulk=False):
+def get_bands(atoms):
+    """
+    returns the extact number of bands desired by lobster for the pCOHP calculations
+    """
+    nbands = 0
+    for sym in atoms.get_chemical_symbols():
+        if sym == 'H': # H is bugged
+            nbands += 1
+            continue
+        config = element(sym).ec.get_valence().to_str()
+        config = config.split()
+        for c in config:
+            if 's' in c:
+                nbands += 1
+            elif 'p' in c:
+                nbands += 3
+            elif 'd' in c:
+                nbands += 5
+            elif 'f' in c:
+                nbands += 7
+    return nbands
+
+def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """
     Return a tuple of k-points derived from the unit cell.
     
@@ -71,6 +97,7 @@ def get_kpoints(atoms, effective_length=25, bulk=False):
         nkz = 1
     return((nkx, nky, nkz))
 
+nbands = get_bands(atoms)
 kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
 
 atoms.calc = vasp_calculator.Vasp(
@@ -78,26 +105,26 @@ atoms.calc = vasp_calculator.Vasp(
                     xc='PBE',
                     gga='PE',
                     kpts=kpoints,
-                    kpar=4,
-                    npar=16,
+                    kpar=8,
+                    npar=1,
                     gamma=True,
                     ismear=0,
                     inimix=0,
                     amix=0.05,
                     bmix=0.0001,
-                    amix_mag=0.05,
-                    bmix_mag=0.0001,
+                    amix_mag=0.01,
+                    bmix_mag=0.00001,
                     nelm=250,
                     sigma=0.05,
                     algo='normal',
                     ibrion=2,
-                    isif=8,
+                    isif=2,
                     ediffg=-0.02,
                     ediff=1e-6,
                     prec='Normal',
-                    nsw=600,
+                    nsw=0,
                     lvtot=False,
-                    # nbands=nbands,
+                    nbands=nbands,
                     ispin=2,
                     setups={'base': 'recommended',
                             'W': '_sv'},
@@ -109,17 +136,16 @@ atoms.calc = vasp_calculator.Vasp(
                     ldau_luj=ldau_luj,
                     ldauprint=2,
                     lmaxmix=lmaxmix,
-                    # isym=0, 
+                    isym=0, # static
                     nedos=3000,
-                    lorbit=11
+                    lorbit=11,
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
-                    # nupdown=0
+                    nupdown=0
                     )
 
 energy = atoms.get_potential_energy()
-subprocess.call('sh ~/bin/verve/correct-contcar.sh', shell=True)
 print ('Calculation Complete, storing the run + calculator to traj file')
 
 Trajectory(f'final_{name}.traj','w').write(atoms)

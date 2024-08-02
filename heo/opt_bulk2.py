@@ -52,15 +52,6 @@ for a in atoms:
         ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
 def get_kpoints(atoms, effective_length=25, bulk=False):
-    """
-    Return a tuple of k-points derived from the unit cell.
-    
-    Parameters
-    ----------
-    atoms : object
-    effective_length : k-point*unit-cell-parameter
-    bulk : Whether it is a bulk system.
-    """
     l = effective_length
     cell = atoms.get_cell()
     nkx = int(round(l/np.linalg.norm(cell[0]),0))

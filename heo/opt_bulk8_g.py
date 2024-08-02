@@ -118,7 +118,7 @@ atoms.calc = vasp_calculator.Vasp(
                     nupdown=0
                     )
 
-eng = atoms.get_potential_energy()
+energy = atoms.get_potential_energy()
 subprocess.call('sh ~/bin/verve/correct-contcar.sh', shell=True)
 print ('Calculation Complete, storing the run + calculator to traj file')
 
