@@ -3,7 +3,12 @@
 # Step 1: Run spread.sh on directories matching the first pattern
 for dir in /scratch/x2755a09/3_MNC/*d/*_*/*_*S/; do
     cd $dir
-    sh ~/bin/verve/spread.sh 0_/restart.json
+    if [[ -s 'DONE' ]] && [[ -s 'restart.json' ]]; then
+        sh ~/bin/verve/spread.sh 0_/restart.json
+        sh ~/bin/verve/spread.sh 0_/WAVECAR
+    else
+        echo "Calculation in $dir is not completed"
+    fi
 done
 
 # # Step 2: Submit jobs for specific subdirectories
