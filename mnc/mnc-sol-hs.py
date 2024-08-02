@@ -3,6 +3,7 @@ import json
 import subprocess
 import numpy as np
 from os import path
+from math import sqrt
 from mendeleev import element
 from ase.io import read, write
 from ase.visualize import view
@@ -32,24 +33,21 @@ ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
-    magmoms = atoms.get_magnetic_moments()
-    atoms.set_initial_magnetic_moments(magmoms)
-    for atom in atoms:
-        atom.magmom = magmoms[atom.index]
-        if atom.symbol not in ['C', 'N', 'O', 'H']:
-            if atom.symbol in spin_states_plus_2:
-                spin = spin_states_plus_2.get(atom.symbol)
+    amix_mag = 0.01
+    bmix_mag = 0.00001
 elif path.exists('start.traj'):
     atoms = read('start.traj')
+    amix_mag = 0.05
+    bmix_mag = 0.0001
     for atom in atoms:
-        if atom.symbol not in ['C', 'N', 'O', 'H']:
+        if atom.symbol in ['C', 'N', 'O', 'H']:
             if atom.symbol in spin_states_plus_2:
                 spin = spin_states_plus_2.get(atom.symbol)
-                atom.magmom = spin
+                atom.magmom = sqrt(spin*(spin+2))
             else:
                 raise ValueError(f"Unexpected atom symbol '{atom.symbol}' found in start.traj")
 else:
-    raise ValueError('Where is start.traj')
+    raise ValueError('Neither restart.json nor start.traj file found')
         
 lmaxmix = 2
 for a in atoms:
@@ -58,31 +56,7 @@ for a in atoms:
     else:
         ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
-def get_kpoints(atoms, effective_length=effective_length, bulk=False):
-    """
-    Return a tuple of k-points derived from the unit cell.
-    
-    Parameters
-    ----------
-    atoms : object
-    effective_length : k-point*unit-cell-parameter
-    bulk : Whether it is a bulk system.
-    """
-    l = effective_length
-    cell = atoms.get_cell()
-    nkx = int(round(l/np.linalg.norm(cell[0]),0))
-    nky = int(round(l/np.linalg.norm(cell[1]),0))
-    if bulk == True:
-        nkz = int(round(l/np.linalg.norm(cell[2]),0))
-    else:
-        nkz = 1
-    return((nkx, nky, nkz))
-
-# nbands = get_bands(atoms)
-# kpoints = get_kpoints(atoms, effective_length=25, bulk=False)
-
 atoms.calc = vasp_calculator.Vasp(
-                    istart=0,
                     encut=500,
                     gga='PE',
                     ivdw=12,
@@ -92,12 +66,12 @@ atoms.calc = vasp_calculator.Vasp(
                     gamma=True,
                     ismear=0,
                     sigma=0.05,
-                    # inimix=0,
-                    # amix=0.05,
-                    # bmix=0.0001,
-                    # amix_mag=0.05,
-                    # bmix_mag=0.0001,
-                    # nelm=600,
+                    inimix=0,
+                    amix=0.05,
+                    bmix=0.0001,
+                    amix_mag=amix_mag,
+                    bmix_mag=bmix_mag,
+                    nelm=250,
                     algo='Normal',
                     ibrion=2,
                     isif=2,
@@ -107,7 +81,6 @@ atoms.calc = vasp_calculator.Vasp(
                     nsw=200,
                     lvhar=True,
                     lvtot=False,
-                    # nbands=nbands,
                     ispin=2,
                     setups={'base': 'recommended',
                             'W': '_sv'},
@@ -119,21 +92,17 @@ atoms.calc = vasp_calculator.Vasp(
                     lasph=True,
                     laechg=True,
                     lreal='Auto',
-                    # isym=0, 
                     nedos=3000,
                     lorbit=11,
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True,
-                    nupdown=spin,
                     lsol=True
                     )
 
-e = atoms.get_potential_energy()
+energy = atoms.get_potential_energy()
 print('Calculation Complete, storing the run + calculator to traj file')
 subprocess.call('sh ~/bin/verve/correct-contcar.sh', shell=True)
 
-traj_filename = f'final_{name}.traj'
-Trajectory(traj_filename, 'w').write(atoms)
-subprocess.call(f'ase convert -f {traj_filename} final_with_calculator.json', shell=True)
-subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
+Trajectory(f'final_{name}.traj', 'w').write(atoms)
+subprocess.call(f'ase convert -f final_{name}.traj final_with_calculator.json', shell=True)
