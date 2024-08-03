@@ -3,6 +3,7 @@ import json
 import subprocess
 import numpy as np
 from os import path
+from math import sqrt
 from mendeleev import element
 from ase.io import read, write
 from ase.visualize import view
@@ -11,11 +12,11 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk3_LT_afm'
+name = 'opt_bulk3_afm'
 
 effective_length = 25
 
-spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
+spin_states_plus_2 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
                       'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 2,
                       'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4,
                       'Rh': 3, 'Pd': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
@@ -38,21 +39,21 @@ if path.exists('restart.json'):
 elif path.exists('start.traj'):
     atoms = read('start.traj')
     for atom in atoms:
-        if atom.index in [0, 2]:
-            spin = spin_states_plus_4.get(atom.symbol)
-            atom.magmom = sqrt(spin*(spin+1))
-        elif atom.index in [1, 3]:
-            spin = spin_states_plus_4.get(atom.symbol)
-            atom.magmom = -sqrt(spin*(spin+1))
+        if atom.symbol in spin_states_plus_2:
+            spin = spin_states_plus_2[atom.symbol]
+            if atom.index % 2 == 1: 
+                atom.magmom = sqrt(spin*(spin+2))
+            else:
+                atom.magmom = -sqrt(spin*(spin+2))
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
 
 lmaxmix = 2
-for a in atoms:
-    if a.symbol in ldau_luj:
+for atom in atoms:
+    if atom.symbol in ldau_luj:
         lmaxmix = 4
     else:
-        ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
+        ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
 def get_bands(atoms):
     """
