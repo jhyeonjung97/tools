@@ -54,7 +54,7 @@ for atom in atoms:
         lmaxmix = 4
     else:
         ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
-
+    
 def get_bands(atoms):
     """
     returns the extact number of bands desired by lobster for the pCOHP calculations
@@ -106,7 +106,7 @@ atoms.calc = vasp_calculator.Vasp(
                     gga='PE',
                     kpts=kpoints,
                     kpar=8,
-                    npar=1,
+                    npar=8,
                     gamma=True,
                     ismear=0,
                     inimix=0,
