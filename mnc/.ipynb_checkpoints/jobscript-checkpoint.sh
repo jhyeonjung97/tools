@@ -13,6 +13,7 @@ for dir in $dirs; do
     spin=$(echo "${path_components[-2]}" | cut -d'_' -f2)
     dz=$(echo "${path_components[-1]}" | cut -d'_' -f1)
     sed -i -e "/#PBS -N/c\#PBS -N $metal$spin$dz" submit.sh
+    sed -i -e "/#SBATCH -J/c\#SBATCH -J $metal$spin$dz" submit.sh
     if [[ $spin == 'LS' ]]; then
        sed -i -e 's/mnc-sol-ls.py/mnc-sol-ls.py/g' submit.sh
        sed -i -e 's/mnc-sol-is.py/mnc-sol-ls.py/g' submit.sh
