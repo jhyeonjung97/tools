@@ -1,3 +1,5 @@
+#!/bin/bash
+
 for dir in /scratch/x2755a09/3_MNC/*d/*_*/*_*S/*_/; do
     cd $dir
     IFS='/' read -r -a path_components <<< $PWD
