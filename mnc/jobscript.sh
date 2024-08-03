@@ -1,6 +1,12 @@
 #!/bin/bash
 
-for dir in /scratch/x2755a09/3_MNC/*d/*_*/*_*S/*_/; do
+if [[ ${here} == 'kisti' ]]; then
+    dirs=/scratch/x2755a09/3_MNC/*d/*_*/*_*S/*_/
+else
+    dirs=/pscratch/sd/j/jiuy97/6_MNC/*d/*_*/*_*S/*_/
+fi
+
+for dir in $dirs; do
     cd $dir
     IFS='/' read -r -a path_components <<< $PWD
     metal=$(echo "${path_components[-3]}" | cut -d'_' -f2)
