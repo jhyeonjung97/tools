@@ -8,6 +8,7 @@ for i in range(7): # 0~6
     for path in matching_paths:
         json_path = os.path.join(path, 'restart.json')
         if os.path.exists(json_path):
+            print(json_path)
             atoms = read(json_path)
             for atom in atoms:
                 if atom.symbol == 'N':
