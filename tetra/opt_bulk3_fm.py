@@ -39,8 +39,8 @@ if path.exists('restart.json'):
 elif path.exists('start.traj'):
     atoms = read('start.traj')
     for atom in atoms:
-        if atom.symbol in spin_states_plus_2:
-            spin = spin_states_plus_2[atom.symbol]
+        if atom.symbol in spin_states_plus_4:
+            spin = spin_states_plus_4[atom.symbol]
             atom.magmom = sqrt(spin*(spin+2))
 else:
     raise ValueError('Neither restart.json nor start.traj file found')

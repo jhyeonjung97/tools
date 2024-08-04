@@ -16,7 +16,7 @@ name = 'opt_bulk3_afm'
 
 effective_length = 25
 
-spin_states_plus_2 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
+spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
                       'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 2,
                       'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4,
                       'Rh': 3, 'Pd': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
@@ -39,8 +39,8 @@ if path.exists('restart.json'):
 elif path.exists('start.traj'):
     atoms = read('start.traj')
     for atom in atoms:
-        if atom.symbol in spin_states_plus_2:
-            spin = spin_states_plus_2[atom.symbol]
+        if atom.symbol in spin_states_plus_4:
+            spin = spin_states_plus_4[atom.symbol]
             if atom.index % 2 == 1: 
                 atom.magmom = sqrt(spin*(spin+2))
             else:
@@ -106,7 +106,7 @@ atoms.calc = vasp_calculator.Vasp(
                     gga='PE',
                     kpts=kpoints,
                     kpar=8,
-                    npar=8,
+                    npar=1,
                     gamma=True,
                     ismear=0,
                     inimix=0,
