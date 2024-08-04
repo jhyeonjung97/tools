@@ -11,7 +11,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk3'
+name = 'opt_bulk8_a'
 
 effective_length = 25
 
@@ -37,10 +37,10 @@ if path.exists('restart.json'):
     atoms = read('restart.json')
 elif path.exists('start.traj'):
     atoms = read('start.traj')
-    for i in [0, 3, 5, 6]:
-        atoms[i+8].magmom = spin_states_plus_3.get(atoms[i+8].symbol)
-    for i in [1, 2, 4, 7]:
-        atoms[i+8].magmom = -spin_states_plus_3.get(atoms[i+8].symbol)
+    for i in [8, 9, 10, 11]:
+        atoms[i].magmom = spin_states_plus_3.get(atoms[i].symbol)
+    for i in [12, 13, 14, 15]:
+        atoms[i].magmom = -spin_states_plus_3.get(atoms[i].symbol) 
 else:
     raise ValueError('Where is start.traj')
     
@@ -51,7 +51,7 @@ for a in atoms:
     else:
         ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
-def get_kpoints(atoms, effective_length=25, bulk=False):
+def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """
     Return a tuple of k-points derived from the unit cell.
     
@@ -111,11 +111,11 @@ atoms.calc = vasp_calculator.Vasp(
                     lmaxmix=lmaxmix,
                     # isym=0, 
                     nedos=3000,
-                    lorbit=11
+                    lorbit=11,
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
-                    # nupdown=0
+                    nupdown=0
                     )
 
 energy = atoms.get_potential_energy()

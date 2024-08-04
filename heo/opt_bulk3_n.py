@@ -11,7 +11,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk8_n'
+name = 'opt_bulk3_n'
 
 effective_length = 25
 
