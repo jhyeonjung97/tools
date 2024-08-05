@@ -18,16 +18,14 @@
 #     done
 # done
 
-# sh ~/bin/verve/spread.sh 0_/restart.json
-# sh ~/bin/verve/spread.sh 0_/WAVECAR
+sh ~/bin/verve/spread.sh 0_/restart.json
+sh ~/bin/verve/spread.sh 0_/WAVECAR
 
 dzs=('1_' '2_' '3_' '4_' '5_' '6_')
 dir_now=$PWD
 for dz in ${dzs[@]}; do
-    if [ -d $dz ]; then
-        cd $dz
-        echo $PWD
-    fi
+    cd $dz
+    cp /scratch/x2755a09/3_MNC/3d/submit.sh .
+    qsub submit.sh
     cd $dir_now
-    echo $PWD
 done
