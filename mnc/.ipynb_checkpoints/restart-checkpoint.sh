@@ -18,8 +18,8 @@
 #     done
 # done
 
-sh ~/bin/verve/spread.sh 0_/restart.json
-sh ~/bin/verve/spread.sh 0_/WAVECAR
+# sh ~/bin/verve/spread.sh 0_/restart.json
+# sh ~/bin/verve/spread.sh 0_/WAVECAR
 
 dzs=(1 2 3 4 5 6)
 dir_now=$PWD
