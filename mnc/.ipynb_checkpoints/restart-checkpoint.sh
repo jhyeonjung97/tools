@@ -27,6 +27,7 @@ for dz in ${dzs[@]}; do
     cd "$dz"_/
     cp /scratch/x2755a09/3_MNC/3d/submit.sh .
     sed -i -e "/#PBS -N/c\#PBS -N $1$dz" submit.sh
+    sed -i -e "/#PBS -N/c\#PBS -N $1$dz" submit.sh
     qsub submit.sh
     cd $dir_now
 done
