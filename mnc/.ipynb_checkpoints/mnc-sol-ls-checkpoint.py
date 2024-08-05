@@ -43,7 +43,8 @@ elif path.exists('start.traj'):
         if atom.symbol not in ['C', 'N', 'O', 'H']:
             if atom.symbol in spin_states_plus_2:
                 spin = spin_states_plus_2.get(atom.symbol)
-                atom.magmom = sqrt(spin*(spin+2))
+                atom.magmom = spin
+                # atom.magmom = sqrt(spin*(spin+2))
             else:
                 raise ValueError(f"Unexpected atom symbol '{atom.symbol}' found in start.traj")
 else:
@@ -61,8 +62,8 @@ atoms.calc = vasp_calculator.Vasp(
                     gga='PE',
                     ivdw=12,
                     kpts=(5,5,1),
-                    kpar=4,
-                    npar=16,
+                    kpar=8,
+                    npar=1,
                     gamma=True,
                     ismear=0,
                     sigma=0.05,
