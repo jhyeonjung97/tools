@@ -25,7 +25,9 @@ dzs=('1_' '2_' '3_' '4_' '5_' '6_')
 dir_now=$PWD
 for dz in ${dzs[@]}; do
     if [ -d $dz ]; then
-        cd "$dir_now"/"$dz"
+        cd $dz
         echo $PWD
     fi
+    cd $dir_now
+    echo $PWD
 done
