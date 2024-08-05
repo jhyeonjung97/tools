@@ -42,8 +42,7 @@ elif path.exists('start.traj'):
     for atom in atoms:
         if atom.symbol not in ['C', 'N', 'O', 'H']:
             if atom.symbol in spin_states_plus_2:
-                spin = spin_states_plus_2.get(atom.symbol)
-                atom.magmom = sqrt(spin*(spin+2))
+                atom.magmom = spin_states_plus_2.get(atom.symbol)
             else:
                 raise ValueError(f"Unexpected atom symbol '{atom.symbol}' found in start.traj")
 else:
