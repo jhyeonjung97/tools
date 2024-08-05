@@ -7,10 +7,11 @@ dzs=('1_' '2_' '3_' '4_' '5_' '6_')
 for metal in ${metals[@]}; do
     for spin in ${spins[@]}; do
         for dz in ${dzs[@]}; do
-            path="/scratch/x2755a09/3_MNC/3d/${metal}/${spin}/${dz}"
+            path="/scratch/x2755a09/3_MNC/3d/$metal/$spin/$dz"
             if [ -d $path ]; then
                 cd $path
-                if [ -
+                echo $PWD
+                # if [ -
                 # qsub submit.sh
             fi
         done
