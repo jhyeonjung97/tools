@@ -22,9 +22,10 @@
 # sh ~/bin/verve/spread.sh 0_/WAVECAR
 
 dzs=('1_' '2_' '3_' '4_' '5_' '6_')
+dir_now=$PWD
 for dz in ${dzs[@]}; do
     if [ -d $dzs ]; then
-        cd $dzs
+        cd "$dir_now"/"$dzs"
         echo $PWD
     fi
 done
