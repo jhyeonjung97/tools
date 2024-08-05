@@ -18,6 +18,9 @@
 #     done
 # done
 
+# sh ~/bin/verve/spread.sh 0_/restart.json
+# sh ~/bin/verve/spread.sh 0_/WAVECAR
+
 dzs=('1_' '2_' '3_' '4_' '5_' '6_')
 for dz in ${dzs[@]}; do
     if [ -d $dzs ]; then
