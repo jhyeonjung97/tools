@@ -26,9 +26,9 @@ dir_now=$PWD
 for dz in ${dzs[@]}; do
     cd "$dz"_/
     echo $PWD
-    echo $1$numb
+    echo $1$dz
     # cp /scratch/x2755a09/3_MNC/3d/submit.sh .
-    # sed -i -e "/#PBS -N/c\#PBS -N $1$numb"
+    # sed -i -e "/#PBS -N/c\#PBS -N $1$dz"
     # qsub submit.sh
     cd $dir_now
 done
