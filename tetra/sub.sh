@@ -10,7 +10,7 @@ for metal in ${metals[@]}; do
             path="/scratch/x2755a09/3_MNC/3d/${metal}/${spin}/${dz}"
             if [ -d $path ]; then
                 cd $path
-                echo $PWD
+                if [ -
                 # qsub submit.sh
             fi
         done
