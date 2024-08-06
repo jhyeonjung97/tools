@@ -20,7 +20,6 @@ numb = [0] * 5
 tsv_filename = 'heo_relative_energy.tsv'
 png_filename = 'heo_relative_energy.png'
 
-
 ref_filename = 'heo_references'
 chg_filename = 'heo_bader_charge'
 mag_filename = 'heo_magnetic_moments'
@@ -29,7 +28,6 @@ occ_filename = 'heo_eg_occupancies'
 png_gap_filename = 'heo_band_gap.png'
 png_dos_filename = 'heo_density_of_states.png'
 
-# Regular expressions to extract band gap and DOS information
 pattern_gap = re.compile(r"Band Gap:\s+([\d.]+)\s+eV")
 pattern_dos = re.compile(r"Average Energy \(band center\):\s+([-+]?\d*\.\d+|\d+)")
 
@@ -116,10 +114,10 @@ def main():
                     df_occ.at[i, metal] = np.nan  # Handle case where tmp is empty
                             
     saving(df, tsv_filename)
-    saving(df_chg, tsv_chg_filename)
-    saving(df_mag, tsv_mag_filename)
-    saving(df_occ, tsv_occ_filename)
-    saving(df_ref, tsv_ref_filename)
+    saving(df_chg, chg_filename)
+    saving(df_mag, mag_filename)
+    saving(df_occ, occ_filename)
+    saving(df_ref, ref_filename)
 
     for i in range(5):
         df_ref.at[i, 'energy'] = 0
