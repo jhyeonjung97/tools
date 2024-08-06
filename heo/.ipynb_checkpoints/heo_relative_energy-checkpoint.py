@@ -132,7 +132,8 @@ def saving(df, filename):
     print(f"Data saved to {filename}.tsv")
 
 def plotting(pattern, xlabel, filename, min, max, tick):
-    bins=np.arange(min, max, tick*1), width=tick*0.9, xticks=np.arange(min, max, tick*2), xmin=min-tick*5, xmax=max+tick*5
+    
+    bins=np.arange(min, max, tick*1); width=tick*0.9; xticks=np.arange(min, max, tick*2); xmin=min-tick*5; xmax=max+tick*5
     
     plt.figure(figsize=figsize)
     plt.hist(df[pattern].dropna(), bins=bins, alpha=0.5, width=width)
@@ -150,8 +151,8 @@ def plotting(pattern, xlabel, filename, min, max, tick):
 def plotting_adv(df, df_ref, pattern, xlabel, filename, min, max, tick,
                  figsize1=(8, 6), figsize2=(12, 6)):
 
-    bins1=np.arange(min, max, tick*1), width1=tick*0.9, xticks1=np.arange(min, max, tick*15), xmin1=min-tick*5, xmax1=max+tick*5
-    bins2=np.arange(min, max, tick*2), width2=tick*2.0, xticks2=np.arange(min, max, tick*15), xmin2=min-tick*5, xmax2=max+tick*5
+    bins1=np.arange(min, max, tick*1); width1=tick*0.9; xticks1=np.arange(min, max, tick*15); xmin1=min-tick*5; xmax1=max+tick*5
+    bins2=np.arange(min, max, tick*2); width2=tick*2.0; xticks2=np.arange(min, max, tick*15); xmin2=min-tick*5; xmax2=max+tick*5
 
     for i, column in enumerate(df_chg.columns):
         plt.figure(figsize=figsize1)
