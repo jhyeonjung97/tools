@@ -6,6 +6,9 @@ import numpy as np
 import os
 import re
 
+root='/Users/hailey/Desktop/aug5'
+#root='/scratch/x2755a09/4_HEO'
+
 # Define the metals and initialize dataframes
 prvs = ['Cr', 'Mn', 'Fe', 'Co', 'Ni']
 clrs = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
@@ -30,11 +33,11 @@ pattern_dos = re.compile(r"Average Energy \(band center\):\s+([-+]?\d*\.\d+|\d+)
 
 def main():
     for i in range(5):
-        path = f'/scratch/x2755a09/4_HEO/pure/{i+1}_{prvs[i]}/moments.json'
-        chg_path = f'/scratch/x2755a09/4_HEO/pure/{i+1}_{prvs[i]}/atoms_bader_charge.json'
-        gap_path = f'/scratch/x2755a09/4_HEO/pure/{i+1}_{prvs[i]}/gap.txt'
-        dos_path = f'/scratch/x2755a09/4_HEO/pure/{i+1}_{prvs[i]}/dos.txt'
-        occ_path = f'/scratch/x2755a09/4_HEO/pure/{i+1}_{prvs[i]}/occ.tsv'
+        path = f'{root}/pure/{i+1}_{prvs[i]}/moments.json'
+        chg_path = f'{root}/pure/{i+1}_{prvs[i]}/atoms_bader_charge.json'
+        gap_path = f'{root}/pure/{i+1}_{prvs[i]}/gap.txt'
+        dos_path = f'{root}/pure/{i+1}_{prvs[i]}/dos.txt'
+        occ_path = f'{root}/pure/{i+1}_{prvs[i]}/occ.tsv'
         
         if os.path.exists(path):
             atoms = read(path)
@@ -62,11 +65,11 @@ def main():
             df_ref.at[i, 'eg_occ'] = df_occ_tmp[['occ4', 'occ5', 'occ9', 'occ10']].sum(axis=1).mean()
     
     for i in range(60):
-        path = f'/scratch/x2755a09/4_HEO/{i:02d}_/final_with_calculator.json'
-        chg_path = f'/scratch/x2755a09/4_HEO/{i:02d}_/atoms_bader_charge.json'
-        gap_path = f'/scratch/x2755a09/4_HEO/{i:02d}_/gap.txt'
-        dos_path = f'/scratch/x2755a09/4_HEO/{i:02d}_/dos.txt'
-        occ_path = f'/scratch/x2755a09/4_HEO/{i:02d}_/occ.tsv'
+        path = f'{root}/{i:02d}_/final_with_calculator.json'
+        chg_path = f'{root}/{i:02d}_/atoms_bader_charge.json'
+        gap_path = f'{root}/{i:02d}_/gap.txt'
+        dos_path = f'{root}/{i:02d}_/dos.txt'
+        occ_path = f'{root}/{i:02d}_/occ.tsv'
 
         indice = {metal: [] for metal in prvs}
         if os.path.exists(path):
@@ -120,8 +123,8 @@ def main():
         df_ref.at[i, 'energy'] = 0
         
     plotting(pattern='energy', xlabel='Relative energy (eV)', filename=filename, figsize=(6, 6), min=-0.4, max=+0.4, tick=0.04) 
-    plotting(pattern='bandgap', xlabel='Band gap (eV)', filename=gap_filename, figsize=(10, 6), min=+0.0, max=+2.8, tick=0.10)
-    plotting(pattern='Md2Op', xlabel='M3d - O2p (eV)', filename=dos_filename, figsize=(8, 6), min=+0.0, max=+2.0, tick=0.10)
+    plotting(pattern='bandgap', xlabel='Band gap (eV)', filename=gap_filename, figsize=(10, 6), min=+0.0, max=+2.8, tick=0.04)
+    plotting(pattern='Md2Op', xlabel='M3d - O2p (eV)', filename=dos_filename, figsize=(8, 6), min=+0.0, max=+2.0, tick=0.04)
     
     plotting_adv(df=df_mag, df_ref=df_ref, pattern='magmom', xlabel='Magnetic moments (uB)', filename=mag_filename, min=0.0, max=5.0, tick=0.1)
     plotting_adv(df=df_chg, df_ref=df_ref, pattern='charge', xlabel='Bader charge (e-)', filename=chg_filename, min=1.0, max=2.1, tick=0.02)
