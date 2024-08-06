@@ -14,8 +14,6 @@ import ase.calculators.vasp as vasp_calculator
 
 name = 'mnc'
 
-effective_length = 25
-
 ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
             'Cr': {'L':2, 'U':3.50, 'J':0.0},
@@ -29,7 +27,7 @@ ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
 if path.exists('restart.json'):
     atoms = read('restart.json')
 else:
-    raise ValueError('No restart.json nor start.traj file found')
+    raise ValueError('No restart.json file found')
         
 lmaxmix = 2
 for a in atoms:
