@@ -1,6 +1,7 @@
 for dir in /scratch/x2755a09/5_V_bulk/*_*_*/fm/*_*/; do
     cd $dir
     if [[ -n $(grep CONTCAR vasp.out) ]]; then
+        echo $PWD
         if [[ -d conti_2 ]]; then
             rm -r conti_3 conti_4 conti_5 conti_6
             cp conti_2/* .
