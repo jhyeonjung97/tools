@@ -17,16 +17,13 @@ df_occ = pd.DataFrame()
 numb = [0] * 5
 
 # Filenames for saving the data and plots
-tsv_filename = 'heo_relative_energy.tsv'
-png_filename = 'heo_relative_energy.png'
-
+filename = 'heo_relative_energy'
 ref_filename = 'heo_references'
 chg_filename = 'heo_bader_charge'
 mag_filename = 'heo_magnetic_moments'
 occ_filename = 'heo_eg_occupancies'
-
-png_gap_filename = 'heo_band_gap.png'
-png_dos_filename = 'heo_density_of_states.png'
+gap_filename = 'heo_band_gap'
+dos_filename = 'heo_density_of_states'
 
 pattern_gap = re.compile(r"Band Gap:\s+([\d.]+)\s+eV")
 pattern_dos = re.compile(r"Average Energy \(band center\):\s+([-+]?\d*\.\d+|\d+)")
@@ -113,7 +110,7 @@ def main():
                 else:
                     df_occ.at[i, metal] = np.nan  # Handle case where tmp is empty
                             
-    saving(df, tsv_filename)
+    saving(df, filename)
     saving(df_chg, chg_filename)
     saving(df_mag, mag_filename)
     saving(df_occ, occ_filename)
@@ -122,11 +119,11 @@ def main():
     for i in range(5):
         df_ref.at[i, 'energy'] = 0
         
-    plotting(pattern='energy', xlabel='Relative energy (eV)', filename=png_filename, 
+    plotting(pattern='energy', xlabel='Relative energy (eV)', filename=filename, 
              figsize=(6, 6), bins=np.arange(-2.0, 0.0, 0.1), width=0.09, xticks=np.arange(-2.0, 0.1, 0.2), xmin=-1.5, xmax=0.1)
-    plotting(pattern='bandgap', xlabel='Band gap (eV)', filename=png_gap_filename, 
+    plotting(pattern='bandgap', xlabel='Band gap (eV)', filename=gap_filename, 
              figsize=(10, 6), bins=np.arange(0.0, 2.2, 0.1), width=0.09, xticks=np.arange(0.0, 2.9, 0.2), xmin=-0.1, xmax=2.9)
-    plotting(pattern='Md2Op', xlabel='M3d - O2p (eV)', filename=png_dos_filename, 
+    plotting(pattern='Md2Op', xlabel='M3d - O2p (eV)', filename=dos_filename, 
              figsize=(8, 6), bins=np.arange(0.4, 2.8, 0.1), width=0.09, xticks=np.arange(0.0, 2.3, 0.2), xmin=-0.1, xmax=2.3)
     
     plotting_adv(df=df_mag, df_ref=df_ref, pattern='magmom', xlabel='Magnetic moments (uB)', filename=mag_filename,
@@ -154,7 +151,7 @@ def plotting(pattern, xlabel, filename,
     plt.ylabel('Frequency')
     plt.xticks(xticks)
     plt.xlim(xmin, xmax)
-    plt.savefig(filename, bbox_inches="tight")
+    plt.savefig(f'{filename}.png', bbox_inches="tight")
     print(f"Figure saved as {filename}")
     plt.close()
 
@@ -162,18 +159,18 @@ def plotting_adv(df, df_ref, pattern, xlabel, filename,
                  bins1, width1, xticks1, xmin1, xmax1,
                  bins2, width2, xticks2, xmin2, xmax2, 
                  figsize1=(8, 6), figsize2=(12, 6)):
-    # for i, column in enumerate(df_chg.columns):
-    #     plt.figure(figsize=figsize1)
-    #     plt.hist(df_mag[column].dropna(), bins=bins1, alpha=0.5, color=clrs[i], label=str(column), width=width1)
-    #     plt.axvline(x=df_ref.at[i, pattern], color=clrs[i], linestyle='--')
-    #     plt.xlabel(xlabel)
-    #     plt.ylabel('Frequency')
-    #     plt.xticks(xticks1)
-    #     plt.xlim(xmin1, xmax1)
-    #     plt.legend(title="B sites")
-    #     plt.savefig(f'{filename}_{column}.png', bbox_inches="tight")
-    #     print(f"Figure saved as {filename}_{column}.png")
-    #     plt.close()
+    for i, column in enumerate(df_chg.columns):
+        plt.figure(figsize=figsize1)
+        plt.hist(df_mag[column].dropna(), bins=bins1, alpha=0.5, color=clrs[i], label=str(column), width=width1)
+        plt.axvline(x=df_ref.at[i, pattern], color=clrs[i], linestyle='--')
+        plt.xlabel(xlabel)
+        plt.ylabel('Frequency')
+        plt.xticks(xticks1)
+        plt.xlim(xmin1, xmax1)
+        plt.legend(title="B sites")
+        plt.savefig(f'{filename}_{column}.png', bbox_inches="tight")
+        print(f"Figure saved as {filename}_{column}.png")
+        plt.close()
 
     plt.figure(figsize=figsize2)
     for i in range(5):
