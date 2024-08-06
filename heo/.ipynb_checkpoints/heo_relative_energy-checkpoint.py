@@ -131,7 +131,7 @@ def saving(df, filename):
     df.to_csv(f'{filename}.tsv', sep='\t', float_format='%.2f')
     print(f"Data saved to {filename}.tsv")
 
-def plotting(pattern, xlabel, filename, min, max, tick):
+def plotting(pattern, xlabel, filename, figsize, min, max, tick):
     
     bins=np.arange(min, max, tick*1); width=tick*0.9; xticks=np.arange(min, max, tick*2); xmin=min-tick*5; xmax=max+tick*5
     
