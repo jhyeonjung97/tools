@@ -4,19 +4,9 @@
 # spins=('1_LS' '2_IS' '2_HS' '3_HS')
 # dzs=('1_' '2_' '3_' '4_' '5_' '6_')
 
-# for metal in ${metals[@]}; do
-#     for spin in ${spins[@]}; do
-#         for dz in ${dzs[@]}; do
-#             path="/scratch/x2755a09/3_MNC/3d/$metal/$spin/$dz"
-#             if [ -d $path ]; then
-#                 cd $path
-#                 echo $PWD
-#                 # if [ -
-#                 # qsub submit.sh
-#             fi
-#         done
-#     done
-# done
+IFS='/' read -r -a path_components <<< $PWD
+metal=$(echo "${path_components[-2]}" | cut -d'_' -f2)
+spin=$(echo "${path_components[-1]}" | cut -d'_' -f2)
 
 mkdir 1_ 2_ 3_ 4_ 5_ 6_
 sh ~/bin/verve/spread.sh 0_/restart.json
@@ -27,8 +17,7 @@ dir_now=$PWD
 for dz in ${dzs[@]}; do
     cd "$dz"_/
     cp /scratch/x2755a09/3_MNC/3d/submit.sh .
-    sed -i -e "/#PBS -N/c\#PBS -N $1$dz" submit.sh
-    sed -i -e "/#PBS -N/c\#PBS -N $1$dz" submit.sh
+    sed -i -e "/#PBS -N/c\#PBS -N $metal$spin$dz" submit.sh
     python ~/bin/tools/mnc/dz.py $dz
     qsub submit.sh
     cd $dir_now
