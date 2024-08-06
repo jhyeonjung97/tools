@@ -6,8 +6,9 @@ import numpy as np
 import os
 import re
 
-root='/Users/hailey/Desktop/aug5'
-#root='/scratch/x2755a09/4_HEO'
+root='/Users/hailey/Desktop/aug6/figure'
+# root='/Users/hailey/Desktop/aug5'
+# root='/scratch/x2755a09/4_HEO'
 
 # Define the metals and initialize dataframes
 prvs = ['Cr', 'Mn', 'Fe', 'Co', 'Ni']
@@ -42,6 +43,7 @@ def main():
         if os.path.exists(path):
             atoms = read(path)
             magmoms = atoms.get_magnetic_moments()
+            df_ref.at[i, 'volume'] = atoms.get_volume()
             df_ref.at[i, 'energy'] = atoms.get_total_energy()
             df_ref.at[i, 'magmom'] = mean([abs(magmoms[atom.index]) for atom in atoms if atom.symbol == prvs[i]])
         if os.path.exists(chg_path):
@@ -84,6 +86,7 @@ def main():
                 df_mag.at[i, metal] = mean([abs(magmoms[idx]) for idx in indice[metal]])
             relative_energy = energy - sum(numb[m] * df_ref.at[m, 'energy'] / 8 for m, metal in enumerate(prvs))
             df.at[i, 'energy'] = relative_energy
+            df.at[i, 'volume'] = atoms.get_volume()
         if os.path.exists(path):
             atoms = read(chg_path)
             charges = atoms.get_initial_charges()
@@ -125,7 +128,7 @@ def main():
         df_ref.at[i, 'energy'] = 0
         
     plotting(pattern='energy', xlabel='Relative energy (eV)', filename=filename, figsize=(6, 6), 
-             bins=np.arange(-0.4, +0.4, 0.05), width=0.05*0.9, xticks=np.arange(-0.4, +0.4+0.05, 0.05*2), xmin=-0.4-0.05, xmax=+0.4+0.05) 
+             bins=np.arange(-0.4, +0.4, 0.05), width=0.05*0.9, xticks=np.arange(-0.4, +0.4+0.05, 0.05*2), xmin=-0.4-0.05, xmax=+0.4+0.05)
     plotting(pattern='bandgap', xlabel='Band gap (eV)', filename=gap_filename, figsize=(10, 6), 
              bins=np.arange(+0.0, +3.0, 0.05), width=0.05*0.9, xticks=np.arange(+0.0, +3.0+0.10, 0.10*2), xmin=+0.0-0.10, xmax=+3.0+0.10) 
     plotting(pattern='Md2Op', xlabel='M3d - O2p (eV)', filename=dos_filename, figsize=(8, 6), 
@@ -146,7 +149,6 @@ def saving(df, filename):
     print(f"Data saved to {filename}.tsv")
 
 def plotting(pattern, xlabel, filename, figsize, bins, width, xticks, xmin, xmax):
-        
     plt.figure(figsize=figsize)
     plt.hist(df[pattern].dropna(), bins=bins, alpha=0.5, width=width)
     for i in range(5):
@@ -177,8 +179,8 @@ def plotting_adv(df, df_ref, pattern, xlabel, filename,
         print(f"Figure saved as {filename}_{column}.png")
         plt.close()
     if pattern == 'charge' or pattern == 'eg_occ':
-        plotting(pattern=pattern, xlabel=xlabel, filename=filename+'_avg', figsize=(8, 6), 
-                 bins=bins1, width=width1, xticks=xticks1, xmin=xmin1, xmax=xmax1) 
+        plotting(pattern=pattern, xlabel=xlabel, filename=filename+'_avg', figsize=(6, 6), 
+                 bins=bins2, width=width2*0.9, xticks=xticks2, xmin=xmin2, xmax=xmax2) 
     plt.figure(figsize=figsize2)
     for i in range(5):
         plt.axvline(x=df_ref.at[i, pattern], color=clrs[i], linestyle='--')
