@@ -18,6 +18,8 @@
 #     done
 # done
 
+rm -r 1_ 2_ 3_ 4_ 5_ 6_
+mkdir 1_ 2_ 3_ 4_ 5_ 6_
 sh ~/bin/verve/spread.sh 0_/restart.json
 sh ~/bin/verve/spread.sh 0_/WAVECAR
 

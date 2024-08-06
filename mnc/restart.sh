@@ -18,6 +18,8 @@
 #     done
 # done
 
+rm -r 1_ 2_ 3_ 4_ 5_ 6_
+mkdir 1_ 2_ 3_ 4_ 5_ 6_
 sh ~/bin/verve/spread.sh 0_/restart.json
 sh ~/bin/verve/spread.sh 0_/WAVECAR
 
@@ -25,6 +27,7 @@ dzs=(1 2 3 4 5 6)
 dir_now=$PWD
 for dz in ${dzs[@]}; do
     cd "$dz"_/
+    
     cp /scratch/x2755a09/3_MNC/3d/submit.sh .
     sed -i -e "/#PBS -N/c\#PBS -N $1$dz" submit.sh
     sed -i -e "/#PBS -N/c\#PBS -N $1$dz" submit.sh
