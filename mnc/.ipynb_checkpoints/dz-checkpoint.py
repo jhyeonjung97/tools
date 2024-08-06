@@ -1,8 +1,15 @@
 from ase.io import read, write
-import argv
+import sys
+
+if len(sys.argv) != 2:
+    print("Usage: python script.py <z_shift_value>")
+    sys.exit(1)
+    
+dz = float(sys.argv[1])
 
 atoms = read('restart.json')
 for atom in atoms:
     if atom.symbol not in ['C', 'N', 'O', 'H']:
-        atom.z = 10.0 + 0.2 * argv[1]
+        atom.z = 10.0 + 0.2 * dz
+        
 write('restart.json', atoms)
