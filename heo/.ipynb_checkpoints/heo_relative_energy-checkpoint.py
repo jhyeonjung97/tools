@@ -6,7 +6,7 @@ import numpy as np
 import os
 import re
 
-root='/Users/hailey/Desktop/aug6/figure'
+root='/Users/jiuy97/Desktop/figure'
 # root='/Users/hailey/Desktop/aug5'
 # root='/scratch/x2755a09/4_HEO'
 
@@ -85,6 +85,8 @@ def main():
                         indice[metal].append(atom.index)
                 df_mag.at[i, metal] = mean([abs(magmoms[idx]) for idx in indice[metal]])
             relative_energy = energy - sum(numb[m] * df_ref.at[m, 'energy'] / 8 for m, metal in enumerate(prvs))
+            for m, metal in enumerate(prvs):
+                df.at[i, metal] = numb[m]
             df.at[i, 'energy'] = relative_energy
             df.at[i, 'volume'] = atoms.get_volume()
         if os.path.exists(path):
