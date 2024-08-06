@@ -30,6 +30,6 @@ for dz in ${dzs[@]}; do
     sed -i -e "/#PBS -N/c\#PBS -N $1$dz" submit.sh
     sed -i -e "/#PBS -N/c\#PBS -N $1$dz" submit.sh
     python ~/bin/tools/mnc/dz.py $dz
-    # qsub submit.sh
+    qsub submit.sh
     cd $dir_now
 done
