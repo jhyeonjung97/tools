@@ -132,7 +132,7 @@ def saving(df, filename):
     print(f"Data saved to {filename}.tsv")
 
 def plotting(pattern, xlabel, filename, min, max, tick):
-    bins=np.arange(min, max, tick*1), width=tick*0.9, xticks=np.arange(min, max, tick*2), xmin=min-tick*5, max+tick*5)
+    bins=np.arange(min, max, tick*1), width=tick*0.9, xticks=np.arange(min, max, tick*2), xmin=min-tick*5, xmax=max+tick*5
     
     plt.figure(figsize=figsize)
     plt.hist(df[pattern].dropna(), bins=bins, alpha=0.5, width=width)
