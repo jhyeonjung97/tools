@@ -119,11 +119,11 @@ def main():
     for i in range(5):
         df_ref.at[i, 'energy'] = 0
         
-    plotting(pattern='energy', xlabel='Relative energy (eV)', filename=filename, figsize=(6, 6), min=-0.4, max=+0.4, tick=0.08) 
-    plotting(pattern='bandgap', xlabel='Band gap (eV)', filename=gap_filename, figsize=(10, 6), min=+0.0, max=+2.8, tick=0.20)
-    plotting(pattern='Md2Op', xlabel='M3d - O2p (eV)', filename=dos_filename, figsize=(8, 6), min=+0.0, max=+2.0, tick=0.20)
+    plotting(pattern='energy', xlabel='Relative energy (eV)', filename=filename, figsize=(6, 6), min=-0.4, max=+0.4, tick=0.04) 
+    plotting(pattern='bandgap', xlabel='Band gap (eV)', filename=gap_filename, figsize=(10, 6), min=+0.0, max=+2.8, tick=0.10)
+    plotting(pattern='Md2Op', xlabel='M3d - O2p (eV)', filename=dos_filename, figsize=(8, 6), min=+0.0, max=+2.0, tick=0.10)
     
-    plotting_adv(df=df_mag, df_ref=df_ref, pattern='magmom', xlabel='Magnetic moments (uB)', filename=mag_filename, min=0, max=5, tick=0.1)
+    plotting_adv(df=df_mag, df_ref=df_ref, pattern='magmom', xlabel='Magnetic moments (uB)', filename=mag_filename, min=0.0, max=5.0, tick=0.1)
     plotting_adv(df=df_chg, df_ref=df_ref, pattern='charge', xlabel='Bader charge (e-)', filename=chg_filename, min=1.0, max=2.1, tick=0.02)
     plotting_adv(df=df_occ, df_ref=df_ref, pattern='eg_occ', xlabel='e_g occupancy (e-)', filename=occ_filename, min=2.2, max=4.0, tick=0.04)
     
@@ -133,7 +133,7 @@ def saving(df, filename):
 
 def plotting(pattern, xlabel, filename, figsize, min, max, tick):
     
-    bins=np.arange(min, max, tick*1); width=tick*0.9; xticks=np.arange(min, max, tick*2); xmin=min-tick*5; xmax=max+tick*5
+    bins=np.arange(min, max, tick*1); width=tick*0.9; xticks=np.arange(min, max, tick*2); xmin=min-tick; xmax=max+tick
     
     plt.figure(figsize=figsize)
     plt.hist(df[pattern].dropna(), bins=bins, alpha=0.5, width=width)
@@ -145,7 +145,7 @@ def plotting(pattern, xlabel, filename, figsize, min, max, tick):
     plt.xticks(xticks)
     plt.xlim(xmin, xmax)
     plt.savefig(f'{filename}.png', bbox_inches="tight")
-    print(f"Figure saved as {filename}")
+    print(f"Figure saved as {filename}.png")
     plt.close()
 
 def plotting_adv(df, df_ref, pattern, xlabel, filename, min, max, tick,
