@@ -40,7 +40,9 @@ elif path.exists('start.traj'):
     amix_mag = 0.05
     bmix_mag = 0.0001
     for atom in atoms:
-        if atom.symbol not in ['C', 'N', 'O', 'H']:
+        if atom.symbol in ['C', 'N', 'O', 'H']:
+            atom.magmom = 0.001
+        else:
             if atom.symbol in spin_states_plus_2:
                 atom.magmom = spin_states_plus_2.get(atom.symbol)
             else:
