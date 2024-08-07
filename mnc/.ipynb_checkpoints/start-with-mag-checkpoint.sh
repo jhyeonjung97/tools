@@ -3,7 +3,7 @@
 if [[ ${here} == 'kisti' ]]; then
     dirs=/scratch/x2755a09/3_MNC/*d/*_*/*_*S/
 else
-    dirs=/pscratch/sd/j/jiuy97/6_MNC/*d/*_*/*_*S/
+    dirs=/pscratch/sd/j/jiuy97/6_MNC/4d/*_*/*_*S/
 fi
 
 for dir in $dirs; do
