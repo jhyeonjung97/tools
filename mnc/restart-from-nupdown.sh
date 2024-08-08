@@ -5,8 +5,11 @@ metal=$(echo "${path_components[-3]}" | cut -d'_' -f2)
 spin=$(echo "${path_components[-2]}" | cut -d'_' -f2)
 dz=$(echo "${path_components[-1]}" | cut -d'_' -f1)
 
+mkdir nupdown
+mv * nupdown
+
 cp $1/restart.json .
-# python ~/bin/tools/mnc/dz.py 0
+python ~/bin/tools/mnc/dz.py $dz
 
 cp $1/WAVECAR .
 ls -l WAVECAR
