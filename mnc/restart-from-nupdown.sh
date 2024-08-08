@@ -5,7 +5,7 @@ metal=$(echo "${path[-3]}" | cut -d'_' -f2)
 spin=$(echo "${path[-2]}" | cut -d'_' -f2)
 dz=$(echo "${path[-1]}" | cut -d'_' -f1)
 
-new_path="/scratch/x2755a09/3_MNC/pre/${path[-3]}/${path[-2]}/${path[-1]}"
+new_path="/scratch/x2755a09/3_MNC/pre/${path[-4]}/${path[-3]}/${path[-2]}/${path[-1]}"
 echo $new_path
 
 mkdir nupdown
