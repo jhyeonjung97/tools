@@ -1,17 +1,19 @@
 #!/bin/bash
 
-IFS='/' read -r -a path_components <<< $PWD
-metal=$(echo "${path_components[-3]}" | cut -d'_' -f2)
-spin=$(echo "${path_components[-2]}" | cut -d'_' -f2)
-dz=$(echo "${path_components[-1]}" | cut -d'_' -f1)
+IFS='/' read -r -a path <<< $PWD
+metal=$(echo "${path[-3]}" | cut -d'_' -f2)
+spin=$(echo "${path[-2]}" | cut -d'_' -f2)
+dz=$(echo "${path[-1]}" | cut -d'_' -f1)
+
+new_path="/scratch/x2755a09/3_MNC/pre/${path[-3]}/${path[-2]}/${path[-1]}/"
 
 mkdir nupdown
 mv * nupdown
 
-cp $1/restart.json .
+cp $new_path/restart.json .
 python ~/bin/tools/mnc/dz.py $dz
 
-cp $1/WAVECAR .
+cp $new_path/WAVECAR .
 ls -l WAVECAR
 
 if [[ ${here} == 'nersc' ]]; then
