@@ -51,11 +51,14 @@ else:
     raise ValueError('Where is start.traj')
         
 lmaxmix = 2
-for a in atoms:
-    if a.symbol in ldau_luj:
-        lmaxmix = 4
+for atom in atoms:
+    if atom.symbol in spin_states_plus_2:
+        if atom.symbol in ldau_luj:
+            lmaxmix = 4
+        else:
+            ldau_luj[atom.symbol] = {'L': 2, 'U': 0.0, 'J': 0.0}
     else:
-        ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
+        ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """
@@ -86,8 +89,8 @@ atoms.calc = vasp_calculator.Vasp(
                     gga='PE',
                     ivdw=12,
                     kpts=(5,5,1),
-                    kpar=4,
-                    npar=16,
+                    kpar=8,
+                    npar=1,
                     gamma=True,
                     ismear=0,
                     sigma=0.05,

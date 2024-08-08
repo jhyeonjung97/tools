@@ -8,8 +8,8 @@ dz=$(echo "${path[-1]}" | cut -d'_' -f1)
 new_path="/scratch/x2755a09/3_MNC/pre/${path[-4]}/${path[-3]}/${path[-2]}/${path[-1]}"
 echo $new_path
 
-mkdir nupdown
-mv * nupdown
+# mkdir nupdown
+# mv * nupdown
 
 cp $new_path/restart.json .
 python ~/bin/tools/mnc/dz.py $dz
@@ -23,6 +23,6 @@ if [[ ${here} == 'nersc' ]]; then
     sbatch submit.sh
 elif [[ ${here} == 'kisti' ]]; then
     cp /scratch/x2755a09/3_MNC/3d/submit.sh .
-    sed -i -e "/#PBS -N/c\#PBS -N ${metal}${spin}${dz}n" submit.sh
+    sed -i -e "/#PBS -N/c\#PBS -N ${metal}${spin}${dz}" submit.sh
     qsub submit.sh
 fi
