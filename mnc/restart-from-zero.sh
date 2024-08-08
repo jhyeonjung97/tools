@@ -11,13 +11,12 @@ IFS='/' read -r -a path_components <<< $PWD
 metal=$(echo "${path_components[-2]}" | cut -d'_' -f2)
 spin=$(echo "${path_components[-1]}" | cut -d'_' -f2)
 
-mkdir 1_ 2_ 3_ 4_ 5_ 6_
-sh ~/bin/verve/spread.sh 0_/restart.json
-sh ~/bin/verve/spread.sh 0_/WAVECAR
-
 dzs=(1 2 3 4 5 6)
 dir_now=$PWD
 for dz in ${dzs[@]}; do
+    mkdir "$dz"_/
+    cp 0_/restart.json "$dz"_/
+    cp 0_/WAVECAR "$dz"_/
     cd "$dz"_/
     cp /scratch/x2755a09/3_MNC/3d/submit.sh .
     sed -i -e "/#PBS -N/c\#PBS -N $metal$spin$dz" submit.sh
