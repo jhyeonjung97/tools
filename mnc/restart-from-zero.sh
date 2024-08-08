@@ -4,6 +4,9 @@
 # spins=('1_LS' '2_IS' '2_HS' '3_HS')
 # dzs=('1_' '2_' '3_' '4_' '5_' '6_')
 
+mkdir 0_
+mv * 0_
+
 IFS='/' read -r -a path_components <<< $PWD
 metal=$(echo "${path_components[-2]}" | cut -d'_' -f2)
 spin=$(echo "${path_components[-1]}" | cut -d'_' -f2)
