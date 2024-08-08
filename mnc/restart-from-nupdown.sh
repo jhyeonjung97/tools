@@ -20,3 +20,4 @@ if [[ ${here} == 'nersc' ]]; then
 elif [[ ${here} == 'kisti' ]]; then
     cp /scratch/x2755a09/3_MNC/3d/submit.sh .
     sed -i -e "/#PBS -N/c\#PBS -N ${metal}${spin}${dz}n" submit.sh
+fi
