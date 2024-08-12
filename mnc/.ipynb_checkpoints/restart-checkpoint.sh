@@ -14,6 +14,7 @@ cp $1/WAVECAR $1/CHGCAR .
 ls -l WAVECAR CHGCAR
 
 cp /scratch/x2755a09/3_MNC/3d/submit.sh .
+grep --color=auto mnc-sol submit.sh
 
 if [[ ${here} == 'nersc' ]]; then
     cp /pscratch/sd/j/jiuy97/6_MNC/scripts/submit.sh .
