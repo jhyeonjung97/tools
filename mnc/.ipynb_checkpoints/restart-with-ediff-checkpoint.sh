@@ -1,5 +1,7 @@
 #!/bin/bash
 
+rm *
+
 IFS='/' read -r -a path <<< $PWD
 metal=$(echo "${path[-3]}" | cut -d'_' -f2)
 spin=$(echo "${path[-2]}" | cut -d'_' -f2)
