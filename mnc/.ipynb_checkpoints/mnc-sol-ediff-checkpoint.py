@@ -31,7 +31,7 @@ else:
         
 lmaxmix = 2
 for atom in atoms:
-    if atom.symbol in spin_states_plus_2:
+    if atom.symbol not in ['C', 'N', 'O', 'H']:
         if atom.symbol in ldau_luj:
             lmaxmix = 4
         else:
