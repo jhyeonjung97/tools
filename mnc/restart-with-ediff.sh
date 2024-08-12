@@ -13,6 +13,8 @@ python ~/bin/tools/mnc/dz.py $dz
 cp $1/WAVECAR $1/CHGCAR .
 ls -l WAVECAR CHGCAR
 
+sed -i -e 's/mnc-sol.py/mnc-sol-ediff.py/' submit.sh
+
 if [[ ${here} == 'nersc' ]]; then
     cp /pscratch/sd/j/jiuy97/6_MNC/scripts/submit.sh .
     sed -i -e "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}r" submit.sh
