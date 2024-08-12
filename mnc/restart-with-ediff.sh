@@ -14,6 +14,10 @@ cp $1/WAVECAR $1/CHGCAR .
 ls -l WAVECAR CHGCAR
 
 sed -i -e 's/mnc-sol.py/mnc-sol-ediff.py/' submit.sh
+sed -i -e 's/mnc-sol-ns.py/mnc-sol-ediff.py/' submit.sh
+sed -i -e 's/mnc-sol-ls.py/mnc-sol-ediff.py/' submit.sh
+sed -i -e 's/mnc-sol-is.py/mnc-sol-ediff.py/' submit.sh
+sed -i -e 's/mnc-sol-hs.py/mnc-sol-ediff.py/' submit.sh
 
 if [[ ${here} == 'nersc' ]]; then
     cp /pscratch/sd/j/jiuy97/6_MNC/scripts/submit.sh .
