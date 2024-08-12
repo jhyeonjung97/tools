@@ -14,8 +14,8 @@ ls $new_path
 cp $new_path/restart.json .
 python ~/bin/tools/mnc/dz.py $dz
 
-cp $new_path/WAVECAR .
-ls -l WAVECAR
+cp $new_path/WAVECAR $new_path/CHGCAR .
+ls -l WAVECAR CHGCAR
 
 if [[ ${here} == 'nersc' ]]; then
     cp /pscratch/sd/j/jiuy97/6_MNC/scripts/submit.sh .
