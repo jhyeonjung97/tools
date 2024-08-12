@@ -18,6 +18,7 @@ for dz in ${dzs[@]}; do
         mkdir "$dz"_/
         cp "$1"_/restart.json "$dz"_/
         cp "$1"_/WAVECAR "$dz"_/
+        # cp "$1"_/CHGCAR "$dz"_/
         cd "$dz"_/
         cp /scratch/x2755a09/3_MNC/3d/submit.sh .
         sed -i -e "/#PBS -N/c\#PBS -N $metal$spin$dz" submit.sh
