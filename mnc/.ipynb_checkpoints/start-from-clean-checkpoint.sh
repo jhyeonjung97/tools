@@ -17,5 +17,5 @@ do
     # sed -i -e "1c\C N $metal" POSCAR
     # sed -i -e "6c\C N $metal" POSCAR
 
-    python ~/bin/tools/mnc/add-oh.py
+    python ~/bin/tools/mnc/add-o.py
 done
