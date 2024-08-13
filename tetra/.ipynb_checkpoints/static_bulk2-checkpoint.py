@@ -12,17 +12,9 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'static_bulk2_fm'
+name = 'static_bulk2_afm'
 
 effective_length = 25
-
-spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
-                      'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 2,
-                      'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4,
-                      'Rh': 3, 'Pd': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
-                      'La': 1, 'Hf': 2, 'Ta': 3, 'W': 4, 'Re': 5, 'Os': 4,
-                      'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2,
-                      }
 
 ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
@@ -45,7 +37,7 @@ for atom in atoms:
         lmaxmix = 4
     else:
         ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
-
+    
 def get_bands(atoms):
     """
     returns the extact number of bands desired by lobster for the pCOHP calculations
@@ -129,11 +121,10 @@ atoms.calc = vasp_calculator.Vasp(
                     lmaxmix=lmaxmix,
                     isym=0, 
                     nedos=3000,
-                    lorbit=11,
+                    lorbit=11
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
-                    # nupdown=0
                     )
 
 energy = atoms.get_potential_energy()
