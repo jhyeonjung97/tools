@@ -11,11 +11,21 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'mnc-nupdown-ls'
+name = 'mnc-ls'
 
-effective_length = 25
-
+spin_states_plus_1 = {'Ti': 1, 'V': 0, 'Cr': 1, 'Mn': 0, 'Fe': 1, 'Co': 0, 'Ni': 1, 'Cu': 0,
+                      'Zr': 1, 'Nb': 0, 'Mo': 1, 'Tc': 0, 'Ru': 1, 'Rh': 0, 'Pd': 1, 
+                      'Hf': 1, 'Ta': 0, 'W': 1, 'Re': 0, 'Os': 1, 'Ir': 0, 'Pt': 1
+                      }
 spin_states_plus_2 = {'Ti': 0, 'V': 1, 'Cr': 0, 'Mn': 1, 'Fe': 0, 'Co': 1, 'Ni': 0, 'Cu': 1,
+                      'Zr': 0, 'Nb': 1, 'Mo': 0, 'Tc': 1, 'Ru': 0, 'Rh': 1, 'Pd': 0, 
+                      'Hf': 0, 'Ta': 1, 'W': 0, 'Re': 1, 'Os': 0, 'Ir': 1, 'Pt': 0
+                      }
+spin_states_plus_3 = {'Ti': 1, 'V': 0, 'Cr': 1, 'Mn': 0, 'Fe': 1, 'Co': 0, 'Ni': 1, 'Cu': 0,
+                      'Zr': 1, 'Nb': 0, 'Mo': 1, 'Tc': 0, 'Ru': 1, 'Rh': 0, 'Pd': 1, 
+                      'Hf': 1, 'Ta': 0, 'W': 1, 'Re': 0, 'Os': 1, 'Ir': 0, 'Pt': 1
+                      }
+spin_states_plus_4 = {'Ti': 0, 'V': 1, 'Cr': 0, 'Mn': 1, 'Fe': 0, 'Co': 1, 'Ni': 0, 'Cu': 1,
                       'Zr': 0, 'Nb': 1, 'Mo': 0, 'Tc': 1, 'Ru': 0, 'Rh': 1, 'Pd': 0, 
                       'Hf': 0, 'Ta': 1, 'W': 0, 'Re': 1, 'Os': 0, 'Ir': 1, 'Pt': 0
                       }
@@ -32,56 +42,42 @@ ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
-    for atom in atoms:
-        if atom.symbol not in ['C', 'N', 'O', 'H']:
-            if atom.symbol in spin_states_plus_2:
-                spin = spin_states_plus_2.get(atom.symbol)
+    amix_mag = 0.01
+    bmix_mag = 0.00001
 elif path.exists('start.traj'):
     atoms = read('start.traj')
+    amix_mag = 0.05
+    bmix_mag = 0.0001
+    if atoms[-2].symbol == 'C' and atoms[-1].symbol == 'O':
+        spin_states = spin_states_plus_2
+    elif atoms[-2].symbol == 'O' and atoms[-1].symbol == 'H':
+        spin_states = spin_states_plus_3
+    elif atoms[-1].symbol == 'O':
+        spin_states = spin_states_plus_4
+    elif atoms[-1].symbol == 'H':
+        spin_states = spin_states_plus_1
+    else:
+        spin_states = spin_states_plus_2
     for atom in atoms:
         if atom.symbol not in ['C', 'N', 'O', 'H']:
-            if atom.symbol in spin_states_plus_2:
-                spin = spin_states_plus_2.get(atom.symbol)
+            if atom.symbol in spin_states:
+                spin = spin_states.get(atom.symbol)
                 atom.magmom = spin
             else:
                 raise ValueError(f"Unexpected atom symbol '{atom.symbol}' found in start.traj")
 else:
-    raise ValueError('Where is start.traj')
+    raise ValueError('Neither restart.json nor start.traj file found')
         
 lmaxmix = 2
 for atom in atoms:
     if atom.symbol in ldau_luj:
         lmaxmix = 4
-    elif atom.symbol in spin_states_plus_2:
+    elif atom.symbol in spin_states:
         ldau_luj[atom.symbol] = {'L': 2, 'U': 0.0, 'J': 0.0}
     else:
         ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
-
-def get_kpoints(atoms, effective_length=effective_length, bulk=False):
-    """
-    Return a tuple of k-points derived from the unit cell.
-    
-    Parameters
-    ----------
-    atoms : object
-    effective_length : k-point*unit-cell-parameter
-    bulk : Whether it is a bulk system.
-    """
-    l = effective_length
-    cell = atoms.get_cell()
-    nkx = int(round(l/np.linalg.norm(cell[0]),0))
-    nky = int(round(l/np.linalg.norm(cell[1]),0))
-    if bulk == True:
-        nkz = int(round(l/np.linalg.norm(cell[2]),0))
-    else:
-        nkz = 1
-    return((nkx, nky, nkz))
-
-# nbands = get_bands(atoms)
-# kpoints = get_kpoints(atoms, effective_length=25, bulk=False)
-
+        
 atoms.calc = vasp_calculator.Vasp(
-                    istart=0,
                     encut=500,
                     gga='PE',
                     ivdw=12,
@@ -91,12 +87,12 @@ atoms.calc = vasp_calculator.Vasp(
                     gamma=True,
                     ismear=0,
                     sigma=0.05,
-                    # inimix=0,
-                    # amix=0.05,
-                    # bmix=0.0001,
-                    # amix_mag=0.05,
-                    # bmix_mag=0.0001,
-                    # nelm=600,
+                    inimix=0,
+                    amix=0.05,
+                    bmix=0.0001,
+                    amix_mag=amix_mag,
+                    bmix_mag=bmix_mag,
+                    nelm=250,
                     algo='Normal',
                     ibrion=2,
                     isif=2,
@@ -106,7 +102,6 @@ atoms.calc = vasp_calculator.Vasp(
                     nsw=200,
                     lvhar=True,
                     lvtot=False,
-                    # nbands=nbands,
                     ispin=2,
                     setups={'base': 'recommended',
                             'W': '_sv'},
@@ -118,21 +113,18 @@ atoms.calc = vasp_calculator.Vasp(
                     lasph=True,
                     laechg=True,
                     lreal='Auto',
-                    # isym=0, 
                     nedos=3000,
                     lorbit=11,
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True,
-                    nupdown=spin,
-                    lsol=True
+                    lsol=True,
+                    nupdown=spin
                     )
 
-e = atoms.get_potential_energy()
+energy = atoms.get_potential_energy()
 print('Calculation Complete, storing the run + calculator to traj file')
 subprocess.call('sh ~/bin/verve/correct-contcar.sh', shell=True)
 
-traj_filename = f'final_{name}.traj'
-Trajectory(traj_filename, 'w').write(atoms)
-subprocess.call(f'ase convert -f {traj_filename} final_with_calculator.json', shell=True)
-subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
+Trajectory(f'final_{name}.traj', 'w').write(atoms)
+subprocess.call(f'ase convert -f final_{name}.traj final_with_calculator.json', shell=True)

@@ -6,6 +6,7 @@ do
     
     IFS='/' read -r -a path <<< $PWD
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
+    spin=$(echo "${path[-1]}" | cut -d'_' -f2)
     
     clean_path="/pscratch/sd/j/jiuy97/6_MNC/0_clean/${path[-3]}/${path[-2]}/1_LS"
     if [[ -s $clean_path/re_/CONTCAR ]]; then
@@ -18,4 +19,13 @@ do
     sed -i -e "6c\C N $metal" POSCAR
 
     python ~/bin/tools/mnc/add-oh.py
+
+    sed -i -e "s/jobname/$metal$spin/" submit.sh
+    if [[ $spin == 'LS' ]]; then
+        sed -i -e "s/mnc-sol.py/mnc-sol-ls.py/" submit.sh
+    elif [[ $spin == 'IS' ]]; then
+        sed -i -e "s/mnc-sol.py/mnc-sol-is.py/" submit.sh
+    elif [[ $spin == 'HS' ]]; then
+        sed -i -e "s/mnc-sol.py/mnc-sol-hs.py/" submit.sh
+
 done

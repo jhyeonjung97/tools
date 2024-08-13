@@ -3,7 +3,6 @@ import json
 import subprocess
 import numpy as np
 from os import path
-from math import sqrt
 from mendeleev import element
 from ase.io import read, write
 from ase.visualize import view
@@ -14,9 +13,19 @@ import ase.calculators.vasp as vasp_calculator
 
 name = 'mnc-ls'
 
-effective_length = 25
-
+spin_states_plus_1 = {'Ti': 1, 'V': 0, 'Cr': 1, 'Mn': 0, 'Fe': 1, 'Co': 0, 'Ni': 1, 'Cu': 0,
+                      'Zr': 1, 'Nb': 0, 'Mo': 1, 'Tc': 0, 'Ru': 1, 'Rh': 0, 'Pd': 1, 
+                      'Hf': 1, 'Ta': 0, 'W': 1, 'Re': 0, 'Os': 1, 'Ir': 0, 'Pt': 1
+                      }
 spin_states_plus_2 = {'Ti': 0, 'V': 1, 'Cr': 0, 'Mn': 1, 'Fe': 0, 'Co': 1, 'Ni': 0, 'Cu': 1,
+                      'Zr': 0, 'Nb': 1, 'Mo': 0, 'Tc': 1, 'Ru': 0, 'Rh': 1, 'Pd': 0, 
+                      'Hf': 0, 'Ta': 1, 'W': 0, 'Re': 1, 'Os': 0, 'Ir': 1, 'Pt': 0
+                      }
+spin_states_plus_3 = {'Ti': 1, 'V': 0, 'Cr': 1, 'Mn': 0, 'Fe': 1, 'Co': 0, 'Ni': 1, 'Cu': 0,
+                      'Zr': 1, 'Nb': 0, 'Mo': 1, 'Tc': 0, 'Ru': 1, 'Rh': 0, 'Pd': 1, 
+                      'Hf': 1, 'Ta': 0, 'W': 1, 'Re': 0, 'Os': 1, 'Ir': 0, 'Pt': 1
+                      }
+spin_states_plus_4 = {'Ti': 0, 'V': 1, 'Cr': 0, 'Mn': 1, 'Fe': 0, 'Co': 1, 'Ni': 0, 'Cu': 1,
                       'Zr': 0, 'Nb': 1, 'Mo': 0, 'Tc': 1, 'Ru': 0, 'Rh': 1, 'Pd': 0, 
                       'Hf': 0, 'Ta': 1, 'W': 0, 'Re': 1, 'Os': 0, 'Ir': 1, 'Pt': 0
                       }
@@ -39,26 +48,34 @@ elif path.exists('start.traj'):
     atoms = read('start.traj')
     amix_mag = 0.05
     bmix_mag = 0.0001
+    if atoms[-2].symbol == 'C' and atoms[-1].symbol == 'O':
+        spin_states = spin_states_plus_2
+    elif atoms[-2].symbol == 'O' and atoms[-1].symbol == 'H':
+        spin_states = spin_states_plus_3
+    elif atoms[-1].symbol == 'O':
+        spin_states = spin_states_plus_4
+    elif atoms[-1].symbol == 'H':
+        spin_states = spin_states_plus_1
+    else:
+        spin_states = spin_states_plus_2
     for atom in atoms:
-        if atom.symbol in ['C', 'N', 'O', 'H']:
-            atom.magmom = 0.001
-        elif atom.symbol in spin_states_plus_2:
-            atom.magmom = spin_states_plus_2.get(atom.symbol)
-        else:
-            raise ValueError(f"Unexpected atom symbol '{atom.symbol}' found in start.traj")
+        if atom.symbol not in ['C', 'N', 'O', 'H']:
+            if atom.symbol in spin_states:
+                atom.magmom = spin_states.get(atom.symbol)
+            else:
+                raise ValueError(f"Unexpected atom symbol '{atom.symbol}' found in start.traj")
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
         
 lmaxmix = 2
 for atom in atoms:
-    if atom.symbol in spin_states_plus_2:
-        if atom.symbol in ldau_luj:
-            lmaxmix = 4
-        else:
-            ldau_luj[atom.symbol] = {'L': 2, 'U': 0.0, 'J': 0.0}
+    if atom.symbol in ldau_luj:
+        lmaxmix = 4
+    elif atom.symbol in spin_states:
+        ldau_luj[atom.symbol] = {'L': 2, 'U': 0.0, 'J': 0.0}
     else:
         ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
-
+        
 atoms.calc = vasp_calculator.Vasp(
                     encut=500,
                     gga='PE',
