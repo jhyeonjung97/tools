@@ -9,7 +9,6 @@ do
     # spin=$(echo "${path[-1]}" | cut -d'_' -f2)
     
     clean_path="/pscratch/sd/j/jiuy97/6_MNC/0_clean/${path[-3]}/${path[-2]}/1_LS"
-    echo $clean_path
-    # cp $clean_path/CONTCAR POSCAR
+    cp $clean_path/CONTCAR POSCAR
     # ase converf -f $clean_path/CONTCAR start.traj
 done
