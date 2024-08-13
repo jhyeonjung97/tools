@@ -18,7 +18,7 @@ do
     # python ~/bin/tools/mnc/add-o.py
 
     cp ~/bin/tools/mnc/submit.sh .
-    sed -i -e "s/jobname/$metal$spin/" submit.sh
+    sed -i -e "s/jobname/${metal}${spin}_O/" submit.sh
     if [[ $spin == 'LS' ]]; then
         sed -i -e "s/mnc-sol.py/mnc-sol-ls-nupdown.py/" submit.sh
     elif [[ $spin == 'IS' ]]; then
