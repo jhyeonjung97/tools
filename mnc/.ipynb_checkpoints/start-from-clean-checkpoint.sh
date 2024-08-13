@@ -8,7 +8,7 @@ do
     # metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     # spin=$(echo "${path[-1]}" | cut -d'_' -f2)
     
-    clean_path="/scratch/x2755a09/3_MNC/0_clean/${path[-3]}/${path[-2]}/1_LS"
+    clean_path="/pscratch/sd/j/jiuy97/6_MNC/0_clean/${path[-3]}/${path[-2]}/1_LS"
     echo $clean_path
     # cp $clean_path/CONTCAR POSCAR
     # ase converf -f $clean_path/CONTCAR start.traj
