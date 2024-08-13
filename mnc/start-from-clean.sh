@@ -14,6 +14,8 @@ do
     # cp $clean_path/CONTCAR POSCAR
     # ase converf -f $clean_path/CONTCAR start.traj
 
-    sed -i -e "1c\C N $metal" POSCAR
-    sed -i -e "6c\C N $metal" POSCAR
+    # sed -i -e "1c\C N $metal" POSCAR
+    # sed -i -e "6c\C N $metal" POSCAR
+
+    python ~/bin/tools/mnc/add-oh.py
 done
