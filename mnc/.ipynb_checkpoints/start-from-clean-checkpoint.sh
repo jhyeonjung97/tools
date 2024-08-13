@@ -6,9 +6,10 @@ do
     pwd
     
     IFS='/' read -r -a path <<< $PWD
-    metal=$(echo "${path[-2]}" | cut -d'_' -f2)
-    spin=$(echo "${path[-1]}" | cut -d'_' -f2)
+    # metal=$(echo "${path[-2]}" | cut -d'_' -f2)
+    # spin=$(echo "${path[-1]}" | cut -d'_' -f2)
     
     clean_path="/scratch/x2755a09/3_MNC/0_clean/${path[-3]}/${path[-2]}/1_LS"
-    ase converf -f $clean_path/CONTCAR start.traj
+    # cp $clean_path/CONTCAR POSCAR
+    # ase converf -f $clean_path/CONTCAR start.traj
 done
