@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*d/*_*/*_*S
+for dir in /pscratch/sd/j/jiuy97/6_MNC/2_OH/*d/*_*/*_*S
 do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
@@ -15,10 +15,10 @@ do
     fi
     sed -i -e "1c\C N $metal" POSCAR
     sed -i -e "6c\C N $metal" POSCAR
-    python ~/bin/tools/mnc/add-o.py
+    python ~/bin/tools/mnc/add-oh.py
 
     cp ~/bin/tools/mnc/submit.sh .
-    sed -i -e "s/jobname/${metal}${spin}_O/" submit.sh
+    sed -i -e "s/jobname/${metal}${spin}_OH/" submit.sh
     if [[ $spin == 'LS' ]]; then
         sed -i -e "s/mnc-sol.py/mnc-sol-ls-nupdown.py/" submit.sh
     elif [[ $spin == 'IS' ]]; then
