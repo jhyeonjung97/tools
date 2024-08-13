@@ -27,5 +27,5 @@ do
         sed -i -e "s/mnc-sol.py/mnc-sol-is.py/" submit.sh
     elif [[ $spin == 'HS' ]]; then
         sed -i -e "s/mnc-sol.py/mnc-sol-hs.py/" submit.sh
-
+    fi
 done
