@@ -17,12 +17,13 @@ do
     # sed -i -e "6c\C N $metal" POSCAR
     # python ~/bin/tools/mnc/add-o.py
 
+    cp ~/bin/tools/mnc/submit.sh .
     sed -i -e "s/jobname/$metal$spin/" submit.sh
     if [[ $spin == 'LS' ]]; then
-        sed -i -e "s/mnc-sol.py/mnc-sol-ls.py/" submit.sh
+        sed -i -e "s/mnc-sol.py/mnc-sol-ls-nupdown.py/" submit.sh
     elif [[ $spin == 'IS' ]]; then
-        sed -i -e "s/mnc-sol.py/mnc-sol-is.py/" submit.sh
+        sed -i -e "s/mnc-sol.py/mnc-sol-is-nupdown.py/" submit.sh
     elif [[ $spin == 'HS' ]]; then
-        sed -i -e "s/mnc-sol.py/mnc-sol-hs.py/" submit.sh
+        sed -i -e "s/mnc-sol.py/mnc-sol-hs-nupdown.py/" submit.sh
     fi
 done
