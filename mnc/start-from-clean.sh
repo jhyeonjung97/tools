@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*d/*_*/*_*S; then
+for dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*d/*_*/*_*S
 do
     cd $dir
     pwd
