@@ -62,9 +62,7 @@ elif path.exists('start.traj'):
         if atom.symbol in spin_states:
             spin = spin_states.get(atom.symbol)
             atom.magmom = spin
-        elif atom.symbol in ['C', 'N', 'O', 'H']:
-            atom.magmom = -0.001
-        else:
+        elif atom.symbol not in ['C', 'N', 'O', 'H']:
             raise ValueError(f"Unexpected atom symbol '{atom.symbol}' found in start.traj")
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
