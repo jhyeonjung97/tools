@@ -31,10 +31,10 @@ else:
         
 lmaxmix = 2
 for atom in atoms:
-    if atom.symbol not in ['C', 'N', 'O', 'H']:
-        ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
-    elif atom.symbol in ldau_luj:
+    if atom.symbol in ldau_luj:
         lmaxmix = 4
+    elif atom.symbol in ['C', 'N', 'O', 'H']:
+        ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
     else:
         ldau_luj[atom.symbol] = {'L': 2, 'U': 0.0, 'J': 0.0}   
 
@@ -54,7 +54,7 @@ atoms.calc = vasp_calculator.Vasp(
                     amix_mag=0.01,
                     bmix_mag=0.00001,
                     nelm=250,
-                    algo='Normal',
+                    algo='Fast',
                     ibrion=2,
                     isif=2,
                     ediffg=-0.02,
