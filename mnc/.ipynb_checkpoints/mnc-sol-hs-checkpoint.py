@@ -48,25 +48,27 @@ elif path.exists('start.traj'):
     atoms = read('start.traj')
     amix_mag = 0.05
     bmix_mag = 0.0001
-    if atoms[-2].symbol == 'C' and atoms[-1].symbol == 'O':
-        spin_states = spin_states_plus_2
-    elif atoms[-2].symbol == 'O' and atoms[-1].symbol == 'H':
-        spin_states = spin_states_plus_3
-    elif atoms[-1].symbol == 'O':
-        spin_states = spin_states_plus_4
-    elif atoms[-1].symbol == 'H':
-        spin_states = spin_states_plus_1
-    else:
-        spin_states = spin_states_plus_2
-    for atom in atoms:
-        if atom.symbol not in ['C', 'N', 'O', 'H']:
-            if atom.symbol in spin_states:
-                atom.magmom = spin_states.get(atom.symbol)
-            else:
-                raise ValueError(f"Unexpected atom symbol '{atom.symbol}' found in start.traj")
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
-        
+
+if atoms[-2].symbol == 'C' and atoms[-1].symbol == 'O':
+    spin_states = spin_states_plus_2
+elif atoms[-2].symbol == 'O' and atoms[-1].symbol == 'H':
+    spin_states = spin_states_plus_3
+elif atoms[-1].symbol == 'O':
+    spin_states = spin_states_plus_4
+elif atoms[-1].symbol == 'H':
+    spin_states = spin_states_plus_1
+else:
+    spin_states = spin_states_plus_2
+for atom in atoms:
+    if atom.symbol in spin_states:
+        spin = spin_states.get(atom.symbol)
+        if not path.exists('restart.json'):
+            atom.magmom = spin
+    elif atom.symbol not in ['C', 'N', 'O', 'H']:
+        raise ValueError(f"Unexpected atom symbol '{atom.symbol}' found in start.traj")
+            
 lmaxmix = 2
 for atom in atoms:
     if atom.symbol in ldau_luj:
@@ -91,14 +93,14 @@ atoms.calc = vasp_calculator.Vasp(
                     bmix=0.0001,
                     amix_mag=amix_mag,
                     bmix_mag=bmix_mag,
-                    nelm=250,
+                    nelm=300,
                     algo='Normal',
                     ibrion=2,
                     isif=2,
                     ediffg=-0.02,
                     ediff=1e-5,
                     prec='Normal',
-                    nsw=200,
+                    nsw=300,
                     lvhar=True,
                     lvtot=False,
                     ispin=2,

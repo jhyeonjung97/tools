@@ -3,7 +3,6 @@ import json
 import subprocess
 import numpy as np
 from os import path
-from math import sqrt
 from mendeleev import element
 from ase.io import read, write
 from ase.visualize import view
@@ -53,14 +52,14 @@ atoms.calc = vasp_calculator.Vasp(
                     bmix=0.0001,
                     amix_mag=0.01,
                     bmix_mag=0.00001,
-                    nelm=250,
+                    nelm=300,
                     algo='Normal',
                     ibrion=2,
                     isif=2,
                     ediffg=-0.02,
                     ediff=1e-5,
                     prec='Normal',
-                    nsw=200,
+                    nsw=300,
                     lvhar=True,
                     lvtot=False,
                     ispin=2,
