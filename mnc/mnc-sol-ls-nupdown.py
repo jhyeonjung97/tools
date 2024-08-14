@@ -60,7 +60,8 @@ elif path.exists('start.traj'):
         spin_states = spin_states_plus_2
     for atom in atoms:
         if atom.symbol in spin_states:
-            atom.magmom = spin_states.get(atom.symbol)
+            spin = spin_states.get(atom.symbol)
+            atom.magmom = spin
         elif atom.symbol in ['C', 'N', 'O', 'H']:
             atom.magmom = -0.001
         else:
