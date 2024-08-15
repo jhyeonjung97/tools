@@ -1,6 +1,6 @@
 #!/bin/bash/
 
-for dir in /scratch/x2755a09/5_V_bulk/6_Octahedral_RS/*/*_*/; do
+for dir in /scratch/x2755a09/5_V_bulk/5_SquarePlanar_NB/fm/*_*/; do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
