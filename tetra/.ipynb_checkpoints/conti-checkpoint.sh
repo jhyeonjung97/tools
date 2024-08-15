@@ -14,23 +14,22 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         cp ~/bin/tools/tetra/lobsterin .
         sed -i -e "s/X/$metal/g" lobsterin
         cp ~/bin/tools/tetra/lobster.sh .
-        sed -i -e "s/jobname/${coord}${row}${numb}_lobster/g" lobster.sh
+        sed -i -e "s/jobname/${coord}${row}${numb}lob/g" lobster.sh
         pwd; qsub lobster.sh
     elif [[ ! -d opt ]] && [[ -s DONE ]]; then
         if [[ -d conti_1 ]]; then
             cp conti_1/start.traj .
             rm -r conti*/
         fi
-        mkdir opt; mv * opt
+        mkdir opt; find . -maxdepth 1 -mindepth 1 ! -name opt -exec mv {} opt/ \;
         cp opt/restart.json .
-        cp opt/submit.sh .
         cp opt/WAVECAR .
-        cp ~/bin/tools/tetra/static.sh
-        sed -i -e "s/jobname/${coord}${row}${numb}_static/g" static.sh
+        cp ~/bin/tools/tetra/static.sh .
+        sed -i -e "s/jobname/${coord}${row}${numb}stc/g" static.sh
         pwd; qsub static.sh
     elif [[ ! -s vasp.out ]]; then
         pwd; mystat | grep --color=auto ${coord}${row}${numb}
     else
-        pwd | grep --color=auto $metal
+        echo -e "\e[31m$PWD\e[0m"
     fi
 done
