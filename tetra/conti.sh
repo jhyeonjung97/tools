@@ -2,30 +2,33 @@
 
 for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     cd $dir
+    IFS='/' read -r -a path <<< $PWD
+    coord=$(echo "${path[-3]}" | cut -d'_' -f3)
+    row=${path[-2]}
+    numb=$(echo "${path[-1]}" | cut -d'_' -f1)
+    metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     if [[ -d opt ]] && [[ -s DONE ]]; then
-        lobster***
+        rm -r conti*/
+        cp ~/bin/tools/tetra/lobsterin .
+        sed -i -e "s/X/$metal/g" lobsterin
+        cp ~/bin/tools/tetra/lobster.sh .
+        sed -i -e "s/jobname/${coord}${row}${numb}_lobster/g" lobster.sh
+        qsub lobster.sh
     elif [[ ! -d opt ]] && [[ -s DONE ]]; then
-        mkdir opt
-        mv * opt
         if [[ -d conti_1 ]]; then
             cp conti_1/start.traj .
         fi
+        rm -r conti*/
+        mkdir opt; mv * opt
         cp opt/restart.json .
         cp opt/submit.sh .
         cp opt/WAVECAR .
-        sed -i -e 's/fm_ediff.py/fm.py/' submit.sh
-        sed -i -e 's/opt_bulk3/static_bulk2/' submit.sh
-        qsub submit.sh
+        cp ~/bin/tools/tetra/static.sh
+        sed -i -e "s/jobname/${coord}${row}${numb}_static/g" static.sh
+        qsub static.sh
+    elif [[ ! -s vasp.out ]]; then
+        mystat | grep --color=auto ${coord}${row}${numb}
     else
         pwd
     fi
-    # if [[ -n $(grep CONTCAR vasp.out) ]]; then
-    #     echo $PWD
-    #     if [[ -d conti_2 ]]; then
-    #         rm -r conti_3 conti_4 conti_5 conti_6
-    #         cp conti_2/* .
-    #         sed -i -e 's/fm.py/fm_ediff.py/' submit.sh
-    #     fi
-    #     sh ~/bin/verve/conti.sh
-    # if 
 done
