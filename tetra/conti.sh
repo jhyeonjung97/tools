@@ -8,7 +8,9 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     if [[ -d opt ]] && [[ -s DONE ]]; then
-        rm -r conti*/
+        if [[ -d conti_1 ]]; then
+            rm -r conti*/
+        fi
         cp ~/bin/tools/tetra/lobsterin .
         sed -i -e "s/X/$metal/g" lobsterin
         cp ~/bin/tools/tetra/lobster.sh .
@@ -17,8 +19,8 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     elif [[ ! -d opt ]] && [[ -s DONE ]]; then
         if [[ -d conti_1 ]]; then
             cp conti_1/start.traj .
+            rm -r conti*/
         fi
-        rm -r conti*/
         mkdir opt; mv * opt
         cp opt/restart.json .
         cp opt/submit.sh .
@@ -29,6 +31,6 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     elif [[ ! -s vasp.out ]]; then
         pwd; mystat | grep --color=auto ${coord}${row}${numb}
     else
-        pwd
+        pwd | grep --color=auto $metal
     fi
 done
