@@ -15,7 +15,7 @@ for dir in /scratch/x2755a09/5_V_bulk/5_SquarePlanar_NB/5d/*_*/; do
         sed -i -e "s/X/$metal/g" lobsterin
         cp ~/bin/tools/tetra/lobster.sh .
         sed -i -e "s/jobname/${coord}${row}${numb}lob/g" lobster.sh
-        # pwd; qsub lobster.sh
+        pwd; #qsub lobster.sh
     elif [[ ! -d opt ]] && [[ -s DONE ]] && [[ ! -n $(grep CONTCAR vasp.out) ]]; then
         if [[ -d conti_1 ]]; then
             cp conti_1/start.traj .
@@ -26,7 +26,7 @@ for dir in /scratch/x2755a09/5_V_bulk/5_SquarePlanar_NB/5d/*_*/; do
         cp opt/WAVECAR .
         cp ~/bin/tools/tetra/static.sh .
         sed -i -e "s/jobname/${coord}${row}${numb}stc/g" static.sh
-        # pwd; qsub static.sh
+        pwd; #qsub static.sh
     elif [[ ! -s vasp.out ]]; then
         pwd; qstat -u x2755a09 | grep --color=auto ${coord}${row}${numb}
     else
