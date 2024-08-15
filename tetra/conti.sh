@@ -28,7 +28,7 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         sed -i -e "s/jobname/${coord}${row}${numb}stc/g" static.sh
         pwd; qsub static.sh
     elif [[ ! -s vasp.out ]]; then
-        pwd; mystat | grep --color=auto ${coord}${row}${numb}
+        pwd; qstat -u x2755a09 | grep --color=auto ${coord}${row}${numb}
     else
         echo -e "\e[31m$PWD\e[0m"
     fi
