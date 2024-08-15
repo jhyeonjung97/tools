@@ -21,6 +21,7 @@ for dir in /scratch/x2755a09/5_V_bulk/7_Pyramidal_LT/*/*_*/; do
             pwd; #qsub lobster.sh
         else
             echo -e "\e[31m$PWD\e[0m"
+        fi
     elif [[ ! -d opt ]] && [[ -s DONE ]] && [[ -s vasp.out ]]; then
         if [[ -d conti_1 ]]; then
             cp conti_1/start.traj .
