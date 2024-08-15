@@ -8,6 +8,7 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
 
     if [[ -n $(qstat -u x2755a09 | grep "${coord}${row}${numb} ") ]]; then
         if [[ -n $(qstat -u x2755a09 | grep "${coord}${row}${numb}stc") ]]; then
+            pwd
             mv opt/* .
             rm -r opt
             qstat -u x2755a09 | grep --color=auto "${coord}${row}${numb}stc"
