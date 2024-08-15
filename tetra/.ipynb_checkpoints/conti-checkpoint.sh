@@ -13,7 +13,7 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         sed -i -e "s/X/$metal/g" lobsterin
         cp ~/bin/tools/tetra/lobster.sh .
         sed -i -e "s/jobname/${coord}${row}${numb}_lobster/g" lobster.sh
-        qsub lobster.sh
+        pwd; qsub lobster.sh
     elif [[ ! -d opt ]] && [[ -s DONE ]]; then
         if [[ -d conti_1 ]]; then
             cp conti_1/start.traj .
@@ -25,9 +25,9 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         cp opt/WAVECAR .
         cp ~/bin/tools/tetra/static.sh
         sed -i -e "s/jobname/${coord}${row}${numb}_static/g" static.sh
-        qsub static.sh
+        pwd; qsub static.sh
     elif [[ ! -s vasp.out ]]; then
-        mystat | grep --color=auto ${coord}${row}${numb}
+        pwd; mystat | grep --color=auto ${coord}${row}${numb}
     else
         pwd
     fi
