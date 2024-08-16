@@ -31,7 +31,6 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         sed -i -e "s/jobname/${coord}${row}${numb}lob/" lobster.sh
         qsub lobster.sh
         pwd
-        exit
     elif [[ ! -s icohp.txt ]] && [[ -s lobsterout ]]; then
         echo -e "\e[36m$PWD\e[0m err"
     fi
