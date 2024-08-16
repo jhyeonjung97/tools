@@ -37,6 +37,9 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         elif [[ -n $(grep Sub-Space-Matrix vasp.out) ]]; then
             sed -i -e 's/m.py/m_fast.py/' submit.sh
             pwd; qsub submit.sh
+        elif [[ -n $(grep EDDDAV vasp.out) ]]; then
+            sed -i -e 's/m.py/m_fast.py/' submit.sh
+            pwd; qsub submit.sh
         elif [[ -n $(grep WARNING vasp.out) ]]; then
             echo -e "\e[35m$PWD\e[0m err"
         else
