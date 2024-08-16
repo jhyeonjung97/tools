@@ -43,13 +43,13 @@ def get_bands(atoms):
     Returns the exact number of bands desired by LOBSTER for the pCOHP calculations.
     """
     nbands = 0
-    orbital_multipliers = {'s': 1, 'p': 3, 'd': 5, 'f': 7}
+    nband = {'s': 1, 'p': 3, 'd': 5, 'f': 7}
     for symbol in atoms.get_chemical_symbols():
         if symbol == 'H':  # H is bugged
             nbands += 1
             continue
         orbitals = element(symbol).ec.get_valence().to_str().split()
-        nbands += sum(orbital_multipliers[orbital[1]] * int(orbital[2:]) for orbital in orbitals)
+        nbands += sum(nbands[orbital[1]] * int(orbital[2:]) for orbital in orbitals)
     return nbands
 
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
