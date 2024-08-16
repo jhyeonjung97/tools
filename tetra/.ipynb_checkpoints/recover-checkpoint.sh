@@ -36,7 +36,7 @@
 #     fi
 # done
 
-for dir in /scratch/x2755a09/5_V_bulk/1_Tetrahedral_WZ/*/*_*/; do
+for dir in /scratch/x2755a09/5_V_bulk/2_Tetrahedral_ZB/*/*_*/; do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
