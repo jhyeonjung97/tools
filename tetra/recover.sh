@@ -36,7 +36,7 @@
 #     fi
 # done
 
-for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
+for dir in /scratch/x2755a09/5_V_bulk/1_Tetrahedral_WZ/*/*_*/; do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
@@ -44,12 +44,11 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
 
-    if [[ ! -s icohp.txt ]] && [[ -s lobsterout ]]; then
+    if [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
         cp ~/bin/tools/tetra/lobsterin .
         sed -i -e "s/X/$metal/g" lobsterin
         cp ~/bin/tools/tetra/static.sh .
-        sed -i -e "s/jobname/${coord}${row}${numb}lob/" lobster.sh
-        pwd
-        qsub lobster.sh
+        sed -i -e "s/jobname/${coord}${row}${numb}stc/" static.sh
+        pwd; qsub static.sh
     fi
 done
