@@ -46,6 +46,8 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
             mkdir opt; find . -maxdepth 1 -mindepth 1 ! -name opt -exec mv {} opt/ \;
             cp opt/restart.json .
             cp opt/WAVECAR .
+            cp ~/bin/tools/tetra/lobsterin .
+            sed -i -e "s/X/$metal/g" lobsterin
             cp ~/bin/tools/tetra/static.sh .
             sed -i -e "s/jobname/${coord}${row}${numb}stc/g" static.sh
             pwd; qsub static.sh
