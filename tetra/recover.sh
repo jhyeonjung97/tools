@@ -38,7 +38,7 @@
 
 qstat -u x2755a09 > ~/mystat.txt
 
-i=0
+flat_tag=false
 for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
@@ -55,14 +55,21 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         sed -i -e "s/X/${metal}/g" lobsterin
         cp ~/bin/tools/tetra/static.sh .
         sed -i -e "s/jobname/${coord}${row}${numb}stc/" static.sh
-        if [[ $i -gt 1 ]]; then
+        if [[ $flat_tag==true ]]; then
             sed -i -e "s/run_vasp16/run_vasp16_flat/" static.sh #flat
             sed -i -e "s/debug/flat/" static.sh #flat
         fi
         cp ~/bin/tools/tetra/static_skl.sh .
         sed -i -e "s/jobname/${coord}${row}${numb}stc/" static_skl.sh
-        pwd; qsub static.sh # knl or skl
-        i+=1
+        pwd; qsub static.sh | tee /tmp/qsub_output.txt # knl
+        # pwd; qsub static_skl.sh | tee /tmp/qsub_output.txt # skl
+        if grep -q "qsub: would exceed queue generic's per-user limit" /tmp/qsub_output.txt; then
+            echo "Error detected: Exceeded per-user limit in the queue. Stopping the script."
+            rm /tmp/qsub_output.txt; flat_tag=true
+            sed -i -e "s/run_vasp16/run_vasp16_flat/" static.sh #flat
+            sed -i -e "s/debug/flat/" static.sh #flat
+            pwd; qsub static.sh | tee /tmp/qsub_output.txt # knl
+        fi
     fi
 done
 
