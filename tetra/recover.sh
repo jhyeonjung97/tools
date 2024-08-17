@@ -48,7 +48,7 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
 
-    if [[ ! grep -q ${coord}${row}${numb} ~/mystat.txt ]] && [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
+    if [[ !  -n $(grep ${coord}${row}${numb} ~/mystat.txt) ]] && [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
         if [[ -f vasp.out ]]; then
             rm *.o* *.e*
         fi
@@ -64,7 +64,7 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         sed -i -e "s/jobname/${coord}${row}${numb}stc/" static_skl.sh
         pwd; qsub static.sh > ~/bin/qsub_output.txt # knl
         # pwd; qsub static_skl.sh | tee /tmp/qsub_output.txt # skl
-        if grep -q 'exceed' ~/bin/qsub_output.txt; then
+        if [[ -n $(grep 'exceed' ~/bin/qsub_output.txt) ]]; then
             if [[ exceed_tag==false ]]; then
                 echo "Error detected: Exceeded per-user limit in the queue. Stopping the script."
                 rm /tmp/qsub_output.txt; flat_tag=true; exceed_tag=true
