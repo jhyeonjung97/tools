@@ -36,6 +36,8 @@
 #     fi
 # done
 
+qstat -u x2755a09 > ~/mystat.txt
+
 for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
@@ -44,9 +46,9 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
 
-    if [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
+    if [[ ! -n $(grep ${coord}${row}${numb} ~/mystat.txt) ]] && [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
         cp ~/bin/tools/tetra/lobsterin .
-        sed -i -e "s/X/$metal/g" lobsterin
+        sed -i -e "s/X/${metal}/g" lobsterin
         cp ~/bin/tools/tetra/static.sh .
         sed -i -e "s/jobname/${coord}${row}${numb}stc/" static.sh
         pwd; qsub static.sh
