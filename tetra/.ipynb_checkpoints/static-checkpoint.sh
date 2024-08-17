@@ -2,7 +2,7 @@
 #PBS -N jobname
 #PBS -l select=1:ncpus=64:mpiprocs=16:ompthreads=4
 #PBS -l walltime=48:00:00
-#PBS -q flat
+#PBS -q commercial
 #PBS -A vasp
 #PBS -V
 
