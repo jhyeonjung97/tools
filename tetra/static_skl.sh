@@ -1,7 +1,7 @@
 #!/bin/sh
 #PBS -N jobname
 #PBS -l select=1:ncpus=40:mpiprocs=10:ompthreads=4
-#PBS -l walltime=48:00:00
+#PBS -l walltime=06:00:00
 #PBS -q norm_skl
 #PBS -A vasp
 #PBS -V
