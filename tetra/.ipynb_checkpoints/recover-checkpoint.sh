@@ -50,9 +50,11 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         rm *.o* *.e*
         cp ~/bin/tools/tetra/lobsterin .
         sed -i -e "s/X/${metal}/g" lobsterin
+        cp ~/bin/tools/tetra/static.sh .
+        sed -i -e "s/jobname/${coord}${row}${numb}stc/" static.sh
         cp ~/bin/tools/tetra/static_skl.sh .
         sed -i -e "s/jobname/${coord}${row}${numb}stc/" static_skl.sh
-        pwd; qsub static_skl.sh
+        pwd; qsub static.sh # knl or skl
     fi
 done
 
