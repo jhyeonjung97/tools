@@ -47,7 +47,9 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
 
     if [[ ! -n $(grep ${coord}${row}${numb} ~/mystat.txt) ]] && [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
-        # rm *.o* *.e*
+        if [[ -f vasp.out ]]; then
+            rm *.o* *.e*
+        fi
         cp ~/bin/tools/tetra/lobsterin .
         sed -i -e "s/X/${metal}/g" lobsterin
         cp ~/bin/tools/tetra/static.sh .
