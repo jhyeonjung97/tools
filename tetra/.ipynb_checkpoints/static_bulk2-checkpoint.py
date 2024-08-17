@@ -12,7 +12,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'static_bulk2_afm'
+name = 'static_bulk2'
 
 effective_length = 25
 
@@ -43,13 +43,13 @@ def get_bands(atoms):
     Returns the exact number of bands desired by LOBSTER for the pCOHP calculations.
     """
     nbands = 0
-    nband = {'s': 1, 'p': 3, 'd': 5, 'f': 7}
+    nbands_per_orbital = {'s': 1, 'p': 3, 'd': 5, 'f': 7}
     for symbol in atoms.get_chemical_symbols():
         if symbol == 'H':  # H is bugged
             nbands += 1
             continue
         orbitals = element(symbol).ec.get_valence().to_str().split()
-        nbands += sum(nbands[orbital[1]] * int(orbital[2:]) for orbital in orbitals)
+        nbands += sum(nbands_per_orbital[orbital[1]] * int(orbital[2:]) for orbital in orbitals)
     return nbands
 
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
