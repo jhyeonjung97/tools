@@ -62,7 +62,7 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         cp ~/bin/tools/tetra/static_skl.sh .
         sed -i -e "s/jobname/${coord}${row}${numb}stc/" static_skl.sh
         pwd; qsub static.sh # knl or skl
-        i += 1
+        i+=1
     fi
 done
 
