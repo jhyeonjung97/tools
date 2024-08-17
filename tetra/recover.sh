@@ -38,7 +38,7 @@
 
 qstat -u x2755a09 > ~/mystat.txt
 
-i = 0
+i=0
 for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
