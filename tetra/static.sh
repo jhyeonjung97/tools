@@ -1,8 +1,8 @@
 #!/bin/sh
 #PBS -N jobname
 #PBS -l select=1:ncpus=64:mpiprocs=16:ompthreads=4
-#PBS -l walltime=12:00:00
-#PBS -q debug
+#PBS -l walltime=01:00:00
+#PBS -q flat
 #PBS -A vasp
 #PBS -V
 
