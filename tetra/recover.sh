@@ -48,7 +48,7 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
 
-    if [[ ! -n $(grep ${coord}${row}${numb} ~/mystat.txt) ]] && [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
+    if [[ ! grep -q ${coord}${row}${numb} ~/mystat.txt ]] && [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
         if [[ -f vasp.out ]]; then
             rm *.o* *.e*
         fi
@@ -62,15 +62,15 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         fi
         cp ~/bin/tools/tetra/static_skl.sh .
         sed -i -e "s/jobname/${coord}${row}${numb}stc/" static_skl.sh
-        pwd; qsub static.sh | tee /tmp/qsub_output.txt # knl
+        pwd; qsub static.sh > ~/bin/qsub_output.txt # knl
         # pwd; qsub static_skl.sh | tee /tmp/qsub_output.txt # skl
-        if grep -q "qsub: would exceed queue generic's per-user limit" /tmp/qsub_output.txt; then
+        if grep -q 'exceed' ~/bin/qsub_output.txt; then
             if [[ exceed_tag==false ]]; then
                 echo "Error detected: Exceeded per-user limit in the queue. Stopping the script."
                 rm /tmp/qsub_output.txt; flat_tag=true; exceed_tag=true
                 sed -i -e "s/run_vasp16/run_vasp16_flat/" static.sh #flat
                 sed -i -e "s/debug/flat/" static.sh #flat
-                pwd; qsub static.sh | tee /tmp/qsub_output.txt # knl
+                pwd; qsub static.sh > ~/bin/qsub_output.txt # knl
             else
                 echo "Error detected: Exceeded per-user limit in the queue. Stopping the script."
                 exit 1
