@@ -13,7 +13,7 @@ export OMP_NUM_THREADS=4
 export OMP_PLACES=threads
 export OMP_PROC_BIND=spread
 
-export VASP_SCRIPT=/home01/x2755a09/bin/tools/kisti/run_vasp16.py
+export VASP_SCRIPT=/home01/x2755a09/bin/tools/kisti/run_vasp10.py
 export VASP_PP_PATH=/home01/x2755a09/POTCAR/
 
 python /scratch/x2755a09/5_V_bulk/scripts/static_bulk2.py
