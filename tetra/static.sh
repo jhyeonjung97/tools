@@ -20,5 +20,5 @@ python /scratch/x2755a09/5_V_bulk/scripts/static_bulk2.py
 python ~/bin/get_restart3
 
 ~/bin/lobster-5.1.0/lobster-5.1.0
-python ~/bin/playground/aloha/cohp.py > icohp.txt
-python ~/bin/playground/aloha/cobi.py > icobi.txt
+python ~/bin/aloha/cohp.py > icohp.txt
+python ~/bin/aloha/cobi.py > icobi.txt
