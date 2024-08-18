@@ -50,20 +50,27 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         # if [[ -f vasp.out ]]; then
         #     rm *.o* *.e*
         # fi
+        
         cp ~/bin/tools/tetra/lobsterin .
         sed -i -e "s/X/${metal}/g" lobsterin
         
         cp ~/bin/tools/tetra/static.sh .
         sed -i -e "s/jobname/${coord}${row}${numb}stc/" static.sh
-        # cp ~/bin/tools/tetra/static_skl.sh . #skl
-        # sed -i -e "s/jobname/${coord}${row}${numb}stc/" static_skl.sh #skl
+
+        # sed -i -e "s/ncpus=64/ncpus=40/" static.sh
+        # sed -i -e "s/mpiprocs=16/mpiprocs=10/" static.sh
+        # sed -i -e "s/ompthreads=16/ompthreads=4/" static.sh
+        # sed -i -e "s/run_vasp16/run_vasp10/" static.sh
+        # sed -i -e "s/static_bulk2/static_bulk2_skl/" static.sh
+        # sed -i -e "s/debug/norm_skl/" static.sh
+
+        sed -i -e "s/mpiprocs=16/mpiprocs=8/" static.sh
+        sed -i -e "s/ompthreads=16/ompthreads=4/" static.sh
+        sed -i -e "s/run_vasp16/run_vasp16_flat/" static.sh
+        sed -i -e "s/static_bulk2/static_bulk2_flat/" static.sh
+        sed -i -e "s/debug/flat/" static.sh
         
-        sed -i -e "s/run_vasp16/run_vasp16_flat/" static.sh #flat
-        sed -i -e "s/debug/flat/" static.sh #flat
-        sed -i -e "s/mpiprocs=16/mpiprocs=8/" static.sh #flat
-        
-        pwd; qsub static.sh > ~/bin/qsub_output.txt # knl
-        # pwd; qsub static_skl.sh | tee /tmp/qsub_output.txt # skl
+        pwd; qsub static.sh # knl
     fi
 done
 
