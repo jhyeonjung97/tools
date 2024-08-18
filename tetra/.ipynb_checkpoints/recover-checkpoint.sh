@@ -72,7 +72,41 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     elif [[ ! -d opt ]] && [[ -s vasp.out ]]; then
         if [[ -n $(grep CONTCAR vasp.out) ]]; then
             pwd; qsub submit.sh
+        elif [[ -n $(grep Sub-Space-Matrix vasp.out) ]]; then
+            sed -i -e 's/m.py/m_fast.py/' submit.sh
+            sed -i -e 's/m_ediff.py/m_fast.py/' submit.sh
+            pwd; qsub submit.sh
+        elif [[ -n $(grep EDDDAV vasp.out) ]]; then
+            sed -i -e 's/m.py/m_fast.py/' submit.sh
+            sed -i -e 's/m_ediff.py/m_fast.py/' submit.sh
+            pwd; qsub submit.sh
+        elif [[ -n $(grep WARNING vasp.out) ]]; then
+            echo -e "\e[35m$PWD\e[0m err"
+        elif [[ -s DONE ]]; then
+            mkdir opt; find . -maxdepth 1 -mindepth 1 ! -name opt -exec mv {} opt/ \;
+            cp opt/restart.json opt/WAVECAR .
+            
+            cp ~/bin/tools/tetra/lobsterin .
+            sed -i -e "s/X/$metal/g" lobsterin
+            
+            cp ~/bin/tools/tetra/static.sh .
+            sed -i -e "s/jobname/${coord}${row}${numb}stc/g" static.sh
+            
+            # sed -i -e "s/ncpus=64/ncpus=40/" static.sh
+            # sed -i -e "s/mpiprocs=16/mpiprocs=10/" static.sh
+            # sed -i -e "s/ompthreads=16/ompthreads=4/" static.sh
+            # sed -i -e "s/run_vasp16/run_vasp10/" static.sh
+            # sed -i -e "s/normal/norm_skl/" static.sh
+
+            # sed -i -e "s/run_vasp8/run_vasp8_flat/" static.sh
+            # sed -i -e "s/normal/flat/" static.sh
+        
+            pwd; qsub static.sh
+        else
+            echo -e "\e[36m$PWD\e[0m what?"
         fi
+    else
+        echo -e "\e[36m$PWD\e[0m what?"
     fi
 done
 

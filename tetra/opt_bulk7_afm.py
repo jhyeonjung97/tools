@@ -3,7 +3,6 @@ import json
 import subprocess
 import numpy as np
 from os import path
-from math import sqrt
 from mendeleev import element
 from ase.io import read, write
 from ase.visualize import view
