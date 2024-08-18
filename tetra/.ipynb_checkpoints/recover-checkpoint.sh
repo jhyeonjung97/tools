@@ -74,6 +74,7 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         pwd; qsub static.sh
     elif [[ ! -d opt ]] && [[ -s vasp.out ]]; then
         if [[ -n $(grep CONTCAR vasp.out) ]]; then
+            sed -i -e 's/m.py/m_ediff.py/' submit.sh
             pwd; qsub submit.sh
         elif [[ -n $(grep Sub-Space-Matrix vasp.out) ]]; then
             sed -i -e 's/m.py/m_fast.py/' submit.sh
