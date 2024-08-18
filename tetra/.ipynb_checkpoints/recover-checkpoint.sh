@@ -67,6 +67,10 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         # sed -i -e "s/normal/flat/" static.sh
         
         pwd; qsub static.sh
+    elif [[ ! -d opt ]] && [[ -s vasp.out ]]; then
+        if [[ -n $(grep CONTCAR vasp.out) ]]; then
+            qsub submit.sh
+        fi
     fi
 done
 
