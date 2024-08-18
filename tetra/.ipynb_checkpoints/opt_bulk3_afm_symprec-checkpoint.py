@@ -12,7 +12,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk3_fm'
+name = 'opt_bulk3_afm'
 
 effective_length = 25
 
@@ -40,7 +40,10 @@ elif path.exists('start.traj'):
     atoms = read('start.traj')
     for atom in atoms:
         if atom.symbol in spin_states_plus_2:
-            atom.magmom = spin_states_plus_2[atom.symbol]
+            if atom.index % 2 == 1: 
+                atom.magmom = spin_states_plus_2[atom.symbol]
+            else:
+                atom.magmom = -spin_states_plus_2[atom.symbol]
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
 
@@ -114,7 +117,7 @@ atoms.calc = vasp_calculator.Vasp(
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
-                    # nupdown=0
+                    nupdown=0
                     )
 
 energy = atoms.get_potential_energy()

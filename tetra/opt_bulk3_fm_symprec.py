@@ -95,7 +95,6 @@ atoms.calc = vasp_calculator.Vasp(
                     ediffg=-0.02,
                     ediff=1e-6,
                     prec='Normal',
-                    symprec='1e-4',
                     nsw=600,
                     lvtot=False,
                     ispin=2,
