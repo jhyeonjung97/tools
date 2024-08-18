@@ -55,7 +55,11 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         if [[ -n $(grep 'plane wave coefficients changed' vasp.out) ]]; then
             mv opt/* .; rm -r opt; rm WAVECAR
             sed -i -e '/walltime/c\#PBS -l walltime=06:00:00' submit.sh
-            qsub submit.sh
+            pwd; qsub submit.sh
+        elif [[ -n $(grep 'Inconsistent Bravais lattice types' vasp.out) ]]; then
+            mv opt/* .; rm -r opt; rm WAVECAR
+            sed -i -e '/walltime/c\#PBS -l walltime=06:00:00' submit.sh
+            pwd; qsub submit.sh
         else
             # if [[ -f vasp.out ]]; then
             #     rm *.o* *.e*
