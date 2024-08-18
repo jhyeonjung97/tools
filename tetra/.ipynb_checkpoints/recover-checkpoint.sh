@@ -52,7 +52,13 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     elif [[ -d opt ]] && [[ -s icohp.txt ]]; then
         :
     elif [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
-        if [[ -n $(grep 'plane wave coefficients changed' vasp.out) ]]; then
+        if [[ ! -s vasp.out ]]; then
+            cp ~/bin/tools/tetra/lobsterin .
+            sed -i -e "s/X/${metal}/g" lobsterin
+            cp ~/bin/tools/tetra/static.sh .
+            sed -i -e "s/jobname/${coord}${row}${numb}stc/" static.sh
+            pwd; qsub static.sh
+        elif [[ -n $(grep 'plane wave coefficients changed' vasp.out) ]]; then
             mv opt/* .; rm -r opt; rm WAVECAR
             sed -i -e '/walltime/c\#PBS -l walltime=06:00:00' submit.sh
             pwd; qsub submit.sh
@@ -61,25 +67,10 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
             sed -i -e '/walltime/c\#PBS -l walltime=06:00:00' submit.sh
             pwd; qsub submit.sh
         else
-            # if [[ -f vasp.out ]]; then
-            #     rm *.o* *.e*
-            # fi
-
             cp ~/bin/tools/tetra/lobsterin .
             sed -i -e "s/X/${metal}/g" lobsterin
-
             cp ~/bin/tools/tetra/static.sh .
             sed -i -e "s/jobname/${coord}${row}${numb}stc/" static.sh
-
-            # sed -i -e "s/ncpus=64/ncpus=40/" static.sh
-            # sed -i -e "s/mpiprocs=16/mpiprocs=10/" static.sh
-            # sed -i -e "s/ompthreads=16/ompthreads=4/" static.sh
-            # sed -i -e "s/run_vasp16/run_vasp10/" static.sh
-            # sed -i -e "s/normal/norm_skl/" static.sh
-
-            # sed -i -e "s/run_vasp8/run_vasp8_flat/" static.sh
-            # sed -i -e "s/normal/flat/" static.sh
-
             pwd; qsub static.sh
         fi
     elif [[ ! -d opt ]] && [[ -s vasp.out ]]; then
@@ -100,22 +91,17 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         elif [[ -s DONE ]]; then
             mkdir opt; find . -maxdepth 1 -mindepth 1 ! -name opt -exec mv {} opt/ \;
             cp opt/restart.json opt/WAVECAR .
-            
             cp ~/bin/tools/tetra/lobsterin .
             sed -i -e "s/X/$metal/g" lobsterin
-            
             cp ~/bin/tools/tetra/static.sh .
             sed -i -e "s/jobname/${coord}${row}${numb}stc/g" static.sh
-            
             # sed -i -e "s/ncpus=64/ncpus=40/" static.sh
             # sed -i -e "s/mpiprocs=16/mpiprocs=10/" static.sh
             # sed -i -e "s/ompthreads=16/ompthreads=4/" static.sh
             # sed -i -e "s/run_vasp16/run_vasp10/" static.sh
             # sed -i -e "s/normal/norm_skl/" static.sh
-
             # sed -i -e "s/run_vasp8/run_vasp8_flat/" static.sh
-            # sed -i -e "s/normal/flat/" static.sh
-        
+            # sed -i -e "s/normal/flat/" static.sh        
             pwd; qsub static.sh
         else
             echo -e "\e[36m$PWD\e[0m ??"
