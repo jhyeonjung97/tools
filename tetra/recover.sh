@@ -50,7 +50,10 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     if [[ -n $(grep ${coord}${row}${numb} ~/mystat.txt) ]]; then
         :
     elif [[ -d opt ]] && [[ -s icohp.txt ]]; then
-        :
+        if [[ -f core.* ]]; then
+            pwd
+            # rm core.*
+        fi
     elif [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
         if [[ ! -s vasp.out ]]; then
             cp ~/bin/tools/tetra/lobsterin .
