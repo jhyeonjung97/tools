@@ -27,6 +27,7 @@ ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
+    atoms_for_kpoints = read('opt/start.traj')
 else:
     raise ValueError('No restart.json file found')
 
@@ -72,7 +73,7 @@ def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     return((nkx, nky, nkz))
 
 nbands = get_bands(atoms)
-kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
+kpoints = get_kpoints(atoms_for_kpoints, effective_length=25, bulk=True)
 
 atoms.calc = vasp_calculator.Vasp(
                     encut=600,
