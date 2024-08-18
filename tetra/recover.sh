@@ -79,16 +79,14 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     elif [[ ! -d opt ]] && [[ -s vasp.out ]]; then
         if [[ -n $(grep CONTCAR vasp.out) ]]; then
             sed -i -e 's/m.py/m_ediff.py/' submit.sh
+            sed -i -e 's/m_fast.py/m_ediff.py/' submit.sh
+            sed -i -e 's/m_symprec.py/m_ediff.py/' submit.sh
             sed -i -e '/walltime/c\#PBS -l walltime=06:00:00' submit.sh
             pwd; qsub submit.sh
-        elif [[ -n $(grep Sub-Space-Matrix vasp.out) ]]; then
+        elif [[ -n $(grep Sub-Space-Matrix vasp.out) ]] || [[ -n $(grep EDDDAV vasp.out) ]]; then
             sed -i -e 's/m.py/m_fast.py/' submit.sh
             sed -i -e 's/m_ediff.py/m_fast.py/' submit.sh
-            sed -i -e '/walltime/c\#PBS -l walltime=06:00:00' submit.sh
-            pwd; qsub submit.sh
-        elif [[ -n $(grep EDDDAV vasp.out) ]]; then
-            sed -i -e 's/m.py/m_fast.py/' submit.sh
-            sed -i -e 's/m_ediff.py/m_fast.py/' submit.sh
+            sed -i -e 's/m_symprec.py/m_fast.py/' submit.sh
             sed -i -e '/walltime/c\#PBS -l walltime=06:00:00' submit.sh
             pwd; qsub submit.sh
         elif [[ -n $(grep SYMPREC vasp.out) ]]; then
