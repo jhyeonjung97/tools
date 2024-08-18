@@ -27,7 +27,6 @@ ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
-    atoms_for_kpoints = read('opt/start.traj')
 else:
     raise ValueError('No restart.json file found')
 
@@ -52,28 +51,14 @@ def get_bands(atoms):
         nbands += sum(nbands_per_orbital[orbital[1]] * int(orbital[2:]) for orbital in orbitals)
     return nbands
 
-def get_kpoints(atoms, effective_length=effective_length, bulk=False):
-    """
-    Return a tuple of k-points derived from the unit cell.
-    
-    Parameters
-    ----------
-    atoms : object
-    effective_length : k-point*unit-cell-parameter
-    bulk : Whether it is a bulk system.
-    """
-    l = effective_length
-    cell = atoms.get_cell()
-    nkx = int(round(l/np.linalg.norm(cell[0]),0))
-    nky = int(round(l/np.linalg.norm(cell[1]),0))
-    if bulk == True:
-        nkz = int(round(l/np.linalg.norm(cell[2]),0))
-    else:
-        nkz = 1
-    return((nkx, nky, nkz))
+def extract_kpoints(file_path):
+    with open(file_path, 'r') as file:
+        file_content = file.readlines()
+    nkx, nky, nkz = map(int, file_content[3].split())
+    return ((nkx, nky, nkz))
 
 nbands = get_bands(atoms)
-kpoints = get_kpoints(atoms_for_kpoints, effective_length=25, bulk=True)
+kpoints = extract_kpoints('./opt/KPOINTS')
 
 atoms.calc = vasp_calculator.Vasp(
                     encut=600,
