@@ -59,8 +59,9 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
             sed -i -e "s/jobname/${coord}${row}${numb}stc/" static.sh
             pwd; qsub static.sh
         elif [[ -n $(grep SYMPREC vasp.out) ]]; then
-            sed -i -e 's/static_bulk2/static_bulk2_symprec/' static.sh
-            pwd; qsub static.sh
+            mv opt/* .; rm -r opt; rm WAVECAR
+            sed -i -e '/walltime/c\#PBS -l walltime=06:00:00' submit.sh
+            pwd; qsub submit.sh
         elif [[ -n $(grep 'plane wave coefficients changed' vasp.out) ]]; then
             mv opt/* .; rm -r opt; rm WAVECAR
             sed -i -e '/walltime/c\#PBS -l walltime=06:00:00' submit.sh
