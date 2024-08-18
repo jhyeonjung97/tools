@@ -51,28 +51,6 @@ for atom in atoms:
     else:
         ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
-def get_bands(atoms):
-    """
-    returns the extact number of bands desired by lobster for the pCOHP calculations
-    """
-    nbands = 0
-    for sym in atoms.get_chemical_symbols():
-        if sym == 'H': # H is bugged
-            nbands += 1
-            continue
-        config = element(sym).ec.get_valence().to_str()
-        config = config.split()
-        for c in config:
-            if 's' in c:
-                nbands += 1
-            elif 'p' in c:
-                nbands += 3
-            elif 'd' in c:
-                nbands += 5
-            elif 'f' in c:
-                nbands += 7
-    return nbands
-
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """
     Return a tuple of k-points derived from the unit cell.
@@ -93,7 +71,6 @@ def get_kpoints(atoms, effective_length=effective_length, bulk=False):
         nkz = 1
     return((nkx, nky, nkz))
 
-nbands = get_bands(atoms)
 kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
 
 atoms.calc = vasp_calculator.Vasp(
@@ -120,7 +97,6 @@ atoms.calc = vasp_calculator.Vasp(
                     prec='Normal',
                     nsw=600,
                     lvtot=False,
-                    # nbands=nbands,
                     ispin=2,
                     setups={'base': 'recommended'},
                     ldau=True,
