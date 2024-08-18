@@ -48,6 +48,8 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     
     if [[ -n $(grep ${coord}${row}${numb} ~/mystat.txt) ]]; then
         :
+    elif [[ -d opt ]] && [[ -s icohp.txt ]]; then
+        :
     elif [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
         # if [[ -f vasp.out ]]; then
         #     rm *.o* *.e*
@@ -80,8 +82,6 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
             sed -i -e 's/m.py/m_fast.py/' submit.sh
             sed -i -e 's/m_ediff.py/m_fast.py/' submit.sh
             pwd; qsub submit.sh
-        elif [[ -n $(grep WARNING vasp.out) ]]; then
-            echo -e "\e[35m$PWD\e[0m err"
         elif [[ -s DONE ]]; then
             mkdir opt; find . -maxdepth 1 -mindepth 1 ! -name opt -exec mv {} opt/ \;
             cp opt/restart.json opt/WAVECAR .
@@ -103,7 +103,7 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         
             pwd; qsub static.sh
         else
-            echo -e "\e[36m$PWD\e[0m what?"
+            echo -e "\e[36m$PWD\e[0m ??"
         fi
     else
         echo -e "\e[36m$PWD\e[0m what?"
