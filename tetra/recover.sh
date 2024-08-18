@@ -104,10 +104,10 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
             # sed -i -e "s/normal/flat/" static.sh        
             pwd; qsub static.sh
         else
-            echo -e "\e[36m$PWD\e[0m ??"
+            echo -e "\e[35m$PWD\e[0m"
         fi
     else
-        echo -e "\e[36m$PWD\e[0m what?"
+        echo -e "\e[32m$PWD\e[0m"
     fi
 done
 
