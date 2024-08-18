@@ -43,7 +43,7 @@ elif path.exists('start.traj'):
             if atom.index % 2 == 1: 
                 atom.magmom = spin_states_plus_2[atom.symbol]
             else:
-                atom.magmom = -spin_states_plus_2
+                atom.magmom = -spin_states_plus_2[atom.symbol]
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
 

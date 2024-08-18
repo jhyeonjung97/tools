@@ -43,7 +43,7 @@ elif path.exists('start.traj'):
             if atom.index % 2 == 1: 
                 atom.magmom = spin_states_plus_2[atom.symbol]
             else:
-                atom.magmom = -spin_states_plus_2
+                atom.magmom = -spin_states_plus_2[atom.symbol]
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
 
@@ -101,7 +101,7 @@ atoms.calc = vasp_calculator.Vasp(
                     nsw=600,
                     lvtot=False,
                     ispin=2,
-                    setups={'base': 'recommended'}},
+                    setups={'base': 'recommended', 'W': '_sv'},
                     ldau=True,
                     ldautype=2,
                     laechg=True,
