@@ -37,7 +37,7 @@
 # done
 
 qstat -u x2755a09 > ~/mystat.txt
-sh ~/bin/tools/tetra/clean-up-log-files.sh
+# sh ~/bin/tools/tetra/clean-up-log-files.sh
 
 for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     cd $dir
