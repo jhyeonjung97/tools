@@ -9,8 +9,8 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     
     pwd
-    ls -t ${coord}${row}${numb}.o* | tail -n +2 | xargs rm -f
-    ls -t ${coord}${row}${numb}.e* | tail -n +2 | xargs rm -f
+    ls -t ${coord}${row}${numb}*.o* | tail -n +2 | xargs rm -f
+    ls -t ${coord}${row}${numb}*.e* | tail -n +2 | xargs rm -f
 done
 
 for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/opt/; do
