@@ -8,6 +8,6 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     
-    ls -t ${coord}${row}${numb}*.o* | tail -n +2 | xargs ~/bin/shoulder/rm_mv
-    ls -t ${coord}${row}${numb}*.e* | tail -n +2 | xargs ~/bin/shoulder/rm_mv
+    ls -t ${coord}${row}${numb}*.o* | tail -n +2 | xargs rm -f
+    ls -t ${coord}${row}${numb}*.e* | tail -n +2 | xargs rm -f
 done
