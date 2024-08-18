@@ -10,7 +10,7 @@ cd $PBS_O_WORKDIR
 
 #OpenMP settings:
 export OMP_NUM_THREADS=4
-export OMP_PLACES=threads
+export OMP_PLACES=cores
 export OMP_PROC_BIND=spread
 
 export VASP_SCRIPT=/home01/x2755a09/bin/tools/kisti/run_vasp8.py
