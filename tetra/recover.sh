@@ -63,9 +63,8 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         # sed -i -e "s/run_vasp16/run_vasp10/" static.sh
         # sed -i -e "s/normal/norm_skl/" static.sh
 
-        sed -i -e "s/run_vasp8/run_vasp8_flat/" static.sh
-        sed -i -e "s/static_bulk2/static_bulk2_flat/" static.sh
-        sed -i -e "s/normal/flat/" static.sh
+        # sed -i -e "s/run_vasp8/run_vasp8_flat/" static.sh
+        # sed -i -e "s/normal/flat/" static.sh
         
         pwd; qsub static.sh
     fi
