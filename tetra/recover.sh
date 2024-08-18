@@ -60,6 +60,7 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
         
         sed -i -e "s/run_vasp16/run_vasp16_flat/" static.sh #flat
         sed -i -e "s/debug/flat/" static.sh #flat
+        sed -i -e "s/mpiprocs=16/mpiprocs=8/" static.sh #flat
         
         pwd; qsub static.sh > ~/bin/qsub_output.txt # knl
         # pwd; qsub static_skl.sh | tee /tmp/qsub_output.txt # skl
