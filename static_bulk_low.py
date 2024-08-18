@@ -122,8 +122,7 @@ atoms.calc = vasp_calculator.Vasp(
                     lvtot=False,
                     nbands=nbands, # static
                     ispin=2,
-                    setups={'base': 'recommended',
-                            'W': '_sv'},
+                    setups={'base': 'recommended'},
                     ldau=True,
                     ldautype=2,
                     laechg=True,
