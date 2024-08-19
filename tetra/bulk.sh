@@ -41,10 +41,10 @@ for i in "${!metals_5d[@]}"; do
 done
 cd $dir_now
 
-cp $1 POSCAR
-sed -i -e "s/$2/XX/" POSCAR
+# cp $1 POSCAR
+# sed -i -e "s/$2/XX/" POSCAR
 coord=$(basename $PWD | rev | cut -c1-2 | rev)
-sed -i -e "s/XX/$coord/" submit.sh
+# sed -i -e "s/XX/$coord/" submit.sh
 sh ~/bin/verve/spread.sh -rr POSCAR submit.sh
 
 for dir in *d/*_*/; do
