@@ -20,7 +20,7 @@ spin_states_plus_4 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
                       'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4,
                       'Rh': 3, 'Pd': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
                       'La': 1, 'Hf': 2, 'Ta': 3, 'W': 4, 'Re': 5, 'Os': 4,
-                      'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2,
+                      'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2
                       }
 
 ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
@@ -30,15 +30,14 @@ ldau_luj = {'Ti':{'L':2,  'U':3.00, 'J':0.0},
             'Fe':{'L':2,  'U':4.3,  'J':0.0},
             'Co':{'L':2,  'U':3.32, 'J':0.0},
             'Ni':{'L':2,  'U':6.45, 'J':0.0},
-            'Cu':{'L':2, 'U':3.0,  'J':0.0},
+            'Cu':{'L':2, 'U':3.0,  'J':0.0}
             }
 
 if path.exists('start.traj'):
     atoms = read('start.traj')
-    i = 1
     for a in atoms:
         if a.symbol in spin_states_plus_4:
-            a.magmom = i*spin_states_plus_4.get(a.symbol)
+            a.magmom = spin_states_plus_4.get(a.symbol)
             # i *= -1 # set AFM
 else:
     raise ValueError('Where is start.traj')
@@ -49,28 +48,6 @@ for a in atoms:
         lmaxmix = 4
     else:
         ldau_luj[a.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
-
-def get_bands(atoms):
-    """
-    returns the extact number of bands desired by lobster for the pCOHP calculations
-    """
-    nbands = 0
-    for sym in atoms.get_chemical_symbols():
-        if sym == 'H': # H is bugged
-            nbands += 1
-            continue
-        config = element(sym).ec.get_valence().to_str()
-        config = config.split()
-        for c in config:
-            if 's' in c:
-                nbands += 1
-            elif 'p' in c:
-                nbands += 3
-            elif 'd' in c:
-                nbands += 5
-            elif 'f' in c:
-                nbands += 7
-    return nbands
 
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """
@@ -92,7 +69,6 @@ def get_kpoints(atoms, effective_length=effective_length, bulk=False):
         nkz = 1
     return((nkx, nky, nkz))
 
-nbands = get_bands(atoms)
 kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
 
 atoms.calc = vasp_calculator.Vasp(
@@ -133,7 +109,7 @@ atoms.calc = vasp_calculator.Vasp(
                     lmaxmix=lmaxmix,
                     # isym=0, 
                     nedos=3000,
-                    lorbit=11,
+                    lorbit=11
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
