@@ -7,11 +7,11 @@ do
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     spin=$(echo "${path[-1]}" | cut -d'_' -f2)
     if [[ -s DONE ]] && [[ ! -d nupdown/ ]]; then
-        mkdir 0_ 1_ 2_ 3_ 4_ 5_ 6_ nupdown
-        sh ~/bin/verve/spread.sh submit.sh
-        sh ~/bin/verve/spread.sh restart.json
-        sh ~/bin/verve/spread.sh WAVECAR
-        find . -maxdepth 1 -mindepth 1 ! -name opt -exec mv {} nupdown/ \;
+        mkdir nupdown; mv * nupdown
+        mkdir 0_ 1_ 2_ 3_ 4_ 5_ 6_
+        sh ~/bin/verve/spread.sh nupdown/submit.sh
+        sh ~/bin/verve/spread.sh nupdown/restart.json
+        sh ~/bin/verve/spread.sh nupdown/WAVECAR
     fi
 done
 
