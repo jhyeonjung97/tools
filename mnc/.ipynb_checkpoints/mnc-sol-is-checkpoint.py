@@ -98,14 +98,13 @@ atoms.calc = vasp_calculator.Vasp(
                     ibrion=2,
                     isif=2,
                     ediffg=-0.02,
-                    ediff=1e-5,
+                    ediff=1e-6,
                     prec='Normal',
                     nsw=300,
                     lvhar=True,
                     lvtot=False,
                     ispin=2,
-                    setups={'base': 'recommended',
-                            'W': '_sv'},
+                    setups={'base': 'recommended', 'W': '_sv'},
                     ldau=True,
                     ldautype=2,
                     ldau_luj=ldau_luj,
@@ -119,7 +118,8 @@ atoms.calc = vasp_calculator.Vasp(
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True,
-                    lsol=True
+                    lsol=True,
+                    nupdown=spin
                     )
 
 energy = atoms.get_potential_energy()
