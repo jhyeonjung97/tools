@@ -5,22 +5,26 @@ dzs=(0 1 2 3 4 5 6)
 
 mkdir -p most_stable
 cd most_stable
-for dz in "${dzs[@]}"; do
-    mkdir -p "${dz}_"
+for dz in ${dzs[@]}
+do
+    mkdir -p ${dz}_
 done
-cd "$dir_now"
+cd $dir_now
 
-for dz in "${dzs[@]}"; do
-    lowest_dir=""
-    lowest_energy=0 # Initialize to a very high value
+for dz in ${dzs[@]}
+do
+    lowest_dir=''
+    lowest_energy=0
     
-    for dir in *_*S/ ; do
-        if [ -d "${dir}${dz}_/" ]; then
-            if [ -f "${dir}${dz}_/DONE" ]; then
-                energy=$(grep -oP 'ENERGY\s+-\K[0-9]*\.?[0-9]+' "${dir}${dz}_/DONE")
-                if [[ $(echo "$energy < $lowest_energy" | bc) -eq 1 ]]; then
+    for dir in *_*S/
+    do
+        grep -oP 'ENERGY\s+-\K[0-9]*\.?[0-9]+' ${dir}${dz}_/DONE
+        if [ -d ${dir}${dz}_/ ]; then
+            if [ -f ${dir}${dz}_/DONE ]; then
+                energy=$(grep -oP 'ENERGY\s+-\K[0-9]*\.?[0-9]+' ${dir}${dz}_/DONE)
+                if [[ $(echo $energy < $lowest_energy | bc) -eq 1 ]]; then
                     lowest_energy=$energy
-                    lowest_dir="${dir}${dz}_/"
+                    lowest_dir=${dir}${dz}_/
                 fi
             fi
         fi
