@@ -12,7 +12,7 @@ cd "$dir_now"
 
 for dz in "${dzs[@]}"; do
     lowest_dir=""
-    lowest_energy=999999 # Initialize to a very high value
+    lowest_energy=0 # Initialize to a very high value
     
     for dir in *_*S/ ; do
         if [ -d "${dir}${dz}_/" ]; then
