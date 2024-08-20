@@ -38,7 +38,6 @@ if path.exists('start.traj'):
     for a in atoms:
         if a.symbol in spin_states_plus_4:
             a.magmom = spin_states_plus_4.get(a.symbol)
-            # i *= -1 # set AFM
 else:
     raise ValueError('Where is start.traj')
     
@@ -96,7 +95,6 @@ atoms.calc = vasp_calculator.Vasp(
                     prec='Normal',
                     nsw=600,
                     lvtot=False,
-                    # nbands=nbands,
                     ispin=2,
                     setups={'base': 'recommended', 'W': '_sv'},
                     ldau=True,
@@ -116,7 +114,7 @@ atoms.calc = vasp_calculator.Vasp(
                     # nupdown=0
                     )
 
-eng = atoms.get_potential_energy()
+energy = atoms.get_potential_energy()
 print ('Calculation Complete, storing the run + calculator to traj file')
 
 Trajectory(f'final_{name}.traj','w').write(atoms)
