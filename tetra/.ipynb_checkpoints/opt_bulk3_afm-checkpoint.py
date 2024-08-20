@@ -21,7 +21,7 @@ spin_states_plus_2 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
                       'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4,
                       'Rh': 3, 'Pd': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
                       'La': 1, 'Hf': 2, 'Ta': 3, 'W': 4, 'Re': 5, 'Os': 4,
-                      'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2,
+                      'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2
                       }
 
 ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
@@ -31,7 +31,7 @@ ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
             'Fe':{'L':2, 'U':4.3,  'J':0.0},
             'Co':{'L':2, 'U':3.32, 'J':0.0},
             'Ni':{'L':2, 'U':6.45, 'J':0.0},
-            'Cu':{'L':2, 'U':3.0,  'J':0.0},
+            'Cu':{'L':2, 'U':3.0,  'J':0.0}
             }
 
 if path.exists('restart.json'):
@@ -101,7 +101,7 @@ atoms.calc = vasp_calculator.Vasp(
                     nsw=600,
                     lvtot=False,
                     ispin=2,
-                    setups={'base': 'recommended'},
+                    setups={'base': 'recommended', 'W': '_sv'},
                     ldau=True,
                     ldautype=2,
                     laechg=True,
