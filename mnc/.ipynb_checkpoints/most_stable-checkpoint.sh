@@ -30,7 +30,7 @@ for dz in "${dzs[@]}"; do
         echo "$lowest_dir/restart.json" "most_stable/${dz}_/"
         cp "$lowest_dir/restart.json" "most_stable/${dz}_/"
         cp "$lowest_dir/WAVECAR" "most_stable/${dz}_/"
-        cp ~/bin/tools/mnc/submit.sh "most_stable/${dz}_/"
+        # cp ~/bin/tools/mnc/submit.sh "most_stable/${dz}_/"
     else
         echo "No valid directory found for dz=${dz}"
     fi
