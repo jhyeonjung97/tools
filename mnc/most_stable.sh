@@ -18,11 +18,10 @@ do
     
     for dir in *_*S/
     do
-        grep -oP 'ENERGY\s+-\K[0-9]*\.?[0-9]+' ${dir}${dz}_/DONE
         if [ -d ${dir}${dz}_/ ]; then
             if [ -f ${dir}${dz}_/DONE ]; then
                 energy=$(grep -oP 'ENERGY\s+-\K[0-9]*\.?[0-9]+' ${dir}${dz}_/DONE)
-                if [[ $(echo $energy < $lowest_energy | bc) -eq 1 ]]; then
+                if [[ $(echo "$energy < $lowest_energy" | bc) -eq 1 ]]; then
                     lowest_energy=$energy
                     lowest_dir=${dir}${dz}_/
                 fi
