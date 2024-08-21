@@ -58,6 +58,9 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
             cp ~/bin/tools/tetra/static.sh .
             sed -i -e "s/jobname/${coord}${row}${numb}stc/" static.sh
             pwd; qsub static.sh
+        elif [[ -s static.sh ]] && [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]]; then
+            ~/bin/shoulder/rm_mv vasp.out
+            pwd; qsub static.sh
         elif [[ -s static.sh ]] && [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
             sed -i -e "s/static_bulk2.py/static_bulk2_fast.py/" static.sh
             pwd; qsub static.sh
