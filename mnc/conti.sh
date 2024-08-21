@@ -1,12 +1,12 @@
 #!/bin/bash
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/*_*/*d/*_*/*_*S
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/*_*S
 do
     cd $dir; pwd
     IFS='/' read -r -a path <<< $PWD
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     spin=$(echo "${path[-1]}" | cut -d'_' -f2)
-    if [[ -s DONE ]] && [[ -d nupdown ]]; then
+    if [[ -d nupdown ]]; then
         mkdir 1_ 2_ 3_ 4_ 5_ 6_
         sh ~/bin/verve/spread.sh nupdown/submit.sh
         sh ~/bin/verve/spread.sh nupdown/restart.json
