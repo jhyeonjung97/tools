@@ -26,5 +26,12 @@ do
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
     python ~/bin/tools/mnc/dz.py $dz
     sed -i "/#PBE -N/c\#PBS -N $metal$spin$dz" submit.sh
+    if [[ $spin == 'LS' ]]; then
+        sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
+    elif [[ $spin == 'IS' ]]; then
+        sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' submit.sh
+    elif [[ $spin == 'HS' ]]; then
+        sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
+    fi
     qsub submit.sh
 done
