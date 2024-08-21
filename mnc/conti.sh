@@ -11,7 +11,7 @@ do
         sh ~/bin/verve/spread.sh /scratch/x2755a09/3_MNC/0_clean/submit.sh
         sh ~/bin/verve/spread.sh nupdown/restart.json
         sh ~/bin/verve/spread.sh nupdown/WAVECAR
-        mv nupdown 0_
+        # mv nupdown 0_
     else
         echo -e "\e[36m$PWD\e[0m"
     fi
@@ -33,5 +33,5 @@ do
     elif [[ $spin == 'HS' ]]; then
         sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
     fi
-    qsub submit.sh
+    # qsub submit.sh
 done
