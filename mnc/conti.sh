@@ -17,6 +17,7 @@
 #     fi
 # done
 
+qstat -u x2755a09 > ~/mystat-mnc.txt
 for dir in /scratch/x2755a09/3_MNC/0_clean/*d/*_*/*_*S/*_
 do
     cd $dir; pwd
@@ -24,14 +25,18 @@ do
     metal=$(echo "${path[-3]}" | cut -d'_' -f2)
     spin=$(echo "${path[-2]}" | cut -d'_' -f2)
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
-    python ~/bin/tools/mnc/dz.py $dz
-    sed -i "/#PBS -N/c\#PBS -N $metal$spin$dz" submit.sh
-    if [[ $spin == 'LS' ]]; then
-        sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
-    elif [[ $spin == 'IS' ]]; then
-        sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' submit.sh
-    elif [[ $spin == 'HS' ]]; then
-        sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
+    if [[ -n $(grep ${coord}${row}${numb} ~/mystat.txt) ]] || [[ -s vasp.out ]]; then
+        :
+    else
+        python ~/bin/tools/mnc/dz.py $dz
+        sed -i "/#PBS -N/c\#PBS -N $metal$spin$dz" submit.sh
+        if [[ $spin == 'LS' ]]; then
+            sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
+        elif [[ $spin == 'IS' ]]; then
+            sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' submit.sh
+        elif [[ $spin == 'HS' ]]; then
+            sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
+        fi
+        qsub submit.sh
     fi
-    qsub submit.sh
 done
