@@ -25,7 +25,7 @@ do
     metal=$(echo "${path[-3]}" | cut -d'_' -f2)
     spin=$(echo "${path[-2]}" | cut -d'_' -f2)
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
-    if [[ -n $(grep ${coord}${row}${numb} ~/mystat.txt) ]] || [[ -s vasp.out ]]; then
+    if [[ -n $(grep ${coord}${row}${dz} ~/mystat.txt) ]] || [[ -s vasp.out ]]; then
         :
     else
         python ~/bin/tools/mnc/dz.py $dz
