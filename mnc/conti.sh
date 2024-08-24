@@ -25,14 +25,8 @@ do
     metal=$(echo "${path[-3]}" | cut -d'_' -f2)
     spin=$(echo "${path[-2]}" | cut -d'_' -f2)
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
-    if [[ -n $(grep $metal$spin$dz ~/mystat-mnc.txt) ]]; then
+    if [[ -n $(grep $metal$spin$dz ~/mystat-mnc.txt) ]] || [[ -s vasp.out ]]; then
         :
-    elif [[ -s vasp.out ]]; then
-        if [[ -n $(grep 'Sub-Space-Matrix is not hermitian in DAV' vasp.out) ]]; then
-            sh ~/bin/verve/correct-contcar.sh; python ~/bin/get_restart3
-            sed -i -e 's/nupdown.py/nupdown-fast.py/' submit.sh
-            pwd; qsub submit.sh
-        fi
     else
         python ~/bin/tools/mnc/dz.py $dz
         sed -i "/#PBS -N/c\#PBS -N $metal$spin$dz" submit.sh
