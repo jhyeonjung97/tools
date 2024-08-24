@@ -18,7 +18,7 @@
 # done
 
 qstat -u x2755a09 > ~/mystat-mnc.txt
-for dir in /scratch/x2755a09/3_MNC/0_clean/5d/4_W/*_*S/*_
+for dir in /scratch/x2755a09/3_MNC/0_clean/5d/5_Re/*_*S/*_
 do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
