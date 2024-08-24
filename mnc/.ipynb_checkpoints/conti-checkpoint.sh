@@ -26,6 +26,7 @@ do
     spin=$(echo "${path[-2]}" | cut -d'_' -f2)
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
     if [[ -n $(grep $metal$spin$dz ~/mystat.txt) ]]; then
+        :
     elif [[ -s vasp.out ]]; then
         if [[ -n $(grep 'Sub-Space-Matrix is not hermitian in DAV' vasp.out) ]]; then
             sh ~/bin/verve/correct-contcar.sh; python ~/bin/get_restart3
