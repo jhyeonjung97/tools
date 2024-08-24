@@ -11,24 +11,24 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'mnc-ls'
+name = 'mnc-is'
 
-spin_states_plus_1 = {'Ti': 1, 'V': 0, 'Cr': 1, 'Mn': 0, 'Fe': 1, 'Co': 0, 'Ni': 1, 'Cu': 0,
-                      'Zr': 1, 'Nb': 0, 'Mo': 1, 'Tc': 0, 'Ru': 1, 'Rh': 0, 'Pd': 1, 
-                      'Hf': 1, 'Ta': 0, 'W': 1, 'Re': 0, 'Os': 1, 'Ir': 0, 'Pt': 1
-                      }
-spin_states_plus_2 = {'Ti': 0, 'V': 1, 'Cr': 0, 'Mn': 1, 'Fe': 0, 'Co': 1, 'Ni': 0, 'Cu': 1,
-                      'Zr': 0, 'Nb': 1, 'Mo': 0, 'Tc': 1, 'Ru': 0, 'Rh': 1, 'Pd': 0, 
-                      'Hf': 0, 'Ta': 1, 'W': 0, 'Re': 1, 'Os': 0, 'Ir': 1, 'Pt': 0
-                      }
-spin_states_plus_3 = {'Ti': 1, 'V': 0, 'Cr': 1, 'Mn': 0, 'Fe': 1, 'Co': 0, 'Ni': 1, 'Cu': 0,
-                      'Zr': 1, 'Nb': 0, 'Mo': 1, 'Tc': 0, 'Ru': 1, 'Rh': 0, 'Pd': 1, 
-                      'Hf': 1, 'Ta': 0, 'W': 1, 'Re': 0, 'Os': 1, 'Ir': 0, 'Pt': 1
-                      }
-spin_states_plus_4 = {'Ti': 0, 'V': 1, 'Cr': 0, 'Mn': 1, 'Fe': 0, 'Co': 1, 'Ni': 0, 'Cu': 1,
-                      'Zr': 0, 'Nb': 1, 'Mo': 0, 'Tc': 1, 'Ru': 0, 'Rh': 1, 'Pd': 0, 
-                      'Hf': 0, 'Ta': 1, 'W': 0, 'Re': 1, 'Os': 0, 'Ir': 1, 'Pt': 0
-                      }
+spin_states_plus_1 = {'V': 2, 'Cr': 3, 'Mn': 2,
+                      'Nb': 2, 'Mo': 3, 'Tc': 2,
+                      'Ta': 2, 'W': 3, 'Re': 2
+                     }
+spin_states_plus_2 = {'Cr': 2, 'Mn': 3, 'Fe': 2,
+                      'Mo': 2, 'Tc': 3, 'Ru': 2,
+                      'W': 2, 'Re': 3, 'Os': 2
+                     }
+spin_states_plus_3 = {'Mn': 2, 'Fe': 3, 'Co': 2,
+                      'Tc': 2, 'Ru': 3, 'Rh': 2,
+                      'Re': 2, 'Os': 3, 'Ir': 2
+                     }
+spin_states_plus_4 = {'Fe': 2, 'Co': 3, 'Ni': 2,
+                      'Ru': 2, 'Rh': 3, 'Pd': 2,
+                      'Os': 2, 'Ir': 3, 'Pt': 2
+                     }
 
 ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
@@ -94,7 +94,7 @@ atoms.calc = vasp_calculator.Vasp(
                     amix_mag=amix_mag,
                     bmix_mag=bmix_mag,
                     nelm=300,
-                    algo='Normal',
+                    algo='Fast',
                     ibrion=2,
                     isif=2,
                     ediffg=-0.02,
