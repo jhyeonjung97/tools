@@ -32,6 +32,7 @@ do
             sh ~/bin/verve/correct-contcar.sh; python ~/bin/get_restart3
             sed -i -e 's/nupdown.py/nupdown-fast.py/' submit.sh
             pwd; qsub submit.sh
+        fi
     else
         python ~/bin/tools/mnc/dz.py $dz
         sed -i "/#PBS -N/c\#PBS -N $metal$spin$dz" submit.sh
