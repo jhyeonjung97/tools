@@ -25,8 +25,14 @@ do
     metal=$(echo "${path[-3]}" | cut -d'_' -f2)
     spin=$(echo "${path[-2]}" | cut -d'_' -f2)
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
-    if [[ -n $(grep $metal$spin$dz ~/mystat-mnc.txt) ]] || [[ -s vasp.out ]]; then
+    if [[ -n $(grep $metal$spin$dz ~/mystat-mnc.txt) ]]; then
         :
+    elif [[ -s vasp.out ]]; then
+        if [[ -n $(grep 'please rerun with smaller EDIFF' vasp.out) ]]; then
+            pwd; qsub submit.sh
+        else
+            :
+        fi
     else
         python ~/bin/tools/mnc/dz.py $dz
         sed -i "/#PBS -N/c\#PBS -N $metal$spin$dz" submit.sh
