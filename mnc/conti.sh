@@ -29,7 +29,10 @@ do
         :
     elif [[ -s vasp.out ]]; then
         if [[ -n $(grep 'please rerun with smaller EDIFF' vasp.out) ]]; then
-            pwd; qsub submit.sh
+            rm vasp.out; pwd; qsub submit.sh
+        elif [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
+            sed -i 's/nupdown.py/nupdown-fast.py/' submit.sh
+            rm vasp.out; pwd; qsub submit.sh
         else
             :
         fi
