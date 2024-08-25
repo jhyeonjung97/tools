@@ -33,6 +33,9 @@ do
         elif [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
             sed -i 's/nupdown.py/nupdown-fast.py/' submit.sh
             rm vasp.out; pwd; qsub submit.sh
+        elif [[ -n $(grep 'exceeded limit' *.e*) ]]; then
+            python ~/bin/get_restart3
+            rm vasp.out; pwd; qsub submit.sh
         else
             :
         fi
