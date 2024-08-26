@@ -12,7 +12,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_slab2'
+name = 'opt_bulk2'
 
 effective_length = 25
 
@@ -21,7 +21,7 @@ spin_states_plus_2 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
                       'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 4,
                       'Rh': 3, 'Pd': 2, 'Ag': 1, 'Cd': 1, 'In': 1, 'Sn': 2,
                       'La': 1, 'Hf': 2, 'Ta': 3, 'W': 4, 'Re': 5, 'Os': 4,
-                      'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2,
+                      'Ir': 3, 'Pt': 2, 'Au': 1, 'Hg': 1, 'Tl': 1, 'Pb': 2
                       }
 
 ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
@@ -36,8 +36,13 @@ ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
+elif path.exists('start.traj'):
+    atoms = read('start.traj')
+    for atom in atoms:
+        if atom.symbol in spin_states_plus_2:
+            atom.magmom = spin_states_plus_2[atom.symbol]
 else:
-    raise ValueError('No restart.json file found')
+    raise ValueError('Neither restart.json nor start.traj file found')
 
 lmaxmix = 2
 for atom in atoms:
@@ -45,6 +50,28 @@ for atom in atoms:
         lmaxmix = 4
     else:
         ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
+
+def get_bands(atoms):
+    """
+    returns the extact number of bands desired by lobster for the pCOHP calculations
+    """
+    nbands = 0
+    for sym in atoms.get_chemical_symbols():
+        if sym == 'H': # H is bugged
+            nbands += 1
+            continue
+        config = element(sym).ec.get_valence().to_str()
+        config = config.split()
+        for c in config:
+            if 's' in c:
+                nbands += 1
+            elif 'p' in c:
+                nbands += 3
+            elif 'd' in c:
+                nbands += 5
+            elif 'f' in c:
+                nbands += 7
+    return nbands
 
 def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     """
@@ -66,7 +93,8 @@ def get_kpoints(atoms, effective_length=effective_length, bulk=False):
         nkz = 1
     return((nkx, nky, nkz))
 
-kpoints = get_kpoints(atoms, effective_length=25, bulk=False)
+nbands = get_bands(atoms)
+kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
 
 atoms.calc = vasp_calculator.Vasp(
                     encut=600,
