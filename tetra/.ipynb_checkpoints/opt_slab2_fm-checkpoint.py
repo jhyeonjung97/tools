@@ -12,7 +12,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk2'
+name = 'opt_slab2_fm'
 
 effective_length = 25
 
