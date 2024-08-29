@@ -24,6 +24,7 @@ do
                 pwd; qsub submit.sh
             else
                 echo -e "\e[32m$PWD\e[0m"
+            fi
         fi
     else
         python ~/bin/tools/mnc/dz.py $dz
