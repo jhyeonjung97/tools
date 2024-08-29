@@ -11,18 +11,19 @@ do
     if [[ -n $(grep $metal$spin$dz ~/mystat.txt) ]]; then
         :
     elif [[ -s vasp.out ]]; then
-        python ~/bin/get_restart3
-        if [[ -n $(grep 'please rerun with smaller EDIFF' vasp.out) ]]; then
-            pwd; qsub submit.sh
-        elif [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
-            sed -i 's/nupdown.py/nupdown-fast.py/' submit.sh
-            pwd; qsub submit.sh
-        elif [[ -n $(grep 'exceeded limit' *.e*) ]]; then
-            pwd; qsub submit.sh
-        elif [[ ! -s DONE ]]; then
-            echo -e "\e[32m$PWD\e[0m"
-        else
+        if [[ -s DONE ]]; then
             :
+        else
+            python ~/bin/get_restart3
+            if [[ -n $(grep 'please rerun with smaller EDIFF' vasp.out) ]]; then
+                pwd; qsub submit.sh
+            elif [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
+                sed -i 's/nupdown.py/nupdown-fast.py/' submit.sh
+                pwd; qsub submit.sh
+            elif [[ -n $(grep 'exceeded limit' *.e*) ]]; then
+                pwd; qsub submit.sh
+            else
+                echo -e "\e[32m$PWD\e[0m"
         fi
     else
         python ~/bin/tools/mnc/dz.py $dz
