@@ -17,8 +17,8 @@ for dir in /scratch/x2755a09/6_V_slab/*_*_*/*/*_*/; do
             sed -i -e "s/ncpus=40/ncpus=64/" submit.sh
             sed -i -e "s/mpiprocs=40/mpiprocs=64/" submit.sh
             sed -i -e "s/run_vasp_flat.py/run_vasp.py/" submit.sh
-            sed -i -e "/#PBS -l walltime/c\#PBS -l walltime=48:00:00" submit.sh
-            sed -i -e "/#PBS -q/c\#PBS -q normal" submit.sh
+            sed -i -e "/#PBS -l walltime/c\#PBS -l walltime=48:00:01" submit.sh
+            sed -i -e "/#PBS -q/c\#PBS -q long" submit.sh
             pwd; qsub submit.sh
         else
             echo -e "\e[32m$PWD\e[0m"
