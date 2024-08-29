@@ -12,13 +12,18 @@ for dir in /scratch/x2755a09/6_V_slab/*_*_*/*/*_*/; do
         :
     elif [[ $coord == 'AU' ]] || [[ $coord == 'AQ' ]]; then
         :
+    elif [[ -s vasp.out ]]; then
+        if [[ -n $(grep 'WARNING: random wavefunctions but no delay for mixing, default for NELMD' vasp.out) ]]; then
+            sed -i -e "s/ncpus=40/ncpus=64/" submit.sh
+            sed -i -e "s/mpiprocs=40/mpiprocs=64/" submit.sh
+            sed -i -e "s/run_vasp_flat.py/run_vasp.py/" submit.sh
+            sed -i -e "/#PBS -l walltime/c\#PBS -l walltime=48:00:00" submit.sh
+            sed -i -e "/#PBS -q/c\#PBS -q normal" submit.sh
+            pwd; qsub submit.sh
+        else
+            echo -e "\e[32m$PWD\e[0m"
+        fi
     else
-        sed -i -e "s/ncpus=40/ncpus=64/" submit.sh
-        sed -i -e "s/mpiprocs=40/mpiprocs=64/" submit.sh
-        sed -i -e "s/run_vasp_flat.py/run_vasp.py/" submit.sh
-        sed -i -e "/#PBS -l walltime/c\#PBS -l walltime=48:00:00" submit.sh
-        sed -i -e "/#PBS -q/c\#PBS -q normal" submit.sh
-        pwd; qsub submit.sh
-        # echo -e "\e[32m$PWD\e[0m"
+        echo -e "\e[32m$PWD\e[0m"
     fi
 done
