@@ -36,11 +36,6 @@ do
         elif [[ $spin == 'HS' ]]; then
             sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
         fi
-        sed -i -e "s/ncpus=40/ncpus=64/" submit.sh
-        sed -i -e "s/mpiprocs=40/mpiprocs=64/" submit.sh
-        sed -i -e "s/run_vasp_flat.py/run_vasp.py/" submit.sh
-        sed -i -e "/#PBS -l walltime/c\#PBS -l walltime=48:00:01" submit.sh
-        sed -i -e "/#PBS -q/c\#PBS -q long" submit.sh
         pwd; qsub submit.sh
     fi
 done
