@@ -23,7 +23,7 @@ do
             elif [[ -n $(grep 'exceeded limit' *.e*) ]]; then
                 pwd; qsub submit.sh
             else
-                echo -e "\e[32m$PWD\e[0m"
+                sh ~/bin/verve/resub.sh
             fi
         fi
     else
