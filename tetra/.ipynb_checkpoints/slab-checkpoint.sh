@@ -8,7 +8,11 @@ for dir in /scratch/x2755a09/6_V_slab/*_*_*/*/*_*/; do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     
-    if [[ ! -n $(grep ${coord}${row}${numb} ~/mystat.txt) ]] && [[ ! -s DONE ]]; then
+    if [[ -n $(grep ${coord}${row}${numb} ~/mystat.txt) ]] || [[ -s DONE ]]; then
+        :
+    elif [[ $coord == 'AU' ]] || [[ $coord == 'AQ' ]]; then
+        :
+    else
         echo -e "\e[32m$PWD\e[0m"
     fi
 done
