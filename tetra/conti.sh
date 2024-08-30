@@ -57,12 +57,12 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
             sed -i -e 's/m_symprec.py/m_fast.py/' submit.sh
             sed -i -e '/walltime/c\#PBS -l walltime=06:00:00' submit.sh
             pwd; qsub submit.sh
-        elif [[ -n $(grep SYMPREC vasp.out) ]]; then
-            sed -i -e 's/m.py/m_symprec.py/' submit.sh
-            sed -i -e 's/m_ediff.py/m_symprec.py/' submit.sh
-            sed -i -e 's/m_fast.py/m_symprec.py/' submit.sh
-            sed -i -e '/walltime/c\#PBS -l walltime=06:00:00' submit.sh
-            pwd; qsub submit.sh
+        # elif [[ -n $(grep SYMPREC vasp.out) ]]; then
+        #     sed -i -e 's/m.py/m_symprec.py/' submit.sh
+        #     sed -i -e 's/m_ediff.py/m_symprec.py/' submit.sh
+        #     sed -i -e 's/m_fast.py/m_symprec.py/' submit.sh
+        #     sed -i -e '/walltime/c\#PBS -l walltime=06:00:00' submit.sh
+        #     pwd; qsub submit.sh
         elif [[ -s DONE ]]; then
             mkdir opt; find . -maxdepth 1 -mindepth 1 ! -name opt -exec mv {} opt/ \;
             cp opt/restart.json opt/WAVECAR .
