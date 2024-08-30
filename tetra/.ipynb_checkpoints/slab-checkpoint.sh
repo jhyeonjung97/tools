@@ -20,6 +20,9 @@ for dir in /scratch/x2755a09/6_V_slab/*_*_*/*/*_*/; do
             sed -i -e "/#PBS -l walltime/c\#PBS -l walltime=48:00:00" submit.sh
             sed -i -e "/#PBS -q/c\#PBS -q normal" submit.sh
             pwd; qsub submit.sh
+        elif [[ -n $(grep 'exceeded limit' *.e*) ]]; then
+            python ~/bin/get_restart3
+            pwd; qsub submit.sh
         else
             echo -e "\e[32m$PWD\e[0m"
         fi
