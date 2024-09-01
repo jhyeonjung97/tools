@@ -1,7 +1,9 @@
 #!/bin/bash
 
-qstat -u x2755a09 > ~/mystat.txt
-for dir in /scratch/x2755a09/3_MNC/0_clean/*d/*_*/*_*S/*_
+squeue --me > ~/nersc.txt
+cat ~/kisti.txt ~/nersc.txt > ~/mystat.txt
+
+for dir in /pscratch/sd/j/jiuy97/6_MNC/kisti/3_MNC/0_clean/*d/*_*/*_*S/*_
 do
     cd $dir
     IFS='/' read -r -a path <<< $PWD

@@ -1,6 +1,10 @@
-qstat -u x2755a09 > ~/mystat.txt
+#!/bin/bash
 
-for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
+squeue --me > ~/nersc.txt
+cat ~/kisti.txt ~/nersc.txt > ~/mystat.txt
+
+# for dir in /pscratch/sd/j/jiuy97/3_V_shape/kisti/5_V_bulk/*_*_*/*/*_*/; do
+for dir in /pscratch/sd/j/jiuy97/3_V_shape/kisti/5_V_bulk/*_*_*/*/*_*/; do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
@@ -21,7 +25,7 @@ for dir in /scratch/x2755a09/5_V_bulk/*_*_*/*/*_*/; do
             pwd; qsub static.sh
         elif [[ -s static.sh ]] && [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]]; then
             ~/bin/shoulder/rm_mv vasp.out
-            pwd; qsub static.sh
+            pwd; # qsub static.sh
         elif [[ -s static.sh ]] && [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
             sed -i -e "s/static_bulk2.py/static_bulk2_fast.py/" static.sh
             pwd; qsub static.sh
