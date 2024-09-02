@@ -18,7 +18,7 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
     elif [[ $numb == *x_* ]] || [[ $numb == *z_* ]] || [[ $numb == *s_* ]]; then
         :
     elif [[ -s vasp.out ]]; then
-        if [[ -n $(grep 'WARNING: random wavefunctions but no delay for mixing, default for NELMD' vasp.out) ]] || [[ -n $(grep 'exceeded limit' *.e*) ]] || [[ -n $(grep 'please rerun with smaller EDIFF, or copy CONTCAR' vasp.out) ]]; then
+        if [[ -n $(grep 'WARNING: random wavefunctions but no delay for mixing, default for NELMD' vasp.out) ]] || [[ -n $(grep 'please rerun with smaller EDIFF, or copy CONTCAR' vasp.out) ]]; then
             python ~/bin/get_restart3
             cp /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/submit.sh .
             sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}s" submit.sh
@@ -27,7 +27,18 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
             elif [[ $coord == 'NB' ]]; then
                 sed -i -e "s/opt_slab2_afm.py/opt_slab2_NB.py/" submit.sh
             fi
-            pwd; # qsub submit.sh
+            pwd; qsub submit.sh
+        elif [[ -n $(grep 'exceeded limit' *.e*) ]]; then
+            python ~/bin/get_restart3
+            cp /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/submit.sh .
+            sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}s" submit.sh
+            if [[ $row == 'fm' ]]; then
+                sed -i -e "s/opt_slab2_afm.py/opt_slab2_fm.py/" submit.sh
+            elif [[ $coord == 'NB' ]]; then
+                sed -i -e "s/opt_slab2_afm.py/opt_slab2_NB.py/" submit.sh
+            fi
+            rm *.e*
+            pwd; qsub submit.sh
         else
             echo -e "\e[32m$PWD\e[0m"
         fi
