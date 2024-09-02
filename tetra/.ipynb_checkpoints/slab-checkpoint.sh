@@ -22,7 +22,10 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
         python ~/bin/get_restart3
         cp restart.json full_relaxed
         cp /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/submit.sh full_relaxed
-        cd full_relaxed; pwd
+        cd full_relaxed
+        sed -i -e '/constraints/d' restart.json
+        sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}f" submit.sh
+        pwd; # sbatch submit.sh
     elif [[ -s vasp.out ]]; then
         if [[ -n $(grep 'WARNING: random wavefunctions but no delay for mixing, default for NELMD' vasp.out) ]] || [[ -n $(grep 'please rerun with smaller EDIFF, or copy CONTCAR' vasp.out) ]] || [[ -n $(grep 'exceeded limit' *.e*) ]]; then
             python ~/bin/get_restart3
