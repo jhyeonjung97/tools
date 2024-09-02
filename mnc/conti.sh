@@ -19,7 +19,15 @@ do
         else
             python ~/bin/get_restart3
             cp ~/bin/tools/mnc/submit.sh .
-            sed -i "/#PBS -N/c\#PBS -N $metal$spin$dz" submit.sh
+            sed -i "/#SBATCH -J/c\#SBATCH -J $metal$spin$dz" submit.sh
+            if [[ $spin == 'LS' ]]; then
+                sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
+            elif [[ $spin == 'IS' ]]; then
+                sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' submit.sh
+            elif [[ $spin == 'HS' ]]; then
+                sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
+            fi
+            
             if [[ -n $(grep 'please rerun with smaller EDIFF' vasp.out) ]]; then
                 pwd; sbatch submit.sh
             elif [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
@@ -33,9 +41,9 @@ do
             fi
         fi
     else
-        cp ~/bin/tools/mnc/submit.sh .
         python ~/bin/tools/mnc/dz.py $dz
-        sed -i "/#PBS -N/c\#PBS -N $metal$spin$dz" submit.sh
+        cp ~/bin/tools/mnc/submit.sh .
+        sed -i "/#SBATCH -J/c\#SBATCH -J $metal$spin$dz" submit.sh
         if [[ $spin == 'LS' ]]; then
             sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
         elif [[ $spin == 'IS' ]]; then
