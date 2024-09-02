@@ -19,15 +19,17 @@ do
         else
             python ~/bin/get_restart3
             cp ~/bin/tools/mnc/submit.sh .
+            sed -i "/#PBS -N/c\#PBS -N $metal$spin$dz" submit.sh
             if [[ -n $(grep 'please rerun with smaller EDIFF' vasp.out) ]]; then
-                pwd; # sbatch submit.sh
+                pwd; sbatch submit.sh
             elif [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
                 sed -i 's/nupdown.py/nupdown-fast.py/' submit.sh
-                pwd; # sbatch submit.sh
+                pwd; sbatch submit.sh
             elif [[ -n $(grep 'exceeded limit' *.e*) ]]; then
-                pwd; # sbatch submit.sh
+                pwd; sbatch submit.sh
             else
-                pwd; # sh ~/bin/verve/resub.sh
+                rm *.o* *.e*
+                pwd; sbatch submit.sh
             fi
         fi
     else
