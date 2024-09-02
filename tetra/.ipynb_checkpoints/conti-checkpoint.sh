@@ -45,7 +45,7 @@ for dir in /pscratch/sd/j/jiuy97/3_V_shape/kisti/5_V_bulk/*_*_*/*/*_*/; do
             cp ~/bin/tools/tetra/lobsterin .
             sed -i -e "s/X/${metal}/g" lobsterin
             cp ~/bin/tools/tetra/static.sh .
-            sed -i -e "s/jobname/${coord}${row}${numb}stc/" static.sh
+            sed -i -e "s/jobname/${coord}${row}${numb}t/" static.sh
             pwd; # sbatch static.sh
         fi
     elif [[ ! -d opt ]] && [[ -s vasp.out ]]; then
