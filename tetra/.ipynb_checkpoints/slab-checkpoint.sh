@@ -11,12 +11,18 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     
-    if [[ -n $(grep ${coord}${row}${numb}s ~/mystat.txt) ]] || [[ -s DONE ]]; then
+    if [[ -n $(grep ${coord}${row}${numb}s ~/mystat.txt) ]]; then
         :
     elif [[ $coord == 'AU' ]] || [[ $coord == 'AQ' ]]; then
         :
     elif [[ $numb == *x ]] || [[ $numb == *z ]] || [[ $numb == *s ]]; then
         :
+    elif [[ -s DONE ]]; then
+        mkdir full_relaxed
+        python ~/bin/get_restart3
+        cp restart.json full_relaxed
+        cp /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/submit.sh full_relaxed
+        cd full_relaxed; pwd
     elif [[ -s vasp.out ]]; then
         if [[ -n $(grep 'WARNING: random wavefunctions but no delay for mixing, default for NELMD' vasp.out) ]] || [[ -n $(grep 'please rerun with smaller EDIFF, or copy CONTCAR' vasp.out) ]] || [[ -n $(grep 'exceeded limit' *.e*) ]]; then
             python ~/bin/get_restart3
