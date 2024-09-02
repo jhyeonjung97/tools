@@ -27,7 +27,7 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
             elif [[ $coord == 'NB' ]]; then
                 sed -i -e "s/opt_slab2_afm.py/opt_slab2_NB.py/" submit.sh
             fi
-            pwd; qsub submit.sh
+            pwd; sbatch submit.sh
         elif [[ -n $(grep 'exceeded limit' *.e*) ]]; then
             python ~/bin/get_restart3
             cp /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/submit.sh .
@@ -38,7 +38,7 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
                 sed -i -e "s/opt_slab2_afm.py/opt_slab2_NB.py/" submit.sh
             fi
             rm *.e*
-            pwd; qsub submit.sh
+            pwd; sbatch submit.sh
         else
             echo -e "\e[32m$PWD\e[0m"
         fi
