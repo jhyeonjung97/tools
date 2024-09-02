@@ -1,7 +1,7 @@
 #!/bin/bash
 
-squeue --me > ~/nersc.txt
-cat ~/kisti.txt ~/nersc.txt > ~/mystat.txt
+squeue --me > ~/mystat.txt
+# cat ~/kisti.txt ~/nersc.txt > ~/mystat.txt
 
 for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
     cd $dir
@@ -11,19 +11,23 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     
-    if [[ -n $(grep ${coord}${row}${numb} ~/mystat.txt) ]] || [[ -s DONE ]]; then
+    if [[ -n $(grep ${coord}${row}${numb}s ~/mystat.txt) ]] || [[ -s DONE ]]; then
         :
     elif [[ $coord == 'AU' ]] || [[ $coord == 'AQ' ]]; then
+        :
+    elif [[ $numb == *x_* ]] || [[ $numb == *z_* ]] || [[ $numb == *s_* ]]; then
         :
     elif [[ -s vasp.out ]]; then
         if [[ -n $(grep 'WARNING: random wavefunctions but no delay for mixing, default for NELMD' vasp.out) ]] || [[ -n $(grep 'exceeded limit' *.e*) ]] || [[ -n $(grep 'please rerun with smaller EDIFF, or copy CONTCAR' vasp.out) ]]; then
             python ~/bin/get_restart3
-            sed -i -e "s/ncpus=40/ncpus=64/" submit.sh
-            sed -i -e "s/mpiprocs=40/mpiprocs=64/" submit.sh
-            sed -i -e "s/run_vasp_flat.py/run_vasp.py/" submit.sh
-            sed -i -e "/#PBS -l walltime/c\#PBS -l walltime=48:00:00" submit.sh
-            sed -i -e "/#PBS -q/c\#PBS -q normal" submit.sh
-            pwd; qsub submit.sh
+            cp /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/submit.sh .
+            sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}s" submit.sh
+            if [[ $row == 'fm' ]]; then
+                sed -i -e "s/opt_slab2_afm.py/opt_slab2_fm.py/" submit.sh
+            elif [[ $coord == 'NB' ]]; then
+                sed -i -e "s/opt_slab2_afm.py/opt_slab2_NB.py/" submit.sh
+            fi
+            pwd; # qsub submit.sh
         else
             echo -e "\e[32m$PWD\e[0m"
         fi
