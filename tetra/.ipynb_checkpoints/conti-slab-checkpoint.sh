@@ -13,14 +13,13 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
 
     if [[ $numb == *z ]] || [[ $numb == *s ]]; then
         numb="${numb%?}"
-        echo $numb
     fi
     
     if [[ -n $(grep ${coord}${row}${numb}s ~/mystat.txt) ]]; then
         :
     elif [[ $coord == 'AU' ]] || [[ $coord == 'AQ' ]]; then
         :
-    elif [[ $numb == *x ]] || [[ $numb == *z ]] || [[ $numb == *s ]]; then
+    elif [[ $numb == *x ]]; then
         :
     elif [[ -s DONE ]]; then
         # :
