@@ -11,8 +11,8 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     
-    if [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]] || [[ -n $(grep 'while reading WAVECAR, plane wave coefficients changed' vasp.out) ]]; then
-        if [[ -s vasp.out ]]; then
+    if [[ -s vasp.out ]]; then
+        if [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]] || [[ -n $(grep 'while reading WAVECAR, plane wave coefficients changed' vasp.out) ]]; then
             rm vasp.out
             pwd
         fi
