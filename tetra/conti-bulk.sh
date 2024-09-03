@@ -19,6 +19,13 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
         else
             pwd; ase convert -f OUTCAR full_relaxed.json
         fi
+        if [[ -s static.sh ]] && [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]]; then
+            # ~/bin/shoulder/rm_mv vasp.out
+            echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
+        elif [[ -s static.sh ]] && [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
+            # sed -i -e "s/static_bulk2.py/static_bulk2_fast.py/" static.sh
+            echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
+        fi
     elif [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
         if [[ ! -s vasp.out ]]; then
             cp opt/restart.json opt/WAVECAR .
