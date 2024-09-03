@@ -3,7 +3,7 @@
 squeue --me > ~/mystat.txt
 # cat ~/kisti.txt ~/nersc.txt > ~/mystat.txt
 
-for dir in /pscratch/sd/j/jiuy97/3_V_shape/kisti/5_V_bulk/*_*_*/*/*_*/; do
+for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
@@ -14,7 +14,9 @@ for dir in /pscratch/sd/j/jiuy97/3_V_shape/kisti/5_V_bulk/*_*_*/*/*_*/; do
     if [[ -n $(grep "${coord}${row}${numb} " ~/mystat.txt) ]] || [[ -n $(grep "${coord}${row}${numb}t" ~/mystat.txt) ]]; then
         :
     elif [[ -d opt ]] && [[ -s icohp.txt ]]; then
-        :
+        if [[ ! -s opt/DONE ]]; then
+            echo -e "\e[32m$PWD\e[0m"
+        fi
     elif [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
         if [[ ! -s vasp.out ]]; then
             cp opt/restart.json opt/WAVECAR .
