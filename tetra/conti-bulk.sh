@@ -14,12 +14,13 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
     if [[ -n $(grep "${coord}${row}${numb} " ~/mystat.txt) ]] || [[ -n $(grep "${coord}${row}${numb}t" ~/mystat.txt) ]]; then
         :
     elif [[ -d opt ]] && [[ -s icohp.txt ]]; then
-        if [[ -s static.sh ]] && [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]]; then
-            # ~/bin/shoulder/rm_mv vasp.out
-            echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
-        elif [[ -s static.sh ]] && [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
-            # sed -i -e "s/static_bulk2.py/static_bulk2_fast.py/" static.sh
-            echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
+        if [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]] || [[ -n $(grep 'while reading WAVECAR, plane wave coefficients changed' vasp.out) ]]; then
+            cp opt/WAVECAR opt/restart.json .
+            cp ~/bin/tools/tetra/lobsterin .
+            sed -i -e "s/X/${metal}/g" lobsterin
+            cp ~/bin/tools/tetra/static.sh .
+            sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}t" static.sh
+            pwd; sbatch static.sh
         elif [[ ! -s opt/DONE ]]; then
             echo -e "\e[32m$PWD\e[0m"
         elif [[ ! -s full_relaxed.json ]]; then
