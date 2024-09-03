@@ -14,11 +14,6 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
     if [[ -n $(grep "${coord}${row}${numb} " ~/mystat.txt) ]] || [[ -n $(grep "${coord}${row}${numb}t" ~/mystat.txt) ]]; then
         :
     elif [[ -d opt ]] && [[ -s icohp.txt ]]; then
-        if [[ ! -s opt/DONE ]]; then
-            echo -e "\e[32m$PWD\e[0m"
-        elif [[ ! -s full_relaxed.json ]]; then
-            pwd; ase convert -f OUTCAR full_relaxed.json
-        fi
         if [[ -s static.sh ]] && [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]]; then
             # ~/bin/shoulder/rm_mv vasp.out
             echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
@@ -26,6 +21,12 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
             # sed -i -e "s/static_bulk2.py/static_bulk2_fast.py/" static.sh
             echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
         fi
+        if [[ ! -s opt/DONE ]]; then
+            echo -e "\e[32m$PWD\e[0m"
+        elif [[ ! -s full_relaxed.json ]]; then
+            pwd; ase convert -f OUTCAR full_relaxed.json
+        fi
+
     elif [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
         if [[ ! -s vasp.out ]]; then
             cp opt/restart.json opt/WAVECAR .
