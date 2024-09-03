@@ -11,18 +11,23 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     
+    if [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]] || [[ -n $(grep 'while reading WAVECAR, plane wave coefficients changed' vasp.out) ]]; then
+        rm vasp.out
+        pwd
+    fi
+        
     if [[ -n $(grep "${coord}${row}${numb} " ~/mystat.txt) ]] || [[ -n $(grep "${coord}${row}${numb}t" ~/mystat.txt) ]]; then
         :
+    elif [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]] || [[ -n $(grep 'while reading WAVECAR, plane wave coefficients changed' vasp.out) ]]; then
+        cp opt/WAVECAR opt/restart.json .
+        cp ~/bin/tools/tetra/lobsterin .
+        sed -i -e "s/X/${metal}/g" lobsterin
+        cp ~/bin/tools/tetra/static.sh .
+        sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}t" static.sh
+        rm vasp.out
+        pwd; # sbatch static.sh
     elif [[ -d opt ]] && [[ -s icohp.txt ]]; then
-        if [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]] || [[ -n $(grep 'while reading WAVECAR, plane wave coefficients changed' vasp.out) ]]; then
-            cp opt/WAVECAR opt/restart.json .
-            cp ~/bin/tools/tetra/lobsterin .
-            sed -i -e "s/X/${metal}/g" lobsterin
-            cp ~/bin/tools/tetra/static.sh .
-            sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}t" static.sh
-            rm vasp.out
-            pwd; # sbatch static.sh
-        elif [[ ! -s opt/DONE ]]; then
+        if [[ ! -s opt/DONE ]]; then
             echo -e "\e[32m$PWD\e[0m"
         elif [[ ! -s full_relaxed.json ]]; then
             pwd; ase convert -f OUTCAR full_relaxed.json
