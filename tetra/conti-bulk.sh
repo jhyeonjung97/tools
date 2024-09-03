@@ -16,6 +16,8 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
     elif [[ -d opt ]] && [[ -s icohp.txt ]]; then
         if [[ ! -s opt/DONE ]]; then
             echo -e "\e[32m$PWD\e[0m"
+        else
+            ase convert -f OUTCAR full_relaxed.json
         fi
     elif [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
         if [[ ! -s vasp.out ]]; then

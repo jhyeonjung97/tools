@@ -72,8 +72,6 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
             pwd; #echo -e "\e[32m$PWD\e[0m"
         fi
     else
-        # rm *.log *.out
-        # pwd; sbatch submit.sh
-        pwd; #echo -e "\e[32m$PWD\e[0m"
+        pwd; #echo -e "\e[35m$PWD\e[0m"
     fi
 done
