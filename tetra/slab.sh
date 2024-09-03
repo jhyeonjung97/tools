@@ -25,7 +25,8 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
             if [[ -s DONE ]]; then
                 :
             else
-                echo -e "\e[35m$PWD\e[0m"
+                rm *.log *.out
+                pwd; sbatch submit.sh
             fi
         else
             mkdir full_relaxed
