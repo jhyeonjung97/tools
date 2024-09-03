@@ -48,10 +48,10 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
             elif [[ $coord == 'NB' ]]; then
                 sed -i -e "s/opt_slab2_afm.py/opt_slab2_NB.py/" submit.sh
             fi
-            pwd; sbatch submit.sh
         else
-            echo -e "\e[32m$PWD\e[0m"
+            rm *.log *.out
         fi
+        pwd; sbatch submit.sh
     else
         echo -e "\e[32m$PWD\e[0m"
     fi
