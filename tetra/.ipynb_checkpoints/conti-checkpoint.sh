@@ -24,7 +24,7 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
             sed -i -e "s/X/${metal}/g" lobsterin
             cp ~/bin/tools/tetra/static.sh .
             sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}t" static.sh
-            pwd; sbatch static.sh
+            pwd; # sbatch static.sh
         elif [[ -s static.sh ]] && [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]]; then
             # ~/bin/shoulder/rm_mv vasp.out
             pwd; # sbatch static.sh
@@ -56,11 +56,12 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
             sed -i -e "s/X/$metal/g" lobsterin
             cp ~/bin/tools/tetra/static.sh .
             sed -i -e "s/jobname/${coord}${row}${numb}t/" static.sh 
-            echo -e "\e[35m$PWD\e[0m"; sbatch static.sh
+            echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
         else
+            python ~/bin/get_restart3
             cp ~/bin/tools/tetra/submit-bulk.sh submit.sh
             sed -i -e "s/jobname/${coord}${row}${numb}/" submit.sh 
-            pwd; sbatch submit.sh
+            pwd; # sbatch submit.sh
         fi
     else
         echo -e "\e[32m$PWD\e[0m"
