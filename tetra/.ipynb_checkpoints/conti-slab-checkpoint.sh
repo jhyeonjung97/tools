@@ -10,6 +10,11 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
     row=${path[-2]}
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
+
+    if [[ $numb == *z ]] || [[ $numb == *s ]]; then
+        numb="${numb%?}"
+        echo $numb
+    fi
     
     if [[ -n $(grep ${coord}${row}${numb}s ~/mystat.txt) ]]; then
         :
