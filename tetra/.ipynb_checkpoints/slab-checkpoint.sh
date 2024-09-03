@@ -18,26 +18,27 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
     elif [[ $numb == *x ]] || [[ $numb == *z ]] || [[ $numb == *s ]]; then
         :
     elif [[ -s DONE ]]; then
-        if [[ -n $(grep ${coord}${row}${numb}f ~/mystat.txt) ]]; then
-            :
-        elif [[ -d full_relaxed ]]; then
-            cd full_relaxed
-            if [[ -s DONE ]]; then
-                :
-            else
-                rm *.log *.out
-                pwd; sbatch submit.sh
-            fi
-        else
-            mkdir full_relaxed
-            python ~/bin/get_restart3
-            cp restart.json full_relaxed/
-            cp /global/homes/j/jiuy97/bin/tools/tetra/submit.sh full_relaxed/
-            cd full_relaxed/
-            sed -i -e '/constraints/d' restart.json
-            sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}f" submit.sh
-            pwd; sbatch submit.sh
-        fi
+        :
+        # if [[ -n $(grep ${coord}${row}${numb}f ~/mystat.txt) ]]; then
+        #     :
+        # elif [[ -d full_relaxed ]]; then
+        #     cd full_relaxed
+        #     if [[ -s DONE ]]; then
+        #         :
+        #     else
+        #         rm *.log *.out
+        #         pwd; sbatch submit.sh
+        #     fi
+        # else
+        #     mkdir full_relaxed
+        #     python ~/bin/get_restart3
+        #     cp restart.json full_relaxed/
+        #     cp /global/homes/j/jiuy97/bin/tools/tetra/submit.sh full_relaxed/
+        #     cd full_relaxed/
+        #     sed -i -e '/constraints/d' restart.json
+        #     sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}f" submit.sh
+        #     pwd; sbatch submit.sh
+        # fi
     elif [[ -s vasp.out ]]; then
         if [[ -n $(grep 'WARNING: random wavefunctions but no delay for mixing, default for NELMD' vasp.out) ]] || [[ -n $(grep 'please rerun with smaller EDIFF, or copy CONTCAR' vasp.out) ]] || [[ -n $(grep 'exceeded limit' *.e*) ]]; then
             python ~/bin/get_restart3
