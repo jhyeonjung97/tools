@@ -16,7 +16,7 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
     elif [[ -d opt ]] && [[ -s icohp.txt ]]; then
         if [[ ! -s opt/DONE ]]; then
             echo -e "\e[32m$PWD\e[0m"
-        else
+        elif [[ ! -s full_relaxed.json ]]; then
             pwd; ase convert -f OUTCAR full_relaxed.json
         fi
         if [[ -s static.sh ]] && [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]]; then
