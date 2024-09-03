@@ -20,9 +20,14 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
     elif [[ -s DONE ]]; then
         if [[ -n $(grep ${coord}${row}${numb}f ~/mystat.txt) ]]; then
             :
-        elif [[ -s full_relaxed/DONE ]]; then
-            :
-        elif [[ ! -d full_relaxed/DONE ]]; then
+        elif [[ -d full_relaxed ]]; then
+            cd full_relaxed
+            if [[ -s DONE ]]; then
+                :
+            else
+                echo -e "\e[35m$PWD\e[0m"
+            fi
+        else
             mkdir full_relaxed
             python ~/bin/get_restart3
             cp restart.json full_relaxed/
@@ -31,8 +36,6 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
             sed -i -e '/constraints/d' restart.json
             sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}f" submit.sh
             pwd; sbatch submit.sh
-        else
-            echo -e "\e[35m$PWD\e[0m"
         fi
     elif [[ -s vasp.out ]]; then
         if [[ -n $(grep 'WARNING: random wavefunctions but no delay for mixing, default for NELMD' vasp.out) ]] || [[ -n $(grep 'please rerun with smaller EDIFF, or copy CONTCAR' vasp.out) ]] || [[ -n $(grep 'exceeded limit' *.e*) ]]; then
