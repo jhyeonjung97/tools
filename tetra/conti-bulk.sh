@@ -20,8 +20,7 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
         elif [[ -s static.sh ]] && [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
             # sed -i -e "s/static_bulk2.py/static_bulk2_fast.py/" static.sh
             echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
-        fi
-        if [[ ! -s opt/DONE ]]; then
+        elif [[ ! -s opt/DONE ]]; then
             echo -e "\e[32m$PWD\e[0m"
         elif [[ ! -s full_relaxed.json ]]; then
             pwd; ase convert -f OUTCAR full_relaxed.json
