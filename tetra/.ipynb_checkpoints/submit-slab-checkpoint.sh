@@ -19,6 +19,6 @@ module load vasp-tpc/6.3.2-gpu
 export VASP_SCRIPT=/global/homes/j/jiuy97/bin/run_vasp.py
 export VASP_PP_PATH=/global/cfs/cdirs/m2997/vasp-psp/pseudo54
 
-python /pscratch/sd/j/jiuy97/3_V_shape/scripts/opt_slab2_afm.py
+python /pscratch/sd/j/jiuy97/3_V_bulk/scripts/opt_slab2_afm.py
 python ~/bin/verve/bader.py
 python ~/bin/get_restart3
