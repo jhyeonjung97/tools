@@ -20,7 +20,8 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
             sed -i -e "s/X/${metal}/g" lobsterin
             cp ~/bin/tools/tetra/static.sh .
             sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}t" static.sh
-            pwd; sbatch static.sh
+            rm vasp.out
+            pwd; # sbatch static.sh
         elif [[ ! -s opt/DONE ]]; then
             echo -e "\e[32m$PWD\e[0m"
         elif [[ ! -s full_relaxed.json ]]; then
