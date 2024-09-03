@@ -26,15 +26,15 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
             if [[ -s DONE ]]; then
                 :
             else
-                rm *.log *.out
-                # echo -e "\e[35m$PWD\e[0m"
-                pwd; #sbatch submit.sh
+                # rm *.log *.out
+                echo -e "\e[35m$PWD\e[0m"
+                # pwd; #sbatch submit.sh
             fi
         else
             mkdir full_relaxed
             python ~/bin/get_restart3
             cp restart.json full_relaxed/
-            cp /global/homes/j/jiuy97/bin/tools/tetra/submit.sh full_relaxed/
+            cp /global/homes/j/jiuy97/bin/tools/tetra/submit-slab.sh full_relaxed/submit.sh
             cd full_relaxed/
             sed -i -e '/constraints/d' restart.json
             sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}f" submit.sh
@@ -43,7 +43,7 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
     elif [[ -s vasp.out ]]; then
         if [[ -n $(grep 'WARNING: random wavefunctions but no delay for mixing, default for NELMD' vasp.out) ]] || [[ -n $(grep 'please rerun with smaller EDIFF, or copy CONTCAR' vasp.out) ]] || [[ -n $(grep 'exceeded limit' *.e*) ]]; then
             python ~/bin/get_restart3
-            cp /global/homes/j/jiuy97/bin/tools/tetra/submit.sh .
+            cp /global/homes/j/jiuy97/bin/tools/tetra/submit-slab.sh submit.sh
             sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}s" submit.sh
             if [[ $row == 'fm' ]]; then
                 sed -i -e "s/opt_slab2_afm.py/opt_slab2_fm.py/" submit.sh
@@ -52,11 +52,11 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
             fi
             pwd; #sbatch submit.sh
         else
-            echo -e "\e[32m$PWD\e[0m"
+            pwd; #echo -e "\e[32m$PWD\e[0m"
         fi
     else
         # rm *.log *.out
         # pwd; sbatch submit.sh
-        echo -e "\e[32m$PWD\e[0m"
+        pwd; #echo -e "\e[32m$PWD\e[0m"
     fi
 done
