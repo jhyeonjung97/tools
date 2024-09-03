@@ -75,7 +75,7 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
             cp ~/bin/tools/tetra/lobsterin .
             sed -i -e "s/X/$metal/g" lobsterin
             cp ~/bin/tools/tetra/static.sh .
-            sed -i -e "s/jobname/${coord}${row}${numb}stc/g" static.sh 
+            sed -i -e "s/jobname/${coord}${row}${numb}t/g" static.sh 
             echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
         else
             echo -e "\e[35m$PWD\e[0m"
