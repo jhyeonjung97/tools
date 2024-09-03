@@ -27,24 +27,31 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
                 :
             else
                 python ~/bin/get_restart3
-                cp /global/homes/j/jiuy97/bin/tools/tetra/submit-slab.sh submit.sh
-                sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}f" submit.sh
-                if [[ $row == 'fm' ]]; then
-                    sed -i -e "s/opt_slab2_afm.py/opt_slab2_fm.py/" submit.sh
-                elif [[ $coord == 'NB' ]]; then
-                    sed -i -e "s/opt_slab2_afm.py/opt_slab2_NB.py/" submit.sh
+                if [[ ! -s DONE ]]; then
+                    cp /global/homes/j/jiuy97/bin/tools/tetra/submit-slab.sh submit.sh
+                    sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}f" submit.sh
+                    if [[ $row == 'fm' ]]; then
+                        sed -i -e "s/opt_slab2_afm.py/opt_slab2_fm.py/" submit.sh
+                    elif [[ $coord == 'NB' ]]; then
+                        sed -i -e "s/opt_slab2_afm.py/opt_slab2_NB.py/" submit.sh
+                    fi
+                    pwd; sbatch submit.sh
                 fi
-                echo -e "\e[35m$PWD\e[0m"; sbatch submit.sh
             fi
         else
             mkdir full_relaxed
             python ~/bin/get_restart3
             cp restart.json full_relaxed/
-            cp /global/homes/j/jiuy97/bin/tools/tetra/submit-slab.sh full_relaxed/submit.sh
             cd full_relaxed/
             sed -i -e '/constraints/d' restart.json
+            cp /global/homes/j/jiuy97/bin/tools/tetra/submit-slab.sh submit.sh
             sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}f" submit.sh
-            echo -e "\e[32m$PWD\e[0m"; sbatch submit.sh
+            if [[ $row == 'fm' ]]; then
+                sed -i -e "s/opt_slab2_afm.py/opt_slab2_fm.py/" submit.sh
+            elif [[ $coord == 'NB' ]]; then
+                sed -i -e "s/opt_slab2_afm.py/opt_slab2_NB.py/" submit.sh
+            fi
+            pwd; sbatch submit.sh
         fi
     elif [[ -s vasp.out ]]; then
         if [[ -n $(grep 'WARNING: random wavefunctions but no delay for mixing, default for NELMD' vasp.out) ]] || [[ -n $(grep 'please rerun with smaller EDIFF, or copy CONTCAR' vasp.out) ]] || [[ -n $(grep 'exceeded limit' *.e*) ]]; then
