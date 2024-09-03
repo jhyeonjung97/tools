@@ -28,7 +28,7 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
             else
                 rm *.log *.out
                 # echo -e "\e[35m$PWD\e[0m"
-                pwd; sbatch submit.sh
+                pwd; #sbatch submit.sh
             fi
         else
             mkdir full_relaxed
@@ -38,7 +38,7 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
             cd full_relaxed/
             sed -i -e '/constraints/d' restart.json
             sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}f" submit.sh
-            pwd; sbatch submit.sh
+            pwd; #sbatch submit.sh
         fi
     elif [[ -s vasp.out ]]; then
         if [[ -n $(grep 'WARNING: random wavefunctions but no delay for mixing, default for NELMD' vasp.out) ]] || [[ -n $(grep 'please rerun with smaller EDIFF, or copy CONTCAR' vasp.out) ]] || [[ -n $(grep 'exceeded limit' *.e*) ]]; then
@@ -50,7 +50,7 @@ for dir in /pscratch/sd/j/jiuy97/4_V_slab/kisti/6_V_slab/*_*_*/*/*_*/; do
             elif [[ $coord == 'NB' ]]; then
                 sed -i -e "s/opt_slab2_afm.py/opt_slab2_NB.py/" submit.sh
             fi
-            pwd; sbatch submit.sh
+            pwd; #sbatch submit.sh
         else
             echo -e "\e[32m$PWD\e[0m"
         fi
