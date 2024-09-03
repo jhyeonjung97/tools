@@ -17,7 +17,7 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
         if [[ ! -s opt/DONE ]]; then
             echo -e "\e[32m$PWD\e[0m"
         else
-            ase convert -f OUTCAR full_relaxed.json
+            pwd; ase convert -f OUTCAR full_relaxed.json
         fi
     elif [[ -d opt ]] && [[ ! -s icohp.txt ]]; then
         if [[ ! -s vasp.out ]]; then
@@ -26,19 +26,19 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
             sed -i -e "s/X/${metal}/g" lobsterin
             cp ~/bin/tools/tetra/static.sh .
             sed -i -e "/#SBATCH -J/c\#SBATCH -J ${coord}${row}${numb}t" static.sh
-            pwd; # sbatch static.sh
+            echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
         elif [[ -s static.sh ]] && [[ -n $(grep 'BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES' vasp.out) ]]; then
             # ~/bin/shoulder/rm_mv vasp.out
-            pwd; # sbatch static.sh
+            echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
         elif [[ -s static.sh ]] && [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
             # sed -i -e "s/static_bulk2.py/static_bulk2_fast.py/" static.sh
-            pwd; # sbatch static.sh
+            echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
         else
             cp ~/bin/tools/tetra/lobsterin .
             sed -i -e "s/X/${metal}/g" lobsterin
             cp ~/bin/tools/tetra/static.sh .
             sed -i -e "s/jobname/${coord}${row}${numb}t/" static.sh
-            pwd; # sbatch static.sh
+            echo -e "\e[35m$PWD\e[0m"; # sbatch static.sh
         fi
     elif [[ ! -d opt ]] && [[ -s vasp.out ]]; then
         if [[ -n $(grep CONTCAR vasp.out) ]]; then
@@ -63,7 +63,7 @@ for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/*_*/; do
             python ~/bin/get_restart3
             cp ~/bin/tools/tetra/submit-bulk.sh submit.sh
             sed -i -e "s/jobname/${coord}${row}${numb}/" submit.sh 
-            pwd; # sbatch submit.sh
+            echo -e "\e[35m$PWD\e[0m"; # sbatch submit.sh
         fi
     else
         echo -e "\e[32m$PWD\e[0m"
