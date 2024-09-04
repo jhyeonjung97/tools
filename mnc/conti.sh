@@ -27,6 +27,7 @@ do
             elif [[ $spin == 'HS' ]]; then
                 sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
             fi
+            ~/bin/shoulder/rm_mv *.e* *.o* *.log
             pwd; sbatch submit.sh
             # if [[ -n $(grep 'please rerun with smaller EDIFF' vasp.out) ]]; then
             # elif [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
