@@ -27,17 +27,16 @@ do
             elif [[ $spin == 'HS' ]]; then
                 sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
             fi
-            
+            pwd; #sbatch submit.sh
             if [[ -n $(grep 'please rerun with smaller EDIFF' vasp.out) ]]; then
-                pwd; sbatch submit.sh
+                echo -e "\e[31m$PWD\e[0m"
             elif [[ -n $(grep 'Call to ZHEGV failed' vasp.out) ]]; then
                 sed -i 's/nupdown.py/nupdown-fast.py/' submit.sh
-                pwd; sbatch submit.sh
+                echo -e "\e[32m$PWD\e[0m"
             elif [[ -n $(grep 'exceeded limit' *.e*) ]]; then
-                pwd; sbatch submit.sh
+                echo -e "\e[33m$PWD\e[0m"
             else
-                rm *.o* *.e*
-                pwd; sbatch submit.sh
+                echo -e "\e[34m$PWD\e[0m"
             fi
         fi
     else
@@ -51,6 +50,6 @@ do
         elif [[ $spin == 'HS' ]]; then
             sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
         fi
-        pwd; sbatch submit.sh
+        pwd; #sbatch submit.sh
     fi
 done
