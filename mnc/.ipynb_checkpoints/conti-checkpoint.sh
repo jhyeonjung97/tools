@@ -13,6 +13,8 @@ do
     
     if [[ -n $(grep $metal$spin$dz ~/mystat.txt) ]]; then
         :
+    elif [[ $metal == 'Pt' ]]; then
+        :
     elif [[ -s vasp.out ]]; then
         if [[ -s DONE ]]; then
             :
