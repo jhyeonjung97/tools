@@ -17,7 +17,7 @@ do
         if [[ -s DONE ]]; then
             :
         else
-            python ~/bin/get_restart3
+            sh ~/bin/verve/correct-contcar.sh; python ~/bin/get_restart3
             cp ~/bin/tools/mnc/submit.sh .
             sed -i "/#SBATCH -J/c\#SBATCH -J $metal$spin$dz" submit.sh
             if [[ $spin == 'LS' ]]; then
