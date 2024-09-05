@@ -22,7 +22,7 @@ do
         do
             mkdir -p ${dz}_
         done
-        cd $dir
+        cd $dir; pwd
         for dz in ${dzs[@]}
         do
             lowest_dir=''
