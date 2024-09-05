@@ -33,7 +33,14 @@ do
             sed -i -e "/constraints/d" relaxed/restart.json
             cp ${lowest_dir}WAVECAR relaxed/
             cp ~/bin/tools/mnc/submit.sh relaxed/
-            sed -i -e "s/jobname/${metal}${spin}_/" relaxed/submit.sh
+            if [[ $spin == 'LS' ]]; then
+                sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' relaxed/submit.sh
+            elif [[ $spin == 'IS' ]]; then
+                sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' relaxed/submit.sh
+            elif [[ $spin == 'HS' ]]; then
+                sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' relaxed/submit.sh
+            fi
+            sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}_" relaxed/submit.sh
             cd relaxed
             pwd; sbatch submit.sh
         fi
