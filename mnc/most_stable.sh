@@ -35,7 +35,7 @@ do
                     lowest_dir=${sub_dir}${dz}_/
                 fi
             done
-            if [[ -n "$lowest_dir" ]]; then
+            if [[ -n "$lowest_dir" ]] && [[ ! -n $(grep ${metal}MS${dz} ~/mystat.txt) ]]; then
                 echo "${lowest_dir}restart.json most_stable/${dz}_/"
                 cp ${lowest_dir}restart.json most_stable/${dz}_/
                 cp ${lowest_dir}WAVECAR most_stable/${dz}_/
@@ -50,6 +50,7 @@ do
             if [[ ! -n $(grep ${metal}MS${dz} ~/mystat.txt) ]]; then
                 cd most_stable/${dz}_/
                 pwd; sbatch submit.sh
+                cd $dir
             fi
         done
     fi
