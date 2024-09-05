@@ -1,7 +1,7 @@
 #!/bin/bash
 
 squeue --me > ~/mystat.txt
-for dir in /pscratch/sd/j/jiuy97/6_MNC/kisti/3_MNC/0_clean/*d/*_*/*_*S/
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/*_*S/
 do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
@@ -16,7 +16,7 @@ do
         fi
     done
     
-    if [[ $all_done == true ]]; then
+    if [[ $all_done == true ]] && [[ ! -d relaxed ]]; then
         mkdir relaxed
         lowest_dir=''
         lowest_energy=0
@@ -28,12 +28,12 @@ do
                 lowest_dir=$sub_dir
             fi
         done
-        if [[ -n "$lowest_dir" ]] && [[ ! -n $(grep ${metal}${spin}rlx ~/mystat.txt) ]]; then
+        if [[ -n "$lowest_dir" ]] && [[ ! -n $(grep ${metal}${spin}_ ~/mystat.txt) ]]; then
             cp ${lowest_dir}restart.json relaxed/
             sed -i -e "/constraints/d" relaxed/restart.json
             cp ${lowest_dir}WAVECAR relaxed/
             cp ~/bin/tools/mnc/submit.sh relaxed/
-            sed -i -e "s/jobname/${metal}${spin}rlx/" relaxed/submit.sh
+            sed -i -e "s/jobname/${metal}${spin}_/" relaxed/submit.sh
             cd relaxed
             pwd; sbatch submit.sh
         fi
