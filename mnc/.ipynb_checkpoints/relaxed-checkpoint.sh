@@ -28,7 +28,7 @@ do
                 lowest_dir=$sub_dir
             fi
         done
-        if [[ -n "$lowest_dir" ]] && [[ ! -n $(grep ${metal}${spin}_ ~/mystat.txt) ]]; then
+        if [[ -n "$lowest_dir" ]]; then
             echo $lowest_energy $lowest_dir
             cp ${lowest_dir}restart.json relaxed/
             sed -i -e "/constraints/d" relaxed/restart.json
@@ -43,7 +43,7 @@ do
             fi
             sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}_" relaxed/submit.sh
             cd relaxed
-            pwd; sbatch submit.sh
+            pwd; #sbatch submit.sh
         fi
     fi
 done
