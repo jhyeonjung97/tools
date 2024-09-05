@@ -16,7 +16,7 @@ do
         fi
     done
     
-    if [[ $all_done == true ]] && [[ ! -d relaxed ]]; then
+    if [[ $all_done == true ]] && [[ ! -z relaxed ]]; then
         mkdir relaxed
         lowest_dir=''
         lowest_energy=0
