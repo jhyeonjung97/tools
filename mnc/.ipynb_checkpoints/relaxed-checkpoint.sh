@@ -4,6 +4,7 @@ squeue --me > ~/mystat.txt
 for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/*_*S/
 do
     cd $dir
+    sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}r" relaxed/submit.sh
     IFS='/' read -r -a path <<< $PWD
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     spin=$(echo "${path[-1]}" | cut -d'_' -f2)
@@ -41,10 +42,10 @@ do
             elif [[ $spin == 'HS' ]]; then
                 sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' relaxed/submit.sh
             fi
-            sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}_" relaxed/submit.sh
+            sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}r" relaxed/submit.sh
         fi
     fi
-    if [[ -z relaxed ]] && [[ ! -s relaxed/DONE ]] && [[ ! -n $(grep "${metal}${spin}_ " ~/mystat.txt) ]]; then
+    if [[ -z relaxed ]] && [[ ! -s relaxed/DONE ]] && [[ ! -n $(grep "${metal}${spin}r " ~/mystat.txt) ]]; then
         cd relaxed
         pwd; sbatch submit.sh
     fi
