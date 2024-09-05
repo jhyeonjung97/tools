@@ -47,6 +47,7 @@ do
     fi
     if [[ -d relaxed ]]; then
         cd relaxed
+        echo $(grep "${metal}${spin}r" ~/mystat.txt)
         if [[ -s DONE ]] || [[ -n $(grep "${metal}${spin}r" ~/mystat.txt) ]]; then
             :
         else
