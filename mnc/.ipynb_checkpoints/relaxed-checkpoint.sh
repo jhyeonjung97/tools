@@ -17,7 +17,7 @@ do
         fi
     done
     
-    if [[ $all_done == true ]] && [[ ! -z relaxed ]]; then
+    if [[ $all_done == true ]] && [[ ! -s relaxed/restart.json ]]; then
         mkdir relaxed
         lowest_dir=''
         lowest_energy=0
@@ -45,7 +45,7 @@ do
             sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}r" relaxed/submit.sh
         fi
     fi
-    if [[ -z relaxed ]] && [[ ! -s relaxed/DONE ]] && [[ ! -n $(grep "${metal}${spin}r " ~/mystat.txt) ]]; then
+    if [[ ! -z relaxed ]] && [[ ! -s relaxed/DONE ]] && [[ ! -n $(grep "${metal}${spin}r" ~/mystat.txt) ]]; then
         cd relaxed
         pwd; sbatch submit.sh
     fi
