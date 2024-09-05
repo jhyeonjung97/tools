@@ -10,7 +10,15 @@ do
     metal=$(echo "${path[-3]}" | cut -d'_' -f2)
     spin=$(echo "${path[-2]}" | cut -d'_' -f2)
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
-    
+    cp ~/bin/tools/mnc/submit.sh .
+    sed -i "/#SBATCH -J/c\#SBATCH -J $metal$spin$dz" submit.sh
+    if [[ $spin == 'LS' ]]; then
+        sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
+    elif [[ $spin == 'IS' ]]; then
+        sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' submit.sh
+    elif [[ $spin == 'HS' ]]; then
+        sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
+    fi
     if [[ -n $(grep $metal$spin$dz ~/mystat.txt) ]]; then
         :
     elif [[ -s vasp.out ]]; then
@@ -18,15 +26,6 @@ do
             :
         else
             sh ~/bin/verve/correct-contcar.sh; python ~/bin/get_restart3
-            cp ~/bin/tools/mnc/submit.sh .
-            sed -i "/#SBATCH -J/c\#SBATCH -J $metal$spin$dz" submit.sh
-            if [[ $spin == 'LS' ]]; then
-                sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
-            elif [[ $spin == 'IS' ]]; then
-                sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' submit.sh
-            elif [[ $spin == 'HS' ]]; then
-                sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
-            fi
             ~/bin/shoulder/rm_mv *.e* *.o* *.log
             pwd; sbatch submit.sh
             # if [[ -n $(grep 'please rerun with smaller EDIFF' vasp.out) ]]; then
@@ -38,15 +37,6 @@ do
         fi
     else
         python ~/bin/tools/mnc/dz.py $dz
-        cp ~/bin/tools/mnc/submit.sh .
-        sed -i "/#SBATCH -J/c\#SBATCH -J $metal$spin$dz" submit.sh
-        if [[ $spin == 'LS' ]]; then
-            sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
-        elif [[ $spin == 'IS' ]]; then
-            sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' submit.sh
-        elif [[ $spin == 'HS' ]]; then
-            sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
-        fi
         pwd; sbatch submit.sh
         # echo -e "\e[35m$PWD\e[0m"
     fi
