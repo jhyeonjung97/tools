@@ -1,13 +1,16 @@
 #!/bin/bash
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/kisti/3_MNC/0_clean/*d/*_*
+for dir in /pscratch/sd/j/jiuy97/6_MNC/kisti/3_MNC/0_clean/*d/*_*/
 do
     cd $dir; pwd
+    cd $dir
+    IFS='/' read -r -a path <<< $PWD
+    metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     all_done=true
     for sub_sub_dir in ./*/*
     do
         if [[ ! -f $sub_sub_dir/DONE ]]; then
-            echo "DONE file is missing in $sub_sub_dir/DONE"
+            # echo "DONE file is missing in $sub_sub_dir/DONE"
             all_done=false
         fi
     done
@@ -37,9 +40,15 @@ do
                 cp ${lowest_dir}restart.json most_stable/${dz}_/
                 cp ${lowest_dir}WAVECAR most_stable/${dz}_/
                 cp ~/bin/tools/mnc/submit.sh most_stable/${dz}_/
+                sed -i -e "s/jobname/${metal}MS${dz}/" most_stable/${dz}_/submit.sh
             else
                 echo "No valid directory found for dz=${dz}"
             fi
+        done
+        for sub_sub_dir in ${dir}most_stable/*_/
+        do
+            cd $sub_sub_dir
+            pwd; sbatch submit.sh
         done
     fi
 done
