@@ -8,9 +8,9 @@ do
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     if [[ ! -n $(grep ${metal}MS${dz} ~/mystat.txt) ]]; then
         all_done=true
-        for sub_sub_dir in ./*/*_/
+        for sub_sub_dir in ./*_*S/*_/
         do
-            if [[ ! -s $sub_sub_dir/DONE ]]; then
+            if [[ ! -s ${sub_sub_dir}DONE ]]; then
                 echo "DONE file is missing in $dir$sub_sub_dir/DONE"
                 all_done=false
             fi
