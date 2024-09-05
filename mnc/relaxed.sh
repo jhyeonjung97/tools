@@ -7,7 +7,6 @@ do
     IFS='/' read -r -a path <<< $PWD
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     spin=$(echo "${path[-1]}" | cut -d'_' -f2)
-    sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}r" relaxed/submit.sh
     all_done=true
     for sub_dir in ./*_/
     do
@@ -44,15 +43,8 @@ do
             sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}r" relaxed/submit.sh
         fi
     fi
-    if [[ -d relaxed ]]; then
+    if [[ ! -s relaxed/DONE ]] && [[ ! -n $(grep "${metal}${spin}r" ~/mystat.txt) ]]; then
         cd relaxed
-        if [[ -s DONE ]]; then
-            pwd; echo 'done'
-        elif [[ -n $(grep "${metal}${spin}r" ~/mystat.txt) ]]; then
-            pwd; echo $(grep "${metal}${spin}r" ~/mystat.txt)
-        else
-            pwd; echo 'hello'
-        #     pwd; #sbatch submit.sh
-        fi
+        pwd; sbatch submit.sh
     fi
 done
