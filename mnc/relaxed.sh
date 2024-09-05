@@ -10,13 +10,14 @@ do
     all_done=true
     for sub_dir in ./*_/
     do
-        if [[ ! -s ${sub_sub_dir}DONE ]]; then
+        if [[ ! -s ${sub_dir}DONE ]]; then
             # echo "DONE file is missing in $dir$sub_sub_dir/DONE"
             all_done=false
         fi
     done
+    
     if [[ $all_done == true ]]; then
-        mkdir -p relaxed
+        mkdir relaxed
         lowest_dir=''
         lowest_energy=0
         for sub_dir in ./*_/
