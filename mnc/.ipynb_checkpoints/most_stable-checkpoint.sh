@@ -1,5 +1,6 @@
 #!/bin/bash
 
+squeue --me > ~/mystat.txt
 for dir in /pscratch/sd/j/jiuy97/6_MNC/kisti/3_MNC/0_clean/*d/*_*/
 do
     cd $dir
@@ -9,12 +10,11 @@ do
     for sub_sub_dir in ./*/*_/
     do
         if [[ ! -s $sub_sub_dir/DONE ]]; then
-            echo "DONE file is missing in $sub_sub_dir/DONE"
+            # echo "DONE file is missing in $dir$sub_sub_dir/DONE"
             all_done=false
         fi
     done
     if [[ $all_done == true ]]; then
-        pwd
         mkdir -p most_stable
         cd most_stable
         dzs=(0 1 2 3 4 5 6)
@@ -30,7 +30,6 @@ do
             for sub_dir in *_*S/
             do
                 energy=$(grep -oP 'ENERGY\s+\K[-+]?[0-9]*\.?[0-9]+' "${sub_dir}${dz}_/DONE")
-                echo $energy
                 if [[ $(echo "$energy < $lowest_energy" | bc) -eq 1 ]]; then
                     lowest_energy=$energy
                     lowest_dir=${sub_dir}${dz}_/
@@ -46,10 +45,12 @@ do
                 echo "No valid directory found for dz=${dz}"
             fi
         done
-        for sub_sub_dir in ${dir}most_stable/*_/
-        do
-            cd $sub_sub_dir
-            pwd; sbatch submit.sh
-        done
+        if [[ ! -n $(grep ${metal}MS${dz} ~/mystat.txt) ]]; then
+            for sub_sub_dir in ${dir}most_stable/*_/
+            do
+                cd $sub_sub_dir
+                pwd; sbatch submit.sh
+            done
+        fi
     fi
 done
