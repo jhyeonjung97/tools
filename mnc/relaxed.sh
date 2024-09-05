@@ -44,7 +44,7 @@ do
             sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}_" relaxed/submit.sh
         fi
     fi
-    if [[ -z relaxed ]] && [[ ! -s relaxed/DONE ]] && [[ ! -n $(grep "${metal}${spin}_" ~/mystat.txt) ]]; then
+    if [[ -z relaxed ]] && [[ ! -s relaxed/DONE ]] && [[ ! -n $(grep "${metal}${spin}_ " ~/mystat.txt) ]]; then
         cd relaxed
         pwd; sbatch submit.sh
     fi
