@@ -2,19 +2,26 @@
 
 for dir in /pscratch/sd/j/jiuy97/6_MNC/kisti/3_MNC/0_clean/*d/*_*
 do
-    cd $dir; pwd
-    dzs=(0 1 2 3 4 5 6)
-    all_done=true
-    for i in {0..6}; do
-        if [[ ! -f "${i}_/DONE" ]]; then
-            echo "DONE file is missing in ${i}_/"
-            all_done=false
+    if cd "$dir"; then
+        pwd
+        all_done=true
+        
+        # Loop through the pattern */${i}_/DONE for i from 0 to 6
+        for i in {0..6}; do
+            if [[ ! -f */"${i}_/DONE" ]]; then
+                echo "DONE file is missing in */${i}_/DONE"
+                all_done=false
+            fi
+        done
+        
+        # Report the result
+        if $all_done; then
+            echo "All DONE files are present in $dir."
+        else
+            echo "Some DONE files are missing in $dir."
         fi
-    done
-    if $all_done; then
-        echo "All DONE files are present."
     else
-        echo "Some DONE files are missing."
+        echo "Failed to change to directory $dir"
     fi
     
     # mkdir -p most_stable
