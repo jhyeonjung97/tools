@@ -23,11 +23,11 @@ do
         for sub_dir in ./*_/
         do
             energy=$(grep -oP 'ENERGY\s+\K[-+]?[0-9]*\.?[0-9]+' "${sub_dir}DONE")
-            echo $energy
             if [[ $(echo "$energy < $lowest_energy" | bc) -eq 1 ]]; then
                 lowest_energy=$energy
                 lowest_dir=$sub_dir
             fi
+            echo $lowest_energy $lowest_dir
         done
         if [[ -n "$lowest_dir" ]] && [[ ! -n $(grep ${metal}${spin}_ ~/mystat.txt) ]]; then
             cp ${lowest_dir}restart.json relaxed/
