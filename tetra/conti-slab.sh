@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 
 squeue --me > ~/mystat.txt
 # cat ~/kisti.txt ~/nersc.txt > ~/mystat.txt
