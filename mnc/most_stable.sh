@@ -7,9 +7,10 @@ do
         all_done=true
         
         # Loop through the pattern */${i}_/DONE for i from 0 to 6
-        for i in {0..6}; do
-            if [[ ! -f */"${i}_/DONE" ]]; then
-                echo "DONE file is missing in */${i}_/DONE"
+        for sub_dir in ./*/*
+        do
+            if [[ ! -f $sub_dir/DONE ]]; then
+                echo "DONE file is missing in $sub_dir/DONE"
                 all_done=false
             fi
         done
@@ -23,7 +24,7 @@ do
     else
         echo "Failed to change to directory $dir"
     fi
-    
+done
     # mkdir -p most_stable
     # cd most_stable
     # for dz in ${dzs[@]}
@@ -59,4 +60,4 @@ do
     #         echo "No valid directory found for dz=${dz}"
     #     fi
     # done
-done
+# done
