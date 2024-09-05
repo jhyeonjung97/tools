@@ -16,7 +16,6 @@ do
             all_done=false
         fi
     done
-    
     if [[ $all_done == true ]] && [[ ! -s relaxed/restart.json ]]; then
         mkdir relaxed
         lowest_dir=''
@@ -47,12 +46,13 @@ do
     fi
     if [[ -d relaxed ]]; then
         cd relaxed
-        pwd
-        # echo $(grep "${metal}${spin}r" ~/mystat.txt)
-        # if [[ -s DONE ]] || [[ -n $(grep "${metal}${spin}r" ~/mystat.txt) ]]; then
-        #     :
-        # else
+        if [[ -s DONE ]]; then
+            pwd
+        elif [[ -n $(grep "${metal}${spin}r" ~/mystat.txt) ]]; then
+            pwd; echo $(grep "${metal}${spin}r" ~/mystat.txt)
+        else
+            pwd; echo 'hello'
         #     pwd; #sbatch submit.sh
-        # fi
+        fi
     fi
 done
