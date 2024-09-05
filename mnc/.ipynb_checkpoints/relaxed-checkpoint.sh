@@ -28,7 +28,7 @@ do
                 lowest_dir=$sub_dir
             fi
         done
-        if [[ -n "$lowest_dir" ]] && [[ ! -n $(grep ${metal}${spin}_ ~/mystat.txt) ]]; then
+        if [[ -n "$lowest_dir" ]]; then
             echo $lowest_energy $lowest_dir
             cp ${lowest_dir}restart.json relaxed/
             sed -i -e "/constraints/d" relaxed/restart.json
