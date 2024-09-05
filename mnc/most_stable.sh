@@ -6,14 +6,14 @@ do
     IFS='/' read -r -a path <<< $PWD
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     all_done=true
-    for sub_sub_dir in ./*/*
+    for sub_sub_dir in ./*/*_/
     do
-        if [[ ! -f $sub_sub_dir/DONE ]]; then
-            # echo "DONE file is missing in $sub_sub_dir/DONE"
+        if [[ ! -s $sub_sub_dir/DONE ]]; then
+            echo "DONE file is missing in $sub_sub_dir/DONE"
             all_done=false
         fi
     done
-    if $all_done; then
+    if [[ $all_done == true ]]; then
         pwd
         mkdir -p most_stable
         cd most_stable
