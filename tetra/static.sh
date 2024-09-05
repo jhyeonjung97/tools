@@ -22,7 +22,7 @@ echo "exitcode = os.system('srun -n 4 -c 32 vasp_std')" >> run_vasp.py
 export VASP_SCRIPT=./run_vasp.py
 export VASP_PP_PATH=/global/cfs/cdirs/m2997/vasp-psp/pseudo54
 
-python /pscratch/sd/j/jiuy97/3_V_shape/scripts/static_bulk2.py
+python /pscratch/sd/j/jiuy97/3_V_bulk/scripts/static_bulk2.py
 python ~/bin/verve/bader.py
 python ~/bin/get_restart3
 
