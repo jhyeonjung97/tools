@@ -1,7 +1,7 @@
 #!/bin/bash
 
 squeue --me > ~/mystat.txt
-for dir in /pscratch/sd/j/jiuy97/6_MNC/kisti/3_MNC/0_clean/*d/*_*/
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/
 do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
@@ -35,7 +35,7 @@ do
                     lowest_dir=${sub_dir}${dz}_/
                 fi
             done
-            if [[ -n "$lowest_dir" ]] && [[ ! -n $(grep ${metal}MS${dz} ~/mystat.txt) ]]; then
+            if [[ -n "$lowest_dir" ]]; then
                 echo "${lowest_dir}restart.json most_stable/${dz}_/"
                 cp ${lowest_dir}restart.json most_stable/${dz}_/
                 cp ${lowest_dir}WAVECAR most_stable/${dz}_/
@@ -43,14 +43,6 @@ do
                 sed -i -e "s/jobname/${metal}MS${dz}/" most_stable/${dz}_/submit.sh
             else
                 echo "No valid directory found for dz=${dz}"
-            fi
-        done
-        for dz in ${dzs[@]}
-        do
-            if [[ ! -n $(grep ${metal}MS${dz} ~/mystat.txt) ]]; then
-                cd most_stable/${dz}_/
-                pwd; sbatch submit.sh
-                cd $dir
             fi
         done
     fi
