@@ -47,11 +47,12 @@ do
     fi
     if [[ -d relaxed ]]; then
         cd relaxed
-        echo $(grep "${metal}${spin}r" ~/mystat.txt)
-        if [[ -s DONE ]] || [[ -n $(grep "${metal}${spin}r" ~/mystat.txt) ]]; then
-            :
-        else
-            pwd; sbatch submit.sh
-        fi
+        pwd
+        # echo $(grep "${metal}${spin}r" ~/mystat.txt)
+        # if [[ -s DONE ]] || [[ -n $(grep "${metal}${spin}r" ~/mystat.txt) ]]; then
+        #     :
+        # else
+        #     pwd; #sbatch submit.sh
+        # fi
     fi
 done
