@@ -6,7 +6,7 @@ do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
-    spin=$(echo "${path[-2]}" | cut -d'_' -f2)
+    spin=$(echo "${path[-1]}" | cut -d'_' -f2)
     all_done=true
     for sub_dir in ./*_/
     do
@@ -30,11 +30,10 @@ do
         done
         if [[ -n "$lowest_dir" ]] && [[ ! -n $(grep ${metal}${spin}rlx ~/mystat.txt) ]]; then
             cp ${lowest_dir}restart.json relaxed/
+            sed -i -e "/constraints/d" relaxed/restart.json
             cp ${lowest_dir}WAVECAR relaxed/
             cp ~/bin/tools/mnc/submit.sh relaxed/
             sed -i -e "s/jobname/${metal}${spin}rlx/" relaxed/submit.sh
-        fi
-        if [[ ! -n $(grep ${metal}${spin}rlx ~/mystat.txt) ]]; then
             cd relaxed
             pwd; sbatch submit.sh
         fi
