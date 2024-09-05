@@ -4,10 +4,10 @@ squeue --me > ~/mystat.txt
 for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/*_*S/
 do
     cd $dir
-    sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}r" relaxed/submit.sh
     IFS='/' read -r -a path <<< $PWD
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     spin=$(echo "${path[-1]}" | cut -d'_' -f2)
+    sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}r" relaxed/submit.sh
     all_done=true
     for sub_dir in ./*_/
     do
