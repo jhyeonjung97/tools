@@ -15,7 +15,7 @@ do
             all_done=false
         fi
     done
-    if [[ $all_done == true ]] && [[ ! -s relaxed/restart.json ]]; then
+    if [[ $all_done == true ]] && [[ ! -f relaxed/restart.json ]]; then
         mkdir relaxed
         lowest_dir=''
         lowest_energy=0
