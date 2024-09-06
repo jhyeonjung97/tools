@@ -34,13 +34,14 @@ do
                 if [[ $(echo "$energy < $lowest_energy" | bc) -eq 1 ]]; then
                     lowest_energy=$energy
                     lowest_dir=${sub_dir}${dz}_/
+                    lowest_sub_dir=${sub_dir}
                 fi
             done
             if [[ -n "$lowest_dir" ]]; then
                 product=$(echo "$dz * 0.2" | bc)
-                clean_dir=$(echo "$lowest_dir" | sed 's:/$::')
+                clean_dir=$(echo "$lowest_sub_dir" | sed 's:/$::')
                 spin=$(echo "$clean_dir" | cut -d'_' -f2)
-                echo "$product\t$spin" >> lowest.txt
+                echo -e "$product\t$spin" >> lowest.txt
                 if [[ ! -d most_stable/0_/ ]]; then
                     echo "${lowest_dir}restart.json most_stable/${dz}_/"
                     # cp ${lowest_dir}restart.json most_stable/${dz}_/
