@@ -14,6 +14,7 @@ rows = {
     # '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
 spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
+ms_spins ={'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
 dzs = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
 
 E_H2O = -14.23919983
@@ -199,18 +200,18 @@ def main():
                 spin_df.set_index('dz', inplace=True)
 
                 for i, dz in enumerate(dzs):
-                    atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
                     if len(spin_df) > 0:
                         ms = spin_df.loc[dz, 'spin_state']
                         print(ms)
                     else:
                         continue
-
+                        
+                    atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
                     if os.path.exists(atoms_path):
                         atoms = read(atoms_path)
                         energy = atoms.get_total_energy()
                         formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
-                        df.at[dz, f'MS-{ms}'] = formation_energy
+                        df.at[dz, f'MS({ms})'] = formation_energy
                         try:
                             magmoms = atoms.get_magnetic_moments()
                             for atom in atoms:
@@ -239,13 +240,13 @@ def main():
             # combining(df=df_OH_rel, df_relaxed=df_OH_relaxed_rel, tsv_filename=tsv_OH_rel_filename)
             # combining(df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, tsv_filename=tsv_OH_mag_filename)
 
-            # plotting(df=df, df_relaxed=df_relaxed, dzs=dzs, spins=spins, 
-            #          ylabel='Formation energy (eV)', png_filename=png_filename)
-            # plotting(df=df_rel, df_relaxed=df_relaxed_rel, dzs=dzs, spins=spins, color='black', 
-            #          ylabel='Spin crossover energy (eV)', png_filename=png_rel_filename)
-            # plotting(df=df_mag, df_relaxed=df_relaxed_mag, dzs=dzs, spins=spins, 
-            #          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
-            #          ylabel='Magnetic Moments', png_filename=png_mag_filename)
+            plotting(df=df, df_relaxed=df_relaxed, dzs=dzs, spins=spins, 
+                     ylabel='Formation energy (eV)', png_filename=png_filename)
+            plotting(df=df_rel, df_relaxed=df_relaxed_rel, dzs=dzs, spins=spins, color='black', 
+                     ylabel='Spin crossover energy (eV)', png_filename=png_rel_filename)
+            plotting(df=df_mag, df_relaxed=df_relaxed_mag, dzs=dzs, spins=spins, 
+                     ymin=-0.5, ymax=5.5, yticks=np.arange(6),
+                     ylabel='Magnetic Moments', png_filename=png_mag_filename)
     
             # plotting(df=df_O, df_relaxed=df_O_relaxed, dzs=dzs, spins=spins, 
             #          ylabel='Formation energy (eV)', png_filename=png_O_filename)
@@ -280,7 +281,7 @@ def plot_smooth_line(x, y, color, label):
             spl = make_interp_spline(x, y, k=2)
         y_smooth = spl(x_new)
         plt.plot(x_new, y_smooth, color=color, label=label, zorder=1)
-        plt.scatter(x, y, color=color, edgecolors=color, facecolors='white', marker='s', label='_nolegend_', zorder=2)
+        plt.scatter(x, y, marker='s', color=color, edgecolors=color, facecolors='white', label='_nolegend_', zorder=2)
     except ValueError as e:
         print(f"Error while creating spline: {e}")
 
@@ -291,8 +292,8 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         if not filtered_df.empty:
             x = filtered_df.index
             y = filtered_df.values
-            if color:
-                plot_smooth_line(x, y, color, f'{column} (fixed)')
+            if 'MS' in column:
+                plt.scatter(x, y, marker='x', color=ms_spins[column], label='_nolegend_', zorder=3)
             else:
                 plot_smooth_line(x, y, spins[column], f'{column} (fixed)')
     for column in df_relaxed.columns:
@@ -301,9 +302,9 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             x = filtered_df.index
             y = filtered_df.values
             if color:
-                plt.scatter(x, y, marker='x', color=color, label=f'{column} (relaxed)', zorder=3)
+                plt.scatter(x, y, marker='s', color=color, label=f'{column} (relaxed)', zorder=4)
             else:
-                plt.scatter(x, y, marker='x', color=spins[column], label=f'{column} (relaxed)', zorder=3)
+                plt.scatter(x, y, marker='s', color=spins[column], label=f'{column} (relaxed)', zorder=4)
     if color:
         plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
         plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
