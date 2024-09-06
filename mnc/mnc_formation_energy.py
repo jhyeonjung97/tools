@@ -280,7 +280,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         plt.ylim(ymin, ymax)
     if yticks is not None:
         plt.yticks(yticks)
-    plt.legend(labelspacing=0.4)
+    plt.legend(labelspacing=0.3)
     plt.tight_layout()
     plt.savefig(png_filename, bbox_inches="tight")
     print(f"Figure saved as {png_filename}")
