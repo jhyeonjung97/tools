@@ -6,6 +6,7 @@ do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
+    echo "dz\tspin_state" > lowest.txt
     all_done=true
     for sub_sub_dir in ./*_*S/*_/
     do
@@ -36,11 +37,17 @@ do
                 fi
             done
             if [[ -n "$lowest_dir" ]]; then
-                echo "${lowest_dir}restart.json most_stable/${dz}_/"
-                cp ${lowest_dir}restart.json most_stable/${dz}_/
-                cp ${lowest_dir}WAVECAR most_stable/${dz}_/
-                cp ~/bin/tools/mnc/submit.sh most_stable/${dz}_/
-                sed -i -e "s/jobname/${metal}MS${dz}/" most_stable/${dz}_/submit.sh
+                product=$(echo "$dz * 0.2" | bc)
+                clean_dir=$(echo "$lowest_dir" | sed 's:/$::')
+                spin=$(echo "$clean_dir" | cut -d'_' -f2)
+                echo "$product\t$spin" >> lowest.txt
+                if [[ ! -d most_stable/0_/ ]]; then
+                    echo "${lowest_dir}restart.json most_stable/${dz}_/"
+                    # cp ${lowest_dir}restart.json most_stable/${dz}_/
+                    # cp ${lowest_dir}WAVECAR most_stable/${dz}_/
+                    # cp ~/bin/tools/mnc/submit.sh most_stable/${dz}_/
+                    # sed -i -e "s/jobname/${metal}MS${dz}/" most_stable/${dz}_/submit.sh
+                fi
             else
                 echo "No valid directory found for dz=${dz}"
             fi
