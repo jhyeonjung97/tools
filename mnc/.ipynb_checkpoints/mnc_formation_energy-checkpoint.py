@@ -6,6 +6,7 @@ import os
 import pandas as pd
 from scipy.interpolate import make_interp_spline
 import numpy as np
+from matplotlib.lines import Line2D
 
 # Define the rows and spins
 rows = {
