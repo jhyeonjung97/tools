@@ -42,7 +42,7 @@ do
                 clean_dir=$(echo "$lowest_sub_dir" | sed 's:/$::')
                 spin=$(echo "$clean_dir" | cut -d'_' -f2)
                 echo -e "$product\t$spin" >> lowest.txt
-                if [[ ! -f most_stable/0_/restart.json ]]; then
+                if [[ ! -f most_stable/6_/restart.json ]]; then
                     echo "${lowest_dir}restart.json most_stable/${dz}_/"
                     cp ${lowest_dir}restart.json most_stable/${dz}_/
                     cp ${lowest_dir}WAVECAR most_stable/${dz}_/
