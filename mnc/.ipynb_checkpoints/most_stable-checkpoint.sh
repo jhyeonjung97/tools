@@ -39,6 +39,7 @@ do
             done
             if [[ -n "$lowest_dir" ]]; then
                 product=$(echo "scale=2; $dz * 0.2" | bc)
+                product=$(echo "$product" | awk '{printf "%.2f", $0}')
                 clean_dir=$(echo "$lowest_sub_dir" | sed 's:/$::')
                 spin=$(echo "$clean_dir" | cut -d'_' -f2)
                 echo -e "$product\t$spin" >> lowest.csv
