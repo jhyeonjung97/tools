@@ -50,3 +50,9 @@ do
         echo -e "\e[35m$PWD\e[0m"; sbatch submit.sh
     fi
 done
+
+for dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/3d/*_*/*_*/*_
+do
+    cd $dir
+    sbatch submit.sh
+done
