@@ -294,6 +294,8 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             y = filtered_df.values
             if 'MS' in column:
                 plt.scatter(x, y, marker='x', color=ms_spins[column], label='_nolegend_', zorder=3)
+            elif color:
+                plot_smooth_line(x, y, color, f'{column} (fixed)')
             else:
                 plot_smooth_line(x, y, spins[column], f'{column} (fixed)')
     for column in df_relaxed.columns:
