@@ -30,7 +30,7 @@ nitrogen = (nitrogen_E - nitrogen_TS + nitrogen_ZPE) / 2
 carbon = -9.357363435 # eV, DFT
 
 metal_path = '/pscratch/sd/j/jiuy97/6_MNC/gas/metals.tsv'
-metal_df = pd.read_tsv(metal_path, delimiter='\t', index_col=0)
+metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 
 def main():
     for row_key, metals in rows.items():
@@ -195,7 +195,7 @@ def main():
             for path in matching_paths:
                 print(path)
                 spin_tsv = os.path.join(path, 'lowest.tsv')
-                spin_df = pd.read_tsv(spin_tsv)
+                spin_df = pd.read_csv(spin_tsv, sep='\t')
                 spin_df.set_index('dz', inplace=True)
 
                 for i, dz in enumerate(dzs):
