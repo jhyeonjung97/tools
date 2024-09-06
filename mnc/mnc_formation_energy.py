@@ -195,13 +195,14 @@ def main():
             for path in matching_paths:
                 print(path)
                 spin_tsv = os.path.join(path, 'lowest.tsv')
-                spin_df = pd.read_csv(spin_tsv, sep='\t')
-                spin_df.set_index('dz', inplace=True)
 
                 for i, dz in enumerate(dzs):
                     atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
-                    ms = spin_df.loc[dz, 'spin_state']
-                    print(ms)
+                    if len(spin_df) > 0:
+                        ms = spin_df.loc[dz, 'spin_state']
+                        print(ms)
+                    else:
+                        continue
 
                     if os.path.exists(atoms_path):
                         atoms = read(atoms_path)
