@@ -194,18 +194,19 @@ def main():
 
             for path in matching_paths:
                 print(path)
-                csv_spin = os.path.join(path, 'lowest.csv')
-                df_spin = pd.read_csv('csv_spin')
+                spin_csv = os.path.join(path, 'lowest.csv')
+                spin_df = pd.read_csv(spin_csv)
 
                 for i, dz in enumerate(dzs):
                     atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
-                    
+                    ms = spin_df.loc[dz, 'spin_state']
+                    print(ms)
 
                     if os.path.exists(atoms_path):
                         atoms = read(atoms_path)
                         energy = atoms.get_total_energy()
                         formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
-                        df.at[dz, f'MS{ms}'] = formation_energy
+                        df.at[dz, f'MS-{ms}'] = formation_energy
                         try:
                             magmoms = atoms.get_magnetic_moments()
                             for atom in atoms:
@@ -234,13 +235,14 @@ def main():
             # combining(df=df_OH_rel, df_relaxed=df_OH_relaxed_rel, tsv_filename=tsv_OH_rel_filename)
             # combining(df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, tsv_filename=tsv_OH_mag_filename)
 
-            plotting(df=df, df_relaxed=df_relaxed, dzs=dzs, spins=spins, 
-                     ylabel='Formation energy (eV)', png_filename=png_filename)
-            plotting(df=df_rel, df_relaxed=df_relaxed_rel, dzs=dzs, spins=spins, color='black', 
-                     ylabel='Spin crossover energy (eV)', png_filename=png_rel_filename)
-            plotting(df=df_mag, df_relaxed=df_relaxed_mag, dzs=dzs, spins=spins, 
-                     ymin=-0.5, ymax=5.5, yticks=np.arange(6),
-                     ylabel='Magnetic Moments', png_filename=png_mag_filename)
+            # plotting(df=df, df_relaxed=df_relaxed, dzs=dzs, spins=spins, 
+            #          ylabel='Formation energy (eV)', png_filename=png_filename)
+            # plotting(df=df_rel, df_relaxed=df_relaxed_rel, dzs=dzs, spins=spins, color='black', 
+            #          ylabel='Spin crossover energy (eV)', png_filename=png_rel_filename)
+            # plotting(df=df_mag, df_relaxed=df_relaxed_mag, dzs=dzs, spins=spins, 
+            #          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
+            #          ylabel='Magnetic Moments', png_filename=png_mag_filename)
+    
             # plotting(df=df_O, df_relaxed=df_O_relaxed, dzs=dzs, spins=spins, 
             #          ylabel='Formation energy (eV)', png_filename=png_O_filename)
             # plotting(df=df_O_rel, df_relaxed=df_O_relaxed_rel, dzs=dzs, spins=spins, color='black', 
