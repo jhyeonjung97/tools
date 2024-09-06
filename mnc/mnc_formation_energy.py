@@ -194,8 +194,9 @@ def main():
 
             for path in matching_paths:
                 print(path)
-                spin_txt = os.path.join(path, 'lowest.txt')
-                
+                csv_spin = os.path.join(path, 'lowest.csv')
+                df_spin = pd.read_csv('csv_spin')
+
                 for i, dz in enumerate(dzs):
                     atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
                     

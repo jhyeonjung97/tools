@@ -6,7 +6,7 @@ do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
-    echo -e "dz\tspin_state" > lowest.txt
+    echo -e "dz\tspin_state" > lowest.csv
     all_done=true
     for sub_sub_dir in ./*_*S/*_/
     do
@@ -41,7 +41,7 @@ do
                 product=$(echo "$dz * 0.2" | bc)
                 clean_dir=$(echo "$lowest_sub_dir" | sed 's:/$::')
                 spin=$(echo "$clean_dir" | cut -d'_' -f2)
-                echo -e "$product\t$spin" >> lowest.txt
+                echo -e "$product\t$spin" >> lowest.csv
                 if [[ ! -f most_stable/6_/restart.json ]]; then
                     echo "${lowest_dir}restart.json most_stable/${dz}_/"
                     cp ${lowest_dir}restart.json most_stable/${dz}_/
