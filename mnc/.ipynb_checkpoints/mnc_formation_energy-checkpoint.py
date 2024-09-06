@@ -195,6 +195,7 @@ def main():
             for path in matching_paths:
                 print(path)
                 spin_tsv = os.path.join(path, 'lowest.tsv')
+                spin_df = pd.read_csv(spin_tsv, sep='\t')
 
                 for i, dz in enumerate(dzs):
                     atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
