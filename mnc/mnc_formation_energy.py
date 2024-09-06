@@ -246,7 +246,7 @@ def plot_smooth_line(x, y, color, label):
             spl = make_interp_spline(x, y, k=2)
         y_smooth = spl(x_new)
         plt.plot(x_new, y_smooth, color=color, label=label)
-        plt.scatter(x, y, edgecolors=color, facecolors='white', marker='o')  # Add markers without label
+        plt.scatter(x, y, color=color, edgecolors=color, facecolors='white', marker='o')  # Add markers without label
     except ValueError as e:
         print(f"Error while creating spline: {e}")
 
