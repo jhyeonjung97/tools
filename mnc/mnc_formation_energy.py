@@ -13,7 +13,7 @@ rows = {
     # '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
     # '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
-spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd', 'stable'}
+spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd', 'stable': 'grey'}
 dzs = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
 
 E_H2O = -14.23919983
