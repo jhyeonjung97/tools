@@ -29,7 +29,7 @@ nitrogen = (nitrogen_E - nitrogen_TS + nitrogen_ZPE) / 2
 
 carbon = -9.357363435 # eV, DFT
 
-metal_path = '/scratch/x2755a09/3_MNC/gas/metals.tsv'
+metal_path = '/pscratch/sd/j/jiuy97/6_MNC/gas/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 
 def main():
@@ -79,7 +79,7 @@ def main():
                 png_OH_mag_filename = f'{row_key}_{m+2}{metal}_mag_OH.png'
 
                 for spin in spins.keys():
-                    path_pattern = f'/scratch/x2755a09/3_MNC/{row_key}/*_{metal}/*_{spin}'
+                    path_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/0_clean/{row_key}/*_{metal}/*_{spin}'
                     matching_paths = glob.glob(path_pattern)
 
                     for path in matching_paths:
