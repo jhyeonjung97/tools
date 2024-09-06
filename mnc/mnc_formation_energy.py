@@ -251,7 +251,7 @@ def plot_smooth_line(x, y, color, label):
         print(f"Error while creating spline: {e}")
 
 def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=None, yticks=None, color=None):
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(3, 2))
     for column in df.columns:
         filtered_df = df[column].dropna()
         if not filtered_df.empty:
