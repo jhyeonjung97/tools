@@ -280,11 +280,11 @@ def plot_smooth_line(x, y, color, label):
         else:
             spl = make_interp_spline(x, y, k=2)
         y_smooth = spl(x_new)
-        line, = plt.plot(x, y_smooth, color=color, label='Smooth Line', zorder=1)
-        scatter = plt.scatter(x, y, marker='s', color=color, edgecolors=color, facecolors='white', label='Scatter', zorder=2)
-        # plt.plot(x_new, y_smooth, color=color, label=label, zorder=1)
-        # plt.scatter(x, y, marker='s', color=color, edgecolors=color, facecolors='white', label='_nolegend_', zorder=2)
-        plt.legend(handles=[line, scatter], labels=[label])
+        plt.plot(x_new, y_smooth, color=color, label='_nolegend_', zorder=1)
+        plt.scatter(x, y, marker='s', color=color, edgecolors=color, facecolors='white', label='_nolegend_', zorder=2)
+        custom_legend = [Line2D([0], [0], color=color, marker='s', markerfacecolor='white', label=label)]
+        plt.legend(handles=custom_legend)
+
     except ValueError as e:
         print(f"Error while creating spline: {e}")
 
