@@ -3,7 +3,7 @@
 squeue --me > ~/mystat.txt
 # cat ~/kisti.txt ~/nersc.txt > ~/mystat.txt
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/kisti/3_MNC/0_clean/*d/*_*/*_*S/*
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/*_*S/*
 do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
