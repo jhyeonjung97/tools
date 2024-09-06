@@ -13,7 +13,7 @@ rows = {
     # '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
     # '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
-spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd', 'stable': 'grey'}
+spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
 dzs = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
 
 E_H2O = -14.23919983
@@ -188,7 +188,34 @@ def main():
                     #                 df_OH_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
                     #     except:
                     #         df_OH_relaxed_mag.at[dz_relaxed, spin] = 0
+            
+            path_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/0_clean/{row_key}/*_{metal}'
+            matching_paths = glob.glob(path_pattern)
 
+            for path in matching_paths:
+                print(path)
+                spin_txt = os.path.join(path, 'lowest.txt')
+                
+                for i, dz in enumerate(dzs):
+                    atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
+                    
+
+                    if os.path.exists(atoms_path):
+                        atoms = read(atoms_path)
+                        energy = atoms.get_total_energy()
+                        formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
+                        df.at[dz, f'MS{ms}'] = formation_energy
+                        try:
+                            magmoms = atoms.get_magnetic_moments()
+                            for atom in atoms:
+                                if atom.symbol not in ['N', 'C', 'O', 'H']:
+                                    df_mag.at[dz, spin] = magmoms[atom.index]
+                        except:
+                            df_mag.at[dz, spin] = 0
+                    else:
+                        df.at[dz, spin] = np.nan
+                        df_mag.at[dz, spin] = np.nan
+                            
             relative(df, df_rel)
             # relative(df_O, df_O_rel)
             # relative(df_OH, df_OH_rel)

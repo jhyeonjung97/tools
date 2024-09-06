@@ -6,7 +6,7 @@ do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
-    echo "dz\tspin_state" > lowest.txt
+    echo -e "dz\tspin_state" > lowest.txt
     all_done=true
     for sub_sub_dir in ./*_*S/*_/
     do
