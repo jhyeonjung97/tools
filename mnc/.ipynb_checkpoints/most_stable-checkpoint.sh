@@ -44,10 +44,10 @@ do
                 echo -e "$product\t$spin" >> lowest.txt
                 if [[ ! -f most_stable/0_/restart.json ]]; then
                     echo "${lowest_dir}restart.json most_stable/${dz}_/"
-                    # cp ${lowest_dir}restart.json most_stable/${dz}_/
-                    # cp ${lowest_dir}WAVECAR most_stable/${dz}_/
-                    # cp ~/bin/tools/mnc/submit.sh most_stable/${dz}_/
-                    # sed -i -e "s/jobname/${metal}MS${dz}/" most_stable/${dz}_/submit.sh
+                    cp ${lowest_dir}restart.json most_stable/${dz}_/
+                    cp ${lowest_dir}WAVECAR most_stable/${dz}_/
+                    cp ~/bin/tools/mnc/submit.sh most_stable/${dz}_/
+                    sed -i -e "s/jobname/${metal}MS${dz}/" most_stable/${dz}_/submit.sh
                 fi
             else
                 echo "No valid directory found for dz=${dz}"
