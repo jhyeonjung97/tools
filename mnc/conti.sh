@@ -3,13 +3,16 @@
 squeue --me > ~/mystat.txt
 # cat ~/kisti.txt ~/nersc.txt > ~/mystat.txt
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/*_*S/*
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/*_*/*
 do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
     metal=$(echo "${path[-3]}" | cut -d'_' -f2)
     spin=$(echo "${path[-2]}" | cut -d'_' -f2)
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
+    if [[ $spin == 'stable' ]]; then
+        spin='MS'
+    fi
     if [[ $dz == 'relaxed' ]]; then
         dz='r'
     elif [[ $dz == 'x' ]]; then
