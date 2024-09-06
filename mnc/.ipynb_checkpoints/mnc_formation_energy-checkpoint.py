@@ -30,7 +30,7 @@ nitrogen = (nitrogen_E - nitrogen_TS + nitrogen_ZPE) / 2
 carbon = -9.357363435 # eV, DFT
 
 metal_path = '/pscratch/sd/j/jiuy97/6_MNC/gas/metals.tsv'
-metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
+metal_df = pd.read_tsv(metal_path, delimiter='\t', index_col=0)
 
 def main():
     for row_key, metals in rows.items():
@@ -194,8 +194,9 @@ def main():
 
             for path in matching_paths:
                 print(path)
-                spin_csv = os.path.join(path, 'lowest.csv')
-                spin_df = pd.read_csv(spin_csv)
+                spin_tsv = os.path.join(path, 'lowest.tsv')
+                spin_df = pd.read_tsv(spin_tsv)
+                spin_df.set_index('dz', inplace=True)
 
                 for i, dz in enumerate(dzs):
                     atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
@@ -264,7 +265,7 @@ def relative(df, df_rel):
 
 def combining(df, df_relaxed, tsv_filename):
     combined_df = pd.concat([df, df_relaxed])
-    combined_df.to_csv(tsv_filename, sep='\t', float_format='%.2f')
+    combined_df.to_tsv(tsv_filename, sep='\t', float_format='%.2f')
     print(f"Data saved to {tsv_filename}")
 
 def plot_smooth_line(x, y, color, label):
