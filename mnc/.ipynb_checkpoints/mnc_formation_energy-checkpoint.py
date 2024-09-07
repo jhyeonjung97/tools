@@ -282,7 +282,7 @@ def plot_smooth_line(x, y, color, label):
             spl = make_interp_spline(x, y, k=2)
         y_smooth = spl(x_new)
         plt.plot(x_new, y_smooth, color=color, label='_nolegend_', zorder=1)
-        plt.scatter(x, y, marker='s', color=color, edgecolors=color, facecolors='white', label=label, zorder=2)
+        plt.scatter(x, y, marker='s', edgecolors=color, facecolors='white', label=label, zorder=2)
     except ValueError as e:
         print(f"Error while creating spline: {e}")
 
@@ -323,6 +323,49 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     plt.savefig(png_filename, bbox_inches="tight")
     print(f"Figure saved as {png_filename}")
     plt.close()
+    
+   
+    # Define custom legends with only markers
+    custom_legend = [
+        Line2D([0], [0], marker='s', markerfacecolor='white', markeredgecolor='#ff7f0e', 
+               label='LS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
+        Line2D([0], [0], marker='s', markerfacecolor='white', markeredgecolor='#279ff2', 
+               label='IS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
+        Line2D([0], [0], marker='s', markerfacecolor='white', markeredgecolor='#9467bd', 
+               label='HS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
+    
+        Line2D([0], [0], marker='s', color='#ff7f0e', 
+               label='LS (relaxed, w/ nupdown)', markersize=8, linestyle='None'),
+        Line2D([0], [0], marker='s', color='#279ff2', 
+               label='IS (relaxed, w/ nupdown)', markersize=8, linestyle='None'),
+        Line2D([0], [0], marker='s', color='#9467bd', 
+               label='HS (relaxed, w/ nupdown)', markersize=8, linestyle='None'),
+    
+        Line2D([0], [0], marker='x', color='#ff7f0e', 
+               label='LS (fixed, w/o nupdown)', markersize=8, linestyle='None'),
+        Line2D([0], [0], marker='x', color='#279ff2', 
+               label='IS (fixed, w/o nupdown)', markersize=8, linestyle='None'),
+        Line2D([0], [0], marker='x', color='#9467bd', 
+               label='HS (fixed, w/o nupdown)', markersize=8, linestyle='None'),
+    ]
+    
+    # Create figure and axis
+    fig, ax = plt.subplots()
+    
+    # Add the custom legend with markers only
+    ax.legend(handles=custom_legend)
+    
+    # Remove the axis
+    ax.axis('off')
+    
+    # Save the figure
+    png_filename = "custom_legend_markers_only.png"  # Update with your file path
+    plt.savefig(png_filename, bbox_inches="tight")
+    print(f"Figure saved as {png_filename}")
+    
+    # Close the plot
+    plt.close()
+
 
 if __name__ == '__main__':
     main()
