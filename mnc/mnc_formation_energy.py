@@ -38,10 +38,10 @@ def main():
     for row_key, metals in rows.items():
         for m, metal in enumerate(metals):
             df = pd.DataFrame()
-            df_rel = pd.DataFrame()
+            # df_rel = pd.DataFrame()
             df_mag = pd.DataFrame()
             df_relaxed = pd.DataFrame()
-            df_relaxed_rel = pd.DataFrame()
+            # df_relaxed_rel = pd.DataFrame()
             df_relaxed_mag = pd.DataFrame()
 
             # df_O = pd.DataFrame()
@@ -60,8 +60,8 @@ def main():
 
             tsv_filename = f'{row_key}_{m+2}{metal}_Ef.tsv'
             png_filename = f'{row_key}_{m+2}{metal}_Ef.png'
-            tsv_rel_filename = f'{row_key}_{m+2}{metal}_rel.tsv'
-            png_rel_filename = f'{row_key}_{m+2}{metal}_rel.png'
+            # tsv_rel_filename = f'{row_key}_{m+2}{metal}_rel.tsv'
+            # png_rel_filename = f'{row_key}_{m+2}{metal}_rel.png'
             tsv_mag_filename = f'{row_key}_{m+2}{metal}_mag.tsv'
             png_mag_filename = f'{row_key}_{m+2}{metal}_mag.png'
 
@@ -224,15 +224,15 @@ def main():
                         df.at[dz, spin] = np.nan
                         df_mag.at[dz, spin] = np.nan
                             
-            relative(df, df_rel)
+            # relative(df, df_rel)
             # relative(df_O, df_O_rel)
             # relative(df_OH, df_OH_rel)
-            relative(df_relaxed, df_relaxed_rel)
+            # relative(df_relaxed, df_relaxed_rel)
             # relative(df_O_relaxed, df_O_relaxed_rel)
             # relative(df_OH_relaxed, df_OH_relaxed_rel)
 
             combining(df=df, df_relaxed=df_relaxed, tsv_filename=tsv_filename)
-            combining(df=df_rel, df_relaxed=df_relaxed_rel, tsv_filename=tsv_rel_filename)
+            # combining(df=df_rel, df_relaxed=df_relaxed_rel, tsv_filename=tsv_rel_filename)
             combining(df=df_mag, df_relaxed=df_relaxed_mag, tsv_filename=tsv_mag_filename)
             # combining(df=df_O, df_relaxed=df_O_relaxed, tsv_filename=tsv_O_filename)
             # combining(df=df_O_rel, df_relaxed=df_O_relaxed_rel, tsv_filename=tsv_O_rel_filename)
@@ -243,8 +243,8 @@ def main():
 
             plotting(df=df, df_relaxed=df_relaxed, dzs=dzs, spins=spins, 
                      ylabel='Formation energy (eV)', png_filename=png_filename)
-            plotting(df=df_rel, df_relaxed=df_relaxed_rel, dzs=dzs, spins=spins, color='black', 
-                     ylabel='Spin crossover energy (eV)', png_filename=png_rel_filename)
+            # plotting(df=df_rel, df_relaxed=df_relaxed_rel, dzs=dzs, spins=spins, color='black', 
+            #          ylabel='Spin crossover energy (eV)', png_filename=png_rel_filename)
             plotting(df=df_mag, df_relaxed=df_relaxed_mag, dzs=dzs, spins=spins, 
                      ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                      ylabel='Magnetic Moments', png_filename=png_mag_filename)
@@ -264,9 +264,9 @@ def main():
             #          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
             #          ylabel='Magnetic Moments', png_filename=png_OH_mag_filename)
         
-def relative(df, df_rel):
-    if 'HS' in df.columns and 'LS' in df.columns:
-        df_rel['HS-LS'] = df['HS'] - df['LS']
+# def relative(df, df_rel):
+#     if 'HS' in df.columns and 'LS' in df.columns:
+#         df_rel['HS-LS'] = df['HS'] - df['LS']
 
 def combining(df, df_relaxed, tsv_filename):
     combined_df = pd.concat([df, df_relaxed])
@@ -281,12 +281,8 @@ def plot_smooth_line(x, y, color, label):
         else:
             spl = make_interp_spline(x, y, k=2)
         y_smooth = spl(x_new)
-        
         plt.plot(x_new, y_smooth, color=color, label='_nolegend_', zorder=1)
-        plt.scatter(x, y, marker='s', color=color, edgecolors=color, facecolors='white', label='_nolegend_', zorder=2)
-        custom_legend = [Line2D([0], [1], color=color, marker='s', markerfacecolor='white', label=label)]
-        plt.legend(handles=custom_legend)
-
+        plt.scatter(x, y, marker='s', color=color, edgecolors=color, facecolors='white', label=label, zorder=2)
     except ValueError as e:
         print(f"Error while creating spline: {e}")
 
