@@ -323,15 +323,16 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     plt.savefig(png_filename, bbox_inches="tight")
     print(f"Figure saved as {png_filename}")
     plt.close()
-    
-   
-    # Define custom legends with only markers
+
+
+if __name__ == '__main__':
+    main()
     custom_legend = [
-        Line2D([0], [0], marker='s', markerfacecolor='white', markeredgecolor='#ff7f0e', 
+        Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#ff7f0e', 
                label='LS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
-        Line2D([0], [0], marker='s', markerfacecolor='white', markeredgecolor='#279ff2', 
+        Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#279ff2', 
                label='IS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
-        Line2D([0], [0], marker='s', markerfacecolor='white', markeredgecolor='#9467bd', 
+        Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#9467bd', 
                label='HS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
     
         Line2D([0], [0], marker='s', color='#ff7f0e', 
@@ -348,24 +349,10 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         Line2D([0], [0], marker='x', color='#9467bd', 
                label='HS (fixed, w/o nupdown)', markersize=8, linestyle='None'),
     ]
-    
-    # Create figure and axis
     fig, ax = plt.subplots()
-    
-    # Add the custom legend with markers only
     ax.legend(handles=custom_legend)
-    
-    # Remove the axis
     ax.axis('off')
-    
-    # Save the figure
     png_filename = "custom_legend_markers_only.png"  # Update with your file path
     plt.savefig(png_filename, bbox_inches="tight")
     print(f"Figure saved as {png_filename}")
-    
-    # Close the plot
     plt.close()
-
-
-if __name__ == '__main__':
-    main()
