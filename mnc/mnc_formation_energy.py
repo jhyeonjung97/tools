@@ -139,7 +139,7 @@ def main():
                         #     df_OH.at[dz, spin] = np.nan
                         #     df_OH_mag.at[dz, spin] = np.nan
 
-                    relaxed_path = os.path.join(path, 'relaxed', 'moments.json')
+                    relaxed_path = os.path.join(path, 'relaxed', 'final_with_calculator.json')
                     # relaxed_O_path = os.path.join(path, 'relaxed/1_O', 'moments.json')
                     # relaxed_OH_path = os.path.join(path, 'relaxed/2_OH', 'moments.json')
 
