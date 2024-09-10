@@ -56,7 +56,6 @@ elif [[ ${here} == 'nersc' ]]; then
         # python ~/bin/tools/tetra/formation_energy.py
         # python ~/bin/tools/tetra/cohesive_energy.py
 
-        # python ~/bin/tools/tetra/energy.py --save -p area -x "Metal (MO)" -y "Area (A^2)"
         # python ~/bin/tools/tetra/energy.py --save -p PSCENC -x "Metal (MO)" -y "PSCENC (eV/MO)" -n m
         # python ~/bin/tools/tetra/energy.py --save -p TEWEN -x "Metal (MO)" -y "TEWEN (eV/MO)" -n m
         # python ~/bin/tools/tetra/energy.py --save -p DENC -x "Metal (MO)" -y "DENC (eV/MO)" -n m
