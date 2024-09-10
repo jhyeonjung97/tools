@@ -132,12 +132,9 @@ def main():
 
     plotting_stack(pattern='energy', xlabel='Relative energy (eV)', filename=filename, figsize=(6, 6), 
              bins=np.arange(-0.4, +0.4, 0.05), width=0.05*0.9, xticks=np.arange(-0.4, +0.4+0.05, 0.05*2), xmin=-0.4-0.05, xmax=+0.4+0.05)
-    
-    plotting(pattern='energy', xlabel='Relative energy (eV)', filename=filename, figsize=(6, 6), 
-             bins=np.arange(-0.4, +0.4, 0.05), width=0.05*0.9, xticks=np.arange(-0.4, +0.4+0.05, 0.05*2), xmin=-0.4-0.05, xmax=+0.4+0.05)
-    plotting(pattern='bandgap', xlabel='Band gap (eV)', filename=gap_filename, figsize=(10, 6), 
+    plotting_stack(pattern='bandgap', xlabel='Band gap (eV)', filename=gap_filename, figsize=(10, 6), 
              bins=np.arange(+0.0, +3.0, 0.05), width=0.05*0.9, xticks=np.arange(+0.0, +3.0+0.10, 0.10*2), xmin=+0.0-0.10, xmax=+3.0+0.10) 
-    plotting(pattern='Md2Op', xlabel='M3d - O2p (eV)', filename=dos_filename, figsize=(8, 6), 
+    plotting_stack(pattern='Md2Op', xlabel='M3d - O2p (eV)', filename=dos_filename, figsize=(8, 6), 
              bins=np.arange(+0.0, +2.0, 0.05), width=0.05*0.9, xticks=np.arange(+0.0, +2.0+0.10, 0.10*2), xmin=+0.0-0.10, xmax=+2.0+0.10) 
     
     plotting_adv(df=df_mag, df_ref=df_ref, pattern='magmom', xlabel='Magnetic moments (uB)', filename=mag_filename,
