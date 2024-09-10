@@ -1,7 +1,7 @@
 #!/bin/bash
 
 squeue --me > ~/mystat.txt
-for dir in /pscratch/sd/j/jiuy97/6_MNC/2_OH/*d/*_*/*_*S/
+for dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*d/*_*/*_*S/
 do
     cd ${dir}; pwd
     IFS='/' read -r -a path <<< $PWD

@@ -1,9 +1,11 @@
-for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*/*_*/*_*S;
+for dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*d/*_*/*_*S/*_
 do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
-    path3=${path[-3]}
-    path2=${path[-2]}
-    path1=${path[-1]}
-    mv $dir/nupdown/* /pscratch/sd/j/jiuy97/6_MNC/kisti/3_MNC/0_clean/$path3/$path2/$path1/0_
+    # metal=$(echo "${path[-3]}" | cut -d'_' -f2)
+    # spin=$(echo "${path[-2]}" | cut -d'_' -f2)
+    dz=$(echo "${path[-1]}" | cut -d'_' -f1)
+    if [[ -z vasp.out ]]; then
+        python ~/bin/tools/mnc/dz.py $dz
+    fi
 done
