@@ -6,7 +6,7 @@ import numpy as np
 import os
 import re
 
-root='/Users/jiuy97/Desktop/figure'
+root='/pscratch/sd/j/jiuy97/5_HEO/2_mixing'
 # root='/Users/hailey/Desktop/aug5'
 # root='/scratch/x2755a09/4_HEO'
 
@@ -89,6 +89,8 @@ def main():
                 df.at[i, metal] = numb[m]
             df.at[i, 'energy'] = relative_energy
             df.at[i, 'volume'] = atoms.get_volume()
+            fo
+            df.at[i, 'Ni']
         if os.path.exists(path):
             atoms = read(chg_path)
             charges = atoms.get_initial_charges()
