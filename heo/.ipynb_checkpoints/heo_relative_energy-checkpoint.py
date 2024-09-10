@@ -173,6 +173,7 @@ def plotting_stack(pattern, xlabel, filename, figsize, bins, width, xticks, xmin
         hist, _ = np.histogram(df[pattern].dropna(), bins=bins, weights=df[metal])
         plt.bar(bin_centers, hist, width=width, color=clrs[i], alpha=0.7, label=metal, bottom=bottom)
         bottom += hist
+        plt.axvline(x=df_ref.at[i, pattern], color=clrs[i], linestyle='--')
     plt.axvline(x=0, color='gray', linestyle='--')
     plt.xlabel(xlabel)
     plt.ylabel('Frequency')
