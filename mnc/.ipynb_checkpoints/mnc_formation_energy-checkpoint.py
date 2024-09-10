@@ -96,8 +96,6 @@ def main():
                             energy = atoms.get_total_energy()
                             formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
                             df.at[dz, spin] = formation_energy
-                            if metal == 'Co':
-                                print(df)
                             try:
                                 magmoms = atoms.get_magnetic_moments()
                                 for atom in atoms:
@@ -218,12 +216,12 @@ def main():
                             magmoms = atoms.get_magnetic_moments()
                             for atom in atoms:
                                 if atom.symbol not in ['N', 'C', 'O', 'H']:
-                                    df_mag.at[dz, spin] = magmoms[atom.index]
+                                    df_mag.at[dz, f'MS({ms})'] = magmoms[atom.index]
                         except:
                             df_mag.at[dz, spin] = 0
                     else:
-                        df.at[dz, spin] = np.nan
-                        df_mag.at[dz, spin] = np.nan
+                        df.at[dz, f'MS({ms})'] = np.nan
+                        df_mag.at[dz, f'MS({ms})'] = np.nan
                             
             # relative(df, df_rel)
             # relative(df_O, df_O_rel)
