@@ -93,9 +93,10 @@ def main():
 
                         if os.path.exists(atoms_path):
                             atoms = read(atoms_path)
-                            print(atoms_path)
                             energy = atoms.get_total_energy()
                             formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
+                            if metal == 'Co':
+                                print(dz, spin, formation_energy)
                             df.at[dz, spin] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
