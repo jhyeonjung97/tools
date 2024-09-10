@@ -164,6 +164,23 @@ def plotting(pattern, xlabel, filename, figsize, bins, width, xticks, xmin, xmax
     print(f"Figure saved as {filename}.png")
     plt.close()
 
+def plotting_stack(pattern, xlabel, filename, figsize, bins, width, xticks, xmin, xmax):
+    plt.figure(figsize=figsize)
+    bin_centers = 0.5 * (bins[:-1] + bins[1:])
+    bottom = np.zeros(len(bin_centers))
+    for i, metal in enumerate(prvs):
+        hist, _ = np.histogram(df['pattern'].dropna(), bins=bins, weights=df[metal])
+        plt.bar(bin_centers, hist, width=width, color=colors[i], alpha=0.7, label=metal, bottom=bottom)
+        bottom += hist
+    plt.axvline(x=0, color='gray', linestyle='--')
+    plt.xlabel(xlabel)
+    plt.ylabel('Frequency')
+    plt.xticks(xticks)
+    plt.xlim(xmin, xmax)
+    plt.savefig(f'{filename}_stack.png', bbox_inches="tight")
+    print(f"Figure saved as {filename}_stack.png")
+    plt.close()
+    
 def plotting_adv(df, df_ref, pattern, xlabel, filename,
                  bins1, width1, xticks1, xmin1, xmax1, 
                  bins2, width2, xticks2, xmin2, xmax2,
