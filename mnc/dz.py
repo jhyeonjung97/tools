@@ -6,7 +6,7 @@ if len(sys.argv) != 2:
     sys.exit(1)
     
 dz = float(sys.argv[1])
-
+index = 100
 atoms = read('restart.json')
 for atom in atoms:
     if atom.symbol not in ['C', 'N', 'O', 'H']:
