@@ -172,9 +172,7 @@ def extract_values(directory, patterns, norm, dir_range):
 
         matching_files = []
         matching_files.extend(glob.glob(pattern))
-        if matching_files:
-            break
-
+        print(matching_files)
         for json_file in matching_files:
             if os.path.exists(json_file):
                 atoms = read(json_file)
