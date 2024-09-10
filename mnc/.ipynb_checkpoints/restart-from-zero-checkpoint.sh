@@ -8,7 +8,7 @@ do
     ads=$(echo "${path[-4]}" | cut -d'_' -f2)
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     spin=$(echo "${path[-1]}" | cut -d'_' -f2)
-    for dz in {0..6}
+    for dz in {1..6}
     do
         mkdir ${dz}_
         cp ~/bin/tools/mnc/submit.sh ${dz}_
