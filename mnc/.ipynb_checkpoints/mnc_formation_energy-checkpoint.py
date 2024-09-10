@@ -196,9 +196,9 @@ def main():
 
             for path in matching_paths:
                 spin_tsv = os.path.join(path, 'lowest.tsv')
-                if os.path.exists(spin_tsv)
-                spin_df = pd.read_csv(spin_tsv, sep='\t')
-                spin_df.set_index('dz', inplace=True)
+                if os.path.exists(spin_tsv):
+                    spin_df = pd.read_csv(spin_tsv, sep='\t')
+                    spin_df.set_index('dz', inplace=True)
                     for i, dz in enumerate(dzs):
                         if len(spin_df) > 0:
                             ms = spin_df.loc[dz, 'spin_state']
