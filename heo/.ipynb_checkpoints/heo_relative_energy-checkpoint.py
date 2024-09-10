@@ -89,8 +89,8 @@ def main():
                 df.at[i, metal] = numb[m]
             df.at[i, 'energy'] = relative_energy
             df.at[i, 'volume'] = atoms.get_volume()
-            fo
-            df.at[i, 'Ni']
+            # fo
+            # df.at[i, 'Ni']
         if os.path.exists(path):
             atoms = read(chg_path)
             charges = atoms.get_initial_charges()
