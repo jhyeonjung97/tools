@@ -175,7 +175,7 @@ def plotting_stack(pattern, xlabel, filename, figsize, bins, width, xticks, xmin
     bottom = np.zeros(len(bin_centers))
     for i, metal in enumerate(prvs):
         hist, _ = np.histogram(df[pattern].dropna(), bins=bins, weights=df[metal])
-        plt.bar(bin_centers, hist, width=width, color=colors[i], alpha=0.7, label=metal, bottom=bottom)
+        plt.bar(bin_centers, hist, width=width, color=clrs[i], alpha=0.7, label=metal, bottom=bottom)
         bottom += hist
     plt.axvline(x=0, color='gray', linestyle='--')
     plt.xlabel(xlabel)
