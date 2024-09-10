@@ -130,7 +130,10 @@ def main():
 
     for i in range(5):
         df_ref.at[i, 'energy'] = 0
-        
+
+    plotting_stack(pattern='energy', xlabel='Relative energy (eV)', filename=filename, figsize=(6, 6), 
+             bins=np.arange(-0.4, +0.4, 0.05), width=0.05*0.9, xticks=np.arange(-0.4, +0.4+0.05, 0.05*2), xmin=-0.4-0.05, xmax=+0.4+0.05)
+    
     plotting(pattern='energy', xlabel='Relative energy (eV)', filename=filename, figsize=(6, 6), 
              bins=np.arange(-0.4, +0.4, 0.05), width=0.05*0.9, xticks=np.arange(-0.4, +0.4+0.05, 0.05*2), xmin=-0.4-0.05, xmax=+0.4+0.05)
     plotting(pattern='bandgap', xlabel='Band gap (eV)', filename=gap_filename, figsize=(10, 6), 
