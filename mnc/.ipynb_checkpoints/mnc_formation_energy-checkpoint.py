@@ -11,8 +11,8 @@ from matplotlib.lines import Line2D
 # Define the rows and spins
 rows = {
     '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
-    # '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
-    # '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
+    '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
+    '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
 spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
 ms_spins ={'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
