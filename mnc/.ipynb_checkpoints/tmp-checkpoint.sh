@@ -5,7 +5,7 @@ do
     # metal=$(echo "${path[-3]}" | cut -d'_' -f2)
     # spin=$(echo "${path[-2]}" | cut -d'_' -f2)
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
-    if [[ -z vasp.out ]]; then
+    if [[ ! -f ./vasp.out ]]; then
         python ~/bin/tools/mnc/dz.py $dz
     fi
 done
