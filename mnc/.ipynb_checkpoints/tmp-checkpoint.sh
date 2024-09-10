@@ -1,6 +1,6 @@
 for dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*d/*_*/*_*S/*_
 do
-    cd $dir
+    cd $dir; pwd
     IFS='/' read -r -a path <<< $PWD
     # metal=$(echo "${path[-3]}" | cut -d'_' -f2)
     # spin=$(echo "${path[-2]}" | cut -d'_' -f2)
