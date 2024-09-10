@@ -89,8 +89,6 @@ def main():
                 df.at[i, metal] = numb[m]
             df.at[i, 'energy'] = relative_energy
             df.at[i, 'volume'] = atoms.get_volume()
-            # fo
-            # df.at[i, 'Ni']
         if os.path.exists(path):
             atoms = read(chg_path)
             charges = atoms.get_initial_charges()
@@ -130,6 +128,7 @@ def main():
 
     for i in range(5):
         df_ref.at[i, 'energy'] = 0
+        df[prvs[i]] -= 1
 
     plotting_stack(pattern='energy', xlabel='Relative energy (eV)', filename=filename, figsize=(6, 6), 
              bins=np.arange(-0.4, +0.4, 0.05), width=0.05*0.9, xticks=np.arange(-0.4, +0.4+0.05, 0.05*2), xmin=-0.4-0.05, xmax=+0.4+0.05)
