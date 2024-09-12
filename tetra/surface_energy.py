@@ -13,7 +13,7 @@ color_ranges = [plt.cm.Reds(np.linspace(0.3, 0.9, 3)),
                 plt.cm.Greens(np.linspace(0.3, 0.9, 3)),
                 plt.cm.Blues(np.linspace(0.3, 0.9, 3)),
                 plt.cm.Purples(np.linspace(0.3, 0.9, 3)),
-                plt.cm.Pink(np.linspace(0.3, 0.9, 3))] #,
+                plt.cm.pink(np.linspace(0.3, 0.9, 3))] #,
                 #plt.cm.Greys(np.linspace(0.3, 0.9, 3)),
                 #plt.cm.Cool(np.linspace(0.3, 0.9, 3))]
 markers = ['>', '<', 'o', 's', 'p', 'd', '^'] #, 'v', '*']
