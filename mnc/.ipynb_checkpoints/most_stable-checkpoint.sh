@@ -49,7 +49,6 @@ do
                     cp ${lowest_dir}WAVECAR most_stable/${dz}_/
                     cp ~/bin/tools/mnc/submit.sh most_stable/${dz}_/
                     sed -i -e "s/jobname/${metal}MS${dz}/" most_stable/${dz}_/submit.sh
-                    sbatch submit.sh
                 fi
             else
                 echo "No valid directory found for dz=${dz}"
