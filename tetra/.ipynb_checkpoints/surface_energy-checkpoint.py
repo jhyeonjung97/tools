@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-coords = ['WZ', 'ZB', 'LT', 'TN', 'NB', 'RS']
+coords = ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']
 coord_dirs = ['1_Tetrahedral_WZ', '2_Tetrahedral_ZB', '3_SquarePlanar_TN', '4_SquarePlanar_PD', 
               '5_SquarePlanar_NB', '6_Octahedral_RS', '7_Pyramidal_LT'] #, '8_Tetrahedral_AQ', '9_SquarePlanar_AU'
 colors = ['#d62728', '#ff7f0e', '#ffd70e', '#2ca02c', '#279ff2', '#9467bd', '#8c564b'] #, '#e377c2', '#17becf']
