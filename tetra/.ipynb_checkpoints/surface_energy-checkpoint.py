@@ -31,7 +31,7 @@ bulk_path = '/pscratch/sd/j/jiuy97/3_V_bulk'
 slab_path = '/pscratch/sd/j/jiuy97/4_V_slab'
 
 for i in range(7):
-    if i == 4:
+    if i == 2:
         coord = coords[i]
         coord_dir = coord_dirs[i]
         color = colors[i]
