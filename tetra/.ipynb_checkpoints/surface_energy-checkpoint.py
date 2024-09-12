@@ -73,8 +73,8 @@ for i in range(7):
     
                 combined_df = pd.concat([combined_df, surface_df.rename(columns={'energy': f'{coord}_{row_key}'})], axis=1)
                 
-                png_filename = f"surface_{i}{coord}_{row_key}.png"
-                tsv_filename = f"surface_{i}{coord}_{row_key}.tsv"
+                png_filename = f"surface_{i+1}{coord}_{row_key}.png"
+                tsv_filename = f"surface_{i+1}{coord}_{row_key}.tsv"
     
                 plt.figure(figsize=(8, 6))
                 x = range(len(surface_df['energy']))
