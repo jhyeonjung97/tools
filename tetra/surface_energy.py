@@ -91,8 +91,8 @@ for i in range(7):
                 print(f"Figure saved as {png_filename}")
                 plt.close()
     
-        png_filename_combined = f"surface_{i}{coord}.png"
-        tsv_filename_combined = f"surface_{i}{coord}.tsv"
+        png_filename_combined = f"surface_{i+1}{coord}.png"
+        tsv_filename_combined = f"surface_{i+1}{coord}.tsv"
         
         plt.figure(figsize=(8, 6))
         for m, column in enumerate(combined_df.columns):
