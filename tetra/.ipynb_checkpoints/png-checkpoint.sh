@@ -66,7 +66,6 @@ elif [[ ${here} == 'nersc' ]]; then
         # python ~/bin/tools/tetra/energy.py --save -p EBANDS -x "Metal (MO)" -y "EBANDS (eV/MO)" -n m
         # python ~/bin/tools/tetra/energy.py --save -p EATOM -x "Metal (MO)" -y "EATOM (eV/MO)" -n m
         sed -i 's/\x0//g' *.tsv
-        cd $dir_now
     done
     
     for dir in /pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/; do
@@ -86,7 +85,6 @@ elif [[ ${here} == 'nersc' ]]; then
         # python ~/bin/tools/tetra/energy.py --save -p EBANDS -x "Metal (MO)" -y "EBANDS (eV/MO)" -n m
         # python ~/bin/tools/tetra/energy.py --save -p EATOM -x "Metal (MO)" -y "EATOM (eV/MO)" -n m
         sed -i 's/\x0//g' *.tsv
-        cd $dir_now
     done
     
     for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/; do

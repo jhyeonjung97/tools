@@ -168,7 +168,7 @@ def extract_values(directory, patterns, norm, dir_range):
             
         atoms=None
         in_charge_section = False
-        pattern = os.path.join(dir_path, 'energy.json')
+        pattern = os.path.join(dir_path, 'final_with_calculator.json')
 
         matching_files = []
         matching_files.extend(glob.glob(pattern))

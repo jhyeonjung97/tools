@@ -29,7 +29,7 @@ elif [[ ${here} == 'nersc' ]]; then
     # python ~/bin/verve/operator.py -o + -x mendeleev_ionenergies_1.tsv -y mendeleev_ionenergies_2.tsv -z mendeleev_ionenergies_12.tsv
     # python ~/bin/verve/operator.py -o + -x mendeleev_evaporation_heat.tsv -y mendeleev_fusion_heat.tsv -z mendeleev_sublimation_heat.tsv
     
-    for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*d/; do
+    for dir in /pscratch/sd/j/jiuy97/3_V_bulk/8_*_*/*d/; do
         cd $dir
         
         # if [[ $dir == *'Tetrahedral'* ]]; then
@@ -66,7 +66,6 @@ elif [[ ${here} == 'nersc' ]]; then
         # python ~/bin/tools/tetra/energy.py --save -p EBANDS -x "Metal (MO)" -y "EBANDS (eV/MO)" -n m
         # python ~/bin/tools/tetra/energy.py --save -p EATOM -x "Metal (MO)" -y "EATOM (eV/MO)" -n m
         sed -i 's/\x0//g' *.tsv
-        cd $dir_now
     done
     
     for dir in /pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/; do
@@ -86,7 +85,6 @@ elif [[ ${here} == 'nersc' ]]; then
         # python ~/bin/tools/tetra/energy.py --save -p EBANDS -x "Metal (MO)" -y "EBANDS (eV/MO)" -n m
         # python ~/bin/tools/tetra/energy.py --save -p EATOM -x "Metal (MO)" -y "EATOM (eV/MO)" -n m
         sed -i 's/\x0//g' *.tsv
-        cd $dir_now
     done
     
     for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/; do
