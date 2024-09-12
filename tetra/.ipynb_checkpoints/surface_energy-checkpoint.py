@@ -30,8 +30,8 @@ indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(rows['3d'], rows['4d'], rows['5d']
 bulk_path = '/pscratch/sd/j/jiuy97/3_V_bulk'
 slab_path = '/pscratch/sd/j/jiuy97/4_V_slab'
 
-for i in range(8):
-    if i == 7:
+for i in range(7):
+    if i == 6:
         coord = coords[i]
         coord_dir = coord_dirs[i]
         color = colors[i]
