@@ -204,7 +204,7 @@ def extract_values(directory, patterns, norm, dir_range):
                     titels.append(match_titel.group(1).rsplit('_', 1)[0])
             zval_dict = dict(zip(titels, zvals))
 
-        if 'x_' in dir_name or 's_' in dir_name or 'p_' in dir_name:
+        if 'x_' in dir_name or 's_' in dir_name or 'z_' in dir_name:
             for specific_pattern in specific_patterns:
                 if specific_pattern not in ['GP', 'mag']:
                     values.setdefault(specific_pattern, []).append(np.nan)
