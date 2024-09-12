@@ -29,7 +29,7 @@ elif [[ ${here} == 'nersc' ]]; then
     # python ~/bin/verve/operator.py -o + -x mendeleev_ionenergies_1.tsv -y mendeleev_ionenergies_2.tsv -z mendeleev_ionenergies_12.tsv
     # python ~/bin/verve/operator.py -o + -x mendeleev_evaporation_heat.tsv -y mendeleev_fusion_heat.tsv -z mendeleev_sublimation_heat.tsv
     
-    for dir in /pscratch/sd/j/jiuy97/3_V_bulk/8_*_*/*d/; do
+    for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*d/; do
         cd $dir
         
         # if [[ $dir == *'Tetrahedral'* ]]; then
