@@ -7,14 +7,12 @@
 #     python ~/bin/tools/mnc/add-h.py
 # done
 
-for o_dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*d/*_*/*_*S/*_
+for o_dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*_*/*_*S/*_
 do
     IFS='/' read -r -a path <<< $o_dir
     path1=${path[-1]}
     path2=${path[-2]}
     path3=${path[-3]}
-    path4=${path[-4]}
-    row=$(echo $path4 | cut -d'_' -f2)
     metal=$(echo $path3 | cut -d'_' -f2)
     o_spin=$(echo $path2 | cut -d'_' -f2)
     dz=$(echo $path1 | cut -d'_' -f1)
@@ -44,6 +42,6 @@ do
         elif [[ $o_spin == 'HS' ]]; then
             sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' ${dz}_/submit.sh
         fi
-        sbatch submit.sh
+        # sbatch submit.sh
     fi
 done
