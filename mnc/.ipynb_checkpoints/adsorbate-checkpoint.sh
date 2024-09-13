@@ -50,11 +50,11 @@ do
         cp ~/bin/tools/mnc/submit.sh ./
         sed -i -e "/#SBATCH -J/c\#SBATCH -J O${metal}${o_spin}${dz}" submit.sh
         if [[ $o_spin == 'LS' ]]; then
-            sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' ${dz}_/submit.sh
+            sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
         elif [[ $o_spin == 'IS' ]]; then
-            sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' ${dz}_/submit.sh
+            sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' submit.sh
         elif [[ $o_spin == 'HS' ]]; then
-            sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' ${dz}_/submit.sh
+            sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
         fi
         # sbatch submit.sh
     fi
