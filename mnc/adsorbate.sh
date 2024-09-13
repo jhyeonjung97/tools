@@ -1,11 +1,11 @@
-for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/*_*S/*_
-do
-    cd $dir; pwd
-    python ~/bin/tools/mnc/add-o.py
-    python ~/bin/tools/mnc/add-oh.py
-    python ~/bin/tools/mnc/add-co.py
-    python ~/bin/tools/mnc/add-h.py
-done
+# for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/*_*S/*_
+# do
+#     cd $dir; pwd
+#     python ~/bin/tools/mnc/add-o.py
+#     python ~/bin/tools/mnc/add-oh.py
+#     python ~/bin/tools/mnc/add-co.py
+#     python ~/bin/tools/mnc/add-h.py
+# done
 
 for o_dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*d/*_*/*_*S/*_
 do
@@ -19,7 +19,7 @@ do
     o_spin=$(echo $path2 | cut -d'_' -f2)
     dz=$(echo $path1 | cut -d'_' -f1)
 
-    if $metal in ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']; then
+    if [[ $metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni' || $metal == 'Mo' || $metal == 'W' ]]; then
         if [[ $o_spin == 'LS' ]]; then
             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/1_LS/$path1
         elif [[ $o_spin == 'HS' ]] && [[ -d "/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/2_HS/$path1" ]]; then
