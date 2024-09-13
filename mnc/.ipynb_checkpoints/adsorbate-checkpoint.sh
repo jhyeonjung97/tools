@@ -18,17 +18,17 @@ do
     dz=$(echo $path1 | cut -d'_' -f1)
 
     if [[ $metal == 'Mn' ]]; then
-        path3='5_Mn', path4='3d'
+        path3='5_Mn'; path4='3d'
     elif [[ $metal == 'Fe' ]]; then
-        path3='6_Fe', path4='3d'
+        path3='6_Fe'; path4='3d'
     elif [[ $metal == 'Co' ]]; then
-        path3='7_Co', path4='3d'
+        path3='7_Co'; path4='3d'
     elif [[ $metal == 'Ni' ]]; then
-        path3='8_Ni', path4='3d'
+        path3='8_Ni'; path4='3d'
     elif [[ $metal == 'Mo' ]]; then
-        path3='4_Mo', path4='4d'
+        path3='4_Mo'; path4='4d'
     elif [[ $metal == 'W' ]]; then
-        path3='4_W', path4='5d'
+        path3='4_W'; path4='5d'
     fi
 
     if [[ $metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni' || $metal == 'Mo' || $metal == 'W' ]]; then
