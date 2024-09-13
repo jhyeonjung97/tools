@@ -17,12 +17,18 @@ do
     o_spin=$(echo $path2 | cut -d'_' -f2)
     dz=$(echo $path1 | cut -d'_' -f1)
 
-    if [[ $metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni' ]]; then
-        path4='3d'
+    if [[ $metal == 'Mn' ]]; then
+        path3='5_Mn', path4='3d'
+    elif [[ $metal == 'Fe' ]]; then
+        path3='6_Fe', path4='3d'
+    elif [[ $metal == 'Co' ]]; then
+        path3='7_Co', path4='3d'
+    elif [[ $metal == 'Ni' ]]; then
+        path3='8_Ni', path4='3d'
     elif [[ $metal == 'Mo' ]]; then
-        path4='4d'
+        path3='4_Mo', path4='4d'
     elif [[ $metal == 'W' ]]; then
-        path4='5d'
+        path3='4_W', path4='5d'
     fi
 
     if [[ $metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni' || $metal == 'Mo' || $metal == 'W' ]]; then
@@ -39,7 +45,7 @@ do
         fi
         
         cd $o_dir; pwd
-        cp $dir/restart_o.json ./restart.json
+        cp $dir/restart-o.json ./restart.json
         cp $dir/WAVECAR ./
         cp ~/bin/tools/mnc/submit.sh ./
         sed -i -e "/#SBATCH -J/c\#SBATCH -J O${metal}${o_spin}${dz}" submit.sh
