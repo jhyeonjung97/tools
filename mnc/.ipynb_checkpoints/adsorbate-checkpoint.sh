@@ -62,7 +62,7 @@
 
 for oh_dir in /pscratch/sd/j/jiuy97/6_MNC/2_OH/*_*/*_*S/*_
 do
-    IFS='/' read -r -a path <<< $o_dir
+    IFS='/' read -r -a path <<< $oh_dir
     path1=${path[-1]}
     path2=${path[-2]}
     path3=${path[-3]}
@@ -97,15 +97,15 @@ do
             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/1_LS/$path1
         fi
         
-        cd $o_dir; pwd
+        cd $oh_dir; pwd
         cp $dir/restart-o.json ./restart.json
         cp ~/bin/tools/mnc/submit.sh ./
-        sed -i -e "/#SBATCH -J/c\#SBATCH -J O${metal}${o_spin}${dz}" submit.sh
-        if [[ $o_spin == 'LS' ]]; then
+        sed -i -e "/#SBATCH -J/c\#SBATCH -J O${metal}${oh_spin}${dz}" submit.sh
+        if [[ $oh_spin == 'LS' ]]; then
             sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
-        elif [[ $o_spin == 'IS' ]]; then
+        elif [[ $oh_spin == 'IS' ]]; then
             sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' submit.sh
-        elif [[ $o_spin == 'HS' ]]; then
+        elif [[ $oh_spin == 'HS' ]]; then
             sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
         fi
         # sbatch submit.sh
