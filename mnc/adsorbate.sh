@@ -17,6 +17,14 @@ do
     o_spin=$(echo $path2 | cut -d'_' -f2)
     dz=$(echo $path1 | cut -d'_' -f1)
 
+    if [[ $metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni' ]]; then
+        path4='3d'
+    elif [[ $metal == 'Mo' ]]; then
+        path4='4d'
+    elif [[ $metal == 'W' ]]; then
+        path4='5d'
+    fi
+
     if [[ $metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni' || $metal == 'Mo' || $metal == 'W' ]]; then
         if [[ $o_spin == 'LS' ]]; then
             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/1_LS/$path1
