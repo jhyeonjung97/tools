@@ -98,9 +98,9 @@ do
         fi
         
         cd $oh_dir; pwd
-        cp $dir/restart-o.json ./restart.json
+        cp $dir/restart-oh.json ./restart.json
         cp ~/bin/tools/mnc/submit.sh ./
-        sed -i -e "/#SBATCH -J/c\#SBATCH -J O${metal}${oh_spin}${dz}" submit.sh
+        sed -i -e "/#SBATCH -J/c\#SBATCH -J OH${metal}${oh_spin}${dz}" submit.sh
         if [[ $oh_spin == 'LS' ]]; then
             sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
         elif [[ $oh_spin == 'IS' ]]; then
