@@ -113,7 +113,7 @@ def main():
                         atoms_path = os.path.join(path_O, f'{i}_', 'final_with_calculator.json')
                         if os.path.exists(atoms_path) and energy:
                             atoms = read(atoms_path)
-                            energy_O = atoms_O.get_total_energy()
+                            energy_O = atoms.get_total_energy()
                             adsorption_energy = energy_O - energy - E_O
                             df_O.at[dz, spin] = adsorption_energy
                             energy = None
