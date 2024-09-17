@@ -65,8 +65,8 @@ def main():
             tsv_mag_filename = f'{row_key}_{m+2}{metal}_mag.tsv'
             png_mag_filename = f'{row_key}_{m+2}{metal}_mag.png'
 
-            tsv_O_filename = f'{row_key}_{m+2}{metal}_Oads.tsv'
-            png_O_filename = f'{row_key}_{m+2}{metal}_Oads.png'
+            tsv_O_filename = f'{row_key}_{m+2}{metal}_ads_O.tsv'
+            png_O_filename = f'{row_key}_{m+2}{metal}_ads_O.png'
             # tsv_O_rel_filename = f'{row_key}_{m+2}{metal}_rel_O.tsv'
             # png_O_rel_filename = f'{row_key}_{m+2}{metal}_rel_O.png'
             tsv_O_mag_filename = f'{row_key}_{m+2}{metal}_mag_O.tsv'
@@ -111,10 +111,11 @@ def main():
 
                     for path_O in matching_O_paths:
                         atoms_path = os.path.join(path_O, f'{i}_', 'final_with_calculator.json')
-                        if os.path.exists(atoms_path) and energy:
+                        if os.path.exists(atoms_path): # and energy:
                             atoms = read(atoms_path)
                             energy_O = atoms.get_total_energy()
-                            adsorption_energy = energy_O - energy - E_O
+                            adsorption_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_O
+                            # adsorption_energy = energy_O - energy - E_O
                             df_O.at[dz, spin] = adsorption_energy
                             energy = None
                             try:
@@ -148,13 +149,14 @@ def main():
                         
                 if path_O:
                     relaxed_O_path = os.path.join(path_O, 'relaxed', 'final_with_calculator.json')
-                    if os.path.exists(relaxed_O_path) and energy:
+                    if os.path.exists(relaxed_O_path): # and energy:
                         atoms = read(relaxed_O_path)
                         zN = mean([atom.z for atom in atoms if atom.symbol == 'N'])
                         zM = mean([atom.z for atom in atoms if atom.symbol not in ['N', 'C', 'O', 'H']])
                         dz_relaxed = abs(zN - zM)
                         energy_O = atoms.get_total_energy()
-                        adsorption_energy = energy_O - energy - E_O
+                        adsorption_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_O
+                        # adsorption_energy = energy_O - energy - E_O
                         df_O_relaxed.at[dz_relaxed, spin] = adsorption_energy
                         energy = None
                         try:
@@ -237,7 +239,7 @@ def main():
                 combining(df=df_O_mag, df_relaxed=df_O_relaxed_mag, tsv_filename=tsv_O_mag_filename)
                 
                 plotting(df=df_O, df_relaxed=df_O_relaxed, dzs=dzs, spins=spins, 
-                         ylabel='O Adsorption energy (eV)', png_filename=png_O_filename)
+                         ylabel='Formation energy (eV)', png_filename=png_O_filename)
                 # plotting(df=df_O_rel, df_relaxed=df_O_relaxed_rel, dzs=dzs, spins=spins, color='black', 
                 #          ylabel='Spin crossover energy (eV)', png_filename=png_O_rel_filename)
                 plotting(df=df_O_mag, df_relaxed=df_O_relaxed_mag, dzs=dzs, spins=spins, 
