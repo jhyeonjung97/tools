@@ -86,6 +86,8 @@ def main():
                 path_O_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/1_O/*_{metal}/*_{spin}'
                 matching_O_paths = glob.glob(path_O_pattern)
                 
+                path_O = None
+                
                 for i, dz in enumerate(dzs):
                     
                     for path in matching_paths:
