@@ -89,9 +89,7 @@ def main():
                 path_O = None
                 
                 for i, dz in enumerate(dzs):
-                    
                     for path in matching_paths:
-                        print(path)
                         atoms_path = os.path.join(path, f'{i}_', 'final_with_calculator.json')
                         if os.path.exists(atoms_path):
                             atoms = read(atoms_path)
@@ -128,7 +126,6 @@ def main():
                         else:
                             df_O.at[dz, spin] = np.nan
                             df_O_mag.at[dz, spin] = np.nan
-                                
                             
                 relaxed_path = os.path.join(path, 'relaxed', 'final_with_calculator.json')
                 if os.path.exists(relaxed_path):
@@ -209,7 +206,7 @@ def main():
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
                                         df_mag.at[dz, f'MS({ms})'] = magmoms[atom.index]
                             except:
-                                df_mag.at[dz, spin] = 0
+                                df_mag.at[dz, f'MS({ms})'] = 0
                         else:
                             df.at[dz, f'MS({ms})'] = np.nan
                             df_mag.at[dz, f'MS({ms})'] = np.nan
