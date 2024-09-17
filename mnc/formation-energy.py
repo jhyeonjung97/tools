@@ -127,23 +127,24 @@ def main():
                         else:
                             df_O.at[dz, spin] = np.nan
                             df_O_mag.at[dz, spin] = np.nan
-                            
-                relaxed_path = os.path.join(path, 'relaxed', 'final_with_calculator.json')
-                if os.path.exists(relaxed_path):
-                    atoms = read(relaxed_path)
-                    zN = mean([atom.z for atom in atoms if atom.symbol == 'N'])
-                    zM = mean([atom.z for atom in atoms if atom.symbol not in ['N', 'C', 'O', 'H']])
-                    dz_relaxed = abs(zN - zM)
-                    energy = atoms.get_total_energy()
-                    formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
-                    df_relaxed.at[dz_relaxed, spin] = formation_energy
-                    try:
-                        magmoms = atoms.get_magnetic_moments()
-                        for atom in atoms:
-                            if atom.symbol not in ['N', 'C', 'O', 'H']:
-                                df_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
-                    except:
-                        df_relaxed_mag.at[dz_relaxed, spin] = 0
+
+                if path:
+                    relaxed_path = os.path.join(path, 'relaxed', 'final_with_calculator.json')
+                    if os.path.exists(relaxed_path):
+                        atoms = read(relaxed_path)
+                        zN = mean([atom.z for atom in atoms if atom.symbol == 'N'])
+                        zM = mean([atom.z for atom in atoms if atom.symbol not in ['N', 'C', 'O', 'H']])
+                        dz_relaxed = abs(zN - zM)
+                        energy = atoms.get_total_energy()
+                        formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
+                        df_relaxed.at[dz_relaxed, spin] = formation_energy
+                        try:
+                            magmoms = atoms.get_magnetic_moments()
+                            for atom in atoms:
+                                if atom.symbol not in ['N', 'C', 'O', 'H']:
+                                    df_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
+                        except:
+                            df_relaxed_mag.at[dz_relaxed, spin] = 0
                         
                 if path_O:
                     relaxed_O_path = os.path.join(path_O, 'relaxed', 'final_with_calculator.json')
