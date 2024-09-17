@@ -106,25 +106,26 @@ def main():
                         else:
                             df.at[dz, spin] = np.nan
                             df_mag.at[dz, spin] = np.nan
-                            
-                    for path_O in matching_O_paths:
-                        atoms_path = os.path.join(path_O, f'{i}_', 'final_with_calculator.json')
-                        if os.path.exists(atoms_path) and energy:
-                            atoms = read(atoms_path)
-                            energy_O = atoms_O.get_total_energy()
-                            adsorption_energy = energy_O - energy - E_O
-                            df_O.at[dz, spin] = adsorption_energy
-                            energy = None
-                            try:
-                                magmoms = atoms.get_magnetic_moments()
-                                for atom in atoms:
-                                    if atom.symbol not in ['N', 'C', 'O', 'H']:
-                                        df_O_mag.at[dz, spin] = magmoms[atom.index]
-                            except:
-                                df_O_mag.at[dz, spin] = 0
-                        else:
-                            df_O.at[dz, spin] = np.nan
-                            df_O_mag.at[dz, spin] = np.nan
+
+                    if matching_O_paths:
+                        for path_O in matching_O_paths:
+                            atoms_path = os.path.join(path_O, f'{i}_', 'final_with_calculator.json')
+                            if os.path.exists(atoms_path) and energy:
+                                atoms = read(atoms_path)
+                                energy_O = atoms_O.get_total_energy()
+                                adsorption_energy = energy_O - energy - E_O
+                                df_O.at[dz, spin] = adsorption_energy
+                                energy = None
+                                try:
+                                    magmoms = atoms.get_magnetic_moments()
+                                    for atom in atoms:
+                                        if atom.symbol not in ['N', 'C', 'O', 'H']:
+                                            df_O_mag.at[dz, spin] = magmoms[atom.index]
+                                except:
+                                    df_O_mag.at[dz, spin] = 0
+                            else:
+                                df_O.at[dz, spin] = np.nan
+                                df_O_mag.at[dz, spin] = np.nan
                             
                 relaxed_path = os.path.join(path, 'relaxed', 'final_with_calculator.json')
                 relaxed_O_path = os.path.join(path_O, 'relaxed', 'final_with_calculator.json')
