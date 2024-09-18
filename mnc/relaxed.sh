@@ -3,7 +3,7 @@
 squeue --me > ~/mystat.txt
 for dir in /pscratch/sd/j/jiuy97/6_MNC/*_O*/*_*/*_*S/
 do
-    cd $dir; pwd
+    cd $dir; # pwd
     IFS='/' read -r -a path <<< $PWD
     ads=$(echo "${path[-3]}" | cut -d'_' -f2)
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
@@ -29,7 +29,7 @@ do
             fi
         done
         if [[ -n "$lowest_dir" ]]; then
-            echo $lowest_energy $lowest_dir
+            # echo $lowest_energy $lowest_dir
             cp ${lowest_dir}restart.json relaxed/
             sed -i -e "/constraints/d" relaxed/restart.json
             cp ${lowest_dir}WAVECAR relaxed/
@@ -41,12 +41,12 @@ do
             elif [[ $spin == 'HS' ]]; then
                 sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' relaxed/submit.sh
             fi
-            sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}r" relaxed/submit.sh
+            sed -i "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}${spin}r" relaxed/submit.sh
         fi
     fi
     if [[ -d relaxed ]]; then
         cd relaxed
-        if [[ ! -s DONE ]] && [[ ! -n $(grep "${metal}${spin}r" ~/mystat.txt) ]]; then
+        if [[ ! -s DONE ]] && [[ ! -n $(grep "${ads}${metal}${spin}r" ~/mystat.txt) ]]; then
             pwd; sbatch submit.sh
         fi
     fi
