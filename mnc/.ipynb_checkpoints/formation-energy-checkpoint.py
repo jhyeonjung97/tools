@@ -363,7 +363,6 @@ def main():
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moments (uB)', png_filename=png_O_mag_filename)
                 plotting(df=df_O_bond, df_relaxed=df_O_relaxed_bond, dzs=dzs, spins=spins, 
-                         ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Bond Length (Å)', png_filename=png_O_bond_filename)
                 
             if path_OH: 
@@ -383,7 +382,6 @@ def main():
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moments', png_filename=png_OH_mag_filename)
                 plotting(df=df_OH_bond, df_relaxed=df_OH_relaxed_bond, dzs=dzs, spins=spins, 
-                         ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Bond Length (Å)', png_filename=png_OH_bond_filename)
                 
 def relative(df, df_rel):
