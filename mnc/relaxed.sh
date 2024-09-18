@@ -3,7 +3,7 @@
 squeue --me > ~/mystat.txt
 for dir in /pscratch/sd/j/jiuy97/6_MNC/*_O*/*_*/*_*S/
 do
-    cd $dir
+    cd $dir; pwd
     IFS='/' read -r -a path <<< $PWD
     ads=$(echo "${path[-3]}" | cut -d'_' -f2)
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
