@@ -203,7 +203,7 @@ def main():
                         zM = mean([atom.z for atom in atoms if atom.symbol not in ['N', 'C', 'O', 'H']])
                         dz_relaxed = abs(zN - zM)
                         energy = atoms.get_total_energy()
-                        df_relaxed.at[dz_relaxed, spin] = formation_energy
+                        df_relaxed.at[dz_relaxed, spin] = energy
                         formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
                         Ef_relaxed.at[dz_relaxed, spin] = formation_energy
                         try:
