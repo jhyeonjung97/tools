@@ -53,21 +53,25 @@ def main():
 
             df_O = pd.DataFrame()
             Ef_O = pd.DataFrame()
-            df_dz_O = pd.DataFrame()
+            df_O_dz = pd.DataFrame()
             df_O_mag = pd.DataFrame()
+            df_O_bond = pd.DataFrame()
             df_O_relaxed = pd.DataFrame()
             Ef_O_relaxed = pd.DataFrame()
-            df_dz_O_relaxed = pd.DataFrame()
+            df_O_relaxed_dz = pd.DataFrame()
             df_O_relaxed_mag = pd.DataFrame()
+            df_O_relaxed_bond = pd.DataFrame()
 
             df_OH = pd.DataFrame()
             Ef_OH = pd.DataFrame()
-            df_dz_OH = pd.DataFrame()
+            df_OH_dz = pd.DataFrame()
             df_OH_mag = pd.DataFrame()
+            df_OH_bond = pd.DataFrame()
             df_OH_relaxed = pd.DataFrame()
             Ef_OH_relaxed = pd.DataFrame()
-            df_dz_OH_relaxed = pd.DataFrame()
+            df_OH_relaxed_dz = pd.DataFrame()
             df_OH_relaxed_mag = pd.DataFrame()
+            df_OH_relaxed_bond = pd.DataFrame()
 
             tsv_filename = f'{row_key}_{m+2}{metal}_clean.tsv'
             png_filename = f'{row_key}_{m+2}{metal}_clean.png'
@@ -79,7 +83,7 @@ def main():
             # png_rel_filename = f'{row_key}_{m+2}{metal}_clean_rel.png'
             tsv_mag_filename = f'{row_key}_{m+2}{metal}_clean_mag.tsv'
             png_mag_filename = f'{row_key}_{m+2}{metal}_clean_mag.png'
-
+            
             tsv_O_filename = f'{row_key}_{m+2}{metal}_O.tsv'
             png_O_filename = f'{row_key}_{m+2}{metal}_O.png'
             tsv_O_Ef_filename = f'{row_key}_{m+2}{metal}_O_Ef.tsv'
@@ -88,7 +92,9 @@ def main():
             png_O_dz_filename = f'{row_key}_{m+2}{metal}_O_dz.png'
             tsv_O_mag_filename = f'{row_key}_{m+2}{metal}_O_mag.tsv'
             png_O_mag_filename = f'{row_key}_{m+2}{metal}_O_mag.png'
-
+            tsv_O_bond_filename = f'{row_key}_{m+2}{metal}_O_bond.tsv'
+            png_O_bond_filename = f'{row_key}_{m+2}{metal}_O_bond.png'
+            
             tsv_OH_filename = f'{row_key}_{m+2}{metal}_OH.tsv'
             png_OH_filename = f'{row_key}_{m+2}{metal}_OH.png'
             tsv_OH_Ef_filename = f'{row_key}_{m+2}{metal}_OH_Ef.tsv'
@@ -97,6 +103,8 @@ def main():
             png_OH_dz_filename = f'{row_key}_{m+2}{metal}_OH_dz.png'
             tsv_OH_mag_filename = f'{row_key}_{m+2}{metal}_OH_mag.tsv'
             png_OH_mag_filename = f'{row_key}_{m+2}{metal}_OH_mag.png'
+            tsv_OH_bond_filename = f'{row_key}_{m+2}{metal}_OH_bond.tsv'
+            png_OH_bond_filename = f'{row_key}_{m+2}{metal}_OH_bond.png'
             
             # df_dict = {
             #     "default": ["df", "Ef", "dz", "df_mag", "df_relaxed", "df_relaxed_mag"],
@@ -162,16 +170,21 @@ def main():
                                 magmoms = atoms.get_magnetic_moments()
                                 for atom in atoms:
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
-                                        df_dz_O.at[dz, spin] = atom.z - 10.0
+                                        df_O_dz.at[dz, spin] = atom.z - 10.0
                                         df_O_mag.at[dz, spin] = magmoms[atom.index]
+                                        if atom.index < len(atoms) - 1:
+                                            next_atom = atoms[atom.index + 1]
+                                            df_O_bond.at[dz, spin] = np.linalg.norm(atom.position - next_atom.position)
                             except:
-                                df_dz_O.at[dz, spin] = 0
+                                df_O_dz.at[dz, spin] = 0
                                 df_O_mag.at[dz, spin] = 0
+                                df_O_bond.at[dz, spin] = 0
                         else:
                             df_O.at[dz, spin] = np.nan
                             Ef_O.at[dz, spin] = np.nan
-                            df_dz_O.at[dz, spin] = np.nan
+                            df_O_dz.at[dz, spin] = np.nan
                             df_O_mag.at[dz, spin] = np.nan
+                            df_O_bond.at[dz, spin] = np.nan
                             
                     for path_OH in matching_OH_paths:
                         atoms_path = os.path.join(path_OH, f'{i}_', 'final_with_calculator.json')
@@ -187,17 +200,22 @@ def main():
                                 magmoms = atoms.get_magnetic_moments()
                                 for atom in atoms:
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
-                                        df_dz_OH.at[dz, spin] = atom.z - 10.0
+                                        df_OH_dz.at[dz, spin] = atom.z - 10.0
                                         df_OH_mag.at[dz, spin] = magmoms[atom.index]
+                                        if atom.index < len(atoms) - 1:
+                                            next_atom = atoms[atom.index + 1]
+                                            df_OH_bond.at[dz, spin] = np.linalg.norm(atom.position - next_atom.position)
                             except:
-                                df_dz_OH.at[dz, spin] = 0
+                                df_OH_dz.at[dz, spin] = 0
                                 df_OH_mag.at[dz, spin] = 0
+                                df_OH_bond.at[dz, spin] = 0
                         else:
                             Ef_OH.at[dz, spin] = np.nan
                             df_OH.at[dz, spin] = np.nan
-                            df_dz_OH.at[dz, spin] = np.nan
+                            df_OH_dz.at[dz, spin] = np.nan
                             df_OH_mag.at[dz, spin] = np.nan
-                            
+                            df_OH_bond.at[dz, spin] = np.nan
+
                 if path:
                     relaxed_path = os.path.join(path, 'relaxed', 'final_with_calculator.json')
                     if os.path.exists(relaxed_path):
@@ -226,7 +244,7 @@ def main():
                         zN = mean([atom.z for atom in atoms if atom.symbol == 'N'])
                         zM = mean([atom.z for atom in atoms if atom.symbol not in ['N', 'C', 'O', 'H']])
                         dz_relaxed = abs(zN - zM)
-                        df_dz_O_relaxed.at[dz_relaxed, spin] = dz_relaxed
+                        df_O_relaxed_dz.at[dz_relaxed, spin] = dz_relaxed
                         energy_O = atoms.get_total_energy()
                         df_O_relaxed.at[dz_relaxed, spin] = energy_O
                         adsorption_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_O
@@ -238,9 +256,13 @@ def main():
                             for atom in atoms:
                                 if atom.symbol not in ['N', 'C', 'O', 'H']:
                                     df_O_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
+                                    if atom.index < len(atoms) - 1:
+                                        next_atom = atoms[atom.index + 1]
+                                        df_O_relaxed_bond.at[dz, spin] = np.linalg.norm(atom.position - next_atom.position)
                         except:
-                            df_dz_O_relaxed.at[dz_relaxed, spin] = 0
+                            df_O_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_O_relaxed_mag.at[dz_relaxed, spin] = 0
+                            df_O_relaxed_bond.at[dz_relaxed, spin] = 0
                             
                 if path_OH:
                     relaxed_OH_path = os.path.join(path_OH, 'relaxed', 'final_with_calculator.json')
@@ -249,7 +271,7 @@ def main():
                         zN = mean([atom.z for atom in atoms if atom.symbol == 'N'])
                         zM = mean([atom.z for atom in atoms if atom.symbol not in ['N', 'C', 'O', 'H']])
                         dz_relaxed = abs(zN - zM)
-                        df_dz_OH_relaxed.at[dz_relaxed, spin] = dz_relaxed
+                        df_OH_relaxed_dz.at[dz_relaxed, spin] = dz_relaxed
                         energy_OH = atoms.get_total_energy()
                         df_OH_relaxed.at[dz_relaxed, spin] = energy_OH
                         adsorption_energy = energy_OH - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_OH
@@ -261,9 +283,13 @@ def main():
                             for atom in atoms:
                                 if atom.symbol not in ['N', 'C', 'O', 'H']:
                                     df_OH_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
+                                    if atom.index < len(atoms) - 1:
+                                        next_atom = atoms[atom.index + 1]
+                                        df_OH_relaxed_bond.at[dz, spin] = np.linalg.norm(atom.position - next_atom.position)
                         except:
-                            df_dz_OH_relaxed.at[dz_relaxed, spin] = 0
+                            df_OH_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_OH_relaxed_mag.at[dz_relaxed, spin] = 0
+                            df_OH_relaxed_bond.at[dz_relaxed, spin] = 0
             
             path_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/0_clean/{row_key}/*_{metal}'
             matching_paths = glob.glob(path_pattern)
@@ -278,7 +304,6 @@ def main():
                             ms = spin_df.loc[dz, 'spin_state']
                         else:
                             continue
-
                         atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
                         if os.path.exists(atoms_path):
                             atoms = read(atoms_path)
@@ -308,6 +333,7 @@ def main():
             combining(df=df_dz, df_relaxed=df_dz_relaxed, tsv_filename=tsv_dz_filename)
             # combining(df=df_rel, df_relaxed=df_relaxed_rel, tsv_filename=tsv_rel_filename)
             combining(df=df_mag, df_relaxed=df_relaxed_mag, tsv_filename=tsv_mag_filename)
+            combining(df=df_bond, df_relaxed=df_relaxed_bond, tsv_filename=tsv_bond_filename)
             
             plotting(df=df, df_relaxed=df_relaxed, dzs=dzs, spins=spins, 
                      ylabel='Energy (eV)', png_filename=png_filename)
@@ -324,32 +350,38 @@ def main():
             if path_O: 
                 combining(df=df_O, df_relaxed=df_O_relaxed, tsv_filename=tsv_O_filename)
                 combining(df=Ef_O, df_relaxed=Ef_O_relaxed, tsv_filename=tsv_O_Ef_filename)
-                combining(df=df_dz_O, df_relaxed=df_dz_O_relaxed, tsv_filename=tsv_O_dz_filename)
+                combining(df=df_O_dz, df_relaxed=df_O_relaxed_dz, tsv_filename=tsv_O_dz_filename)
                 combining(df=df_O_mag, df_relaxed=df_O_relaxed_mag, tsv_filename=tsv_O_mag_filename)
                 plotting(df=df_O, df_relaxed=df_O_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_O_filename)
                 plotting(df=Ef_O, df_relaxed=Ef_O_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Formation energy (eV)', png_filename=png_O_Ef_filename)
-                plotting(df=df_dz_O, df_relaxed=df_dz_O_relaxed, dzs=dzs, spins=spins, 
+                plotting(df=df_O_dz, df_relaxed=df_O_relaxed_dz, dzs=dzs, spins=spins, 
                          ylabel='dz (Å)', png_filename=png_O_dz_filename)
                 plotting(df=df_O_mag, df_relaxed=df_O_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moments (uB)', png_filename=png_O_mag_filename)
+                plotting(df=df_O_bond, df_relaxed=df_O_relaxed_bond, dzs=dzs, spins=spins, 
+                         ymin=-0.5, ymax=5.5, yticks=np.arange(6),
+                         ylabel='Bond Length (Å)', png_filename=png_O_bond_filename)
                 
             if path_OH: 
                 combining(df=df_OH, df_relaxed=df_OH_relaxed, tsv_filename=tsv_OH_filename)
                 combining(df=Ef_OH, df_relaxed=Ef_OH_relaxed, tsv_filename=tsv_OH_Ef_filename)
-                combining(df=df_dz_OH, df_relaxed=df_dz_OH_relaxed, tsv_filename=tsv_OH_dz_filename)
+                combining(df=df_OH_dz, df_relaxed=df_OH_relaxed_dz, tsv_filename=tsv_OH_dz_filename)
                 combining(df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, tsv_filename=tsv_OH_mag_filename)
                 plotting(df=df_OH, df_relaxed=df_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_OH_filename)
                 plotting(df=Ef_OH, df_relaxed=Ef_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Formation energy (eV)', png_filename=png_OH_Ef_filename)
-                plotting(df=df_dz_OH, df_relaxed=df_dz_OH_relaxed, dzs=dzs, spins=spins, 
+                plotting(df=df_OH_dz, df_relaxed=df_OH_relaxed_dz, dzs=dzs, spins=spins, 
                          ylabel='dz (Å)', png_filename=png_OH_dz_filename)
                 plotting(df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moments', png_filename=png_OH_mag_filename)
+                plotting(df=df_OH_bond, df_relaxed=df_OH_relaxed_bond, dzs=dzs, spins=spins, 
+                         ymin=-0.5, ymax=5.5, yticks=np.arange(6),
+                         ylabel='Bond Length (Å)', png_filename=png_OH_bond_filename)
                 
 def relative(df, df_rel):
     if 'HS' in Ef.columns and 'LS' in Ef.columns:
