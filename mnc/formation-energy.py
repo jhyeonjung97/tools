@@ -339,7 +339,8 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         plt.ylim(ymin, ymax)
     if yticks is not None:
         plt.yticks(yticks)
-    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))  # Fix to 0.00 format
+    plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
+    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     # plt.legend(labelspacing=0.3)
     plt.tight_layout()
     plt.savefig(png_filename, bbox_inches="tight")
