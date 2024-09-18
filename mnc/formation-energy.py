@@ -7,6 +7,7 @@ import pandas as pd
 from scipy.interpolate import make_interp_spline
 import numpy as np
 from matplotlib.lines import Line2D
+from matplotlib.ticker import FormatStrFormatter
 
 # Define the rows and spins
 rows = {
@@ -338,6 +339,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         plt.ylim(ymin, ymax)
     if yticks is not None:
         plt.yticks(yticks)
+    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))  # Fix to 0.00 format
     # plt.legend(labelspacing=0.3)
     plt.tight_layout()
     plt.savefig(png_filename, bbox_inches="tight")
