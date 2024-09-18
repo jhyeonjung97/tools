@@ -318,7 +318,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         if not filtered_df.empty:
             x = filtered_df.index
             y = filtered_df.values
-            if 'MS' in column
+            if 'MS' in column:
                 plt.scatter(x, y, marker='x', color=spins.get(column, 'black'), zorder=3)
             else:
                 smooth_x, smooth_y = plot_smooth_line(x, y, color or spins.get(column, 'black'))
