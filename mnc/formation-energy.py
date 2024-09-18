@@ -69,16 +69,16 @@ def main():
             df_dz_OH_relaxed = pd.DataFrame()
             df_OH_relaxed_mag = pd.DataFrame()
 
-            tsv_filename = f'{row_key}_{m+2}{metal}.tsv'
-            png_filename = f'{row_key}_{m+2}{metal}.png'
-            tsv_Ef_filename = f'{row_key}_{m+2}{metal}_Ef.tsv'
-            png_Ef_filename = f'{row_key}_{m+2}{metal}_Ef.png'
-            tsv_dz_filename = f'{row_key}_{m+2}{metal}_dz.tsv'
-            png_dz_filename = f'{row_key}_{m+2}{metal}_dz.png'
-            # tsv_rel_filename = f'{row_key}_{m+2}{metal}_rel.tsv'
-            # png_rel_filename = f'{row_key}_{m+2}{metal}_rel.png'
-            tsv_mag_filename = f'{row_key}_{m+2}{metal}_mag.tsv'
-            png_mag_filename = f'{row_key}_{m+2}{metal}_mag.png'
+            tsv_filename = f'{row_key}_{m+2}{metal}_clean.tsv'
+            png_filename = f'{row_key}_{m+2}{metal}_clean.png'
+            tsv_Ef_filename = f'{row_key}_{m+2}{metal}_clean_Ef.tsv'
+            png_Ef_filename = f'{row_key}_{m+2}{metal}_clean_Ef.png'
+            tsv_dz_filename = f'{row_key}_{m+2}{metal}_clean_dz.tsv'
+            png_dz_filename = f'{row_key}_{m+2}{metal}_clean_dz.png'
+            # tsv_rel_filename = f'{row_key}_{m+2}{metal}_clean_rel.tsv'
+            # png_rel_filename = f'{row_key}_{m+2}{metal}_clean_rel.png'
+            tsv_mag_filename = f'{row_key}_{m+2}{metal}_clean_mag.tsv'
+            png_mag_filename = f'{row_key}_{m+2}{metal}_clean_mag.png'
 
             tsv_O_filename = f'{row_key}_{m+2}{metal}_O.tsv'
             png_O_filename = f'{row_key}_{m+2}{metal}_O.png'
