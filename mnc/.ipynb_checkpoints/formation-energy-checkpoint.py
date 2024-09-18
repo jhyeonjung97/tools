@@ -322,7 +322,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             else:
                 df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
     min_values = df_smooth_y.min(axis=1).to_numpy()
-    plt.plot(np.linspace(min(x), max(x), 300), min_values, color='black', zorder=5)
+    plt.plot(np.linspace(0.0, 1.2, 300), min_values, color='black', zorder=5)
 
     for column in df_relaxed.columns:
         filtered_df = df_relaxed[column].dropna()
