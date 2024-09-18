@@ -304,15 +304,14 @@ def plot_smooth_line(x, y, color):
         y_smooth = spl(x_new)
         plt.plot(x_new, y_smooth, color=color, zorder=1)
         plt.scatter(x, y, marker='s', edgecolors=color, facecolors='white', zorder=2)
-        return x_new, y_smooth  # Return the smooth x and y for further processing
+        return y_smooth
     except ValueError as e:
         print(f"Error while creating spline: {e}")
-        return None, None
+        return None
 
 def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=None, yticks=None, color=None):
     plt.figure(figsize=(4, 3))
-    min_x_vals = []
-    min_y_vals = []
+    df_smooth_y = pd.DataFrame()
     for column in df.columns:
         filtered_df = df[column].dropna()
         if not filtered_df.empty:
@@ -321,19 +320,16 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             if 'MS' in column:
                 plt.scatter(x, y, marker='x', color=spins.get(column, 'black'), zorder=3)
             else:
-                smooth_x, smooth_y = plot_smooth_line(x, y, color or spins.get(column, 'black'))
-                if smooth_x is not None and smooth_y is not None:
-                    min_idx = np.argmin(smooth_y)
-                    min_x_vals.append(smooth_x[min_idx])
-                    min_y_vals.append(smooth_y[min_idx])
+                df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
+    min_values = df_smooth_y.min(axis=1).to_numpy()
+    plt.plot(np.linspace(min(x), max(x), 300), min_values, color='black', zorder=5)
+
     for column in df_relaxed.columns:
         filtered_df = df_relaxed[column].dropna()
         if not filtered_df.empty:
             x = filtered_df.index
             y = filtered_df.values
             plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), zorder=4)
-    if min_x_vals and min_y_vals:
-        plt.plot(min_x_vals, min_y_vals, color='black', linewidth=2.5, zorder=5, label='Min Line')
     if color:
         plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
         plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
