@@ -302,8 +302,8 @@ def plot_smooth_line(x, y, color):
         else:
             spl = make_interp_spline(x, y, k=2)
         y_smooth = spl(x_new)
-        plt.plot(x_new, y_smooth, color=color, zorder=1)
-        plt.scatter(x, y, marker='s', edgecolors=color, facecolors='white', zorder=2)
+        plt.plot(x_new, y_smooth, color=color, alpha=0.5, zorder=1)
+        plt.scatter(x, y, marker='s', edgecolors=color, facecolors='white', alpha=0.5, zorder=2)
         return y_smooth
     except ValueError as e:
         print(f"Error while creating spline: {e}")
