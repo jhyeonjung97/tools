@@ -351,6 +351,8 @@ def main():
                 combining(df=Ef_O, df_relaxed=Ef_O_relaxed, tsv_filename=tsv_O_Ef_filename)
                 combining(df=df_O_dz, df_relaxed=df_O_relaxed_dz, tsv_filename=tsv_O_dz_filename)
                 combining(df=df_O_mag, df_relaxed=df_O_relaxed_mag, tsv_filename=tsv_O_mag_filename)
+                combining(df=df_O_bond, df_relaxed=df_O_relaxed_bond, tsv_filename=tsv_O_bond_filename)
+                
                 plotting(df=df_O, df_relaxed=df_O_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_O_filename)
                 plotting(df=Ef_O, df_relaxed=Ef_O_relaxed, dzs=dzs, spins=spins, 
@@ -369,6 +371,8 @@ def main():
                 combining(df=Ef_OH, df_relaxed=Ef_OH_relaxed, tsv_filename=tsv_OH_Ef_filename)
                 combining(df=df_OH_dz, df_relaxed=df_OH_relaxed_dz, tsv_filename=tsv_OH_dz_filename)
                 combining(df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, tsv_filename=tsv_OH_mag_filename)
+                combining(df=df_OH_bond, df_relaxed=df_OH_relaxed_bond, tsv_filename=tsv_OH_bond_filename)
+                
                 plotting(df=df_OH, df_relaxed=df_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_OH_filename)
                 plotting(df=Ef_OH, df_relaxed=Ef_OH_relaxed, dzs=dzs, spins=spins, 
