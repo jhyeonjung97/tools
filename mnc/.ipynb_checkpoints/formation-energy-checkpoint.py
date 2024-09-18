@@ -311,24 +311,24 @@ def main():
             
             if path_O: 
                 combining(df=df_O, df_relaxed=df_O_relaxed, tsv_filename=tsv_O_filename)
-                combining(df=Ef_O, df_relaxed=Ef_O_relaxed, tsv_filename=tsv_Ef_O_filename)
+                combining(df=Ef_O, df_relaxed=Ef_O_relaxed, tsv_filename=tsv_O_Ef_filename)
                 combining(df=df_O_mag, df_relaxed=df_O_relaxed_mag, tsv_filename=tsv_O_mag_filename)
                 plotting(df=df_O, df_relaxed=df_O_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_O_filename)
                 plotting(df=Ef_O, df_relaxed=Ef_O_relaxed, dzs=dzs, spins=spins, 
-                         ylabel='Formation energy (eV)', png_filename=png_O_filename)
+                         ylabel='Formation energy (eV)', png_filename=png_O_Ef_filename)
                 plotting(df=df_O_mag, df_relaxed=df_O_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moments (uB)', png_filename=png_O_mag_filename)
                 
             if path_OH: 
                 combining(df=df_OH, df_relaxed=df_OH_relaxed, tsv_filename=tsv_OH_filename)
-                combining(df=Ef_OH, df_relaxed=Ef_OH_relaxed, tsv_filename=tsv_Ef_OH_filename)
+                combining(df=Ef_OH, df_relaxed=Ef_OH_relaxed, tsv_filename=tsv_OH_Ef_filename)
                 combining(df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, tsv_filename=tsv_OH_mag_filename)
                 plotting(df=df_OH, df_relaxed=df_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_OH_filename)
                 plotting(df=Ef_OH, df_relaxed=Ef_OH_relaxed, dzs=dzs, spins=spins, 
-                         ylabel='Formation energy (eV)', png_filename=png_Ef_OH_filename)
+                         ylabel='Formation energy (eV)', png_filename=png_OH_Ef_filename)
                 plotting(df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moments', png_filename=png_OH_mag_filename)
