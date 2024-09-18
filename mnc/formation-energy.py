@@ -138,7 +138,7 @@ def main():
                                 magmoms = atoms.get_magnetic_moments()
                                 for atom in atoms:
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
-                                        df_dz.at[dz, spin] = atom.index - 10.0
+                                        df_dz.at[dz, spin] = atom.z - 10.0
                                         df_mag.at[dz, spin] = magmoms[atom.index]
                             except:
                                 df_mag.at[dz, spin] = 0
