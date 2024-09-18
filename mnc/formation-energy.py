@@ -42,7 +42,7 @@ def main():
         for m, metal in enumerate(metals):
             df = pd.DataFrame()
             Ef = pd.DataFrame()
-            dz = pd.DataFrame()
+            df_dz = pd.DataFrame()
             # df_rel = pd.DataFrame()
             df_mag = pd.DataFrame()
             df_relaxed = pd.DataFrame()
@@ -52,7 +52,7 @@ def main():
 
             df_O = pd.DataFrame()
             Ef_O = pd.DataFrame()
-            dz_O = pd.DataFrame()
+            df_dz_O = pd.DataFrame()
             df_O_mag = pd.DataFrame()
             df_O_relaxed = pd.DataFrame()
             Ef_O_relaxed = pd.DataFrame()
@@ -60,7 +60,7 @@ def main():
 
             df_OH = pd.DataFrame()
             Ef_OH = pd.DataFrame()
-            dz_OH = pd.DataFrame()
+            df_dz_OH = pd.DataFrame()
             df_OH_mag = pd.DataFrame()
             df_OH_relaxed = pd.DataFrame()
             Ef_OH_relaxed = pd.DataFrame()
@@ -135,14 +135,14 @@ def main():
                                 magmoms = atoms.get_magnetic_moments()
                                 for atom in atoms:
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
-                                        dz.at[dz, spin] = atom.index - 10.0
+                                        df_dz.at[dz, spin] = atom.index - 10.0
                                         df_mag.at[dz, spin] = magmoms[atom.index]
                             except:
                                 df_mag.at[dz, spin] = 0
                         else:
                             df.at[dz, spin] = np.nan
                             Ef.at[dz, spin] = np.nan
-                            dz.at[dz, spin] = np.nan
+                            df_dz.at[dz, spin] = np.nan
                             df_mag.at[dz, spin] = np.nan
 
                     for path_O in matching_O_paths:
@@ -162,12 +162,12 @@ def main():
                                         dz_O.at[dz, spin] = atom.z - 10.0
                                         df_O_mag.at[dz, spin] = magmoms[atom.index]
                             except:
-                                dz_O.at[dz, spin] = 0
+                                df_dz_O.at[dz, spin] = 0
                                 df_O_mag.at[dz, spin] = 0
                         else:
                             df_O.at[dz, spin] = np.nan
                             Ef_O.at[dz, spin] = np.nan
-                            dz_O.at[dz, spin] = np.nan
+                            df_dz_O.at[dz, spin] = np.nan
                             df_O_mag.at[dz, spin] = np.nan
                             
                     for path_OH in matching_OH_paths:
@@ -184,15 +184,15 @@ def main():
                                 magmoms = atoms.get_magnetic_moments()
                                 for atom in atoms:
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
-                                        dz_OH.at[dz, spin] = atom.z - 10.0
+                                        df_dz_OH.at[dz, spin] = atom.z - 10.0
                                         df_OH_mag.at[dz, spin] = magmoms[atom.index]
                             except:
-                                dz_OH.at[dz, spin] = 0
+                                df_dz_OH.at[dz, spin] = 0
                                 df_OH_mag.at[dz, spin] = 0
                         else:
                             Ef_OH.at[dz, spin] = np.nan
                             df_OH.at[dz, spin] = np.nan
-                            dz_OH.at[dz, spin] = np.nan
+                            df_dz_OH.at[dz, spin] = np.nan
                             df_OH_mag.at[dz, spin] = np.nan
                             
                 if path:
@@ -281,14 +281,14 @@ def main():
                                 magmoms = atoms.get_magnetic_moments()
                                 for atom in atoms:
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
-                                        dz.at[dz, f'MS({ms})'] = atom.z - 10.0
+                                        df_dz.at[dz, f'MS({ms})'] = atom.z - 10.0
                                         df_mag.at[dz, f'MS({ms})'] = magmoms[atom.index]
                             except:
                                 df_mag.at[dz, f'MS({ms})'] = 0
                         else:
                             df.at[dz, f'MS({ms})'] = np.nan
                             Ef.at[dz, f'MS({ms})'] = np.nan
-                            dz.at[dz, f'MS({ms})'] = np.nan
+                            df_dz.at[dz, f'MS({ms})'] = np.nan
                             df_mag.at[dz, f'MS({ms})'] = np.nan
                             
             # relative(df, df_rel)
