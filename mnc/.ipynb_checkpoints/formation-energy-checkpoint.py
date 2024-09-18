@@ -333,7 +333,6 @@ def main():
             combining(df=df_dz, df_relaxed=df_dz_relaxed, tsv_filename=tsv_dz_filename)
             # combining(df=df_rel, df_relaxed=df_relaxed_rel, tsv_filename=tsv_rel_filename)
             combining(df=df_mag, df_relaxed=df_relaxed_mag, tsv_filename=tsv_mag_filename)
-            combining(df=df_bond, df_relaxed=df_relaxed_bond, tsv_filename=tsv_bond_filename)
             
             plotting(df=df, df_relaxed=df_relaxed, dzs=dzs, spins=spins, 
                      ylabel='Energy (eV)', png_filename=png_filename)
