@@ -312,8 +312,6 @@ def plot_smooth_line(x, y, color):
 def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=None, yticks=None, color=None):
     plt.figure(figsize=(4, 3))
     df_smooth_y = pd.DataFrame()
-    min_color_map = []  # To track the color for each min value
-
     for column in df.columns:
         filtered_df = df[column].dropna()
         if not filtered_df.empty:
@@ -323,15 +321,11 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                 plt.scatter(x, y, marker='x', color=spins.get(column, 'black'), zorder=3)
             else:
                 df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
-                min_color_map.append(spins.get(column, 'black'))
     min_values = df_smooth_y.min(axis=1).to_numpy()
-    min_indices = df_smooth_y.idxmin(axis=1)
-    x_new = np.linspace(0.0, 1.2, 300)
-    for i in range(len(min_values)):
-        column_for_min = min_indices[i]
-        color_for_min = spins.get(column_for_min, 'black')
-        plt.scatter(x_new[i], min_values[i], color=color_for_min, zorder=5)
-        
+    min_columns = df_smooth_y.idxmin(axis=1).to_numpy()
+    print(min_columns)
+    plt.plot(np.linspace(0.0, 1.2, 300), min_values, color='black', zorder=5)
+
     for column in df_relaxed.columns:
         filtered_df = df_relaxed[column].dropna()
         if not filtered_df.empty:
