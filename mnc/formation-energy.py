@@ -15,8 +15,9 @@ rows = {
     '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
     '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
-spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
-ms_spins ={'MS(LS)': '#ffd199', 'MS(IS)': '#a8d9f9', 'MS(HS)': '#d5c8e4'}
+spins = {'LS': '#ffd199', 'IS': '#a8d9f9', 'HS': '#d5c8e4'}
+min_spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
+ms_spins ={'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
 dzs = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
 
 E_H2O = -14.23919983
@@ -302,8 +303,8 @@ def plot_smooth_line(x, y, color):
         else:
             spl = make_interp_spline(x, y, k=2)
         y_smooth = spl(x_new)
-        plt.plot(x_new, y_smooth, color=color, alpha=0.3, zorder=1)
-        plt.scatter(x, y, marker='s', edgecolors=color, facecolors='white', alpha=0.3, zorder=2)
+        plt.plot(x_new, y_smooth, color=color, zorder=1)
+        plt.scatter(x, y, marker='s', edgecolors=color, facecolors='white', zorder=2)
         return y_smooth
     except ValueError as e:
         print(f"Error while creating spline: {e}")
@@ -330,17 +331,17 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     current_column = min_columns[0]
     for i in range(1, len(min_columns)):
         if min_columns[i] != current_column:
-            plt.plot(x_new[start_idx:i], min_values[start_idx:i], color=spins.get(current_column, 'black'), zorder=4)
+            plt.plot(x_new[start_idx:i], min_values[start_idx:i], color=min_spins.get(current_column, 'black'), zorder=4)
             start_idx = i
             current_column = min_columns[i]
-    plt.plot(x_new[start_idx:], min_values[start_idx:], color=spins.get(current_column, 'black'), zorder=4)
+    plt.plot(x_new[start_idx:], min_values[start_idx:], color=min_spins.get(current_column, 'black'), zorder=4)
     
     for column in df_relaxed.columns:
         filtered_df = df_relaxed[column].dropna()
         if not filtered_df.empty:
             x = filtered_df.index
             y = filtered_df.values
-            plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), alpha=0.3, zorder=3)
+            plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), zorder=3)
     if color:
         plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
         plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
