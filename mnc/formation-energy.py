@@ -46,6 +46,7 @@ def main():
             # df_rel = pd.DataFrame()
             df_mag = pd.DataFrame()
             df_relaxed = pd.DataFrame()
+            Ef_relaxed = pd.DataFrame()
             # df_relaxed_rel = pd.DataFrame()
             df_relaxed_mag = pd.DataFrame()
 
@@ -54,6 +55,7 @@ def main():
             dz_O = pd.DataFrame()
             df_O_mag = pd.DataFrame()
             df_O_relaxed = pd.DataFrame()
+            Ef_O_relaxed = pd.DataFrame()
             df_O_relaxed_mag = pd.DataFrame()
 
             df_OH = pd.DataFrame()
@@ -61,6 +63,7 @@ def main():
             dz_OH = pd.DataFrame()
             df_OH_mag = pd.DataFrame()
             df_OH_relaxed = pd.DataFrame()
+            Ef_OH_relaxed = pd.DataFrame()
             df_OH_relaxed_mag = pd.DataFrame()
 
             tsv_filename = f'{row_key}_{m+2}{metal}.tsv'
