@@ -1,10 +1,11 @@
 #!/bin/bash
 
 squeue --me > ~/mystat.txt
-for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/*_*S/
+for dir in /pscratch/sd/j/jiuy97/6_MNC/*_O*/*_*/*_*S/
 do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
+    ads=$(echo "${path[-3]}" | cut -d'_' -f2)
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     spin=$(echo "${path[-1]}" | cut -d'_' -f2)
     all_done=true
