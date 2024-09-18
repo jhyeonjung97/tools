@@ -302,8 +302,8 @@ def plot_smooth_line(x, y, color):
         else:
             spl = make_interp_spline(x, y, k=2)
         y_smooth = spl(x_new)
-        plt.plot(x_new, y_smooth, color=color, alpha=0.5, zorder=1)
-        plt.scatter(x, y, marker='s', edgecolors=color, facecolors='white', alpha=0.5, zorder=2)
+        plt.plot(x_new, y_smooth, color=color, alpha=0.3, zorder=1)
+        plt.scatter(x, y, marker='s', edgecolors=color, facecolors='white', alpha=0.3, zorder=2)
         return y_smooth
     except ValueError as e:
         print(f"Error while creating spline: {e}")
@@ -340,7 +340,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         if not filtered_df.empty:
             x = filtered_df.index
             y = filtered_df.values
-            plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), zorder=4)
+            plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), alpha=0.3, zorder=4)
     if color:
         plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
         plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
