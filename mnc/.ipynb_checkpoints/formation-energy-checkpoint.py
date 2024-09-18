@@ -321,10 +321,21 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                 plt.scatter(x, y, marker='x', color=spins.get(column, 'black'), zorder=3)
             else:
                 df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
+    
     min_values = df_smooth_y.min(axis=1).to_numpy()
     min_columns = df_smooth_y.idxmin(axis=1).to_numpy()
-    print(min_columns)
-    plt.plot(np.linspace(0.0, 1.2, 300), min_values, color='black', zorder=5)
+    x_new = np.linspace(0.0, 1.2, 300)
+    
+    start_idx = 0
+    current_column = min_columns[0]
+    for i in range(1, len(min_columns)):
+        if min_columns[i] != current_column:
+            plt.plot(x_new[start_idx:i], min_values[start_idx:i], color=spins.get(current_column, 'black'), zorder=5)
+            start_idx = i
+            current_column = min_columns[i]
+    plt.plot(x_new[start_idx:], min_values[start_idx:], color=spins.get(current_column, 'black'), zorder=5)
+    
+    # plt.plot(np.linspace(0.0, 1.2, 300), min_values, color='black', zorder=5)
 
     for column in df_relaxed.columns:
         filtered_df = df_relaxed[column].dropna()
