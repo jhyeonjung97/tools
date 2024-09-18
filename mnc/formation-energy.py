@@ -318,7 +318,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             x = filtered_df.index
             y = filtered_df.values
             if 'MS' in column:
-                plt.scatter(x, y, marker='x', color=ms_spins.get(column, 'black'), zorder=3)
+                plt.scatter(x, y, marker='x', color=ms_spins.get(column, 'black'), zorder=5)
             else:
                 df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
     
@@ -330,17 +330,17 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     current_column = min_columns[0]
     for i in range(1, len(min_columns)):
         if min_columns[i] != current_column:
-            plt.plot(x_new[start_idx:i], min_values[start_idx:i], color=spins.get(current_column, 'black'), zorder=5)
+            plt.plot(x_new[start_idx:i], min_values[start_idx:i], color=spins.get(current_column, 'black'), zorder=4)
             start_idx = i
             current_column = min_columns[i]
-    plt.plot(x_new[start_idx:], min_values[start_idx:], color=spins.get(current_column, 'black'), zorder=5)
+    plt.plot(x_new[start_idx:], min_values[start_idx:], color=spins.get(current_column, 'black'), zorder=4)
     
     for column in df_relaxed.columns:
         filtered_df = df_relaxed[column].dropna()
         if not filtered_df.empty:
             x = filtered_df.index
             y = filtered_df.values
-            plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), alpha=0.3, zorder=4)
+            plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), alpha=0.3, zorder=3)
     if color:
         plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
         plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
