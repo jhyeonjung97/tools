@@ -392,14 +392,15 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     min_columns = df_smooth_y.idxmin(axis=1).to_numpy()
     x_new = np.linspace(0.0, 1.2, 300)
     
-    start_idx = 0
-    current_column = min_columns[0]
-    for i in range(1, len(min_columns)):
-        if min_columns[i] != current_column:
-            plt.plot(x_new[start_idx:i], min_values[start_idx:i], color=min_spins.get(current_column, 'black'), zorder=4)
-            start_idx = i
-            current_column = min_columns[i]
-    plt.plot(x_new[start_idx:], min_values[start_idx:], color=min_spins.get(current_column, 'black'), zorder=4)
+    if 'eV' in ylabel:
+        start_idx = 0
+        current_column = min_columns[0]
+        for i in range(1, len(min_columns)):
+            if min_columns[i] != current_column:
+                plt.plot(x_new[start_idx:i], min_values[start_idx:i], color=min_spins.get(current_column, 'black'), zorder=4)
+                start_idx = i
+                current_column = min_columns[i]
+        plt.plot(x_new[start_idx:], min_values[start_idx:], color=min_spins.get(current_column, 'black'), zorder=4)
     
     for column in df_relaxed.columns:
         filtered_df = df_relaxed[column].dropna()
