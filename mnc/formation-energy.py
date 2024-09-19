@@ -126,7 +126,7 @@ def main():
                 matching_paths = glob.glob(path_pattern)
                 path_O_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/1_O/*_{metal}/*_{spin}'
                 matching_O_paths = glob.glob(path_O_pattern)
-                path_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/1_O/*_{metal}/*_{spin}'
+                path_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/2_OH/*_{metal}/*_{spin}'
                 matching_OH_paths = glob.glob(path_OH_pattern)
                 
                 path = None
@@ -293,6 +293,10 @@ def main():
             
             path_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/0_clean/{row_key}/*_{metal}'
             matching_paths = glob.glob(path_pattern)
+            path_O_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/1_O/*_{metal}'
+            matching_O_paths = glob.glob(path_O_pattern)
+            path_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/2_OH/*_{metal}'
+            matching_OH_paths = glob.glob(path_OH_pattern)
 
             for path in matching_paths:
                 spin_tsv = os.path.join(path, 'lowest.tsv')
@@ -324,6 +328,70 @@ def main():
                             Ef.at[dz, f'MS({ms})'] = np.nan
                             df_dz.at[dz, f'MS({ms})'] = np.nan
                             df_mag.at[dz, f'MS({ms})'] = np.nan
+                            
+            for path_O in matching_O_paths:
+                spin_tsv = os.path.join(path_O, 'lowest.tsv')
+                if os.path.exists(spin_tsv):
+                    spin_df = pd.read_csv(spin_tsv, sep='\t')
+                    spin_df.set_index('dz', inplace=True)
+                    for i, dz in enumerate(dzs):
+                        if len(spin_df) > 0:
+                            ms = spin_df.loc[dz, 'spin_state']
+                        else:
+                            continue
+                        atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
+                        if os.path.exists(atoms_path):
+                            atoms = read(atoms_path)
+                            energy = atoms.get_total_energy()
+                            df_O.at[dz, f'MS({ms})'] = energy
+                            formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
+                            df_O.at[dz, f'MS({ms})'] = formation_energy
+                            try:
+                                magmoms = atoms.get_magnetic_moments()
+                                for atom in atoms:
+                                    if atom.symbol not in ['N', 'C', 'O', 'H']:
+                                        df_O_dz.at[dz, f'MS({ms})'] = atom.z - 10.0
+                                        df_O_mag.at[dz, f'MS({ms})'] = magmoms[atom.index]
+                            except:
+                                df_O_dz.at[dz, f'MS({ms})'] = atom.z - 10.0
+                                df_O_mag.at[dz, f'MS({ms})'] = 0
+                        else:
+                            df_O.at[dz, f'MS({ms})'] = np.nan
+                            Ef_O.at[dz, f'MS({ms})'] = np.nan
+                            df_O_dz.at[dz, f'MS({ms})'] = np.nan
+                            df_O_mag.at[dz, f'MS({ms})'] = np.nan
+                            
+            for path_OH in matching_OH_paths:
+                spin_tsv = os.path.join(path_OH, 'lowest.tsv')
+                if os.path.exists(spin_tsv):
+                    spin_df = pd.read_csv(spin_tsv, sep='\t')
+                    spin_df.set_index('dz', inplace=True)
+                    for i, dz in enumerate(dzs):
+                        if len(spin_df) > 0:
+                            ms = spin_df.loc[dz, 'spin_state']
+                        else:
+                            continue
+                        atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
+                        if os.path.exists(atoms_path):
+                            atoms = read(atoms_path)
+                            energy = atoms.get_total_energy()
+                            df_OH.at[dz, f'MS({ms})'] = energy
+                            formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
+                            df_OH.at[dz, f'MS({ms})'] = formation_energy
+                            try:
+                                magmoms = atoms.get_magnetic_moments()
+                                for atom in atoms:
+                                    if atom.symbol not in ['N', 'C', 'O', 'H']:
+                                        df_OH_dz.at[dz, f'MS({ms})'] = atom.z - 10.0
+                                        df_OH_mag.at[dz, f'MS({ms})'] = magmoms[atom.index]
+                            except:
+                                df_OH_dz.at[dz, f'MS({ms})'] = atom.z - 10.0
+                                df_OH_mag.at[dz, f'MS({ms})'] = 0
+                        else:
+                            df_OH.at[dz, f'MS({ms})'] = np.nan
+                            Ef_OH.at[dz, f'MS({ms})'] = np.nan
+                            df_OH_dz.at[dz, f'MS({ms})'] = np.nan
+                            df_OH_mag.at[dz, f'MS({ms})'] = np.nan
                             
             # relative(df, df_rel)
             # relative(df_relaxed, df_relaxed_rel)
