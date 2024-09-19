@@ -129,9 +129,9 @@ atoms.calc = vasp_calculator.Vasp(
                     lmaxmix=lmaxmix,
                     # isym=0, 
                     nedos=3000,
-                    lorbit=11
+                    lorbit=11,
                     idipol=3,
-                    dipol=(0.5, 0.5, 0.5),
+                    dipol=(0.5, 0.5, 0.5)
                     # ldipol=True
                     # nupdown=0
                     )
