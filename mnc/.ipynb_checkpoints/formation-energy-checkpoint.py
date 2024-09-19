@@ -479,6 +479,9 @@ def plot_smooth_line(x, y, color):
         return None
 
 def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=None, yticks=None, color=None):
+    if df.empty:
+        print("df is empty, skipping plot.")
+        return
     plt.figure(figsize=(4, 3))
     df_smooth_y = pd.DataFrame()
     for column in df.columns:
