@@ -10,16 +10,16 @@ do
     python ~/bin/tools/heo/add-oh.py
     
     cp ~/bin/tools/heo/submit.sh .
-    sed -i -e "s/jobname/HEO-${metal}${numb}/" submit.sh
+    sed -i -e "s/jobname/HEO-${metal}${numb}0/" submit.sh
     # sbatch submit.sh
     
-    mkdir o oh
-    cp restart-o.json o/restart.json
-    cp restart-oh.json oh/restart.json
-    cp submit.sh o/
-    cp submit.sh oh/
-    sed -i -e "s/jobname/HEO-${metal}${numb}/" submit.sh
-    sed -i -e "s/jobname/HEO-${metal}${numb}/" submit.sh
+    mkdir 1_O 2_OH
+    cp restart-o.json 1_O/restart.json
+    cp restart-oh.json 2_OH/restart.json
+    cp submit.sh 1_O/
+    cp submit.sh 2_OH
+    sed -i -e "s/jobname/HEO-${metal}${numb}1/" 1_O/submit.sh
+    sed -i -e "s/jobname/HEO-${metal}${numb}2/" 2_OH/submit.sh
     # cd o/; sbatch submit.sh; cd $dir
     # cd oh/; sbatch submit.sh; cd $dir
 done
