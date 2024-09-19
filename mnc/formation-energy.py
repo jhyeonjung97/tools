@@ -53,12 +53,12 @@ OOH_ZPE = 0.471
 OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 
 nitrogen2_E = -16.64503942
-nitrogen2_TS = 0.635139
-nitrogen2_ZPE = 0.096279
+nitrogen2_TS = 0.592
+nitrogen2_ZPE = 0.098
 nitrogen2_G = nitrogen2_E - nitrogen2_TS + nitrogen2_ZPE
 nitrogen_G = nitrogen2_G / 2
 
-carbon_E = -9.357363435
+carbon_E = -9.3573635
 
 metal_path = '/pscratch/sd/j/jiuy97/6_MNC/gas/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
