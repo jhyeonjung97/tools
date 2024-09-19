@@ -21,18 +21,44 @@ min_spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
 ms_spins ={'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
 dzs = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
 
-E_H2O = -14.23919983
-E_H2 = -6.77409008
-E_OH = E_H2O - E_H2/2
-E_O = E_H2O - E_H2
+water_E = -14.23797429
+water_Cv = 0.103
+water_TS = 0.675
+water_ZPE = 0.558
+water_G = water_E + water_Cv - water_TS + water_ZPE
 
-# Energies and corrections
-nitrogen_E = -16.64503942 # eV, DFT
-nitrogen_TS = 0.635139 # eV, at 298.15 K, 1 atm
-nitrogen_ZPE = 0.096279 # eV, at 298.15 K, 1 atm
-nitrogen = (nitrogen_E - nitrogen_TS + nitrogen_ZPE) / 2
+hydrogen2_E = -6.77412273
+hydrogen2_Cv = 0.0905
+hydrogen2_TS = 0.408
+hydrogen2_ZPE = 0.273
+hydrogen2_G = hydrogen_E + hydrogen_Cv - hydrogen_TS + hydrogen_ZPE
+hydrogen_G = hydrogen2_G / 2
 
-carbon = -9.357363435 # eV, DFT
+oxygen_G = water_G - hydrogen2_G
+hydroxide_G = water_G - hydrogen_G
+
+OH_Cv = 0.042
+OH_TS = 0.066
+OH_ZPE = 0.376
+OH_corr = OH_Cv - OH_TS + OH_ZPE
+
+O_Cv = 0.034
+O_TS = 0.060
+O_ZPE = 0.064
+O_corr = O_Cv - O_TS + O_ZPE
+
+OOH_Cv = 0.077
+OOH_TS = 0.134
+OOH_ZPE = 0.471
+OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
+
+nitrogen2_E = -16.64503942
+nitrogen2_TS = 0.635139
+nitrogen2_ZPE = 0.096279
+nitrogen2_G = nitrogen_E - nitrogen_TS + nitrogen_ZPE
+nitrogen_G = nitrogen2_G / 2
+
+carbon_E = -9.357363435
 
 metal_path = '/pscratch/sd/j/jiuy97/6_MNC/gas/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
@@ -140,7 +166,7 @@ def main():
                             atoms = read(atoms_path)
                             energy = atoms.get_total_energy()
                             df.at[dz, spin] = energy
-                            formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
+                            formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G
                             Ef.at[dz, spin] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
@@ -162,7 +188,7 @@ def main():
                             atoms = read(atoms_path)
                             energy_O = atoms.get_total_energy()
                             df_O.at[dz, spin] = energy_O
-                            adsorption_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_O
+                            adsorption_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G - oxygen_G
                             # adsorption_energy = energy_O - energy - E_O
                             Ef_O.at[dz, spin] = adsorption_energy
                             energy_O = None
@@ -192,7 +218,7 @@ def main():
                             atoms = read(atoms_path)
                             energy_OH = atoms.get_total_energy()
                             df_OH.at[dz, spin] = energy_OH
-                            adsorption_energy = energy_OH - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_OH
+                            adsorption_energy = energy_OH - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G - hydroxide_G
                             # adsorption_energy = energy_OH - energy - E_OH
                             Ef_OH.at[dz, spin] = adsorption_energy
                             energy_OH = None
@@ -226,7 +252,7 @@ def main():
                         df_dz_relaxed.at[dz_relaxed, spin] = dz_relaxed
                         energy = atoms.get_total_energy()
                         df_relaxed.at[dz_relaxed, spin] = energy
-                        formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
+                        formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G
                         Ef_relaxed.at[dz_relaxed, spin] = formation_energy
                         try:
                             magmoms = atoms.get_magnetic_moments()
@@ -247,7 +273,7 @@ def main():
                         df_O_relaxed_dz.at[dz_relaxed, spin] = dz_relaxed
                         energy_O = atoms.get_total_energy()
                         df_O_relaxed.at[dz_relaxed, spin] = energy_O
-                        adsorption_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_O
+                        adsorption_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G - oxygen_G
                         # adsorption_energy = energy_O - energy - E_O
                         Ef_O_relaxed.at[dz_relaxed, spin] = adsorption_energy
                         energy = None
@@ -274,7 +300,7 @@ def main():
                         df_OH_relaxed_dz.at[dz_relaxed, spin] = dz_relaxed
                         energy_OH = atoms.get_total_energy()
                         df_OH_relaxed.at[dz_relaxed, spin] = energy_OH
-                        adsorption_energy = energy_OH - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_OH
+                        adsorption_energy = energy_OH - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G - hydroxide_G
                         # adsorption_energy = energy_O - energy - E_O
                         Ef_OH_relaxed.at[dz_relaxed, spin] = adsorption_energy
                         energy = None
@@ -313,7 +339,7 @@ def main():
                             atoms = read(atoms_path)
                             energy = atoms.get_total_energy()
                             df.at[dz, f'MS({ms})'] = energy
-                            formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
+                            formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G
                             Ef.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
@@ -344,7 +370,7 @@ def main():
                             atoms = read(atoms_path)
                             energy_O = atoms.get_total_energy()
                             df_O.at[dz, f'MS({ms})'] = energy_O
-                            formation_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_O
+                            formation_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G - oxygen_G
                             Ef_O.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
@@ -376,7 +402,7 @@ def main():
                             atoms = read(atoms_path)
                             energy_OH = atoms.get_total_energy()
                             df_OH.at[dz, f'MS({ms})'] = energy_OH
-                            formation_energy = energy_OH - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_OH
+                            formation_energy = energy_OH - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G - hydroxide_G
                             Ef_OH.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
