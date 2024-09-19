@@ -200,7 +200,7 @@ def main():
                             df.at[dz, spin] = energy
                             # formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G
                             formation_energy = energy - metal_df.at[metal, 'energy'] \
-                            + standard_electrode_potentials[metal] - C26N4_energy
+                             - C26N4_energy
                             Ef.at[dz, spin] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
@@ -224,7 +224,7 @@ def main():
                             df_O.at[dz, spin] = energy_O
                             # adsorption_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G - oxygen_G
                             adsorption_energy = energy_O - metal_df.at[metal, 'energy'] \
-                            + standard_electrode_potentials[metal] - C26N4_energy - oxygen_G
+                             - C26N4_energy - oxygen_G
                             Ef_O.at[dz, spin] = adsorption_energy
                             energy_O = None
                             try:
@@ -255,7 +255,7 @@ def main():
                             df_OH.at[dz, spin] = energy_OH
                             # adsorption_energy = energy_OH - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G - hydroxide_G
                             adsorption_energy = energy_OH - metal_df.at[metal, 'energy'] \
-                            + standard_electrode_potentials[metal] - C26N4_energy - hydroxide_G
+                             - C26N4_energy - hydroxide_G
                             Ef_OH.at[dz, spin] = adsorption_energy
                             energy_OH = None
                             try:
@@ -290,7 +290,7 @@ def main():
                         df_relaxed.at[dz_relaxed, spin] = energy
                         # formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G
                         formation_energy = energy - metal_df.at[metal, 'energy'] \
-                        + standard_electrode_potentials[metal] - C26N4_energy
+                         - C26N4_energy
                         Ef_relaxed.at[dz_relaxed, spin] = formation_energy
                         try:
                             magmoms = atoms.get_magnetic_moments()
@@ -313,7 +313,7 @@ def main():
                         df_O_relaxed.at[dz_relaxed, spin] = energy_O
                         # adsorption_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G - oxygen_G
                         adsorption_energy = energy_O - metal_df.at[metal, 'energy'] \
-                        + standard_electrode_potentials[metal] - C26N4_energy - oxygen_G
+                         - C26N4_energy - oxygen_G
                         Ef_O_relaxed.at[dz_relaxed, spin] = adsorption_energy
                         energy = None
                         try:
@@ -341,7 +341,7 @@ def main():
                         df_OH_relaxed.at[dz_relaxed, spin] = energy_OH
                         # adsorption_energy = energy_OH - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G - hydroxide_G
                         adsorption_energy = energy_OH - metal_df.at[metal, 'energy'] \
-                        + standard_electrode_potentials[metal] - C26N4_energy - hydroxide_G
+                         - C26N4_energy - hydroxide_G
                         Ef_OH_relaxed.at[dz_relaxed, spin] = adsorption_energy
                         energy = None
                         try:
@@ -381,7 +381,7 @@ def main():
                             df.at[dz, f'MS({ms})'] = energy
                             # formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G
                             formation_energy = energy - metal_df.at[metal, 'energy'] \
-                            + standard_electrode_potentials[metal] - C26N4_energy
+                             - C26N4_energy
                             Ef.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
@@ -414,7 +414,7 @@ def main():
                             df_O.at[dz, f'MS({ms})'] = energy_O
                             # formation_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G - oxygen_G
                             formation_energy = energy_O - metal_df.at[metal, 'energy'] \
-                            + standard_electrode_potentials[metal] - C26N4_energy - oxygen_G
+                             - C26N4_energy - oxygen_G
                             Ef_O.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
@@ -448,7 +448,7 @@ def main():
                             df_OH.at[dz, f'MS({ms})'] = energy_OH
                             # formation_energy = energy_OH - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G - hydroxide_G
                             formation_energy = energy_OH - metal_df.at[metal, 'energy'] \
-                            + standard_electrode_potentials[metal] - C26N4_energy - hydroxide_G
+                             - C26N4_energy - hydroxide_G
                             Ef_OH.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
