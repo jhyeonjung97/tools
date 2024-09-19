@@ -344,7 +344,7 @@ def main():
                             atoms = read(atoms_path)
                             energy_O = atoms.get_total_energy()
                             df_O.at[dz, f'MS({ms})'] = energy_O
-                            formation_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen
+                            formation_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_O
                             Ef_O.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
