@@ -165,7 +165,7 @@ def main():
                             adsorption_energy = energy_O - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_O
                             # adsorption_energy = energy_O - energy - E_O
                             Ef_O.at[dz, spin] = adsorption_energy
-                            energy = None
+                            energy_O = None
                             try:
                                 magmoms = atoms.get_magnetic_moments()
                                 for atom in atoms:
@@ -195,7 +195,7 @@ def main():
                             adsorption_energy = energy_OH - metal_df.at[metal, 'energy'] - 26 * carbon - 4 * nitrogen - E_OH
                             # adsorption_energy = energy_O - energy - E_O
                             Ef_OH.at[dz, spin] = adsorption_energy
-                            energy = None
+                            energy_OH = None
                             try:
                                 magmoms = atoms.get_magnetic_moments()
                                 for atom in atoms:
