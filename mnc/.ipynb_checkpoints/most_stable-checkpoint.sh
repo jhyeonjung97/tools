@@ -47,6 +47,7 @@ do
                 if [[ ! -f most_stable/6_/restart.json ]]; then
                     echo "${lowest_dir}restart.json most_stable/${dz}_/"
                     cp ${lowest_dir}restart.json most_stable/${dz}_/
+                    sed -i -e '/constraints/d' most_stable/${dz}_/restart.json
                     cp ${lowest_dir}WAVECAR most_stable/${dz}_/
                     cp ~/bin/tools/mnc/submit.sh most_stable/${dz}_/
                     sed -i -e "/#SBATCH -t/c\#SBATCH -t 00:30:00" most_stable/${dz}_/submit.sh
@@ -106,6 +107,7 @@ do
                 if [[ ! -f most_stable/6_/restart.json ]]; then
                     echo "${lowest_dir}restart.json most_stable/${dz}_/"
                     cp ${lowest_dir}restart.json most_stable/${dz}_/
+                    sed -i -e '/constraints/d' most_stable/${dz}_/restart.json
                     cp ${lowest_dir}WAVECAR most_stable/${dz}_/
                     cp ~/bin/tools/mnc/submit.sh most_stable/${dz}_/
                     sed -i -e "/#SBATCH -t/c\#SBATCH -t 00:30:00" most_stable/${dz}_/submit.sh
