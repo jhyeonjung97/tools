@@ -11,15 +11,15 @@ do
     
     cp ~/bin/tools/heo/submit.sh .
     sed -i -e "s/jobname/HEO-${metal}${numb}0/" submit.sh
-    # sbatch submit.sh
+    sbatch submit.sh
     
     mkdir 1_O 2_OH
     cp restart-o.json 1_O/restart.json
     cp restart-oh.json 2_OH/restart.json
-    cp submit.sh 1_O/
-    cp submit.sh 2_OH
+    cp ~/bin/tools/heo/submit.sh 1_O/
+    cp ~/bin/tools/heo/submit.sh 2_OH/
     sed -i -e "s/jobname/HEO-${metal}${numb}1/" 1_O/submit.sh
     sed -i -e "s/jobname/HEO-${metal}${numb}2/" 2_OH/submit.sh
-    # cd o/; sbatch submit.sh; cd $dir
-    # cd oh/; sbatch submit.sh; cd $dir
+    cd 1_O; sbatch submit.sh; cd $dir
+    cd 2_OH; sbatch submit.sh; cd $dir
 done
