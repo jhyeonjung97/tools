@@ -339,7 +339,7 @@ def main():
                             ms = spin_df.loc[dz, 'spin_state']
                         else:
                             continue
-                        atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
+                        atoms_path = os.path.join(path_O, 'most_stable', f'{i}_', 'final_with_calculator.json')
                         if os.path.exists(atoms_path):
                             atoms = read(atoms_path)
                             energy_O = atoms.get_total_energy()
@@ -371,7 +371,7 @@ def main():
                             ms = spin_df.loc[dz, 'spin_state']
                         else:
                             continue
-                        atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
+                        atoms_path = os.path.join(path_OH, 'most_stable', f'{i}_', 'final_with_calculator.json')
                         if os.path.exists(atoms_path):
                             atoms = read(atoms_path)
                             energy_OH = atoms.get_total_energy()
