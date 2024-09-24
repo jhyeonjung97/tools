@@ -60,8 +60,9 @@ for m, metal in enumerate(metals):
         energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
         energies[adsorbate] = energies[adsorbate].head(7)
         energies[adsorbate]['min'] = energies[adsorbate].min(axis=1, skipna=True)
-        energies[adsorbate]['spin'] = energies[adsorbate].idxmin(axis=1, skipna=True)
-
+        energies[adsorbate]['min_column'] = energies[adsorbate].apply(
+            lambda row: row.idxmin(skipna=True) if row.notna().any() else None, axis=1
+            )
         # for spin in spins:
         #     if spin in energies[adsorbate].columns:
         #         energies[adsorbate] = energies[adsorbate].drop(columns=[spin])
