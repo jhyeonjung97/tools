@@ -160,13 +160,12 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     if gibbs_energies.isna().all().all():
         print("dataframe contains only NaN values, skipping plot.")
         return
-    plt.figure(figsize=(4, 3))
+    fig, ax = plt.subplots(figsize=(4, 3))  # Create fig and ax
     png_filename=f'{row}_{group}{metal}_{rxn}.png'
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
         x = filtered_gibbs_energies.index
         y = filtered_gibbs_energies.values
-        # plt.scatter(x, y)
         try:
             x_new = np.linspace(min(x), max(x), 300)
             if len(x) > 3:
@@ -174,12 +173,12 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
             else:
                 spl = make_interp_spline(x, y, k=2)
             y_smooth = spl(x_new)
-            plt.plot(x_new, y_smooth, color='black', zorder=1)
-            plt.scatter(x, y, color='none', zorder=2)
+            ax.plot(x_new, y_smooth, color='black', zorder=1)
+            ax.scatter(x, y, color='none', zorder=2)
             for xi, yi in zip(x, y):
-                plot_two_color_marker(ax, xi, yi, size=0.5, color1='blue', color2='red')
+                plot_two_color_marker(ax, xi, yi, size=0.5, color1='blue', color2='red')  # Two-color markers
         except ValueError as e:
-            print(f"Error while creating spline")        
+            print(f"Error while creating spline: {e}")    
     if overpotential:
         plt.axhline(y=overpotential, color='black', linestyle='--', linewidth=1.0, zorder=0)
     plt.xlabel('dz (Å)')
