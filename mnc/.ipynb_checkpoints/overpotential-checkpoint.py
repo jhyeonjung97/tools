@@ -80,8 +80,8 @@ for m, metal in enumerate(metals):
     gibbs_energies[steps[1]] = gibbs_energies['dG_O'] - gibbs_energies['dG_OH']
     gibbs_energies[steps[2]] = gibbs_energies['dG_OOH'] - gibbs_energies['dG_O']
     gibbs_energies[steps[3]] = 4.92 - gibbs_energies['dG_OOH']
-    
-    valid_steps = [gibbs_energies[step] for step in steps if pd.notna(gibbs_energies[step])]
+
+    valid_steps = [gibbs_energies[step] for step in steps if pd.notna(gibbs_energies[step]).all()]
     if valid_steps:
         gibbs_energies['OER'] = max(valid_steps) - 1.23
     else:
