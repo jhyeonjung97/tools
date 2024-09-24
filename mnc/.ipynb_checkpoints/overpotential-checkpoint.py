@@ -33,7 +33,7 @@ OOH_ZPE = 0.471
 OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 
 root = '/pscratch/sd/j/jiuy97/6_MNC/figure'
-for m, metals in enumerate(metals):
+for m, metal in enumerate(metals):
     row = rows[m]
     group = groups[m]
     energies = {}
