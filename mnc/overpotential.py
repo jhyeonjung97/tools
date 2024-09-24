@@ -68,19 +68,8 @@ for m, metal in enumerate(metals):
         energies[adsorbate]['spin'] = energies[adsorbate]['spin'].apply(
             lambda x: f'MS({x})' if x in ['LS', 'IS', 'HS'] else x)
         
-    # df['min_value'] = df[['col2', 'col3']].min(axis=1, skipna=True)
-
-    # for ms_spin0 in energies['clean'].columns:
-    #     for ms_spin1 in energies['OH'].columns:
-    #         spin_cross_over[steps[0] = 
-
-
-            
-    #         gibbs_energies[step1] = ((energies['OH'][ms_spin1] + OH_corr)
-    #                                                      - energies['clean'][ms_spin0]
-    #                                                      - hydroxide_G)                                                         
-# f'{ms_spin0}->{ms_spin1}'
+    gibbs_energies[step1] = (energies['OH']['energy'] + OH_corr)B- energies['clean']['energy'] - hydroxide_G
 
     if metal == 'Mn':
         print(energies)
-        # print(gibbs_energies)
+        print(gibbs_energies)
