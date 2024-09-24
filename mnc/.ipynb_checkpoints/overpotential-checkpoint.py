@@ -94,4 +94,4 @@ for m, metal in enumerate(metals):
     
     if metal == 'Mn':
         print(energies)
-        print(gibbs_energies_df)
+        gibbs_energies_df.to_csv('gibbs.tsv', sep='\t', float_format='%.2f')
