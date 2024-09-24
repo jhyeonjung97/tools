@@ -97,7 +97,8 @@ for m, metal in enumerate(metals):
         spin_cross_over.loc[index, steps[1]] = f"{energies['OH']['spin'].loc[index]}->{energies['O']['spin'].loc[index]}"
         
     if metal == 'Mn':
-        print(energies)
-        gibbs_energies.to_csv('gibbs.tsv', sep='\t', float_format='%.2f')
+        print(energies['clean'])
+        print(energies['O'])
+        print(energies['OOH'])
         print(gibbs_energies)
         print(spin_cross_over)
