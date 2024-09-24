@@ -145,7 +145,7 @@ def plot_smooth_line(x, y, color):
         print(f"Error while creating spline: {e}")
         return None
 
-def plotting(gibbs_energies, spin_cross_over, rxn, ylabel):    
+def plotting(gibbs_energies, spin_cross_over, rxn, png_filename, ylabel):    
     if gibbs_energies.isna().all().all():
         print("df contains only NaN values, skipping plot.")
         return
