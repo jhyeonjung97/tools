@@ -67,11 +67,13 @@ for m, metal in enumerate(metals):
             lambda row: row.idxmin(skipna=True) if row.notna().any() else None, axis=1)
         energies[adsorbate]['spin'] = energies[adsorbate]['spin'].apply(
             lambda x: f'MS({x})' if x in ['LS', 'IS', 'HS'] else x)
+        
     if metal == 'Mn':
         print(energies['clean']['energy'])
-    gibbs_energies['G_'] = energies['clean']['energy']
-    gibbs_energies['G_OH'] = energies['OH']['energy'] + OH_corr
-    gibbs_energies['G_O'] = energies['O']['energy'] + O_corr
+        
+    gibbs_energies['G_'] = energies['clean']['energy'].min()
+    gibbs_energies['G_OH'] = energies['OH']['energy'].min() + OH_corr
+    gibbs_energies['G_O'] = energies['O']['energy'].min() + O_corr
     
     # gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
     # gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
