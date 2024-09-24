@@ -125,10 +125,10 @@ def main():
         spin_cross_over.to_csv(f'{row}_{group}{metal}_spin.tsv', sep='\t')
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
-        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over,
-                 rxn=OER, png_filename=f'{row}_{group}{metal}_OER.png', ylabel='Energy (eV)')
-        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over,
-                 rxn=ORR, png_filename=f'{row}_{group}{metal}_ORR.png', ylabel='Energy (eV)')
+        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+                 rxn='OER', overpotential=OER, ylabel='Energy (eV)')
+        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+                 rxn='ORR', overpotential=ORR, ylabel='Energy (eV)')
         
 def plot_smooth_line(x, y, color):
     try:
@@ -145,11 +145,12 @@ def plot_smooth_line(x, y, color):
         print(f"Error while creating spline: {e}")
         return None
 
-def plotting(gibbs_energies, spin_cross_over, rxn, png_filename, ylabel):    
+def plotting(gibbs_energies, spin_cross_over, rxn, png_filename, ylabel):
     if gibbs_energies.isna().all().all():
         print("df contains only NaN values, skipping plot.")
         return
     plt.figure(figsize=(4, 3))
+    png_filename=f'{row}_{group}{metal}_{rxn}.png'
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
         x = filtered_gibbs_energies.index
