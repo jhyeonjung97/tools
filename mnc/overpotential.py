@@ -34,5 +34,5 @@ for i in range(6):
             energies[adsorbate] = energies[adsorbate].drop(columns=['HS'])
 
     
-    print(f"Energy data for {metal}:")
-    print(energies)
+    if metal == 'Mn':
+        print(energies)
