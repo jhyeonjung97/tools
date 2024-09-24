@@ -154,7 +154,7 @@ def plot_smooth_line(x, y, color):
         return None
 
 def plot_two_color_marker(ax, x, y, size, color1, color2):
-    lw = 0.3
+    lw = 0.5
     edgecolor = 'black'
     left_wedge = Wedge((x, y), size, 90, 270, facecolor=color1, edgecolor=edgecolor, lw=lw)
     ax.add_patch(left_wedge)
@@ -162,7 +162,7 @@ def plot_two_color_marker(ax, x, y, size, color1, color2):
     ax.add_patch(right_wedge)
 
 def plot_three_color_marker(ax, x, y, size, color0, color1, color2):
-    lw = 0.3
+    lw = 0.5
     edgecolor = 'black'
     section_width = size / 3
     left_rect = Rectangle((x - size/2, y - size/2), section_width, size, facecolor=color0, edgecolor=edgecolor, lw=lw)
