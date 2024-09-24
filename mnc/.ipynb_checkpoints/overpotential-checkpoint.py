@@ -176,7 +176,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
             ax.plot(x_new, y_smooth, color='black', zorder=1)
             ax.scatter(x, y, color='none', zorder=2)
             for xi, yi in zip(x, y):
-                plot_two_color_marker(ax, xi, yi, size=0.5, color1='blue', color2='red')  # Two-color markers
+                plot_two_color_marker(ax, xi, yi, size=0.1, color1='blue', color2='red')  # Two-color markers
         except ValueError as e:
             print(f"Error while creating spline: {e}")    
     if overpotential:
