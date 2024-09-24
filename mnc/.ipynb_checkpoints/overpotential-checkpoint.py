@@ -69,20 +69,20 @@ for m, metal in enumerate(metals):
             lambda x: f'MS({x})' if x in ['LS', 'IS', 'HS'] else x)
         
     if metal == 'Mn':
-        print(energies['clean']['energy'])
+        print(energies['clean'])
         
-    gibbs_energies['G_'] = energies['clean']['energy'].min()
-    gibbs_energies['G_OH'] = energies['OH']['energy'].min() + OH_corr
-    gibbs_energies['G_O'] = energies['O']['energy'].min() + O_corr
+    gibbs_energies['G_'] = energies['clean']['energy']
+    gibbs_energies['G_OH'] = energies['OH']['energy'] + OH_corr
+    gibbs_energies['G_O'] = energies['O']['energy'] + O_corr
     
-    # gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
-    # gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
-    # gibbs_energies['dG_OOH'] = gibbs_energies['dG_OH'] + 3.2
+    gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
+    gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
+    gibbs_energies['dG_OOH'] = gibbs_energies['dG_OH'] + 3.2
                                                                
-    # gibbs_energies[steps[0]] = gibbs_energies['dG_OH']
-    # gibbs_energies[steps[1]] = gibbs_energies['dG_O'] - gibbs_energies['dG_OH']
-    # gibbs_energies[steps[2]] = gibbs_energies['dG_OOH'] - gibbs_energies['dG_O']
-    # gibbs_energies[steps[3]] = 4.92 - gibbs_energies['dG_OOH']
+    gibbs_energies[steps[0]] = gibbs_energies['dG_OH']
+    gibbs_energies[steps[1]] = gibbs_energies['dG_O'] - gibbs_energies['dG_OH']
+    gibbs_energies[steps[2]] = gibbs_energies['dG_OOH'] - gibbs_energies['dG_O']
+    gibbs_energies[steps[3]] = 4.92 - gibbs_energies['dG_OOH']
 
     # valid_steps = [gibbs_energies[step] for step in steps if pd.notna(gibbs_energies[step]).all()]
     # if valid_steps:
@@ -90,7 +90,7 @@ for m, metal in enumerate(metals):
     # else:
     #     gibbs_energies['OER'] = None
     
-    gibbs_energies_df = pd.DataFrame([gibbs_energies])
+    gibbs_energies_df = pd.DataFrame([gibbs_energies], index=energies['clean']['energy'].index)
 
     spin_cross_over[steps[0]] = f"{energies['clean']['spin']}->{energies['OH']['spin']}"
     spin_cross_over[steps[1]] = f"{energies['OH']['spin']}->{energies['O']['spin']}"
