@@ -101,9 +101,13 @@ def main():
         if gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].notna().all().all():
             gibbs_energies['OER'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].max(axis=1) - 1.23
             gibbs_energies['ORR'] = 1.23 - gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].min(axis=1)
+            gibbs_energies['dGmax'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].idxmax(axis=1)
+            gibbs_energies['dGmin'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
         else:
             gibbs_energies['OER'] = None
             gibbs_energies['ORR'] = None
+            gibbs_energies['dGmax'] = None
+            gibbs_energies['dGmin'] = None
             
         if all([dG1 is not None, dG2 is not None, dG3 is not None, dG4 is not None]):
             OER = max(dG1, dG2, dG3, dG4) - 1.23
@@ -188,11 +192,22 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
             ax.plot(x_new, y_smooth, color='black', zorder=1)
             ax.scatter(x, y, color='none', zorder=2)
             for xi, yi in zip(x, y):
-                color0 = colors[spin_cross_over.loc[xi, 'clean']]
-                color1 = colors[spin_cross_over.loc[xi, 'OH']]
-                color2 = colors[spin_cross_over.loc[xi, 'O']]
-                # plot_two_color_marker(ax, xi, yi, size=0.02, color1=color1, color2=color2)
-                plot_three_color_marker(ax, xi, yi, size=0.05, color0=color0, color1=color1, color2=color2)
+                dGmax = gibbs_energies[xi, 'dGmax']
+                color_ = colors[spin_cross_over.loc[xi, 'clean']]
+                color_OH = colors[spin_cross_over.loc[xi, 'OH']]
+                color_O = colors[spin_cross_over.loc[xi, 'O']]
+                color_OOH = 'grey' # colors[spin_cross_over.loc[xi, 'OOH']]
+                if dGmax == 'dG1':
+                    plot_two_color_marker(ax, xi, yi, size=0.02, color1=color_, color2=color_OH)
+                elif dGmax == 'dG2':
+                    plot_two_color_marker(ax, xi, yi, size=0.02, color1=color_OH, color2=color_O)
+                elif dGmax == 'dG3':
+                    plot_two_color_marker(ax, xi, yi, size=0.02, color1=color_O, color2=color_OOH)
+                elif dGmax == 'dG4':
+                    plot_two_color_marker(ax, xi, yi, size=0.02, color1=color_OOH, color2=color_)
+                # plot_three_color_marker(ax, xi, yi, size=0.05, color0=color0, color1=color1, color2=color2)
+                ax.annotate(dGmax, (xi, yi), textcoords="offset points", xytext=(0, 5), ha='center',
+                            fontsize=8, color='black')  # Customize text, positioning, font size, etc.
         except ValueError as e:
             print(f"Error while creating spline: {e}")    
     if overpotential:
