@@ -71,7 +71,6 @@ for m, metal in enumerate(metals):
     gibbs_energies['G_'] = energies['clean']['energy']
     gibbs_energies['G_OH'] = energies['OH']['energy'] + OH_corr
     gibbs_energies['G_O'] = energies['O']['energy'] + O_corr
-    # gibbs_energies['G_OOH'] = energies['OOH']['energy'] + OOH_corr
     
     gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
     gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
@@ -81,7 +80,15 @@ for m, metal in enumerate(metals):
     gibbs_energies[steps[1]] = gibbs_energies['dG_O'] - gibbs_energies['dG_OH']
     gibbs_energies[steps[2]] = gibbs_energies['dG_OOH'] - gibbs_energies['dG_O']
     gibbs_energies[steps[3]] = 4.92 - gibbs_energies['dG_OOH']
-    gibbs_energies['OER'] = max(gibbs_energies[steps]) - 1.23
+    
+    valid_steps = [gibbs_energies[step] for step in steps if pd.notna(gibbs_energies[step])]
+    if valid_steps:
+        gibbs_energies['OER'] = max(valid_steps) - 1.23
+    else:
+        gibbs_energies['OER'] = None
+
+    spin_cross_over[steps[0]] = f'{energies['clean']['spin']}->{energies['OH']['spin']}'
+    spin_cross_over[steps[1]] = f'{energies['OH']['spin']}->{energies['O']['spin']}'
     
     if metal == 'Mn':
         print(energies)
