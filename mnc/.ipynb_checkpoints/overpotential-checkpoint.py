@@ -23,7 +23,15 @@ for i in range(6):
     energies = {}
     for adsorbate in adsorbates:
         tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
-        energies[adsorbate] = pd.read_csv(tsv_path, sep='\t')
-        
+        energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
+             
+        if 'LS' in energies[adsorbate].columns:
+            energies[adsorbate] = energies[adsorbate].drop(columns=['LS'])
+        if 'IS' in energies[adsorbate].columns:
+            energies[adsorbate] = energies[adsorbate].drop(columns=['IS'])
+        if 'HS' in energies[adsorbate].columns:
+            energies[adsorbate] = energies[adsorbate].drop(columns=['HS'])
+
+    
     print(f"Energy data for {metal}:")
     print(energies)
