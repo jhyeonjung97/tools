@@ -68,8 +68,21 @@ for m, metal in enumerate(metals):
         energies[adsorbate]['spin'] = energies[adsorbate]['spin'].apply(
             lambda x: f'MS({x})' if x in ['LS', 'IS', 'HS'] else x)
         
-    gibbs_energies[steps[0]] = (energies['OH']['energy'] + OH_corr)- energies['clean']['energy'] - hydroxide_G
-
+    gibbs_energies['G_'] = energies['clean']['energy']
+    gibbs_energies['G_OH'] = energies['OH']['energy'] + OH_corr
+    gibbs_energies['G_O'] = energies['O']['energy'] + O_corr
+    # gibbs_energies['G_OOH'] = energies['OOH']['energy'] + OOH_corr
+    
+    gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
+    gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
+    gibbs_energies['dG_OOH'] = gibbs_energies['dG_OH'] + 3.2
+                                                               
+    gibbs_energies[steps[0]] = gibbs_energies['dG_OH']
+    gibbs_energies[steps[1]] = gibbs_energies['dG_O'] - gibbs_energies['dG_OH']
+    gibbs_energies[steps[2]] = gibbs_energies['dG_OOH'] - gibbs_energies['dG_O']
+    gibbs_energies[steps[3]] = 4.92 - gibbs_energies['dG_OOH']
+    gibbs_energies['OER'] = max(gibbs_energies[steps]) - 1.23
+    
     if metal == 'Mn':
         print(energies)
         print(gibbs_energies)
