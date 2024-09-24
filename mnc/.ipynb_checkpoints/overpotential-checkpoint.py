@@ -156,13 +156,14 @@ def plot_two_color_marker(ax, x, y, size, color1, color2):
     ax.add_patch(right_wedge)
 
 def plot_three_color_marker(ax, x, y, size, color0, color1, color2):
-    edgecolor='black'
+    lw = 0.3
+    edgecolor = 'black'
     section_width = size / 3
-    left_rect = Rectangle((x - size/2, y - size/2), section_width, size, facecolor=color0, edgecolor=edgecolor, lw=0.1)
+    left_rect = Rectangle((x - size/2, y - size/2), section_width, size, facecolor=color0, edgecolor=edgecolor, lw=lw)
     ax.add_patch(left_rect)
-    middle_rect = Rectangle((x - size/2 + section_width, y - size/2), section_width, size, facecolor=color1, edgecolor=edgecolor, lw=0.1)
+    middle_rect = Rectangle((x - size/2 + section_width, y - size/2), section_width, size, facecolor=color1, edgecolor=edgecolor, lw=lw)
     ax.add_patch(middle_rect)
-    right_rect = Rectangle((x - size/2 + 2 * section_width, y - size/2), section_width, size, facecolor=color2, edgecolor=edgecolor, lw=0.1)
+    right_rect = Rectangle((x - size/2 + 2 * section_width, y - size/2), section_width, size, facecolor=color2, edgecolor=edgecolor, lw=lw)
     ax.add_patch(right_rect)
     
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, 
