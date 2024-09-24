@@ -87,8 +87,8 @@ for m, metal in enumerate(metals):
     else:
         gibbs_energies['OER'] = None
 
-    spin_cross_over[steps[0]] = f'{energies['clean']['spin']}->{energies['OH']['spin']}'
-    spin_cross_over[steps[1]] = f'{energies['OH']['spin']}->{energies['O']['spin']}'
+    spin_cross_over[steps[0]] = f"{energies['clean']['spin']}->{energies['OH']['spin']}"
+    spin_cross_over[steps[1]] = f"{energies['OH']['spin']}->{energies['O']['spin']}"
     
     if metal == 'Mn':
         print(energies)
