@@ -93,8 +93,8 @@ for m, metal in enumerate(metals):
     gibbs_energies = gibbs_energies.set_index(energies['clean'].index)
 
     for index in energies['clean'].index:
-        spin_cross_over.loc[index, steps[0]] = f"{energies['clean']['spin'].loc[index]} -> {energies['OH']['spin'].loc[index]}"
-        spin_cross_over.loc[index, steps[1]] = f"{energies['OH']['spin'].loc[index]} -> {energies['O']['spin'].loc[index]}"
+        spin_cross_over.loc[index, steps[0]] = f"{energies['clean']['spin'].loc[index]}->{energies['OH']['spin'].loc[index]}"
+        spin_cross_over.loc[index, steps[1]] = f"{energies['OH']['spin'].loc[index]}->{energies['O']['spin'].loc[index]}"
         
     if metal == 'Mn':
         print(energies)
