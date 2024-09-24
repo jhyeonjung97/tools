@@ -147,12 +147,9 @@ def plot_smooth_line(x, y, color):
         return None
 
 def plot_two_color_marker(ax, x, y, size, color1, color2):
-    # Plot the left half of the marker
-    left_wedge = Wedge((x, y), size, 90, 270, color=color1, lw=0)
+    left_wedge = Wedge((x, y), size, 90, 270, color=color1, edgecolor='black', lw=0)
     ax.add_patch(left_wedge)
-
-    # Plot the right half of the marker
-    right_wedge = Wedge((x, y), size, 270, 90, color=color2, lw=0)
+    right_wedge = Wedge((x, y), size, 270, 90, color=color2, edgecolor='black', lw=0)
     ax.add_patch(right_wedge)
     
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, 
