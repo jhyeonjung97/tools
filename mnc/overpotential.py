@@ -81,6 +81,8 @@ for m, metal in enumerate(metals):
     gibbs_energies[steps[2]] = gibbs_energies['dG_OOH'] - gibbs_energies['dG_O']
     gibbs_energies[steps[3]] = 4.92 - gibbs_energies['dG_OOH']
 
+    gibbs_energies_df = pd.DataFrame([gibbs_energies])
+
     # valid_steps = [gibbs_energies[step] for step in steps if pd.notna(gibbs_energies[step]).all()]
     # if valid_steps:
     #     gibbs_energies['OER'] = max(valid_steps) - 1.23
@@ -92,4 +94,4 @@ for m, metal in enumerate(metals):
     
     if metal == 'Mn':
         print(energies)
-        print(gibbs_energies)
+        print(gibbs_energies_df)
