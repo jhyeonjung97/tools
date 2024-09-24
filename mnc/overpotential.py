@@ -90,13 +90,13 @@ for m, metal in enumerate(metals):
     # else:
     #     gibbs_energies['OER'] = None
     
-    gibbs_energies_df = gibbs_energies.set_index(energies['clean'].index)
+    gibbs_energies = gibbs_energies.set_index(energies['clean'].index)
 
-    spin_cross_over[steps[0]] = f"{energies['clean']['spin']}->{energies['OH']['spin']}"
-    spin_cross_over[steps[1]] = f"{energies['OH']['spin']}->{energies['O']['spin']}"
-    
+    for index in energies['clean'].index:
+        spin_cross_over.loc[index, steps[0]] = f"{energies['clean']['spin'].loc[index]} -> {energies['OH']['spin'].loc[index]}"
+        spin_cross_over.loc[index, steps[1]] = f"{energies['OH']['spin'].loc[index]} -> {energies['O']['spin'].loc[index]}"
+        
     if metal == 'Mn':
         print(energies)
-        print(gibbs_energies)
-        gibbs_energies_df.to_csv('gibbs.tsv', sep='\t', float_format='%.2f')
+        gibbs_energies.to_csv('gibbs.tsv', sep='\t', float_format='%.2f')
         print(spin_cross_over)
