@@ -53,8 +53,8 @@ for m, metal in enumerate(metals):
     row = rows[m]
     group = groups[m]
     energies = {}
-    gibbs_energies = {}
-    spin_cross_over = {}
+    gibbs_energies = pd.DataFrame()
+    spin_cross_over = pd.DataFrame()
     for adsorbate in adsorbates:
         tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
         energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
@@ -90,7 +90,7 @@ for m, metal in enumerate(metals):
     # else:
     #     gibbs_energies['OER'] = None
     
-    gibbs_energies_df = pd.DataFrame([gibbs_energies], index=energies['clean']['energy'].index)
+    gibbs_energies_df = gibbs_energies.set_index(energies['clean'].index)
 
     spin_cross_over[steps[0]] = f"{energies['clean']['spin']}->{energies['OH']['spin']}"
     spin_cross_over[steps[1]] = f"{energies['OH']['spin']}->{energies['O']['spin']}"
