@@ -71,9 +71,6 @@ def main():
             energies[adsorbate]['spin'] = energies[adsorbate]['spin'].apply(
                 lambda x: f'MS({x})' if x in ['LS', 'IS', 'HS'] else x)
             
-        if metal == 'Mn':
-            print(energies['clean'])
-            
         gibbs_energies['G_'] = energies['clean']['energy']
         gibbs_energies['G_OH'] = energies['OH']['energy'] + OH_corr
         gibbs_energies['G_O'] = energies['O']['energy'] + O_corr
@@ -129,9 +126,9 @@ def main():
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn=OER, ylabel='Energy (eV)')
+                 rxn=OER, png_filename=f'{row}_{group}{metal}_{OER}.png', ylabel='Energy (eV)')
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn=ORR, ylabel='Energy (eV)')
+                 rxn=ORR, png_filename=f'{row}_{group}{metal}_{ORR}.png', ylabel='Energy (eV)')
         
 def plot_smooth_line(x, y, color):
     try:
