@@ -6,7 +6,7 @@ from ase.io import read
 from statistics import mean
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from matplotlib.patches import Wedge
+from matplotlib.patches import Wedge, Rectangle
 from matplotlib.ticker import FormatStrFormatter
 from scipy.interpolate import make_interp_spline
 
@@ -17,7 +17,7 @@ groups = ['5', '6', '7', '8', '4', '4']
 metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
 adsorbates = ['clean', 'O', 'OH']
 spins = ['LS', 'IS', 'HS']
-colors = ['#ff7f0e', '#279ff2', '#9467bd']
+colors ={'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
 
 water_E = -14.23797429
 water_Cv = 0.103
@@ -116,10 +116,13 @@ def main():
         gibbs_energies = gibbs_energies.set_index(energies['clean'].index)
             
         for index in energies['clean'].index:
-            spin_cross_over.loc[index, OERs[0]] = f"{energies['clean']['spin'].loc[index]}->{energies['OH']['spin'].loc[index]}"
-            spin_cross_over.loc[index, OERs[1]] = f"{energies['OH']['spin'].loc[index]}->{energies['O']['spin'].loc[index]}"
-            spin_cross_over.loc[index, ORRs[2]] = f"{energies['O']['spin'].loc[index]}->{energies['OH']['spin'].loc[index]}"
-            spin_cross_over.loc[index, ORRs[3]] = f"{energies['OH']['spin'].loc[index]}->{energies['clean']['spin'].loc[index]}"
+            spin_cross_over.loc[index, 'clean'] = energies['clean']['spin'].loc[index]
+            spin_cross_over.loc[index, '*OH'] = energies['*OH']['spin'].loc[index]
+            spin_cross_over.loc[index, '*O'] = energies['*O']['spin'].loc[index]
+            # spin_cross_over.loc[index, OERs[0]] = f"{energies['clean']['spin'].loc[index]}->{energies['OH']['spin'].loc[index]}"
+            # spin_cross_over.loc[index, OERs[1]] = f"{energies['OH']['spin'].loc[index]}->{energies['O']['spin'].loc[index]}"
+            # spin_cross_over.loc[index, ORRs[2]] = f"{energies['O']['spin'].loc[index]}->{energies['OH']['spin'].loc[index]}"
+            # spin_cross_over.loc[index, ORRs[3]] = f"{energies['OH']['spin'].loc[index]}->{energies['clean']['spin'].loc[index]}"
     
         
         gibbs_energies.to_csv(f'{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
@@ -146,13 +149,20 @@ def plot_smooth_line(x, y, color):
         print(f"Error while creating spline: {e}")
         return None
 
-def plot_three_color_marker(ax, x, y, size, color1, color2, color3):
-    left_wedge = Wedge((x, y), size, 0, 120, facecolor=color1, edgecolor='black', lw=1)
+def plot_two_color_marker(ax, x, y, size, color1, color2):
+    left_wedge = Wedge((x, y), size, 90, 270, facecolor=color1, edgecolor='black', lw=1)
     ax.add_patch(left_wedge)
-    middle_wedge = Wedge((x, y), size, 120, 240, facecolor=color2, edgecolor='black', lw=1)
-    ax.add_patch(middle_wedge)
-    right_wedge = Wedge((x, y), size, 240, 360, facecolor=color3, edgecolor='black', lw=1)
+    right_wedge = Wedge((x, y), size, 270, 90, facecolor=color2, edgecolor='black', lw=1)
     ax.add_patch(right_wedge)
+
+def plot_three_color_marker(ax, x, y, size, color1, color2, color3):
+    section_width = size / 3
+    left_rect = Rectangle((x - size/2, y - size/2), section_width, size, facecolor=color0, edgecolor='black', lw=1)
+    ax.add_patch(left_rect)
+    middle_rect = Rectangle((x - size/2 + section_width, y - size/2), section_width, size, facecolor=color1, edgecolor='black', lw=1)
+    ax.add_patch(middle_rect)
+    right_rect = Rectangle((x - size/2 + 2 * section_width, y - size/2), section_width, size, facecolor=color2, edgecolor='black', lw=1)
+    ax.add_patch(right_rect)
     
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, 
              rxn, overpotential, ylabel):
@@ -174,9 +184,13 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
                 spl = make_interp_spline(x, y, k=2)
             y_smooth = spl(x_new)
             ax.plot(x_new, y_smooth, color='black', zorder=1)
-            ax.scatter(x, y, marker='s', color='none', zorder=2)
+            ax.scatter(x, y, color='none', zorder=2)
             for xi, yi in zip(x, y):
-                plot_three_color_marker(ax, xi, yi, size=0.02, color1='blue', color2='red', color3='green')
+                color0 = colors[spin_cross_over.loc[index, 'clean']]
+                color1 = colors[spin_cross_over.loc[index, '*OH']]
+                color2 = colors[spin_cross_over.loc[index, '*O']]
+                # plot_two_color_marker(ax, xi, yi, size=0.02, color1=color1, color2=color2)
+                plot_three_color_square_marker(ax, x, y, size=0.02, color0=color0, color1=color1, color2=color2)
         except ValueError as e:
             print(f"Error while creating spline: {e}")    
     if overpotential:
