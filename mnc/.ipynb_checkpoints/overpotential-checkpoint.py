@@ -117,8 +117,8 @@ def main():
             
         for index in energies['clean'].index:
             spin_cross_over.loc[index, 'clean'] = energies['clean']['spin'].loc[index]
-            spin_cross_over.loc[index, '*OH'] = energies['*OH']['spin'].loc[index]
-            spin_cross_over.loc[index, '*O'] = energies['*O']['spin'].loc[index]
+            spin_cross_over.loc[index, 'OH'] = energies['OH']['spin'].loc[index]
+            spin_cross_over.loc[index, 'O'] = energies['O']['spin'].loc[index]
             # spin_cross_over.loc[index, OERs[0]] = f"{energies['clean']['spin'].loc[index]}->{energies['OH']['spin'].loc[index]}"
             # spin_cross_over.loc[index, OERs[1]] = f"{energies['OH']['spin'].loc[index]}->{energies['O']['spin'].loc[index]}"
             # spin_cross_over.loc[index, ORRs[2]] = f"{energies['O']['spin'].loc[index]}->{energies['OH']['spin'].loc[index]}"
@@ -187,8 +187,8 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
             ax.scatter(x, y, color='none', zorder=2)
             for xi, yi in zip(x, y):
                 color0 = colors[spin_cross_over.loc[index, 'clean']]
-                color1 = colors[spin_cross_over.loc[index, '*OH']]
-                color2 = colors[spin_cross_over.loc[index, '*O']]
+                color1 = colors[spin_cross_over.loc[index, 'OH']]
+                color2 = colors[spin_cross_over.loc[index, 'O']]
                 # plot_two_color_marker(ax, xi, yi, size=0.02, color1=color1, color2=color2)
                 plot_three_color_square_marker(ax, x, y, size=0.02, color0=color0, color1=color1, color2=color2)
         except ValueError as e:
