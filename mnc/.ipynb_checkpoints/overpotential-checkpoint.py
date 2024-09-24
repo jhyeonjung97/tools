@@ -155,7 +155,7 @@ def plot_two_color_marker(ax, x, y, size, color1, color2):
     right_wedge = Wedge((x, y), size, 270, 90, facecolor=color2, edgecolor='black', lw=1)
     ax.add_patch(right_wedge)
 
-def plot_three_color_marker(ax, x, y, size, color1, color2, color3):
+def plot_three_color_marker(ax, x, y, size, color0, color1, color2):
     section_width = size / 3
     left_rect = Rectangle((x - size/2, y - size/2), section_width, size, facecolor=color0, edgecolor='black', lw=1)
     ax.add_patch(left_rect)
