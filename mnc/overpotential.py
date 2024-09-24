@@ -191,7 +191,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
                 color1 = colors[spin_cross_over.loc[xi, 'OH']]
                 color2 = colors[spin_cross_over.loc[xi, 'O']]
                 # plot_two_color_marker(ax, xi, yi, size=0.02, color1=color1, color2=color2)
-                plot_three_color_marker(ax, xi, yi, size=0.02, color0=color0, color1=color1, color2=color2)
+                plot_three_color_marker(ax, xi, yi, size=0.1, color0=color0, color1=color1, color2=color2)
         except ValueError as e:
             print(f"Error while creating spline: {e}")    
     if overpotential:
