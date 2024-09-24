@@ -150,7 +150,7 @@ def plotting(gibbs_energies, spin_cross_over, rxn, png_filename, ylabel):
         print("df contains only NaN values, skipping plot.")
         return
     plt.figure(figsize=(4, 3))
-    filtered_gibbs_energies = gibbs_energies['OER'].dropna()
+    filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
         x = filtered_gibbs_energies.index
         y = filtered_gibbs_energies.values
