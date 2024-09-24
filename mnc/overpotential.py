@@ -128,9 +128,11 @@ def main():
         spin_cross_over.to_csv(f'{row}_{group}{metal}_spin.tsv', sep='\t')
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
+        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+                 rxn=OER, ylabel='Energy (eV)')
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, 
-                 rxn=OER, ylabel='Energy (eV)', png_filename=f'{row}_{group}{metal}_OER.png')
-
+                 rxn=ORR, ylabel='Energy (eV)', png_filename=f'{row}_{group}{metal}_ORR.png')
+        
 def plot_smooth_line(x, y, color):
     try:
         x_new = np.linspace(min(x), max(x), 300)
@@ -146,7 +148,9 @@ def plot_smooth_line(x, y, color):
         print(f"Error while creating spline: {e}")
         return None
 
-def plotting(gibbs_energies, spin_cross_over, rxn, ylabel, png_filename):
+def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, ylabel):
+    png_filename=f'{row}_{group}{metal}_{rxn}.png'
+    
     if gibbs_energies.isna().all().all():
         print("df contains only NaN values, skipping plot.")
         return
@@ -161,6 +165,8 @@ def plotting(gibbs_energies, spin_cross_over, rxn, ylabel, png_filename):
         plt.axhline(y=rxn, color='blue', linestyle='--', zorder=0)
     plt.xlabel('dz (Å)')
     plt.ylabel(ylabel)
+    plt.ylim(0.4, 1.0)
+    plt.yticks(np.arange(0.0, 2.0, 0.1))
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     # plt.legend(labelspacing=0.3)
