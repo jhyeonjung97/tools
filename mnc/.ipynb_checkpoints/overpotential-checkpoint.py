@@ -154,9 +154,11 @@ def plot_smooth_line(x, y, color):
         return None
 
 def plot_two_color_marker(ax, x, y, size, color1, color2):
-    left_wedge = Wedge((x, y), size, 90, 270, facecolor=color1, edgecolor='black', lw=1)
+    lw = 0.3
+    edgecolor = 'black'
+    left_wedge = Wedge((x, y), size, 90, 270, facecolor=color1, edgecolor=edgecolor, lw=lw)
     ax.add_patch(left_wedge)
-    right_wedge = Wedge((x, y), size, 270, 90, facecolor=color2, edgecolor='black', lw=1)
+    right_wedge = Wedge((x, y), size, 270, 90, facecolor=color2, edgecolor=edgecolor, lw=lw)
     ax.add_patch(right_wedge)
 
 def plot_three_color_marker(ax, x, y, size, color0, color1, color2):
@@ -192,11 +194,11 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
             ax.plot(x_new, y_smooth, color='black', zorder=1)
             ax.scatter(x, y, color='none', zorder=2)
             for xi, yi in zip(x, y):
-                dGmax = gibbs_energies.loc[xi, 'dGmax']
                 color_ = colors[spin_cross_over.loc[xi, 'clean']]
                 color_OH = colors[spin_cross_over.loc[xi, 'OH']]
                 color_O = colors[spin_cross_over.loc[xi, 'O']]
-                color_OOH = 'grey' # colors[spin_cross_over.loc[xi, 'OOH']]
+                color_OOH = 'white' # colors[spin_cross_over.loc[xi, 'OOH']]
+                dGmax = gibbs_energies.loc[xi, 'dGmax']
                 if dGmax == 'dG1':
                     plot_two_color_marker(ax, xi, yi, size=0.02, color1=color_, color2=color_OH)
                 elif dGmax == 'dG2':
@@ -206,8 +208,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
                 elif dGmax == 'dG4':
                     plot_two_color_marker(ax, xi, yi, size=0.02, color1=color_OOH, color2=color_)
                 # plot_three_color_marker(ax, xi, yi, size=0.05, color0=color0, color1=color1, color2=color2)
-                ax.annotate(dGmax, (xi, yi), textcoords="offset points", xytext=(0, 5), ha='center',
-                            fontsize=8, color='black')  # Customize text, positioning, font size, etc.
+                ax.annotate(dGmax, (xi, yi), textcoords="offset points", xytext=(0, 5), ha='center', fontsize=8, color='black')
         except ValueError as e:
             print(f"Error while creating spline: {e}")    
     if overpotential:
