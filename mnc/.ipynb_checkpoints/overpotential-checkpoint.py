@@ -169,7 +169,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
         except ValueError as e:
             print(f"Error while creating spline")        
     if overpotential:
-        plt.axhline(y=overpotential, color='black', linestyle='--', linewidth=2, zorder=0)
+        plt.axhline(y=overpotential, color='black', linestyle='--', linewidth=0.5, zorder=0)
     plt.xlabel('dz (Å)')
     plt.ylabel(ylabel)
     plt.ylim(0.4, 1.4)
