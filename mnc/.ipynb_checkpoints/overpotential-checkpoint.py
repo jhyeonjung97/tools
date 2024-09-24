@@ -163,7 +163,7 @@ def plotting(gibbs_energies, spin_cross_over, rxn, png_filename, ylabel):
                 spl = make_interp_spline(x, y, k=2)
             y_smooth = spl(x_new)
             plt.plot(x_new, y_smooth, color=color, zorder=1)
-            plt.scatter(x, y, marker='s', edgecolors=color, facecolors='white', zorder=2)
+            plt.scatter(x, y, marker='s', zorder=2)
         except ValueError as e:
             print(f"Error while creating spline")        
     if rxn:
