@@ -99,6 +99,6 @@ for m, metal in enumerate(metals):
     if metal == 'Mn':
         print(energies['clean'])
         print(energies['O'])
-        print(energies['OOH'])
+        # print(energies['OOH'])
         print(gibbs_energies)
         print(spin_cross_over)
