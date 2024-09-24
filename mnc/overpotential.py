@@ -156,13 +156,13 @@ def plot_two_color_marker(ax, x, y, size, color1, color2):
     ax.add_patch(right_wedge)
 
 def plot_three_color_marker(ax, x, y, size, color0, color1, color2):
-    edgecolor='none'
+    edgecolor='black'
     section_width = size / 3
-    left_rect = Rectangle((x - size/2, y - size/2), section_width, size, facecolor=color0, edgecolor=edgecolor, lw=1)
+    left_rect = Rectangle((x - size/2, y - size/2), section_width, size, facecolor=color0, edgecolor=edgecolor, lw=0.1)
     ax.add_patch(left_rect)
-    middle_rect = Rectangle((x - size/2 + section_width, y - size/2), section_width, size, facecolor=color1, edgecolor=edgecolor, lw=1)
+    middle_rect = Rectangle((x - size/2 + section_width, y - size/2), section_width, size, facecolor=color1, edgecolor=edgecolor, lw=0.1)
     ax.add_patch(middle_rect)
-    right_rect = Rectangle((x - size/2 + 2 * section_width, y - size/2), section_width, size, facecolor=color2, edgecolor=edgecolor, lw=1)
+    right_rect = Rectangle((x - size/2 + 2 * section_width, y - size/2), section_width, size, facecolor=color2, edgecolor=edgecolor, lw=0.1)
     ax.add_patch(right_rect)
     
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, 
@@ -191,7 +191,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
                 color1 = colors[spin_cross_over.loc[xi, 'OH']]
                 color2 = colors[spin_cross_over.loc[xi, 'O']]
                 # plot_two_color_marker(ax, xi, yi, size=0.02, color1=color1, color2=color2)
-                plot_three_color_marker(ax, xi, yi, size=0.1, color0=color0, color1=color1, color2=color2)
+                plot_three_color_marker(ax, xi, yi, size=0.05, color0=color0, color1=color1, color2=color2)
         except ValueError as e:
             print(f"Error while creating spline: {e}")    
     if overpotential:
@@ -210,32 +210,3 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
 
 if __name__ == '__main__':
     main()
-    custom_legend = [
-        Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#ff7f0e', 
-               label='LS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
-        Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#279ff2', 
-               label='IS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
-        Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#9467bd', 
-               label='HS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
-    
-        Line2D([0], [0], marker='s', color='#ff7f0e', 
-               label='LS (relaxed, w/ nupdown)', markersize=8, linestyle='None'),
-        Line2D([0], [0], marker='s', color='#279ff2', 
-               label='IS (relaxed, w/ nupdown)', markersize=8, linestyle='None'),
-        Line2D([0], [0], marker='s', color='#9467bd', 
-               label='HS (relaxed, w/ nupdown)', markersize=8, linestyle='None'),
-    
-        Line2D([0], [0], marker='x', color='#ff7f0e', 
-               label='LS (fixed, w/o nupdown)', markersize=8, linestyle='None'),
-        Line2D([0], [0], marker='x', color='#279ff2', 
-               label='IS (fixed, w/o nupdown)', markersize=8, linestyle='None'),
-        Line2D([0], [0], marker='x', color='#9467bd', 
-               label='HS (fixed, w/o nupdown)', markersize=8, linestyle='None'),
-    ]
-    fig, ax = plt.subplots()
-    ax.legend(handles=custom_legend)
-    ax.axis('off')
-    png_filename = "custom_legend_markers_only.png"  # Update with your file path
-    plt.savefig(png_filename, bbox_inches="tight")
-    print(f"Figure saved as {png_filename}")
-    plt.close()
