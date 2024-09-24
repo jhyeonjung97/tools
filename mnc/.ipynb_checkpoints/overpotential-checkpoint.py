@@ -146,10 +146,12 @@ def plot_smooth_line(x, y, color):
         print(f"Error while creating spline: {e}")
         return None
 
-def plot_two_color_marker(ax, x, y, size, color1, color2):
-    left_wedge = Wedge((x, y), size, 90, 270, facecolor=color1, edgecolor='black', lw=1)
+def plot_three_color_marker(ax, x, y, size, color1, color2, color3):
+    left_wedge = Wedge((x, y), size, 0, 120, facecolor=color1, edgecolor='black', lw=1)
     ax.add_patch(left_wedge)
-    right_wedge = Wedge((x, y), size, 270, 90, facecolor=color2, edgecolor='black', lw=1)
+    middle_wedge = Wedge((x, y), size, 120, 240, facecolor=color2, edgecolor='black', lw=1)
+    ax.add_patch(middle_wedge)
+    right_wedge = Wedge((x, y), size, 240, 360, facecolor=color3, edgecolor='black', lw=1)
     ax.add_patch(right_wedge)
     
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, 
@@ -172,9 +174,9 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
                 spl = make_interp_spline(x, y, k=2)
             y_smooth = spl(x_new)
             ax.plot(x_new, y_smooth, color='black', zorder=1)
-            ax.scatter(x, y, color='none', zorder=2)
+            ax.scatter(x, y, marker='s', color='none', zorder=2)
             for xi, yi in zip(x, y):
-                plot_two_color_marker(ax, xi, yi, size=0.02, color1='blue', color2='red')
+                plot_three_color_marker(ax, xi, yi, size=0.02, color1='blue', color2='red', color3='green')
         except ValueError as e:
             print(f"Error while creating spline: {e}")    
     if overpotential:
