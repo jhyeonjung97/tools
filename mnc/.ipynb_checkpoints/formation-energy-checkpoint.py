@@ -65,21 +65,6 @@ hydrogen_G = hydrogen2_G / 2
 oxygen_G = water_G - hydrogen2_G
 hydroxide_G = water_G - hydrogen_G
 
-OH_Cv = 0.042
-OH_TS = 0.066
-OH_ZPE = 0.376
-OH_corr = OH_Cv - OH_TS + OH_ZPE
-
-O_Cv = 0.034
-O_TS = 0.060
-O_ZPE = 0.064
-O_corr = O_Cv - O_TS + O_ZPE
-
-OOH_Cv = 0.077
-OOH_TS = 0.134
-OOH_ZPE = 0.471
-OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
-
 nitrogen2_E = -16.64503942
 nitrogen2_TS = 0.592
 nitrogen2_ZPE = 0.098
