@@ -148,7 +148,7 @@ def plot_smooth_line(x, y, color):
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, 
              rxn, overpotential, ylabel):
     if gibbs_energies.isna().all().all():
-        print("df contains only NaN values, skipping plot.")
+        print("dataframe contains only NaN values, skipping plot.")
         return
     plt.figure(figsize=(4, 3))
     png_filename=f'{row}_{group}{metal}_{rxn}.png'
@@ -172,7 +172,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
         plt.axhline(y=rxn, color='black', linestyle='--', zorder=0)
     plt.xlabel('dz (Å)')
     plt.ylabel(ylabel)
-    plt.yticks(np.arange(0.3, 1.0, 0.1))
+    plt.yticks(np.arange(0.4, 2.1, 0.1))
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     # plt.legend(labelspacing=0.3)
