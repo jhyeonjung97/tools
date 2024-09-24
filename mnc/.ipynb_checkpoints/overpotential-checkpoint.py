@@ -78,6 +78,6 @@ for m, metal in enumerate(metals):
     #                                                      - hydroxide_G)                                                         
 # f'{ms_spin0}->{ms_spin1}'
 
-    if metal == 'Mn':
+    if metal == 'Fe':
         print(energies)
         # print(gibbs_energies)
