@@ -22,6 +22,6 @@ for i in range(6):
     metal = metals[i]
     energies = {}
     for adsorbate in adsorbates:
-        tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv'
+        tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
         energies[adsorbate] = pd.read_csv(tsv_path, sep='\t')
     print(energies)
