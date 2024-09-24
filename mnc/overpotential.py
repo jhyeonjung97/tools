@@ -79,16 +79,15 @@ for m, metal in enumerate(metals):
     gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
     gibbs_energies['dG_OOH'] = gibbs_energies['dG_OH'] + 3.2
                                                                
-    gibbs_energies[steps[0]] = gibbs_energies['dG_OH']
-    gibbs_energies[steps[1]] = gibbs_energies['dG_O'] - gibbs_energies['dG_OH']
-    gibbs_energies[steps[2]] = gibbs_energies['dG_OOH'] - gibbs_energies['dG_O']
-    gibbs_energies[steps[3]] = 4.92 - gibbs_energies['dG_OOH']
+    gibbs_energies['dG1'] = gibbs_energies['dG_OH']
+    gibbs_energies['dG2'] = gibbs_energies['dG_O'] - gibbs_energies['dG_OH']
+    gibbs_energies['dG3'] = gibbs_energies['dG_OOH'] - gibbs_energies['dG_O']
+    gibbs_energies['dG4'] = 4.92 - gibbs_energies['dG_OOH']
 
-    # valid_steps = [gibbs_energies[step] for step in steps if pd.notna(gibbs_energies[step]).all()]
-    # if valid_steps:
-    #     gibbs_energies['OER'] = max(valid_steps) - 1.23
-    # else:
-    #     gibbs_energies['OER'] = None
+    if gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].notna().all().all():
+        gibbs_energies['OER'] = max(gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].max()) - 1.23
+    else:
+        gibbs_energies['OER'] = None
     
     gibbs_energies = gibbs_energies.set_index(energies['clean'].index)
 
@@ -99,4 +98,5 @@ for m, metal in enumerate(metals):
     if metal == 'Mn':
         print(energies)
         gibbs_energies.to_csv('gibbs.tsv', sep='\t', float_format='%.2f')
+        print(gibbs_energies)
         print(spin_cross_over)
