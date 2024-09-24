@@ -68,7 +68,7 @@ for m, metal in enumerate(metals):
         energies[adsorbate]['spin'] = energies[adsorbate]['spin'].apply(
             lambda x: f'MS({x})' if x in ['LS', 'IS', 'HS'] else x)
         
-    gibbs_energies[step1] = (energies['OH']['energy'] + OH_corr)B- energies['clean']['energy'] - hydroxide_G
+    gibbs_energies[step1] = (energies['OH']['energy'] + OH_corr)- energies['clean']['energy'] - hydroxide_G
 
     if metal == 'Mn':
         print(energies)
