@@ -150,16 +150,27 @@ def plotting(gibbs_energies, spin_cross_over, rxn, png_filename, ylabel):
         print("df contains only NaN values, skipping plot.")
         return
     plt.figure(figsize=(4, 3))
-    filtered_df = gibbs_energies['OER'].dropna()
-    if not filtered_df.empty:
-        x = filtered_df.index
-        y = filtered_df.values
-        plt.scatter(x, y)
+    filtered_gibbs_energies = gibbs_energies['OER'].dropna()
+    if not filtered_gibbs_energies.empty:
+        x = filtered_gibbs_energies.index
+        y = filtered_gibbs_energies.values
+        # plt.scatter(x, y)
+        try:
+            x_new = np.linspace(min(x), max(x), 300)
+            if len(x) > 3:
+                spl = make_interp_spline(x, y, k=3)  # Smoothing spline
+            else:
+                spl = make_interp_spline(x, y, k=2)
+            y_smooth = spl(x_new)
+            plt.plot(x_new, y_smooth, color=color, zorder=1)
+            plt.scatter(x, y, marker='s', edgecolors=color, facecolors='white', zorder=2)
+        except ValueError as e:
+            print(f"Error while creating spline")        
     if rxn:
-        plt.axhline(y=rxn, color='blue', linestyle='--', zorder=0)
+        plt.axhline(y=rxn, color='black', linestyle='--', zorder=0)
     plt.xlabel('dz (Å)')
     plt.ylabel(ylabel)
-    plt.yticks(np.arange(0.0, 1.0, 0.1))
+    plt.yticks(np.arange(0.3, 1.0, 0.1))
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     # plt.legend(labelspacing=0.3)
