@@ -85,7 +85,7 @@ for m, metal in enumerate(metals):
     gibbs_energies['dG4'] = 4.92 - gibbs_energies['dG_OOH']
 
     if gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].notna().all().all():
-        gibbs_energies['OER'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].max() - 1.23
+        gibbs_energies['OER'] = max(gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']]) - 1.23
     else:
         gibbs_energies['OER'] = None
         
