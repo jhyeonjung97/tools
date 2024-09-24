@@ -88,7 +88,8 @@ for m, metal in enumerate(metals):
         gibbs_energies['OER'] = max(gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].max()) - 1.23
     else:
         gibbs_energies['OER'] = None
-    
+        
+    gibbs_energies = gibbs_energies.round(2)
     gibbs_energies = gibbs_energies.set_index(energies['clean'].index)
 
     for index in energies['clean'].index:
