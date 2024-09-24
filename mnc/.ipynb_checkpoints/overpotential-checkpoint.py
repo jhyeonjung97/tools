@@ -53,3 +53,4 @@ for m, metal in enumerate(metals):
     
     if metal == 'Mn':
         print(energies)
+        print(gibbs_energies)
