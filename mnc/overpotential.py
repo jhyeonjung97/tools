@@ -6,6 +6,7 @@ from ase.io import read
 from statistics import mean
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.patches import Wedge
 from matplotlib.ticker import FormatStrFormatter
 from scipy.interpolate import make_interp_spline
 
@@ -145,6 +146,15 @@ def plot_smooth_line(x, y, color):
         print(f"Error while creating spline: {e}")
         return None
 
+def plot_two_color_marker(ax, x, y, size, color1, color2):
+    # Plot the left half of the marker
+    left_wedge = Wedge((x, y), size, 90, 270, color=color1, lw=0)
+    ax.add_patch(left_wedge)
+
+    # Plot the right half of the marker
+    right_wedge = Wedge((x, y), size, 270, 90, color=color2, lw=0)
+    ax.add_patch(right_wedge)
+    
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, 
              rxn, overpotential, ylabel):
     if gibbs_energies.isna().all().all():
@@ -164,8 +174,10 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
             else:
                 spl = make_interp_spline(x, y, k=2)
             y_smooth = spl(x_new)
-            plt.plot(x_new, y_smooth, zorder=1)
-            plt.scatter(x, y, marker='s', zorder=2)
+            plt.plot(x_new, y_smooth, color='black', zorder=1)
+            plt.scatter(x, y, color='none', zorder=2)
+            for xi, yi in zip(x, y):
+                plot_two_color_marker(ax, xi, yi, size=0.5, color1='blue', color2='red')
         except ValueError as e:
             print(f"Error while creating spline")        
     if overpotential:
