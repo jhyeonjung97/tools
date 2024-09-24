@@ -17,6 +17,22 @@ adsorbates = ['clean', 'O', 'OH']
 spins = ['LS', 'IS', 'HS']
 colors = ['#ff7f0e', '#279ff2', '#9467bd']
 
+water_E = -14.23797429
+water_Cv = 0.103
+water_TS = 0.675
+water_ZPE = 0.558
+water_G = water_E + water_Cv - water_TS + water_ZPE
+
+hydrogen2_E = -6.77412273
+hydrogen2_Cv = 0.0905
+hydrogen2_TS = 0.408
+hydrogen2_ZPE = 0.273
+hydrogen2_G = hydrogen2_E + hydrogen2_Cv - hydrogen2_TS + hydrogen2_ZPE
+hydrogen_G = hydrogen2_G / 2
+
+oxygen_G = water_G - hydrogen2_G
+hydroxide_G = water_G - hydrogen_G
+
 OH_Cv = 0.042
 OH_TS = 0.066
 OH_ZPE = 0.376
@@ -38,19 +54,30 @@ for m, metal in enumerate(metals):
     group = groups[m]
     energies = {}
     gibbs_energies = {}
+    spin_cross_over = {}
     for adsorbate in adsorbates:
         tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
         energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
         energies[adsorbate] = energies[adsorbate].head(7)
+        energies[adsorbate]['min'] = energies[adsorbate].min(axis=1, skipna=True)
         
-        for spin in spins:
-            if spin in energies[adsorbate].columns:
-                energies[adsorbate] = energies[adsorbate].drop(columns=[spin])
-                
-    for ms_spin0 in energies['clean'].columns:
-        for ms_spin1 in energies['OH'].columns:
-            gibbs_energies[f'{ms_spin0}->{ms_spin1}'] = energies['clean'][ms_spin0] - energies['OH'][ms_spin1]
-    
+        # for spin in spins:
+        #     if spin in energies[adsorbate].columns:
+        #         energies[adsorbate] = energies[adsorbate].drop(columns=[spin])
+
+    # df['min_value'] = df[['col2', 'col3']].min(axis=1, skipna=True)
+
+    # for ms_spin0 in energies['clean'].columns:
+    #     for ms_spin1 in energies['OH'].columns:
+    #         spin_cross_over[steps[0] = 
+
+
+            
+    #         gibbs_energies[step1] = ((energies['OH'][ms_spin1] + OH_corr)
+    #                                                      - energies['clean'][ms_spin0]
+    #                                                      - hydroxide_G)                                                         
+# f'{ms_spin0}->{ms_spin1}'
+
     if metal == 'Mn':
         print(energies)
-        print(gibbs_energies)
+        # print(gibbs_energies)
