@@ -1,8 +1,27 @@
-steps = ['H2O->*OH','*OH->*O', '*O->*OOH', '*OOH->O2']
-metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
+import matplotlib.pyplot as plt
+from ase.io import read
+from statistics import mean
+import glob
+import os
+import pandas as pd
+from scipy.interpolate import make_interp_spline
+import numpy as np
+from matplotlib.lines import Line2D
+from matplotlib.ticker import FormatStrFormatter
 
-path = '/pscratch/sd/j/jiuy97/6_MNC/figure'
-for metal in metals:
-    tsv_file = os.path.join(path, f'{i}_', 'final_with_calculator.json')
-    path_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/0_clean/{row_key}/*_{metal}/*_{spin}'
-    matching_paths = glob.glob(path_pattern)
+steps = ['H2O->*OH','*OH->*O', '*O->*OOH', '*OOH->O2']
+rows = ['3d', '3d', '3d', '3d', '4d', '5d']
+groups = ['5', '6', '7', '8', '4', '4']
+metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
+adsorbates = ['clean', 'O', 'OH']
+
+root = '/pscratch/sd/j/jiuy97/6_MNC/figure'
+for i in range(6):
+    row = rows[i]
+    group = groups[i]
+    metal = metals[i]
+    energies = {}
+    for adsorbate in adsorbates:
+        tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv'
+        energies[adsorbate] = pd.read_csv(tsv_path, sep='\t')
+    print(energies)
