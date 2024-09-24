@@ -60,7 +60,7 @@ for m, metal in enumerate(metals):
         energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
         energies[adsorbate] = energies[adsorbate].head(7)
         energies[adsorbate]['min'] = energies[adsorbate].min(axis=1, skipna=True)
-        energies[adsorbate]['min_column'] = energies[adsorbate].apply(
+        energies[adsorbate]['spin'] = energies[adsorbate].apply(
             lambda row: row.idxmin(skipna=True) if row.notna().any() else None, axis=1
             )
         # for spin in spins:
@@ -80,6 +80,6 @@ for m, metal in enumerate(metals):
     #                                                      - hydroxide_G)                                                         
 # f'{ms_spin0}->{ms_spin1}'
 
-    if metal == 'Fe':
+    if metal == 'Mn':
         print(energies)
         # print(gibbs_energies)
