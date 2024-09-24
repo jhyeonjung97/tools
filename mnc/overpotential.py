@@ -130,8 +130,8 @@ def main():
         
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
                  rxn=OER, ylabel='Energy (eV)')
-        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, 
-                 rxn=ORR, ylabel='Energy (eV)', png_filename=f'{row}_{group}{metal}_ORR.png')
+        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+                 rxn=ORR, ylabel='Energy (eV)')
         
 def plot_smooth_line(x, y, color):
     try:
