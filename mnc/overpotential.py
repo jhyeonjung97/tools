@@ -222,7 +222,8 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     # plt.legend(labelspacing=0.3)
     plt.tight_layout()
-    plt.savefig(png_filename, bbox_inches="tight")
+    plt.savefig(png_filename, bbox_inches=None)
+    plt.tight_layout()
     print(f"Figure saved as {png_filename}")
     plt.close()
 
