@@ -181,6 +181,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     png_filename=f'{row}_{group}{metal}_{rxn}.png'
     marker_size = 0.03
     fig, ax = plt.subplots(figsize=(5, 3))
+    ax.set_aspect('auto')
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
         x = filtered_gibbs_energies.index
@@ -222,8 +223,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     # plt.legend(labelspacing=0.3)
     plt.tight_layout()
-    plt.savefig(png_filename, bbox_inches=None)
-    plt.tight_layout()
+    plt.savefig(png_filename)
     plt.close()
 
 if __name__ == '__main__':
