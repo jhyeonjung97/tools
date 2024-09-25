@@ -154,12 +154,16 @@ def plot_smooth_line(x, y, color):
         print(f"Error while creating spline: {e}")
         return None
 
-def plot_two_color_marker(ax, x, y, size, color1, color2):
+def plot_two_color_marker(ax, x, y, size, color1, color2, data_transform=True):
     lw = 1.0
     edgecolor = 'black'
+    if data_transform:
+        trans = ax.transData
+    else:
+        trans = ax.transAxes
     left_wedge = Wedge((x, y), size, 90, 270, facecolor=color1, edgecolor=edgecolor, lw=lw)
-    ax.add_patch(left_wedge)
     right_wedge = Wedge((x, y), size, 270, 90, facecolor=color2, edgecolor=edgecolor, lw=lw)
+    ax.add_patch(left_wedge)
     ax.add_patch(right_wedge)
 
 def plot_three_color_marker(ax, x, y, size, color0, color1, color2):
