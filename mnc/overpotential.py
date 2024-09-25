@@ -188,7 +188,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
         print("dataframe contains only NaN values, skipping plot.")
         return
     png_filename=f'{row}_{group}{metal}_{rxn}.png'
-    marker_size = 1.0
+    marker_size = 0.02
     fig, ax = plt.subplots(figsize=(4, 3))
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
