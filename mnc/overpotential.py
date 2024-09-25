@@ -181,7 +181,6 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     png_filename=f'{row}_{group}{metal}_{rxn}.png'
     marker_size = 0.03
     fig, ax = plt.subplots(figsize=(5, 3))
-    ax.set_aspect('equal')
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
         x = filtered_gibbs_energies.index
