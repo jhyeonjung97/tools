@@ -193,7 +193,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
                 spl = make_interp_spline(x, y, k=2)
             y_smooth = spl(x_new)
             ax.plot(x_new, y_smooth, color='black', zorder=1)
-            ax.scatter(x, y, color='none', zorder=2)
+            ax.scatter(x, y, s=100, color='none', zorder=2)
             for xi, yi in zip(x, y):
                 color_ = colors[spin_cross_over.loc[xi, 'clean']]
                 color_OH = colors[spin_cross_over.loc[xi, 'OH']]
