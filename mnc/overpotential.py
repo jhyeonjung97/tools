@@ -178,7 +178,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
         print("dataframe contains only NaN values, skipping plot.")
         return
     png_filename=f'{row}_{group}{metal}_{rxn}.png'
-    size = 0.03
+    marker_size = 0.03
     fig, ax = plt.subplots(figsize=(5, 3))
     ax.set_aspect('equal')
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
@@ -201,11 +201,11 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
                 color_OOH = 'white' # colors[spin_cross_over.loc[xi, 'OOH']]
                 dGmax = gibbs_energies.loc[xi, 'dGmax']
                 if dGmax == 'dG1':
-                    plot_two_color_marker(ax, xi, yi, size=size, color1=color_, color2=color_OH)
+                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_, color2=color_OH)
                 elif dGmax == 'dG2':
-                    plot_two_color_marker(ax, xi, yi, size=size, color1=color_OH, color2=color_O)
+                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OH, color2=color_O)
                 elif dGmax == 'dG3':
-                    plot_two_color_marker(ax, xi, yi, size=size, color1=color_O, color2=color_OOH)
+                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_O, color2=color_OOH)
                 elif dGmax == 'dG4':
                     plot_two_color_marker(ax, xi, yi, size=size, color1=color_OOH, color2=color_)
                 # plot_three_color_marker(ax, xi, yi, size=0.05, color0=color0, color1=color1, color2=color2)
