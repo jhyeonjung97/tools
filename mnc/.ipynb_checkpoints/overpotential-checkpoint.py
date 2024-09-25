@@ -137,7 +137,8 @@ def main():
                  rxn='OER', overpotential=OER, ylabel='Energy (eV)')
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
                  rxn='ORR', overpotential=ORR, ylabel='Energy (eV)')
-        
+        print(f"Figure saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
+
 def plot_smooth_line(x, y, color):
     try:
         x_new = np.linspace(min(x), max(x), 300)
@@ -224,7 +225,6 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     plt.tight_layout()
     plt.savefig(png_filename, bbox_inches=None)
     plt.tight_layout()
-    print(f"Figure saved as {png_filename}")
     plt.close()
 
 if __name__ == '__main__':
