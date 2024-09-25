@@ -155,12 +155,8 @@ def plot_smooth_line(x, y, color):
         return None
 
 def plot_two_color_marker(ax, x, y, size, color1, color2):
-    trans = ax.transData.transform
-    inv = ax.transData.inverted().transform
-    scale_x = (trans((1, 0)) - trans((0, 0)))[0]
-    scale_y = (trans((0, 1)) - trans((0, 0)))[1]
-    width = size / scale_x
-    height = size / scale_y
+    width = size / 4
+    height = size / 3
     ellipse_left = Ellipse((x, y), width=width, height=height, angle=0, facecolor=color1, edgecolor='black', lw=1.0)
     ellipse_right = Ellipse((x, y), width=width, height=height, angle=0, facecolor=color2, edgecolor='black', lw=1.0)
     ax.add_patch(ellipse_left)
@@ -192,7 +188,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
         return
     png_filename=f'{row}_{group}{metal}_{rxn}.png'
     marker_size = 0.03
-    fig, ax = plt.subplots(figsize=(4,3))
+    fig, ax = plt.subplots(figsize=(4, 3))
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
         x = filtered_gibbs_energies.index
@@ -233,7 +229,6 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     # plt.legend(labelspacing=0.3)
-    ax.set_aspect('auto')
     plt.tight_layout()
     plt.savefig(png_filename)
     plt.close()
