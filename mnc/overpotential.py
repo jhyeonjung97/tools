@@ -209,7 +209,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
                 elif dGmax == 'dG4':
                     plot_two_color_marker(ax, xi, yi, size=size, color1=color_OOH, color2=color_)
                 # plot_three_color_marker(ax, xi, yi, size=0.05, color0=color0, color1=color1, color2=color2)
-                ax.annotate(dGmax, (xi, yi), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
+                ax.annotate(dGmax, (xi, yi), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
         except ValueError as e:
             print(f"Error while creating spline: {e}")    
     if overpotential:
