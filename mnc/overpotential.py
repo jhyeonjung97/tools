@@ -154,21 +154,24 @@ def plot_smooth_line(x, y, color):
         print(f"Error while creating spline: {e}")
         return None
 
-def plot_two_color_marker(ax, x, y, size, color1, color2):
-    width = size / 4
-    height = size / 3
-    ellipse_left = Ellipse((x, y), width=width, height=height, angle=0, facecolor=color1, edgecolor='black', lw=1.0)
-    ellipse_right = Ellipse((x, y), width=width, height=height, angle=0, facecolor=color2, edgecolor='black', lw=1.0)
-    ax.add_patch(ellipse_left)
-    ax.add_patch(ellipse_right)
+# def plot_two_color_marker(ax, x, y, size, color1, color2, width, height):
+#     lw=1.0
+#     marker_width = size / width
+#     marker_height = size / height
+#     ellipse_left = Ellipse((x, y), width=marker_width, height=marker_height, angle=0, facecolor=color1, edgecolor='black', lw=lw)
+#     ellipse_right = Ellipse((x, y), width=marker_width, height=marker_height, angle=0, facecolor=color2, edgecolor='black', lw=lw)
+#     ax.add_patch(ellipse_left)
+#     ax.add_patch(ellipse_right)
     
-# def plot_two_color_marker(ax, x, y, size, color1, color2):
-#     lw = 1.0
-#     edgecolor = 'black'
-#     left_wedge = Wedge((x, y), size, 90, 270, facecolor=color1, edgecolor=edgecolor, lw=lw)
-#     right_wedge = Wedge((x, y), size, 270, 90, facecolor=color2, edgecolor=edgecolor, lw=lw)
-#     ax.add_patch(left_wedge)
-#     ax.add_patch(right_wedge)
+def plot_two_color_marker(ax, x, y, size, color1, color2, width, height):
+    lw = 1.0
+    edgecolor = 'black'
+    marker_width = size / width
+    marker_height = size / height 
+    left_wedge = Wedge((x, y), width=marker_width, height=marker_height, 90, 270, facecolor=color1, edgecolor=edgecolor, lw=lw)
+    right_wedge = Wedge((x, y), width=marker_width, height=marker_height, 270, 90, facecolor=color2, edgecolor=edgecolor, lw=lw)
+    ax.add_patch(left_wedge)
+    ax.add_patch(right_wedge)
 
 def plot_three_color_marker(ax, x, y, size, color0, color1, color2):
     lw = 1.0
@@ -187,8 +190,9 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
         print("dataframe contains only NaN values, skipping plot.")
         return
     png_filename=f'{row}_{group}{metal}_{rxn}.png'
-    marker_size = 0.03
-    fig, ax = plt.subplots(figsize=(4, 3))
+    width, height = 4, 3
+    marker_size = 0.1
+    fig, ax = plt.subplots(figsize=(width, height))
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
         x = filtered_gibbs_energies.index
@@ -209,13 +213,13 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
                 color_OOH = 'white' # colors[spin_cross_over.loc[xi, 'OOH']]
                 dGmax = gibbs_energies.loc[xi, 'dGmax']
                 if dGmax == 'dG1':
-                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_, color2=color_OH)
+                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_, color2=color_OH, width = width, height = height)
                 elif dGmax == 'dG2':
-                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OH, color2=color_O)
+                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OH, color2=color_O, width = width, height = height)
                 elif dGmax == 'dG3':
-                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_O, color2=color_OOH)
+                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_O, color2=color_OOH, width = width, height = height)
                 elif dGmax == 'dG4':
-                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OOH, color2=color_)
+                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OOH, color2=color_, width = width, height = height)
                 # plot_three_color_marker(ax, xi, yi, size=0.05, color0=color0, color1=color1, color2=color2)
                 ax.annotate(dGmax, (xi, yi), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
         except ValueError as e:
