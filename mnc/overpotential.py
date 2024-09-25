@@ -6,7 +6,7 @@ from ase.io import read
 from statistics import mean
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from matplotlib.patches import Wedge, Rectangle
+from matplotlib.patches import Wedge, Rectangle, Ellipse
 from matplotlib.ticker import FormatStrFormatter
 from scipy.interpolate import make_interp_spline
 
