@@ -190,6 +190,10 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     png_filename=f'{row}_{group}{metal}_{rxn}.png'
     marker_size = 0.03
     fig, ax = plt.subplots(figsize=(4, 3))
+    plt.xlabel('dz (Å)')
+    plt.ylabel(ylabel)
+    plt.ylim(0.0, 2.0)
+    plt.yticks(np.arange(0.0, 2.2, 0.2))
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
         x = filtered_gibbs_energies.index
@@ -223,10 +227,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
             print(f"Error while creating spline: {e}")    
     if overpotential:
         plt.axhline(y=overpotential, color='black', linestyle='--', linewidth=1.0, zorder=0)
-    plt.xlabel('dz (Å)')
-    plt.ylabel(ylabel)
-    plt.ylim(0.0, 2.0)
-    plt.yticks(np.arange(0.0, 2.2, 0.2))
+
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     # plt.legend(labelspacing=0.3)
