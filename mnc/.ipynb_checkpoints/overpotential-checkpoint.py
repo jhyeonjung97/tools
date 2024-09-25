@@ -154,13 +154,9 @@ def plot_smooth_line(x, y, color):
         print(f"Error while creating spline: {e}")
         return None
 
-def plot_two_color_marker(ax, x, y, size, color1, color2, data_transform=True):
+def plot_two_color_marker(ax, x, y, size, color1, color2):
     lw = 1.0
     edgecolor = 'black'
-    if data_transform:
-        trans = ax.transData
-    else:
-        trans = ax.transAxes
     left_wedge = Wedge((x, y), size, 90, 270, facecolor=color1, edgecolor=edgecolor, lw=lw)
     right_wedge = Wedge((x, y), size, 270, 90, facecolor=color2, edgecolor=edgecolor, lw=lw)
     ax.add_patch(left_wedge)
@@ -184,8 +180,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
         return
     png_filename=f'{row}_{group}{metal}_{rxn}.png'
     marker_size = 0.03
-    fig, ax = plt.subplots(figsize=(5, 3))
-    ax.set_aspect('auto')
+    fig, ax = plt.subplots()
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
         x = filtered_gibbs_energies.index
