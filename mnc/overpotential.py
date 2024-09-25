@@ -189,7 +189,8 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
         return
     png_filename=f'{row}_{group}{metal}_{rxn}.png'
     marker_size = 0.03
-    fig, ax = plt.subplots(figsize=(4, 3))
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.set_aspect('equal')
     plt.xlabel('dz (Å)')
     plt.ylabel(ylabel)
     plt.ylim(0.0, 2.0)
