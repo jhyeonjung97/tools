@@ -167,7 +167,7 @@ def plot_two_color_marker(ax, x, y, size, color1, color2):
     lw = 1.0
     edgecolor = 'black'
     left_wedge = Wedge((x, y), size, 90, 270, facecolor=color1, edgecolor=edgecolor, lw=lw)
-    right_wedge = Wedge((x, y), size, height=marker_height, 270, 90, facecolor=color2, edgecolor=edgecolor, lw=lw)
+    right_wedge = Wedge((x, y), size, 270, 90, facecolor=color2, edgecolor=edgecolor, lw=lw)
     ax.add_patch(left_wedge)
     ax.add_patch(right_wedge)
 
