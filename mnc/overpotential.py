@@ -225,8 +225,8 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
         plt.axhline(y=overpotential, color='black', linestyle='--', linewidth=1.0, zorder=0)
     plt.xlabel('dz (Å)')
     plt.ylabel(ylabel)
-    plt.ylim(0.4, 1.6)
-    plt.yticks(np.arange(0.4, 1.7, 0.1))
+    plt.ylim(0.0, 2.0)
+    plt.yticks(np.arange(0.0, 2.2, 0.2))
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     # plt.legend(labelspacing=0.3)
