@@ -154,7 +154,7 @@ def plot_smooth_line(x, y, color):
         return None
 
 def plot_two_color_marker(ax, x, y, size, color1, color2):
-    lw = 0.5
+    lw = 1.0
     edgecolor = 'black'
     left_wedge = Wedge((x, y), size, 90, 270, facecolor=color1, edgecolor=edgecolor, lw=lw)
     ax.add_patch(left_wedge)
@@ -162,7 +162,7 @@ def plot_two_color_marker(ax, x, y, size, color1, color2):
     ax.add_patch(right_wedge)
 
 def plot_three_color_marker(ax, x, y, size, color0, color1, color2):
-    lw = 0.5
+    lw = 1.0
     edgecolor = 'black'
     section_width = size / 3
     left_rect = Rectangle((x - size/2, y - size/2), section_width, size, facecolor=color0, edgecolor=edgecolor, lw=lw)
@@ -178,7 +178,8 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
         print("dataframe contains only NaN values, skipping plot.")
         return
     png_filename=f'{row}_{group}{metal}_{rxn}.png'
-    fig, ax = plt.subplots(figsize=(4, 3))
+    size = 0.03
+    fig, ax = plt.subplots(figsize=(5, 3))
     ax.set_aspect('equal')
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
@@ -200,13 +201,13 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
                 color_OOH = 'white' # colors[spin_cross_over.loc[xi, 'OOH']]
                 dGmax = gibbs_energies.loc[xi, 'dGmax']
                 if dGmax == 'dG1':
-                    plot_two_color_marker(ax, xi, yi, size=0.02, color1=color_, color2=color_OH)
+                    plot_two_color_marker(ax, xi, yi, size=size, color1=color_, color2=color_OH)
                 elif dGmax == 'dG2':
-                    plot_two_color_marker(ax, xi, yi, size=0.02, color1=color_OH, color2=color_O)
+                    plot_two_color_marker(ax, xi, yi, size=size, color1=color_OH, color2=color_O)
                 elif dGmax == 'dG3':
-                    plot_two_color_marker(ax, xi, yi, size=0.02, color1=color_O, color2=color_OOH)
+                    plot_two_color_marker(ax, xi, yi, size=size, color1=color_O, color2=color_OOH)
                 elif dGmax == 'dG4':
-                    plot_two_color_marker(ax, xi, yi, size=0.02, color1=color_OOH, color2=color_)
+                    plot_two_color_marker(ax, xi, yi, size=size, color1=color_OOH, color2=color_)
                 # plot_three_color_marker(ax, xi, yi, size=0.05, color0=color0, color1=color1, color2=color2)
                 ax.annotate(dGmax, (xi, yi), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
         except ValueError as e:
