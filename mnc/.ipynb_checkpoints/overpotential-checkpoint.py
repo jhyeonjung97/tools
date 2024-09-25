@@ -154,24 +154,24 @@ def plot_smooth_line(x, y, color):
         print(f"Error while creating spline: {e}")
         return None
 
-# def plot_two_color_marker(ax, x, y, size, color1, color2, width, height):
-#     lw=1.0
-#     marker_width = size / width
-#     marker_height = size / height
-#     ellipse_left = Ellipse((x, y), width=marker_width, height=marker_height, angle=0, facecolor=color1, edgecolor='black', lw=lw)
-#     ellipse_right = Ellipse((x, y), width=marker_width, height=marker_height, angle=0, facecolor=color2, edgecolor='black', lw=lw)
-#     ax.add_patch(ellipse_left)
-#     ax.add_patch(ellipse_right)
-    
 def plot_two_color_marker(ax, x, y, size, color1, color2, width, height):
     lw = 1.0
-    edgecolor = 'black'
     marker_width = size / width
-    marker_height = size / height 
-    left_wedge = Wedge((x, y), width=marker_width, height=marker_height, 90, 270, facecolor=color1, edgecolor=edgecolor, lw=lw)
-    right_wedge = Wedge((x, y), width=marker_width, height=marker_height, 270, 90, facecolor=color2, edgecolor=edgecolor, lw=lw)
-    ax.add_patch(left_wedge)
-    ax.add_patch(right_wedge)
+    marker_height = size / height
+    ellipse_left = Ellipse((x, y), width=marker_width, height=marker_height, angle=0, facecolor=color1, edgecolor='black', lw=lw)
+    ellipse_right = Ellipse((x, y), width=marker_width, height=marker_height, angle=90, facecolor=color2, edgecolor='black', lw=lw)
+    ax.add_patch(ellipse_left)
+    ax.add_patch(ellipse_right)
+    
+# def plot_two_color_marker(ax, x, y, size, color1, color2, width, height):
+#     lw = 1.0
+#     edgecolor = 'black'
+#     marker_width = size / width
+#     marker_height = size / height 
+#     left_wedge = Wedge((x, y), width=marker_width, height=marker_height, 90, 270, facecolor=color1, edgecolor=edgecolor, lw=lw)
+#     right_wedge = Wedge((x, y), width=marker_width, height=marker_height, 270, 90, facecolor=color2, edgecolor=edgecolor, lw=lw)
+#     ax.add_patch(left_wedge)
+#     ax.add_patch(right_wedge)
 
 def plot_three_color_marker(ax, x, y, size, color0, color1, color2):
     lw = 1.0
