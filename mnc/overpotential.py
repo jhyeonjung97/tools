@@ -168,9 +168,9 @@ def main():
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn='OER', rds='dGmax', overpotential=OER, ylabel='OER overpotential (eV)')
+                 rxn='OER', rds='dGmax', overpotential=OER)
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn='ORR', rds='dGmin', overpotential=ORR, ylabel='ORR overpotential (eV)')
+                 rxn='ORR', rds='dGmin', overpotential=ORR)
         print(f"Figure saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
     
     scaling_relationship['G_'] = scaling_relationship['G_']
@@ -223,10 +223,10 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     yy = [y1, y2, y3, y4]
     for i in range(4):
         plt.figure(figsize=(4, 3))
-        plt.scatter(scaling_relationship[f'dG{i+1}'], yy[i], color='black', s=20)
-        for xi, yi, metal in zip(scaling_relationship[f'dG{i+1}'], yy[i], metals):
+        plt.scatter(x, yy[i], color='black', s=20)
+        for xi, yi, metal in zip(x, yy[i], metals):
             plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
-        coeffs[i] = np.polyfit(scaling_relationship[f'dG{i+1}'], yy[i], 1)
+        coeffs[i] = np.polyfit(x, yy[i], 1)
         l[i] = np.poly1d(coeffs[i])
         equation = f'y = {coeffs[i][0]:.2f}x + {coeffs[i][1]:.2f}'
         plt.plot(xx, l[i](xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
@@ -297,7 +297,7 @@ def plot_three_color_marker(ax, x, y, size, color0, color1, color2):
     ax.add_patch(right_rect)
     
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, 
-             rxn, rds, overpotential, ylabel):
+             rxn, rds, overpotential):
     if gibbs_energies.isna().all().all():
         print("dataframe contains only NaN values, skipping plot.")
         return
@@ -305,7 +305,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     marker_size = 0.03
     fig, ax = plt.subplots(figsize=(4, 3))
     plt.xlabel('dz (Å)')
-    plt.ylabel(ylabel)
+    plt.ylabel(f'{rxn} overpotential (eV)')
     plt.ylim(0.0, 2.0)
     plt.yticks(np.arange(0.0, 2.2, 0.2))
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
