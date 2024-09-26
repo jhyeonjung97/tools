@@ -209,21 +209,35 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel):
         y2 = -(1.23 - scaling_relationship['dG2'])
         y3 = -(1.23 - scaling_relationship['dG3'])
         y4 = -(1.23 - scaling_relationship['dG4'])
-    plt.plot(x, y1, label='dG1', linestyle='--', color='blue')
-    # plt.plot(x, y2, label='dG2', linestyle='--', color='green')
-    # plt.plot(x, y3, label='dG3', linestyle='--', color='red')
-    # plt.plot(x, y4, label='dG4', linestyle='--', color='purple')
-    plt.scatter(x, y1)
-    # plt.scatter(x, y2)
-    # plt.scatter(x, y3)
-    # plt.scatter(x, y4)
-    plt.scatter(x, y)
+        
+    # Perform linear regression for each y value
+    z1 = np.polyfit(x, y1, 1)  # Degree 1 for linear fit
+    z2 = np.polyfit(x, y2, 1)
+    z3 = np.polyfit(x, y3, 1)
+    z4 = np.polyfit(x, y4, 1)
+
+    # Generate fitted y values for the linear trendline
+    p1 = np.poly1d(z1)
+    p2 = np.poly1d(z2)
+    p3 = np.poly1d(z3)
+    p4 = np.poly1d(z4)
+
+    # Plot the linear trendlines
+    plt.plot(x, p1(x), label='dG1 (trend)', linestyle='-', color='blue')
+    plt.plot(x, p2(x), label='dG2 (trend)', linestyle='-', color='green')
+    plt.plot(x, p3(x), label='dG3 (trend)', linestyle='-', color='red')
+    plt.plot(x, p4(x), label='dG4 (trend)', linestyle='-', color='purple')
+
+    # Scatter plot for rxn activity points
+    plt.scatter(x, y, color='black', zorder=3, label=f'{rxn} activity')
+    
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.tight_layout()
     plt.savefig(f'volcano_{rxn}.png')
+    plt.legend()
     plt.close()
     
 def plot_smooth_line(x, y, color):
