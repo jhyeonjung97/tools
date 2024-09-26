@@ -163,11 +163,11 @@ def main():
         spin_cross_over.to_csv(f'{row}_{group}{metal}_spin.tsv', sep='\t')
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
-        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn='OER', rds='dGmax', overpotential=OER, ylabel='Energy (eV)')
-        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn='ORR', rds='dGmin', overpotential=ORR, ylabel='Energy (eV)')
-        print(f"Figure saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
+        # plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+        #          rxn='OER', rds='dGmax', overpotential=OER, ylabel='Energy (eV)')
+        # plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+        #          rxn='ORR', rds='dGmin', overpotential=ORR, ylabel='Energy (eV)')
+        # print(f"Figure saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
 
     scaling_relationship['dG_OH'] = scaling_relationship['G_OH'] - scaling_relationship['G_'] - hydroxide_G
     scaling_relationship['dG_O'] = scaling_relationship['G_O'] - scaling_relationship['G_'] - oxygen_G
@@ -197,7 +197,9 @@ def volcano(rxn, xlabel, x, y, dGrds):
     plt.figure(figsize=(4, 3))
     plt.xlabel(xlabel)
     plt.ylabel(f'{rxn} overpotential (eV)')
-    plt.scatter(x, y)
+    plt.scatter(x, y, color='blue', edgecolors='black', s=100, zorder=2)  # Customizing scatter plot
+    for i, (xi, yi, dG) in enumerate(zip(x, y, dGrds)):
+        plt.annotate(dG, (xi, yi), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
     plt.annotate(dGrds, (x, y), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
