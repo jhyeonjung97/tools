@@ -215,7 +215,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     l3 = np.poly1d(np.polyfit(x, y3, 1))
     l4 = np.poly1d(np.polyfit(x, y4, 1))
     x_extended = np.linspace(xmin, xmax, 10)
-    plt.plot(x_extended, l1(x_extended), label='dG1 (trend)', linestyle='-', color='#A8E6A1')
+    plt.plot(x_extended, l1(x_extended), label='dG1 (trend)', linestyle='-', color='#A8E6A1') # 
     plt.plot(x_extended, l2(x_extended), label='dG2 (trend)', linestyle='-', color='#FFC3BD')
     plt.plot(x_extended, l3(x_extended), label='dG3 (trend)', linestyle='-', color='#FFD92F')
     plt.plot(x_extended, l4(x_extended), label='dG4 (trend)', linestyle='-', color='#A0C8F8')
@@ -226,9 +226,9 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
+    plt.legend()
     plt.tight_layout()
     plt.savefig(f'volcano_{rxn}.png')
-    plt.legend()
     plt.close()
     
 def plot_smooth_line(x, y, color):
