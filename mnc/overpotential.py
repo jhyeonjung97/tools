@@ -188,6 +188,8 @@ def main():
         scaling_relationship['ORR'] = None
         scaling_relationship['dGmax'] = None
         scaling_relationship['dGmin'] = None
+
+    scaling_relationship.to_csv('scaling_relationships.tsv', sep='\t', float_format='%.2f')
             
 def plot_smooth_line(x, y, color):
     try:
