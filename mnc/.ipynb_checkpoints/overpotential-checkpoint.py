@@ -133,11 +133,17 @@ def main():
         dG3 = dG_OOH - dG_O
         dG4 = 4.92 - dG_OOH
         
-        gibbs_energies['OER'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].max(axis=1) - 1.23
-        gibbs_energies['ORR'] = 1.23 - gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].min(axis=1)
-        gibbs_energies['dGmax'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].idxmax(axis=1)
-        gibbs_energies['dGmin'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
-
+        if gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].notna().all().all():
+            gibbs_energies['OER'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].max(axis=1) - 1.23
+            gibbs_energies['ORR'] = 1.23 - gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].min(axis=1)
+            gibbs_energies['dGmax'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].idxmax(axis=1)
+            gibbs_energies['dGmin'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
+        else:
+            gibbs_energies['OER'] = None
+            gibbs_energies['ORR'] = None
+            gibbs_energies['dGmax'] = None
+            gibbs_energies['dGmin'] = None
+            
         if all([dG1 is not None, dG2 is not None, dG3 is not None, dG4 is not None]):
             OER = max(dG1, dG2, dG3, dG4) - 1.23
             ORR = 1.23 - min(dG1, dG2, dG3, dG4)
@@ -162,9 +168,9 @@ def main():
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn='OER', rds='dGmax', overpotential=OER, ylabel='Energy (eV)')
+                 rxn='OER', rds='dGmax', overpotential=OER, ylabel='OER overpotential (eV)')
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn='ORR', rds='dGmin', overpotential=ORR, ylabel='Energy (eV)')
+                 rxn='ORR', rds='dGmin', overpotential=ORR, ylabel='ORR overpotential (eV)')
         print(f"Figure saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
     
     scaling_relationship['G_'] = scaling_relationship['G_']
