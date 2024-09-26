@@ -207,11 +207,13 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         y2 = -(1.23 - scaling_relationship['dG2'])
         y3 = -(1.23 - scaling_relationship['dG3'])
         y4 = -(1.23 - scaling_relationship['dG4'])
+    yy = [y1, y2, y3, y4]
     l = {}
     for i in range(4):
-        l[i] = np.poly1d(np.polyfit(x, f'y{i+1}', 1))
-    x_extended = np.linspace(xmin, xmax, 10)
+        l[i] = np.poly1d(np.polyfit(x, yy[i], 1))
+        
     plt.figure(figsize=(4, 3))
+    x_extended = np.linspace(xmin, xmax, 10)
     for i in range(4):
         plt.plot(x_extended, l[i](x_extended), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
     plt.scatter(x, y, color='black', s=20, zorder=3)
