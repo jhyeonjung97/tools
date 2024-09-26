@@ -217,8 +217,8 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     x_extended = np.linspace(xmin, xmax, 10)
     plt.plot(x_extended, l1(x_extended), label='dG1 (trend)', linestyle='-', color='#A8E6A1')
     plt.plot(x_extended, l2(x_extended), label='dG2 (trend)', linestyle='-', color='#FFC3BD')
-    plt.plot(x_extended, l3(x_extended), label='dG3 (trend)', linestyle='-', color='#A0C8F8')
-    plt.plot(x_extended, l4(x_extended), label='dG4 (trend)', linestyle='-', color='#FFD92F')
+    plt.plot(x_extended, l3(x_extended), label='dG3 (trend)', linestyle='-', color='#FFD92F')
+    plt.plot(x_extended, l4(x_extended), label='dG4 (trend)', linestyle='-', color='#A0C8F8')
     plt.scatter(x, y, color='black', s=20, zorder=3)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
