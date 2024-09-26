@@ -66,7 +66,7 @@ def main():
             energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
             relaxed_energies[adsorbate] = energies[adsorbate].iloc[7:].copy()
             for column in relaxed_energies[adsorbate].columns:
-                if relaxed_energies[adsorbate][column].isna().all():
+                if relaxed_energies[adsorbate][column].isna().all() and not energies[adsorbate][column].isna().all():
                     relaxed_min = energies[adsorbate][column].min()
                     relaxed_dz = energies[adsorbate][column].idxmin()
                     relaxed_energies[adsorbate].at[relaxed_dz, column] = relaxed_min
