@@ -65,12 +65,13 @@ def main():
             tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
             energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
             relaxed_energies[adsorbate] = energies[adsorbate].iloc[7:].copy()
-            print(relaxed_energies[adsorbate])
             for column in relaxed_energies[adsorbate].columns:
                 if relaxed_energies[adsorbate][column].isna().all():
                     relaxed_min = energies[adsorbate][column].min()
                     relaxed_dz = energies[adsorbate][column].idxmin()
                     relaxed_energies[adsorbate].at[relaxed_dz, column] = relaxed_min
+            print(relaxed_energies[adsorbate])
+
             energies[adsorbate] = energies[adsorbate].head(7)
             # for spin in spins:
             #     if spin in energies[adsorbate].columns:
