@@ -198,11 +198,10 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel):
     plt.xlabel(xlabel)
     plt.ylabel(f'{rxn} overpotential (eV)')
     x = scaling_relationship[descriptor]
-    y = scaling_relationship[rxn]
-    z = scaling_relationship[rds]    
+    y = -scaling_relationship[rxn]
     plt.scatter(x, y, zorder=2)
-    for xi, yi, zi in zip(x, y, z):
-        plt.annotate(f'{zi}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
+    for xi, yi, metal in zip(x, y, metals):
+        plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.tight_layout()
