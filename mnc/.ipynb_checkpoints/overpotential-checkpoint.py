@@ -209,6 +209,8 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel):
         y2 = -(1.23 - scaling_relationship['dG2'])
         y3 = -(1.23 - scaling_relationship['dG3'])
         y4 = -(1.23 - scaling_relationship['dG4'])
+
+    print(y1, y2, y3, y4)
     plt.plot(x, y1, label='dG1', linestyle='--', color='blue')
     plt.plot(x, y2, label='dG2', linestyle='--', color='green')
     plt.plot(x, y3, label='dG3', linestyle='--', color='red')
