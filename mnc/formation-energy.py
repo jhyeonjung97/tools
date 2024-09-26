@@ -605,13 +605,10 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             else:
                 df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
                 
-    non_nan_indices = df_smooth_y.dropna(how='all').index  # Indexes of rows with at least one non-NaN value
+    min_non_nan_index = df.dropna(how='all').index[0]  # This gets the first non-NaN index
+    print(f"Minimum index with non-NaN value: {min_non_nan_index}")
 
-    if len(non_nan_indices) > 0:
-        min_non_nan_index = non_nan_indices.min()  # Get the minimum index (first non-NaN index)
-        print(f"Minimum index with non-NaN value: {min_non_nan_index}")
-    else:
-        print("No non-NaN values found in the DataFrame.")
+
     
     
     df_smooth_y = df_smooth_y.dropna(how='all')
