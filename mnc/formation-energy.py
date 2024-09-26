@@ -610,19 +610,21 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         print("min_columns is empty, skipping plot.")
         return
     
-    # Drop rows where any value is NaN and check if the DataFrame is empty
-    non_nan_df = df.dropna(how='any')
+    # Drop rows where less than two columns have non-NaN values
+    df_smooth_y = df_smooth_y[df_smooth_y.count(axis=1) >= 2]
 
-    if non_nan_df.empty:
-        print("All rows contain NaN values, skipping plot.")
+    if df_smooth_y.empty:
+        print("All rows contain fewer than two non-NaN values, skipping plot.")
         plt.close()  # Explicitly close the figure before returning
-        return  # Exit the function if no rows are left after dropping NaNs
+        return
 
-    # Now, safely access the first and last index
-    min_non_nan_index = non_nan_df.index[0]
-    max_non_nan_index = non_nan_df.index[-1]
+    # Get min and max non-NaN indices based on df_smooth_y
+    min_non_nan_index = df_smooth_y.index[0]
+    max_non_nan_index = df_smooth_y.index[-1]
 
-    x_new = np.linspace(min_non_nan_index, max_non_nan_index, len(min_values))
+    # Normalize x_new to fit into the actual dz range
+    x_new = np.linspace(min_non_nan_index, max_non_nan_index, len(df_smooth_y))
+
     if 'eV' in ylabel:
         start_idx = 0
         current_column = min_columns[0]
