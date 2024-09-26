@@ -189,8 +189,22 @@ def main():
         scaling_relationship['dGmax'] = None
         scaling_relationship['dGmin'] = None
 
-    scaling_relationship.to_csv('scaling_relationships.tsv', sep='\t', float_format='%.2f')
-            
+    scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
+    volcano(rxn='OER', xlabel='dG2 (dG_O - dG_OH)', 
+            x=scaling_relationship['dG2'], y=scaling_relationship['OER'], z=scaling_relationship['dGmax'])
+    
+def volcano(rxn, xlabel, x, y):
+    plt.figure(figsize=(4, 3))
+    plt.xlabel(xlabel)
+    plt.ylabel(f'{rxn} overpotential (eV)')
+    plt.scatter(x, y)
+    plt.annotate(z, (x, y), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
+    plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    plt.tight_layout()
+    plt.savefig(f'volcano_{rxn}.png')
+    plt.close()
+    
 def plot_smooth_line(x, y, color):
     try:
         x_new = np.linspace(min(x), max(x), 300)
@@ -286,12 +300,8 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     plt.tight_layout()
     plt.savefig(png_filename)
     plt.close()
-
-# def scaling_relation(gibbs_energies, spin_cross_over, row, group, metal,
-#                      rxn, overpotential, ylabel):
     
-# def volcano(gibbs_energies, spin_cross_over, row, group, metal,
-#             rxn, overpotential, ylabel):
+
     
 if __name__ == '__main__':
     main()
