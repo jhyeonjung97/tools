@@ -86,7 +86,8 @@ def main():
                 non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
                 scaling_min = non_ms_data.min().min()
                 scaling_dz = non_ms_data.stack().idxmin()[0]
-            scaling_relationship[adsorbate] = pd.DataFrame()
+            if adsorbate not in scaling_relationship:
+                scaling_relationship[adsorbate] = pd.DataFrame()
             scaling_relationship[adsorbate].at[scaling_dz, metal] = scaling_min
             
             energies[adsorbate] = energies[adsorbate].head(7)
