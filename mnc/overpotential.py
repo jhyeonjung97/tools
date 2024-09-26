@@ -169,12 +169,26 @@ def main():
                  rxn='ORR', overpotential=ORR, ylabel='Energy (eV)')
         print(f"Figure saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
 
-    scaling_relationship['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
-    gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
-    gibbs_energies['dG_OOH'] = gibbs_energies['dG_OH'] + 3.2
+    scaling_relationship['dG_OH'] = scaling_relationship['G_OH'] - scaling_relationship['G_'] - hydroxide_G
+    scaling_relationship['dG_O'] = scaling_relationship['G_O'] - scaling_relationship['G_'] - oxygen_G
+    scaling_relationship['dG_OOH'] = scaling_relationship['dG_OH'] + 3.2
 
-
-
+    scaling_relationship['dG1'] = scaling_relationship['dG_OH']
+    scaling_relationship['dG2'] = scaling_relationship['dG_O'] - scaling_relationship['dG_OH']
+    scaling_relationship['dG3'] = scaling_relationship['dG_OOH'] - scaling_relationship['dG_O']
+    scaling_relationship['dG4'] = 4.92 - scaling_relationship['dG_OOH']
+    
+    if scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].notna().all().all():
+        scaling_relationship['OER'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].max(axis=1) - 1.23
+        scaling_relationship['ORR'] = 1.23 - scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].min(axis=1)
+        scaling_relationship['dGmax'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmax(axis=1)
+        scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
+    else:
+        scaling_relationship['OER'] = None
+        scaling_relationship['ORR'] = None
+        scaling_relationship['dGmax'] = None
+        scaling_relationship['dGmin'] = None
+            
 def plot_smooth_line(x, y, color):
     try:
         x_new = np.linspace(min(x), max(x), 300)
