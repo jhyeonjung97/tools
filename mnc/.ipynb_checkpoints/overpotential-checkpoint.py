@@ -163,15 +163,15 @@ def main():
             # spin_cross_over.loc[index, ORRs[2]] = f"{energies['O']['spin'].loc[index]}->{energies['OH']['spin'].loc[index]}"
             # spin_cross_over.loc[index, ORRs[3]] = f"{energies['OH']['spin'].loc[index]}->{energies['clean']['spin'].loc[index]}"
         
-        # gibbs_energies.to_csv(f'{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
-        # spin_cross_over.to_csv(f'{row}_{group}{metal}_spin.tsv', sep='\t')
-        # print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
+        gibbs_energies.to_csv(f'{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
+        spin_cross_over.to_csv(f'{row}_{group}{metal}_spin.tsv', sep='\t')
+        print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
-        # plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-        #          rxn='OER', rds='dGmax', overpotential=OER, ylabel='Energy (eV)')
-        # plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-        #          rxn='ORR', rds='dGmin', overpotential=ORR, ylabel='Energy (eV)')
-        # print(f"Figure saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
+        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+                 rxn='OER', rds='dGmax', overpotential=OER, ylabel='Energy (eV)')
+        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+                 rxn='ORR', rds='dGmin', overpotential=ORR, ylabel='Energy (eV)')
+        print(f"Figure saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
     
     scaling_relationship['G_'] = scaling_relationship['G_']
     scaling_relationship['G_OH'] = scaling_relationship['G_OH'] + OH_corr
