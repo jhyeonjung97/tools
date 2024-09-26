@@ -609,8 +609,18 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     if len(min_columns) == 0:
         print("min_columns is empty, skipping plot.")
         return
-    min_non_nan_index = df.dropna(how='any').index[0]
-    max_non_nan_index = df.dropna(how='any').index[-1]
+    
+    # Drop rows where any value is NaN and check if the DataFrame is empty
+    non_nan_df = df.dropna(how='any')
+
+    if non_nan_df.empty:
+        print("All rows contain NaN values, skipping plot.")
+        return  # Exit the function if no rows are left after dropping NaNs
+
+    # Now, safely access the first and last index
+    min_non_nan_index = non_nan_df.index[0]
+    max_non_nan_index = non_nan_df.index[-1]
+
     x_new = np.linspace(min_non_nan_index, max_non_nan_index, len(min_values))
     if 'eV' in ylabel:
         start_idx = 0
