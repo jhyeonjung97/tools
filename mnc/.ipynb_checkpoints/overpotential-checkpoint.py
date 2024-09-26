@@ -90,9 +90,9 @@ def main():
                 tag = ''
             else:
                 tag = adsorbate
-            scaling_relationship.at[metal, f'dz_{tag}'] = scaling_dz
             scaling_relationship.at[metal, f'G_{tag}'] = scaling_min
-            
+            scaling_relationship.at[metal, f'dz_{tag}'] = scaling_dz
+
             energies[adsorbate] = energies[adsorbate].head(7)
             # for spin in spins:
             #     if spin in energies[adsorbate].columns:
@@ -295,4 +295,3 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     
 if __name__ == '__main__':
     main()
-    print(scaling_relationship)
