@@ -610,7 +610,9 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         print("min_columns is empty, skipping plot.")
         return
     stable_dz = df_smooth_y.index.to_numpy()
-    x_new = np.linspace(min(stable_dz)/1.2, max(stable_dz)/1.2, 300)
+    x_new = np.linspace(min(stable_dz)/1.2, max(stable_dz)/1.2, len(min_values))
+    print(x_new)
+    print(min_values)
     if 'eV' in ylabel:
         start_idx = 0
         current_column = min_columns[0]
