@@ -195,6 +195,8 @@ def main():
             xmin=-1.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
+    x = scaling_relationship[descriptor]
+    y = -scaling_relationship[rxn]
     if rxn == 'OER':
         y1 = -(scaling_relationship['dG1'] - 1.23)
         y2 = -(scaling_relationship['dG2'] - 1.23)
@@ -212,8 +214,6 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.figure(figsize=(4, 3))
     for i in range(4):
         plt.plot(x_extended, l[i](x_extended), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
-    x = scaling_relationship[descriptor]
-    y = -scaling_relationship[rxn]
     plt.scatter(x, y, color='black', s=20, zorder=3)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
