@@ -604,6 +604,10 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                 plt.scatter(x, y, marker='x', color=ms_spins.get(column, 'black'), zorder=5)
             else:
                 df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
+    df_smooth_y = df_smooth_y.dropna(how='all')
+    if df_smooth_y.empty:
+        print("df_smooth_y contains only NaN values after filtering, skipping plot.")
+        return
     min_values = df_smooth_y.min(axis=1).to_numpy()
     min_columns = df_smooth_y.idxmin(axis=1).to_numpy()
     if len(min_columns) == 0:
