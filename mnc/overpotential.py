@@ -199,7 +199,21 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel):
     plt.ylabel(f'{rxn} activity (-Ƞ, eV)')
     x = scaling_relationship[descriptor]
     y = -scaling_relationship[rxn]
-    plt.scatter(x, y, zorder=2)
+    if rxn = 'OER':
+        y1 = -(scaling_relationship['dG1'] - 1.23)
+        y2 = -(scaling_relationship['dG2'] - 1.23)
+        y3 = -(scaling_relationship['dG3'] - 1.23)
+        y4 = -(scaling_relationship['dG4'] - 1.23)
+    elif rxn = 'ORR':
+        y1 = -(1.23 - scaling_relationship['dG1'])
+        y2 = -(1.23 - scaling_relationship['dG2'])
+        y3 = -(1.23 - scaling_relationship['dG3'])
+        y4 = -(1.23 - scaling_relationship['dG4'])
+    plt.plot(x, y1, label='dG1', linestyle='--', color='blue')
+    plt.plot(x, y2, label='dG2', linestyle='--', color='green')
+    plt.plot(x, y3, label='dG3', linestyle='--', color='red')
+    plt.plot(x, y4, label='dG4', linestyle='--', color='purple')
+    plt.scatter(x, y)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
