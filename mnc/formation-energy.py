@@ -604,24 +604,14 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                 plt.scatter(x, y, marker='x', color=ms_spins.get(column, 'black'), zorder=5)
             else:
                 df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
-                
-    min_non_nan_index = df.dropna(how='all').index[0]  # This gets the first non-NaN index
-    print(f"Minimum index with non-NaN value: {min_non_nan_index}")
-
-
-    
-    
-    df_smooth_y = df_smooth_y.dropna(how='all')
-    if df_smooth_y.empty:
-        print("df_smooth_y contains only NaN values after filtering, skipping plot.")
-        return
     min_values = df_smooth_y.min(axis=1).to_numpy()
     min_columns = df_smooth_y.idxmin(axis=1).to_numpy()
     if len(min_columns) == 0:
         print("min_columns is empty, skipping plot.")
         return
-    stable_dz = df_smooth_y.index.to_numpy()
-    x_new = np.linspace(min(stable_dz)/300*1.2, max(stable_dz)/300*1.2, len(min_values))
+    min_non_nan_index = df.dropna(how='all').index[0]
+    max_non_nan_index = df.dropna(how='all').index[-1]
+    x_new = np.linspace(min_non_nan_index, max_non_nan_index, len(min_values))
     if 'eV' in ylabel:
         start_idx = 0
         current_column = min_columns[0]
