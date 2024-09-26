@@ -202,7 +202,7 @@ def main():
     scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
     volcano(scaling_relationship, rxn='OER', rds='dGmax',
             descriptor='dG2', xlabel='dG2 (dG_O - dG_OH)', 
-            xmin=0.0, xmax=4.0, ymin=-4.0, ymax=1.0)
+            xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
     x = scaling_relationship[descriptor]
@@ -217,14 +217,13 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         y2 = -(1.23 - scaling_relationship['dG2'])
         y3 = -(1.23 - scaling_relationship['dG3'])
         y4 = -(1.23 - scaling_relationship['dG4'])
-    yy = [y1, y2, y3, y4]
     l = {}
-    for i in range(4):
-        l[i] = np.poly1d(np.polyfit(x, yy[i], 1))
-    xx = np.linspace(xmin, xmax, 10)
+    xx = np.linspace(xmin, xmax, 100)
+    yy = [y1, y2, y3, y4]
     for i in range(4):
         plt.figure(figsize=(4, 3))
-        plt.scatter(x, y, color='black', s=20, zorder=3)
+        plt.scatter(x, yy[i], color='black', s=20, zorder=3)
+        l[i] = np.poly1d(np.polyfit(x, yy[i], 1))
         plt.plot(xx, l[i](xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
         plt.savefig(f'scaling_relationship_{rxn}{i}.png')
         plt.close()
