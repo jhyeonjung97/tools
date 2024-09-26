@@ -233,6 +233,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         plt.text(0.05, 0.95 - i*0.1, equation, transform=plt.gca().transAxes, fontsize=10, color=colors[i])
         plt.xlabel(xlabel)
         plt.ylabel(f'dG{i+1} (eV)')
+        plt.tight_layout()
         plt.savefig(f'scaling_relationship_{rxn}{i}.png')
         plt.close()
     plt.figure(figsize=(4, 3))
