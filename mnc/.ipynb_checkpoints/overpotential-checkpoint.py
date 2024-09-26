@@ -270,4 +270,6 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     
 if __name__ == '__main__':
     main()
-    print(scaling_relationship)
+    print(scaling_relationship['clean'])
+    print(scaling_relationship['O'])
+    print(scaling_relationship['OH'])
