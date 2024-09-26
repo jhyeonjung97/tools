@@ -52,7 +52,7 @@ OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 
 root = '/pscratch/sd/j/jiuy97/6_MNC/figure'
 relaxed_energies = {}
-scaling_relationship = pd.DataFrame()
+scaling_relationship = {}
 
 def main():
     for m, metal in enumerate(metals):
@@ -86,9 +86,9 @@ def main():
                 non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
                 scaling_min = non_ms_data.min().min()
                 scaling_dz = non_ms_data.stack().idxmin()[0]
-            print(metal, scaling_dz, scaling_min)
-                
-
+            scaling_relationship[adsorbate] = pd.DataFrame()
+            scaling_relationship[adsorbate].at[scaling_dz, metal] = scaling_min
+            
             energies[adsorbate] = energies[adsorbate].head(7)
             # for spin in spins:
             #     if spin in energies[adsorbate].columns:
