@@ -191,7 +191,7 @@ def main():
 
     scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
     volcano(scaling_relationship, rxn='OER', rds='dGmax',
-            descriptor='dG2', xlabel='dG2 (dG_O - dG_OH)')
+            descriptor='dG2', xlabel='dG2 (dG_O - dG_OH)', xmin=-5, m)
     
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel):
     plt.figure(figsize=(4, 3))
@@ -209,28 +209,16 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel):
         y2 = -(1.23 - scaling_relationship['dG2'])
         y3 = -(1.23 - scaling_relationship['dG3'])
         y4 = -(1.23 - scaling_relationship['dG4'])
-        
-    # Perform linear regression for each y value
-    z1 = np.polyfit(x, y1, 1)  # Degree 1 for linear fit
-    z2 = np.polyfit(x, y2, 1)
-    z3 = np.polyfit(x, y3, 1)
-    z4 = np.polyfit(x, y4, 1)
-
-    # Generate fitted y values for the linear trendline
-    p1 = np.poly1d(z1)
-    p2 = np.poly1d(z2)
-    p3 = np.poly1d(z3)
-    p4 = np.poly1d(z4)
-
-    # Plot the linear trendlines
-    plt.plot(x, p1(x), label='dG1 (trend)', linestyle='-', color='blue')
-    plt.plot(x, p2(x), label='dG2 (trend)', linestyle='-', color='green')
-    plt.plot(x, p3(x), label='dG3 (trend)', linestyle='-', color='red')
-    plt.plot(x, p4(x), label='dG4 (trend)', linestyle='-', color='purple')
-
-    # Scatter plot for rxn activity points
-    plt.scatter(x, y, color='black', zorder=3, label=f'{rxn} activity')
-    
+    l1 = np.poly1d(np.polyfit(x, y1, 1))
+    l2 = np.poly1d(np.polyfit(x, y2, 1))
+    l3 = np.poly1d(np.polyfit(x, y3, 1))
+    l4 = np.poly1d(np.polyfit(x, y4, 1))
+    x_extended = np.linspace(xmin, xmax, 300)  # Create extended x range
+    plt.plot(x_extended, l1(x_extended), label='dG1 (trend)', linestyle=':', color='blue')
+    plt.plot(x_extended, l2(x_extended), label='dG2 (trend)', linestyle=':', color='green')
+    plt.plot(x_extended, l3(x_extended), label='dG3 (trend)', linestyle=':', color='red')
+    plt.plot(x_extended, l4(x_extended), label='dG4 (trend)', linestyle=':', color='purple')
+    plt.scatter(x, y, color='black', zorder=3)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
