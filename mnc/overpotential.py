@@ -190,7 +190,7 @@ def main():
         scaling_relationship['dGmin'] = None
 
     scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
-    volcano(scaling_relationship, rxn='OER', rds='dGmax', , 
+    volcano(scaling_relationship, rxn='OER', rds='dGmax',
             descriptor='dG2', xlabel='dG2 (dG_O - dG_OH)')
     
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel):
