@@ -190,17 +190,19 @@ def main():
         scaling_relationship['dGmin'] = None
 
     scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
-    volcano(rxn='OER', xlabel='dG2 (dG_O - dG_OH)', 
-            x=scaling_relationship['dG2'], y=scaling_relationship['OER'], dGrds=scaling_relationship['dGmax'])
+    volcano(scaling_relationship, rxn='OER', rds='dGmax', , 
+            descriptor='dG2', xlabel='dG2 (dG_O - dG_OH)')
     
-def volcano(rxn, xlabel, x, y, dGrds):
+def volcano(scaling_relationship, rxn, rds, descriptor, xlabel):
     plt.figure(figsize=(4, 3))
     plt.xlabel(xlabel)
     plt.ylabel(f'{rxn} overpotential (eV)')
-    plt.scatter(x, y, color='blue', edgecolors='black', s=100, zorder=2)  # Customizing scatter plot
-    for i, (xi, yi, dG) in enumerate(zip(x, y, dGrds)):
-        plt.annotate(dG, (xi, yi), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
-    plt.annotate(dGrds, (x, y), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
+    x = scaling_relationship[descriptor]
+    y = scaling_relationship[rxn]
+    z = scaling_relationship[rds]    
+    plt.scatter(x, y, zorder=2)
+    for xi, yi, zi in zip(x, y, z):
+        plt.annotate(f'{zi}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.tight_layout()
