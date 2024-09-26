@@ -52,7 +52,7 @@ OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 
 root = '/pscratch/sd/j/jiuy97/6_MNC/figure'
 relaxed_energies = {}
-scaling_relationship = {}
+scaling_relationship = pd.DataFrame()
 
 def main():
     for m, metal in enumerate(metals):
@@ -86,10 +86,12 @@ def main():
                 non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
                 scaling_min = non_ms_data.min().min()
                 scaling_dz = non_ms_data.stack().idxmin()[0]
-            if adsorbate not in scaling_relationship:
-                scaling_relationship[adsorbate] = pd.DataFrame()
-            scaling_relationship[adsorbate].at[metal, 'dz'] = scaling_dz
-            scaling_relationship[adsorbate].at[metal, 'energy'] = scaling_min
+            if adsorbate == 'clean':
+                tag = ''
+            else:
+                tag = adsorbate
+            scaling_relationship.at[metal, f'dz_{tag}' = scaling_dz
+            scaling_relationship.at[metal, f'G_{tag}'] = scaling_min
             
             energies[adsorbate] = energies[adsorbate].head(7)
             # for spin in spins:
@@ -166,6 +168,12 @@ def main():
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
                  rxn='ORR', overpotential=ORR, ylabel='Energy (eV)')
         print(f"Figure saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
+
+    scaling_relationship['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
+    gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
+    gibbs_energies['dG_OOH'] = gibbs_energies['dG_OH'] + 3.2
+
+
 
 def plot_smooth_line(x, y, color):
     try:
