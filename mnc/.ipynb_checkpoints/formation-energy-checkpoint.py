@@ -609,7 +609,8 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     if len(min_columns) == 0:
         print("min_columns is empty, skipping plot.")
         return
-    if 'eV' in ylabel and not df[['LS', 'IS', 'HS']].isna().any():
+    columns_in_df = list(set(spins).intersection(df.columns))
+    if 'eV' in ylabel and not df[columns_in_df].isna().any():
         x_new = np.linspace(0.0, 1.2, 300)
         start_idx = 0
         current_column = min_columns[0]
