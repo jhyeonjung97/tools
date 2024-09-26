@@ -67,8 +67,8 @@ def main():
             relaxed_energies[adsorbate] = energies[adsorbate].iloc[7:].copy()
             for column in relaxed_energies[adsorbate].columns:
                 if relaxed_energies[adsorbate][column].isna().all() and not energies[adsorbate][column].isna().all():
-                    relaxed_min = energies[adsorbate][column].min()
-                    relaxed_dz = energies[adsorbate][column].idxmin()
+                    relaxed_min = energies[adsorbate][column].dropna().min()
+                    relaxed_dz = energies[adsorbate][column].dropna().idxmin()
                     relaxed_energies[adsorbate].at[relaxed_dz, column] = relaxed_min
             print(relaxed_energies[adsorbate])
 
