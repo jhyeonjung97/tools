@@ -243,14 +243,11 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     plt.savefig(png_filename)
     plt.close()
 
-def scaling_relation(gibbs_energies, spin_cross_over, row, group, metal,
-                     rxn, overpotential, ylabel):
+# def scaling_relation(gibbs_energies, spin_cross_over, row, group, metal,
+#                      rxn, overpotential, ylabel):
     
-def volcano(gibbs_energies, spin_cross_over, row, group, metal,
-            rxn, overpotential, ylabel):
-
-
-
+# def volcano(gibbs_energies, spin_cross_over, row, group, metal,
+#             rxn, overpotential, ylabel):
     
 if __name__ == '__main__':
     main()
