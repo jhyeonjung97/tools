@@ -609,18 +609,22 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     if len(min_columns) == 0:
         print("min_columns is empty, skipping plot.")
         return
-    x_new = np.linspace(min(dzs), max(dzs), 300)
+    stable_dz = []
+    for i, column in enumerate(min_columns):
+        stable_dz.append(dzs[i])
+    stable_dz = np.array(stable_dz)
+    x_new = np.linspace(min(stable_dz), max(stable_dz), 300)
     if 'eV' in ylabel:
         start_idx = 0
         current_column = min_columns[0]
         for i in range(1, len(min_columns)):
             if min_columns[i] != current_column:
-                x_segment = np.linspace(x_new[start_idx], x_new[i], i - start_idx)
+                x_segment = np.linspace(stable_dz[start_idx], stable_dz[i], i - start_idx)
                 plt.plot(x_segment, min_values[start_idx:i], color=min_spins.get(current_column, 'black'), zorder=4)
                 start_idx = i
                 current_column = min_columns[i]
-        x_segment = np.linspace(x_new[start_idx], x_new[-1], len(x_new) - start_idx)
-        plt.plot(x_segment, min_values[start_idx:], color=min_spins.get(current_column, 'black'), zorder=4)   
+        x_segment = np.linspace(stable_dz[start_idx], stable_dz[-1], len(stable_dz) - start_idx)
+        plt.plot(x_segment, min_values[start_idx:], color=min_spins.get(current_column, 'black'), zorder=4)
     for column in df_relaxed.columns:
         filtered_df = df_relaxed[column].dropna()
         if not filtered_df.empty:
