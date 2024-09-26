@@ -196,7 +196,7 @@ def main():
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel):
     plt.figure(figsize=(4, 3))
     plt.xlabel(xlabel)
-    plt.ylabel(f'{rxn} overpotential (eV)')
+    plt.ylabel(f'{rxn} activity (-Ƞ, eV)')
     x = scaling_relationship[descriptor]
     y = -scaling_relationship[rxn]
     plt.scatter(x, y, zorder=2)
