@@ -70,7 +70,24 @@ def main():
                     relaxed_min = energies[adsorbate][column].dropna().min()
                     relaxed_dz = energies[adsorbate][column].dropna().idxmin()
                     relaxed_energies[adsorbate].at[relaxed_dz, column] = relaxed_min
-            print(relaxed_energies[adsorbate])
+                    
+            ms_columns = [col for col in relaxed_energies[adsorbate].columns if 'MS' in col]
+            non_ms_columns = [col for col in relaxed_energies[adsorbate].columns if 'MS' not in col]
+            if ms_columns:
+                ms_data = relaxed_energies[adsorbate][ms_columns]
+                if not ms_data.dropna(how='all').empty:
+                    scaling_min = ms_data.min().min()
+                    scaling_dz = ms_data.stack().idxmin()[0]
+                else:
+                    non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
+                    scaling_min = non_ms_data.min().min()
+                    scaling_dz = non_ms_data.stack().idxmin()[0]
+            else:
+                non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
+                scaling_min = non_ms_data.min().min()
+                scaling_dz = non_ms_data.stack().idxmin()[0]
+            print(metal, scaling_dz, scaling_min)
+                
 
             energies[adsorbate] = energies[adsorbate].head(7)
             # for spin in spins:
