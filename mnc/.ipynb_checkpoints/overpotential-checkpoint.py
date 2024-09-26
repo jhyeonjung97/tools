@@ -221,16 +221,16 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     l = {}
     for i in range(4):
         l[i] = np.poly1d(np.polyfit(x, yy[i], 1))
+    xx = np.linspace(xmin, xmax, 10)
     for i in range(4):
         plt.figure(figsize=(4, 3))
         plt.scatter(x, y, color='black', s=20, zorder=3)
-        plt.plot(x_extended, l[i](x_extended), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
+        plt.plot(xx, l[i](xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
         plt.savefig(f'scaling_relationship_{rxn}{i}.png')
         plt.close()
     plt.figure(figsize=(4, 3))
-    x_extended = np.linspace(xmin, xmax, 10)
     for i in range(4):
-        plt.plot(x_extended, l[i](x_extended), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
+        plt.plot(xx, l[i](xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
     plt.scatter(x, y, color='black', s=20, zorder=3)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
