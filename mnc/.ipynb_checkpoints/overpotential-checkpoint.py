@@ -90,7 +90,7 @@ def main():
                 tag = ''
             else:
                 tag = adsorbate
-            scaling_relationship.at[metal, f'dz_{tag}' = scaling_dz
+            scaling_relationship.at[metal, f'dz_{tag}'] = scaling_dz
             scaling_relationship.at[metal, f'G_{tag}'] = scaling_min
             
             energies[adsorbate] = energies[adsorbate].head(7)
