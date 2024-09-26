@@ -219,7 +219,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.plot(x_extended, l2(x_extended), label='dG2 (trend)', linestyle='-', color='#FFC68A')
     plt.plot(x_extended, l3(x_extended), label='dG3 (trend)', linestyle='-', color='#A8E6A1')
     plt.plot(x_extended, l4(x_extended), label='dG4 (trend)', linestyle='-', color='#FFC3BD')
-    plt.scatter(x, y, color='black', size=1, zorder=3)
+    plt.scatter(x, y, color='black', s=20, zorder=3)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
