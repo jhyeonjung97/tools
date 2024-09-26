@@ -222,7 +222,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     yy = [y1, y2, y3, y4]
     for i in range(4):
         plt.figure(figsize=(4, 3))
-        plt.scatter(x, yy[i], color='black', s=20, zorder=3)
+        plt.scatter(x, scaling_relationship[f'dG{i+1}'], color='black', s=20)
         for xi, yi, metal in zip(x, yy[i], metals):
             plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
         l[i] = np.poly1d(np.polyfit(x, yy[i], 1))
