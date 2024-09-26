@@ -201,7 +201,10 @@ def main():
 
     scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
     volcano(scaling_relationship, rxn='OER', rds='dGmax',
-            descriptor='dG2', xlabel='O -OH (dG2)', 
+            descriptor='dG2', xlabel='O-OH (dG2)', 
+            xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
+    volcano(scaling_relationship, rxn='ORR', rds='dGmin',
+            descriptor='dG1', xlabel='OH (dG1)', 
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
