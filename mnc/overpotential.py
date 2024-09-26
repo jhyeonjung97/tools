@@ -17,8 +17,8 @@ groups = ['5', '6', '7', '8', '4', '4']
 metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
 adsorbates = ['clean', 'O', 'OH']
 spins = ['LS', 'IS', 'HS']
-colors ={'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
-
+colors =['#FFC3BD', '#A8E6A1', '#FFD92F', '#A0C8F8']
+ms_colors ={'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
 water_E = -14.23797429
 water_Cv = 0.103
 water_TS = 0.675
@@ -210,14 +210,10 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         l[i] = np.poly1d(np.polyfit(x, f'y{i+1}', 1))
     x_extended = np.linspace(xmin, xmax, 10)
     plt.figure(figsize=(4, 3))
-    plt.xlabel(xlabel)
-    plt.ylabel(f'{rxn} activity (-Ƞ, eV)')
+    for i in range(4):
+        plt.plot(x_extended, l[i](x_extended), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
     x = scaling_relationship[descriptor]
     y = -scaling_relationship[rxn]
-    plt.plot(x_extended, l1(x_extended), label='dG1 (trend)', linestyle='-', color='#FFC3BD')
-    plt.plot(x_extended, l2(x_extended), label='dG2 (trend)', linestyle='-', color='#A8E6A1')
-    plt.plot(x_extended, l3(x_extended), label='dG3 (trend)', linestyle='-', color='#FFD92F')
-    plt.plot(x_extended, l4(x_extended), label='dG4 (trend)', linestyle='-', color='#A0C8F8')
     plt.scatter(x, y, color='black', s=20, zorder=3)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
@@ -225,6 +221,8 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
+    plt.xlabel(xlabel)
+    plt.ylabel(f'{rxn} activity (-Ƞ, eV)')
     plt.legend(labelspacing=0.3)
     plt.tight_layout()
     plt.savefig(f'volcano_{rxn}.png')
@@ -299,10 +297,10 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
             ax.plot(x_new, y_smooth, color='black', zorder=1)
             ax.scatter(x, y, s=100, color='none', zorder=2)
             for xi, yi in zip(x, y):
-                color_ = colors[spin_cross_over.loc[xi, 'clean']]
-                color_OH = colors[spin_cross_over.loc[xi, 'OH']]
-                color_O = colors[spin_cross_over.loc[xi, 'O']]
-                color_OOH = 'white' # colors[spin_cross_over.loc[xi, 'OOH']]
+                color_ = ms_colors[spin_cross_over.loc[xi, 'clean']]
+                color_OH = ms_colors[spin_cross_over.loc[xi, 'OH']]
+                color_O = ms_colors[spin_cross_over.loc[xi, 'O']]
+                color_OOH = 'white' # ms_colors[spin_cross_over.loc[xi, 'OOH']]
                 dGrds = gibbs_energies.loc[xi, rds]
                 if dGrds == 'dG1':
                     plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_, color2=color_OH)
