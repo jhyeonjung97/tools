@@ -205,7 +205,7 @@ def main():
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     volcano(scaling_relationship, rxn='ORR', rds='dGmin',
             descriptor='dG1', xlabel='OH (dG1)', 
-            xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
+            xmin=-3.0, xmax=2.0, ymin=-4.0, ymax=1.0)
     
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
     x = scaling_relationship[descriptor]
