@@ -339,7 +339,7 @@ def main():
                                     df_O_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
                                     if atom.index < len(atoms) - 1:
                                         next_atom = atoms[atom.index + 1]
-                                        df_O_relaxed_bond.at[dz, spin] = np.linalg.norm(atom.position - next_atom.position)
+                                        df_O_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(atom.position - next_atom.position)
                         except:
                             df_O_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_O_relaxed_mag.at[dz_relaxed, spin] = 0
@@ -374,7 +374,7 @@ def main():
                                     df_OH_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
                                     if atom.index < len(atoms) - 1:
                                         next_atom = atoms[atom.index + 1]
-                                        df_OH_relaxed_bond.at[dz, spin] = np.linalg.norm(atom.position - next_atom.position)
+                                        df_OH_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(atom.position - next_atom.position)
                         except:
                             df_OH_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_OH_relaxed_mag.at[dz_relaxed, spin] = 0
