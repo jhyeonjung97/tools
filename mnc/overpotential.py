@@ -51,6 +51,8 @@ OOH_ZPE = 0.471
 OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 
 root = '/pscratch/sd/j/jiuy97/6_MNC/figure'
+relaxed_energies = {}
+scaling_relationship = pd.DataFrame()
 
 def main():
     for m, metal in enumerate(metals):
@@ -62,6 +64,13 @@ def main():
         for adsorbate in adsorbates:
             tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
             energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
+            relaxed_energies[adsorbate] = energies[adsorbate].iloc[7:].copy()
+            print(relaxed_energies[adsorbate])
+            for column in relaxed_energies[adsorbate].columns:
+                if relaxed_energies[adsorbate][column].isna().all():
+                    relaxed_min = energies[adsorbate][column].min()
+                    relaxed_dz = energies[adsorbate][column].idxmin()
+                    relaxed_energies[adsorbate].at[relaxed_dz, column] = relaxed_min
             energies[adsorbate] = energies[adsorbate].head(7)
             # for spin in spins:
             #     if spin in energies[adsorbate].columns:
@@ -127,7 +136,6 @@ def main():
             # spin_cross_over.loc[index, OERs[1]] = f"{energies['OH']['spin'].loc[index]}->{energies['O']['spin'].loc[index]}"
             # spin_cross_over.loc[index, ORRs[2]] = f"{energies['O']['spin'].loc[index]}->{energies['OH']['spin'].loc[index]}"
             # spin_cross_over.loc[index, ORRs[3]] = f"{energies['OH']['spin'].loc[index]}->{energies['clean']['spin'].loc[index]}"
-    
         
         gibbs_energies.to_csv(f'{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
         spin_cross_over.to_csv(f'{row}_{group}{metal}_spin.tsv', sep='\t')
@@ -235,5 +243,14 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
     plt.savefig(png_filename)
     plt.close()
 
+def scaling_relation(gibbs_energies, spin_cross_over, row, group, metal,
+                     rxn, overpotential, ylabel):
+    
+def volcano(gibbs_energies, spin_cross_over, row, group, metal,
+            rxn, overpotential, ylabel):
+
+
+
+    
 if __name__ == '__main__':
     main()
