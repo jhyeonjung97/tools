@@ -611,7 +611,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         return
     columns_to_check = ['LS', 'IS', 'HS']
     columns_in_df = list(set(columns_to_check).intersection(df.columns))
-    if 'eV' in ylabel and not df[columns_in_df].isna().any():
+    if 'eV' in ylabel and not df[columns_in_df].isna().any().any():
         x_new = np.linspace(0.0, 1.2, 300)
         start_idx = 0
         current_column = min_columns[0]
