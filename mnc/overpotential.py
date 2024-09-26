@@ -164,9 +164,9 @@ def main():
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn='OER', overpotential=OER, ylabel='Energy (eV)')
+                 rxn='OER', rds='dGmax', overpotential=OER, ylabel='Energy (eV)')
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn='ORR', overpotential=ORR, ylabel='Energy (eV)')
+                 rxn='ORR', rds='dGmin', overpotential=ORR, ylabel='Energy (eV)')
         print(f"Figure saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
 
     scaling_relationship['dG_OH'] = scaling_relationship['G_OH'] - scaling_relationship['G_'] - hydroxide_G
@@ -191,14 +191,14 @@ def main():
 
     scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
     volcano(rxn='OER', xlabel='dG2 (dG_O - dG_OH)', 
-            x=scaling_relationship['dG2'], y=scaling_relationship['OER'], z=scaling_relationship['dGmax'])
+            x=scaling_relationship['dG2'], y=scaling_relationship['OER'], dGrds=scaling_relationship['dGmax'])
     
-def volcano(rxn, xlabel, x, y):
+def volcano(rxn, xlabel, x, y, dGrds):
     plt.figure(figsize=(4, 3))
     plt.xlabel(xlabel)
     plt.ylabel(f'{rxn} overpotential (eV)')
     plt.scatter(x, y)
-    plt.annotate(z, (x, y), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
+    plt.annotate(dGrds, (x, y), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.tight_layout()
@@ -249,7 +249,7 @@ def plot_three_color_marker(ax, x, y, size, color0, color1, color2):
     ax.add_patch(right_rect)
     
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, 
-             rxn, overpotential, ylabel):
+             rxn, rds, overpotential, ylabel):
     if gibbs_energies.isna().all().all():
         print("dataframe contains only NaN values, skipping plot.")
         return
@@ -278,17 +278,17 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal,
                 color_OH = colors[spin_cross_over.loc[xi, 'OH']]
                 color_O = colors[spin_cross_over.loc[xi, 'O']]
                 color_OOH = 'white' # colors[spin_cross_over.loc[xi, 'OOH']]
-                dGmax = gibbs_energies.loc[xi, 'dGmax']
-                if dGmax == 'dG1':
+                dGrds = gibbs_energies.loc[xi, rds]
+                if dGrds == 'dG1':
                     plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_, color2=color_OH)
-                elif dGmax == 'dG2':
+                elif dGrds == 'dG2':
                     plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OH, color2=color_O)
-                elif dGmax == 'dG3':
+                elif dGrds == 'dG3':
                     plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_O, color2=color_OOH)
-                elif dGmax == 'dG4':
+                elif dGrds == 'dG4':
                     plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OOH, color2=color_)
                 # plot_three_color_marker(ax, xi, yi, size=0.05, color0=color0, color1=color1, color2=color2)
-                ax.annotate(dGmax, (xi, yi), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
+                ax.annotate(dGrds, (xi, yi), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
         except ValueError as e:
             print(f"Error while creating spline: {e}")    
     if overpotential:
