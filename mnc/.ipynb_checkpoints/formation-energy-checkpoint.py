@@ -615,6 +615,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
 
     if non_nan_df.empty:
         print("All rows contain NaN values, skipping plot.")
+        plt.close()  # Explicitly close the figure before returning
         return  # Exit the function if no rows are left after dropping NaNs
 
     # Now, safely access the first and last index
