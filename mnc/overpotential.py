@@ -88,7 +88,8 @@ def main():
                 scaling_dz = non_ms_data.stack().idxmin()[0]
             if adsorbate not in scaling_relationship:
                 scaling_relationship[adsorbate] = pd.DataFrame()
-            scaling_relationship[adsorbate].at[scaling_dz, metal] = scaling_min
+            scaling_relationship[adsorbate].at[scaling_dz, 'energy'] = scaling_min
+            scaling_relationship[adsorbate].at[scaling_dz, 'metal'] = metal
             
             energies[adsorbate] = energies[adsorbate].head(7)
             # for spin in spins:
