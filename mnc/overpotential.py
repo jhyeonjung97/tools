@@ -214,9 +214,9 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     l2 = np.poly1d(np.polyfit(x, y2, 1))
     l3 = np.poly1d(np.polyfit(x, y3, 1))
     l4 = np.poly1d(np.polyfit(x, y4, 1))
-    x_extended = np.linspace(xmin, xmax, 300)  # Create extended x range
+    x_extended = np.linspace(xmin, xmax, 10)
     plt.plot(x_extended, l1(x_extended), label='dG1 (trend)', linestyle='-', color='#A0C8F8')
-    plt.plot(x_extended, l2(x_extended), label='dG2 (trend)', linestyle='-', color='#FFC68A')
+    plt.plot(x_extended, l2(x_extended), label='dG2 (trend)', linestyle='-', color='#FFD27F')
     plt.plot(x_extended, l3(x_extended), label='dG3 (trend)', linestyle='-', color='#A8E6A1')
     plt.plot(x_extended, l4(x_extended), label='dG4 (trend)', linestyle='-', color='#FFC3BD')
     plt.scatter(x, y, color='black', s=20, zorder=3)
