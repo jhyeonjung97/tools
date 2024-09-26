@@ -191,9 +191,10 @@ def main():
 
     scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
     volcano(scaling_relationship, rxn='OER', rds='dGmax',
-            descriptor='dG2', xlabel='dG2 (dG_O - dG_OH)', xmin=-1.0, xmax=3.0)
+            descriptor='dG2', xlabel='dG2 (dG_O - dG_OH)', 
+            xmin=-1.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     
-def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax):
+def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
     plt.figure(figsize=(4, 3))
     plt.xlabel(xlabel)
     plt.ylabel(f'{rxn} activity (-Ƞ, eV)')
@@ -223,6 +224,8 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    plt.xlim(xmin, xmax)
+    plt.ylim(ymin, ymax)
     plt.tight_layout()
     plt.savefig(f'volcano_{rxn}.png')
     plt.legend()
