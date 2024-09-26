@@ -195,11 +195,6 @@ def main():
             xmin=-1.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
-    plt.figure(figsize=(4, 3))
-    plt.xlabel(xlabel)
-    plt.ylabel(f'{rxn} activity (-Ƞ, eV)')
-    x = scaling_relationship[descriptor]
-    y = -scaling_relationship[rxn]
     if rxn == 'OER':
         y1 = -(scaling_relationship['dG1'] - 1.23)
         y2 = -(scaling_relationship['dG2'] - 1.23)
@@ -210,11 +205,15 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         y2 = -(1.23 - scaling_relationship['dG2'])
         y3 = -(1.23 - scaling_relationship['dG3'])
         y4 = -(1.23 - scaling_relationship['dG4'])
-    l1 = np.poly1d(np.polyfit(x, y1, 1))
-    l2 = np.poly1d(np.polyfit(x, y2, 1))
-    l3 = np.poly1d(np.polyfit(x, y3, 1))
-    l4 = np.poly1d(np.polyfit(x, y4, 1))
+    l = {}
+    for i in range(4):
+        l[i] = np.poly1d(np.polyfit(x, f'y{i+1}', 1))
     x_extended = np.linspace(xmin, xmax, 10)
+    plt.figure(figsize=(4, 3))
+    plt.xlabel(xlabel)
+    plt.ylabel(f'{rxn} activity (-Ƞ, eV)')
+    x = scaling_relationship[descriptor]
+    y = -scaling_relationship[rxn]
     plt.plot(x_extended, l1(x_extended), label='dG1 (trend)', linestyle='-', color='#FFC3BD')
     plt.plot(x_extended, l2(x_extended), label='dG2 (trend)', linestyle='-', color='#A8E6A1')
     plt.plot(x_extended, l3(x_extended), label='dG3 (trend)', linestyle='-', color='#FFD92F')
