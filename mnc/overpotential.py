@@ -106,17 +106,21 @@ def main():
         gibbs_energies['G_'] = energies['clean']['energy']
         gibbs_energies['G_OH'] = energies['OH']['energy'] + OH_corr
         gibbs_energies['G_O'] = energies['O']['energy'] + O_corr
+        # gibbs_energies['G_OOH'] = energies['OOH']['energy'] + OOH_corr
         
         G_ = min(gibbs_energies['G_'])
         G_OH = min(gibbs_energies['G_OH'])
         G_O= min(gibbs_energies['G_O'])
+        # G_OOH = min(gibbs_energies['G_OOH'])
         
         gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
         gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
+        # gibbs_energies['dG_OOH'] = gibbs_energies['G_OOH'] - gibbs_energies['G_'] - oxygen_G - hydroxide_G
         gibbs_energies['dG_OOH'] = gibbs_energies['dG_OH'] + 3.2
-        
+
         dG_OH = G_OH - G_ - hydroxide_G
         dG_O = G_O - G_ - oxygen_G
+        # dG_OOH = G_OOH - G_ - oxygen_G - hydroxide_G
         dG_OOH = dG_OH + 3.2
         
         gibbs_energies['dG1'] = gibbs_energies['dG_OH']
@@ -168,9 +172,15 @@ def main():
         # plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
         #          rxn='ORR', rds='dGmin', overpotential=ORR, ylabel='Energy (eV)')
         # print(f"Figure saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
+    
+    scaling_relationship['G_'] = scaling_relationship['G_']
+    scaling_relationship['G_OH'] = scaling_relationship['G_OH'] + OH_corr
+    scaling_relationship['G_O'] = scaling_relationship['G_O'] + O_corr
+    # scaling_relationship['G_OOH'] = scaling_relationship['G_OOH'] + OOH_corr
 
     scaling_relationship['dG_OH'] = scaling_relationship['G_OH'] - scaling_relationship['G_'] - hydroxide_G
     scaling_relationship['dG_O'] = scaling_relationship['G_O'] - scaling_relationship['G_'] - oxygen_G
+    # scaling_relationship['dG_OOH'] = scaling_relationship['G_OOH'] - scaling_relationship['G_'] - oxygen_G - hydroxide_G
     scaling_relationship['dG_OOH'] = scaling_relationship['dG_OH'] + 3.2
 
     scaling_relationship['dG1'] = scaling_relationship['dG_OH']
@@ -211,7 +221,12 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     l = {}
     for i in range(4):
         l[i] = np.poly1d(np.polyfit(x, yy[i], 1))
-        
+    for i in range(4):
+        plt.figure(figsize=(4, 3))
+        plt.scatter(x, y, color='black', s=20, zorder=3)
+        plt.plot(x_extended, l[i](x_extended), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
+        plt.savefig(f'scaling_relationship_{rxn}{i}.png')
+        plt.close()
     plt.figure(figsize=(4, 3))
     x_extended = np.linspace(xmin, xmax, 10)
     for i in range(4):
@@ -219,8 +234,8 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.scatter(x, y, color='black', s=20, zorder=3)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
-    plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
-    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
     plt.xlabel(xlabel)
