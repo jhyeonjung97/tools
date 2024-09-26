@@ -191,9 +191,9 @@ def main():
 
     scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
     volcano(scaling_relationship, rxn='OER', rds='dGmax',
-            descriptor='dG2', xlabel='dG2 (dG_O - dG_OH)', xmin=-5, m)
+            descriptor='dG2', xlabel='dG2 (dG_O - dG_OH)', xmin=-1.0, xmax=3.0)
     
-def volcano(scaling_relationship, rxn, rds, descriptor, xlabel):
+def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax):
     plt.figure(figsize=(4, 3))
     plt.xlabel(xlabel)
     plt.ylabel(f'{rxn} activity (-Ƞ, eV)')
