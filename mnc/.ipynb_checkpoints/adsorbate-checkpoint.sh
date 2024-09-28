@@ -60,14 +60,66 @@
 #     fi
 # done
 
-for oh_dir in /pscratch/sd/j/jiuy97/6_MNC/2_OH/*_*/*_*S/*_
+# for oh_dir in /pscratch/sd/j/jiuy97/6_MNC/2_OH/*_*/*_*S/*_
+# do
+#     IFS='/' read -r -a path <<< $oh_dir
+#     path1=${path[-1]}
+#     path2=${path[-2]}
+#     path3=${path[-3]}
+#     metal=$(echo $path3 | cut -d'_' -f2)
+#     oh_spin=$(echo $path2 | cut -d'_' -f2)
+#     dz=$(echo $path1 | cut -d'_' -f1)
+
+#     if [[ $metal == 'Mn' ]]; then
+#         path3='5_Mn'; path4='3d'
+#     elif [[ $metal == 'Fe' ]]; then
+#         path3='6_Fe'; path4='3d'
+#     elif [[ $metal == 'Co' ]]; then
+#         path3='7_Co'; path4='3d'
+#     elif [[ $metal == 'Ni' ]]; then
+#         path3='8_Ni'; path4='3d'
+#     elif [[ $metal == 'Mo' ]]; then
+#         path3='4_Mo'; path4='4d'
+#     elif [[ $metal == 'W' ]]; then
+#         path3='4_W'; path4='5d'
+#     fi
+
+#     if [[ $metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni' || $metal == 'Mo' || $metal == 'W' ]]; then
+#         if [[ $oh_spin == 'LS' ]]; then
+#             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/1_LS/$path1
+#         elif [[ $oh_spin == 'HS' ]] && [[ -d "/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/2_HS/$path1" ]]; then
+#             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/2_HS/$path1
+#         elif [[ $oh_spin == 'HS' ]] && [[ -d "/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/3_HS/$path1" ]]; then
+#             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/3_HS/$path1
+#         elif [[ $oh_spin == 'IS' ]] && [[ -d "/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/2_IS/$path1" ]]; then
+#             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/2_IS/$path1
+#         else
+#             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/1_LS/$path1
+#         fi
+        
+#         cd $oh_dir; pwd
+#         cp $dir/restart-oh.json ./restart.json
+#         cp ~/bin/tools/mnc/submit.sh ./
+#         sed -i -e "/#SBATCH -J/c\#SBATCH -J OH${metal}${oh_spin}${dz}" submit.sh
+#         if [[ $oh_spin == 'LS' ]]; then
+#             sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
+#         elif [[ $oh_spin == 'IS' ]]; then
+#             sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' submit.sh
+#         elif [[ $oh_spin == 'HS' ]]; then
+#             sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
+#         fi
+#         # sbatch submit.sh
+#     fi
+# done
+
+for ooh_dir in /pscratch/sd/j/jiuy97/6_MNC/3_OOH/*_*/*_*S/*_
 do
-    IFS='/' read -r -a path <<< $oh_dir
+    IFS='/' read -r -a path <<< $ooh_dir
     path1=${path[-1]}
     path2=${path[-2]}
     path3=${path[-3]}
     metal=$(echo $path3 | cut -d'_' -f2)
-    oh_spin=$(echo $path2 | cut -d'_' -f2)
+    ooh_spin=$(echo $path2 | cut -d'_' -f2)
     dz=$(echo $path1 | cut -d'_' -f1)
 
     if [[ $metal == 'Mn' ]]; then
@@ -85,27 +137,27 @@ do
     fi
 
     if [[ $metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni' || $metal == 'Mo' || $metal == 'W' ]]; then
-        if [[ $oh_spin == 'LS' ]]; then
+        if [[ $ooh_spin == 'LS' ]]; then
             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/1_LS/$path1
-        elif [[ $oh_spin == 'HS' ]] && [[ -d "/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/2_HS/$path1" ]]; then
+        elif [[ $ooh_spin == 'HS' ]] && [[ -d "/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/2_HS/$path1" ]]; then
             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/2_HS/$path1
-        elif [[ $oh_spin == 'HS' ]] && [[ -d "/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/3_HS/$path1" ]]; then
+        elif [[ $ooh_spin == 'HS' ]] && [[ -d "/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/3_HS/$path1" ]]; then
             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/3_HS/$path1
-        elif [[ $oh_spin == 'IS' ]] && [[ -d "/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/2_IS/$path1" ]]; then
+        elif [[ $ooh_spin == 'IS' ]] && [[ -d "/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/2_IS/$path1" ]]; then
             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/2_IS/$path1
         else
             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/1_LS/$path1
         fi
         
-        cd $oh_dir; pwd
-        cp $dir/restart-oh.json ./restart.json
+        cd $ooh_dir; pwd
+        cp $dir/restart-ooh.json ./restart.json
         cp ~/bin/tools/mnc/submit.sh ./
-        sed -i -e "/#SBATCH -J/c\#SBATCH -J OH${metal}${oh_spin}${dz}" submit.sh
-        if [[ $oh_spin == 'LS' ]]; then
+        sed -i -e "/#SBATCH -J/c\#SBATCH -J OOH${metal}${ooh_spin}${dz}" submit.sh
+        if [[ $ooh_spin == 'LS' ]]; then
             sed -i 's/mnc-sol.py/mnc-sol-ls-nupdown.py/' submit.sh
-        elif [[ $oh_spin == 'IS' ]]; then
+        elif [[ $ooh_spin == 'IS' ]]; then
             sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' submit.sh
-        elif [[ $oh_spin == 'HS' ]]; then
+        elif [[ $ooh_spin == 'HS' ]]; then
             sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' submit.sh
         fi
         # sbatch submit.sh
