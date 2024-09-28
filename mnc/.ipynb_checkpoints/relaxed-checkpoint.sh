@@ -54,16 +54,13 @@ do
     fi
 done
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/*_O*/*_*/*_*/
+for dir in /pscratch/sd/j/jiuy97/6_MNC/*_O*/*_*/*_*S/
 do
     cd $dir; # pwd
     IFS='/' read -r -a path <<< $PWD
     ads=$(echo "${path[-3]}" | cut -d'_' -f2)
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     spin=$(echo "${path[-1]}" | cut -d'_' -f2)
-    if [[ $spin == *stable ]]; then
-        spin='MS'
-    fi
     all_done=true
     for sub_dir in ./*_/
     do
