@@ -220,7 +220,8 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         y2 = -(1.23 - scaling_relationship['dG2'])
         y3 = -(1.23 - scaling_relationship['dG3'])
         y4 = -(1.23 - scaling_relationship['dG4'])
-    l = {}
+    lines = {}
+    scalings = {}
     coeffs = {}
     xx = np.linspace(xmin, xmax, 100)
     yy = [y1, y2, y3, y4]
@@ -230,9 +231,10 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         for xi, yi, metal in zip(x, yy[i], metals):
             plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
         coeffs[i] = np.polyfit(x, yy[i], 1)
-        l[i] = np.poly1d(coeffs[i])
+        scalings[i] = np.poly1d(np.polyfit(scaling_relationship[f'dG{i+1}'], scaling_relationship[f'dG{i+1}'], 1)
+        lines[i] = np.poly1d(np.polyfit(x, yy[i], 1)
         equation = f'y = {coeffs[i][0]:.2f}x + {coeffs[i][1]:.2f}'
-        plt.plot(xx, l[i](xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
+        plt.plot(xx, lines[i](xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
         if coeffs[i][0] > 0:
             plt.text(0.1, 0.9, equation, transform=plt.gca().transAxes, fontsize=10, color=colors[i])
         else:
@@ -244,7 +246,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         plt.close()
     plt.figure(figsize=(4, 3))
     for i in range(4):
-        plt.plot(xx, l[i](xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
+        plt.plot(xx, lines[i](xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
     plt.scatter(x, y, color='black', s=20, zorder=3)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')

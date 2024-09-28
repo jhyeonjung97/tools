@@ -1,12 +1,15 @@
 #!/bin/bash
 
 squeue --me > ~/mystat.txt
-for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/*_*S/
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/*_*/
 do
     cd $dir; # pwd
     IFS='/' read -r -a path <<< $PWD
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     spin=$(echo "${path[-1]}" | cut -d'_' -f2)
+    if [[ $spin == *stable ]]; then
+        spin='MS'
+    fi
     all_done=true
     for sub_dir in ./*_/
     do
@@ -41,12 +44,6 @@ do
                 sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' relaxed/submit.sh
             fi
             sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}r" relaxed/submit.sh
-        fi
-    fi
-    if [[ -d relaxed ]]; then
-        cd relaxed
-        if [[ ! -s DONE ]] && [[ ! -n $(grep " ${metal}${spin}r" ~/mystat.txt) ]]; then
-            pwd; sbatch submit.sh
         fi
     fi
 done
