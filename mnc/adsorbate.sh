@@ -183,7 +183,7 @@ do
         mv ../restart-${ads}.json restart.json
         cp ~/bin/tools/mnc/submit.sh ./
         sed -i -e "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}MSr" submit.sh
-        # sbatch submit.sh
+        sbatch submit.sh
         cd "$dir"
     done
 done
