@@ -1,11 +1,11 @@
 # for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/*_*S/*_
 # do
 #     cd $dir; pwd
-#     # python ~/bin/tools/mnc/add-o.py
-#     # python ~/bin/tools/mnc/add-oh.py
+#     python ~/bin/tools/mnc/add-o.py
+#     python ~/bin/tools/mnc/add-oh.py
 #     python ~/bin/tools/mnc/add-ooh.py
-#     # python ~/bin/tools/mnc/add-co.py
-#     # python ~/bin/tools/mnc/add-h.py
+#     python ~/bin/tools/mnc/add-co.py
+#     python ~/bin/tools/mnc/add-h.py
 # done
 
 # for o_dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*_*/*_*S/*_
