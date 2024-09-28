@@ -46,6 +46,12 @@ do
             sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}r" relaxed/submit.sh
         fi
     fi
+    if [[ -d relaxed ]]; then
+        cd relaxed
+        if [[ ! -s DONE ]] && [[ ! -n $(grep "${ads}${metal}${spin}r" ~/mystat.txt) ]]; then
+            pwd; sbatch submit.sh
+        fi
+    fi
 done
 
 for dir in /pscratch/sd/j/jiuy97/6_MNC/*_O*/*_*/*_*/
@@ -92,6 +98,12 @@ do
                 sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' relaxed/submit.sh
             fi
             sed -i "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}${spin}r" relaxed/submit.sh
+        fi
+    fi
+    if [[ -d relaxed ]]; then
+        cd relaxed
+        if [[ ! -s DONE ]] && [[ ! -n $(grep "${ads}${metal}${spin}r" ~/mystat.txt) ]]; then
+            pwd; sbatch submit.sh
         fi
     fi
 done
