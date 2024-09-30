@@ -141,8 +141,10 @@ def main():
         spin_cross_over.to_csv(f'{row}_{group}{metal}_spin.tsv', sep='\t')
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
-        plotting(gibbs_energies, spin_cross_over, row, group, metal, 'OER', 'dGmax', gibbs_energies['OER'])
-        plotting(gibbs_energies, spin_cross_over, row, group, metal, 'ORR', 'dGmin', gibbs_energies['ORR'])
+        plotting(gibbs_energies, spin_cross_over, row, group, metal, 'OER', 'dGmax', gibbs_energies['OER'],
+                ymin=0.2, ymax=1.4)
+        plotting(gibbs_energies, spin_cross_over, row, group, metal, 'ORR', 'dGmin', gibbs_energies['ORR']
+                ymin=0.2, ymax=1.4)
         print(f"Figures saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
     
     scaling_relationship['G_'] = scaling_relationship['G_']
@@ -217,7 +219,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.savefig(f'volcano_{rxn}.png')
     plt.close()
 
-def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overpotential):
+def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overpotential, ymin, ymax):
     """
     Generates a plot for the specified reaction and saves it as a PNG file.
     """
@@ -230,8 +232,8 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
     fig, ax = plt.subplots(figsize=(4, 3))
     plt.xlabel('dz (Å)')
     plt.ylabel(f'{rxn} overpotential (eV)')
-    plt.ylim(0.0, 2.0)
-    plt.yticks(np.arange(0.0, 2.2, 0.2))
+    plt.ylim(ymin, ymax)
+    plt.yticks(np.arange(ymin, ymax+0.2, 0.2))
     
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
