@@ -234,7 +234,6 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
     if gibbs_energies.isna().all().all():
         print("Dataframe contains only NaN values, skipping plot.")
         return
-
     png_filename = f'{row}_{group}{metal}_{rxn}.png'
     marker_size = 0.03
     fig, ax = plt.subplots(figsize=(4, 3))
@@ -242,12 +241,10 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
     plt.ylabel(f'{rxn} overpotential (eV)')
     plt.ylim(ymin, ymax)
     plt.yticks(np.arange(ymin, ymax+0.2, 0.2))
-    
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
     if not filtered_gibbs_energies.empty:
         x = filtered_gibbs_energies.index
         y = filtered_gibbs_energies.values
-
         try:
             x_new = np.linspace(min(x), max(x), 300)
             spl = make_interp_spline(x, y, k=3) if len(x) > 3 else make_interp_spline(x, y, k=2)
