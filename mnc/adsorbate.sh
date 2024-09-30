@@ -168,7 +168,7 @@
 for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/most_stable/relaxed
 do
     cd "$dir" || exit
-    # pwd
+    pwd
     # IFS='/' read -r -a path <<< "$dir"
     # metal=$(echo "${path[-3]}" | cut -d'_' -f2)
 
