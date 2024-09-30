@@ -141,10 +141,12 @@ def main():
         spin_cross_over.to_csv(f'{row}_{group}{metal}_spin.tsv', sep='\t')
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
-        plotting(gibbs_energies, spin_cross_over, row, group, metal, 'OER', 'dGmax', gibbs_energies['OER'],
-                ymin=0.2, ymax=1.4)
-        plotting(gibbs_energies, spin_cross_over, row, group, metal, 'ORR', 'dGmin', gibbs_energies['ORR'],
-                ymin=0.2, ymax=1.4)
+def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overpotential, ymin, ymax):
+
+        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+                 rxn='OER', rds='dGmax', overpotential=gibbs_energies['OER'], ymin=0.2, ymax=1.4)
+        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+                 rxn='ORR', rds='dGmin', overpotential=gibbs_energies['ORR'], ymin=0.2, ymax=1.4)
         print(f"Figures saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
     
     scaling_relationship['G_'] = scaling_relationship['G_']
@@ -266,9 +268,8 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
         except ValueError as e:
             print(f"Error while creating spline: {e}")    
 
-    # Check if overpotential is a valid number
-    if isinstance(overpotential, (float, int)):
-        plt.axhline(y=overpotential, color='black', linestyle='--', linewidth=1.0, zorder=0)
+    print(overpotential)
+    plt.axhline(y=overpotential, color='black', linestyle='--', linewidth=1.0, zorder=0)
 
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
