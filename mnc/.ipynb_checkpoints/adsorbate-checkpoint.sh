@@ -172,9 +172,11 @@ do
     IFS='/' read -r -a path <<< "$dir"
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
 
+    cd relaxed
     # python ~/bin/tools/mnc/add-o.py
     # python ~/bin/tools/mnc/add-oh.py
-    # python ~/bin/tools/mnc/add-ooh.py
+    python ~/bin/tools/mnc/add-ooh.py
+    cd "$dir" || exit
     
     # for ads in o oh ooh
     # do
@@ -187,10 +189,10 @@ do
     #     cd "$dir"
     # done
 
-    mkdir -p ooh
-    cd ooh || exit
-    mv ../relaxed/restart-ooh.json restart.json
-    cp ~/bin/tools/mnc/submit.sh ./
-    sed -i -e "/#SBATCH -J/c\#SBATCH -J ooh${metal}MSr" submit.sh
-    sbatch submit.sh
+    # mkdir -p ooh
+    # cd ooh || exit
+    # mv ../relaxed/restart-ooh.json restart.json
+    # cp ~/bin/tools/mnc/submit.sh ./
+    # sed -i -e "/#SBATCH -J/c\#SBATCH -J ooh${metal}MSr" submit.sh
+    # sbatch submit.sh
 done
