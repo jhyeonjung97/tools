@@ -234,12 +234,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         scalings[i] = np.poly1d(np.polyfit(scaling_relationship[f'dG{i+1}'], scaling_relationship[f'dG{i+1}'], 1)
         lines[i] = np.poly1d(np.polyfit(x, yy[i], 1)
         equation = f'y = {coeffs[i][0]:.2f}x + {coeffs[i][1]:.2f}'
-<<<<<<< HEAD
         plt.plot(xx, lines[i](xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
-=======
-        plt.plot(xx, l[i](xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
-<<<<<<< HEAD
->>>>>>> c5f309e (.)
         if coeffs[i][0] > 0:
             plt.text(0.1, 0.9, equation, transform=plt.gca().transAxes, fontsize=10, color=colors[i])
         else:
@@ -248,11 +243,6 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         plt.ylabel(f'overpotential from dG{i+1} (eV)')
         plt.tight_layout()
         plt.savefig(f'scaling_relationship_{rxn}{i}.png')
-=======
-        plt.xlabel(xlabel)
-        plt.ylabel(f'-dG{i} (eV)')
-        plt.savefig(f'scaling_relationship_{rxn}{i+1}.png')
->>>>>>> 915e5dd (.)
         plt.close()
     plt.figure(figsize=(4, 3))
     for i in range(4):
