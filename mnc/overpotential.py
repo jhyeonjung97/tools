@@ -273,10 +273,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
                 ax.annotate(dGrds, (xi, yi), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
         except ValueError as e:
             print(f"Error while creating spline: {e}")    
-
-    print(overpotential)
     plt.axhline(y=overpotential, color='black', linestyle='--', linewidth=1.0, zorder=0)
-
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.tight_layout()
