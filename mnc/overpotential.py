@@ -140,9 +140,9 @@ def main():
         gibbs_energies.to_csv(f'{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
         spin_cross_over.to_csv(f'{row}_{group}{metal}_spin.tsv', sep='\t')
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
-        
-def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overpotential, ymin, ymax):
 
+        print(gibbs_energies)
+        
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
                  rxn='OER', rds='dGmax', overpotential=gibbs_energies['OER'], ymin=0.2, ymax=1.4)
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
@@ -169,6 +169,8 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
         scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
     else:
         scaling_relationship[['OER', 'ORR', 'dGmax', 'dGmin']] = None
+        
+    print(scaling_relationship)
 
     scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
     volcano(scaling_relationship, rxn='OER', rds='dGmax', descriptor='dG2', xlabel='O-OH (dG2)', 
