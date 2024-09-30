@@ -15,7 +15,6 @@ for atom in atoms:
         zf = atom.z
         index = atom.index
         zdiff = zf - zi
-        print(zdiff)
     if atom.index > index:
         atom.z += zdiff
         
