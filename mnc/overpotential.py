@@ -122,6 +122,11 @@ def main():
         gibbs_energies['dG3'] = gibbs_energies['dG_OOH'] - gibbs_energies['dG_O']
         gibbs_energies['dG4'] = 4.92 - gibbs_energies['dG_OOH']
         
+        dG1 = dG_OH
+        dG2 = dG_O - dG_OH
+        dG3 = dG_OOH - dG_O
+        dG4 = 4.92 - dG_OOH
+        
         if gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].notna().all().all():
             gibbs_energies['OER'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].max(axis=1) - 1.23
             gibbs_energies['ORR'] = 1.23 - gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].min(axis=1)
@@ -131,6 +136,9 @@ def main():
             gibbs_energies[['OER', 'ORR', 'dGmax', 'dGmin']] = None
             
         gibbs_energies = gibbs_energies.set_index(energies['clean'].index)
+
+        OER = max(dG1, dG2, dG3, dG4) - 1.23
+        ORR = 1.23 - min(dG1, dG2, dG3, dG4)
         
         for index in energies['clean'].index:
             spin_cross_over.loc[index, 'clean'] = energies['clean']['spin'].loc[index]
