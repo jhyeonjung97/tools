@@ -167,16 +167,16 @@
 
 for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/most_stable
 do
-    cd "$dir" || exit
+    cd "$dir" || continue
     pwd
     IFS='/' read -r -a path <<< "$dir"
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
 
-    cd relaxed || exit
+    cd relaxed || continue
     # python ~/bin/tools/mnc/add-o.py
     # python ~/bin/tools/mnc/add-oh.py
     python ~/bin/tools/mnc/add-ooh.py
-    cd "$dir" || exit
+    cd "$dir" || continue
     
     # for ads in o oh ooh
     # do
