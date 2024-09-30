@@ -168,22 +168,22 @@
 for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/most_stable/relaxed
 do
     cd "$dir" || exit
-    pwd
-    IFS='/' read -r -a path <<< "$dir"
-    metal=$(echo "${path[-3]}" | cut -d'_' -f2)
+    # pwd
+    # IFS='/' read -r -a path <<< "$dir"
+    # metal=$(echo "${path[-3]}" | cut -d'_' -f2)
 
-    python ~/bin/tools/mnc/add-o.py
-    python ~/bin/tools/mnc/add-oh.py
+    # python ~/bin/tools/mnc/add-o.py
+    # python ~/bin/tools/mnc/add-oh.py
     python ~/bin/tools/mnc/add-ooh.py
     
-    for ads in o oh ooh
-    do
-        mkdir -p "$ads"
-        cd "$ads" || exit
-        mv ../restart-${ads}.json restart.json
-        cp ~/bin/tools/mnc/submit.sh ./
-        sed -i -e "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}MSr" submit.sh
-        sbatch submit.sh
-        cd "$dir"
-    done
+    # for ads in o oh ooh
+    # do
+    #     mkdir -p "$ads"
+    #     cd "$ads" || exit
+    #     mv ../restart-${ads}.json restart.json
+    #     cp ~/bin/tools/mnc/submit.sh ./
+    #     sed -i -e "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}MSr" submit.sh
+    #     sbatch submit.sh
+    #     cd "$dir"
+    # done
 done
