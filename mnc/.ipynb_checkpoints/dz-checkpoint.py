@@ -10,9 +10,13 @@ index = 100
 atoms = read('restart.json')
 for atom in atoms:
     if atom.symbol not in ['C', 'N', 'O', 'H']:
+        zi = atom.z
         atom.z = 10.0 + 0.2 * dz
+        zf = atom.z
         index = atom.index
+        zdiff = zf - zi
+        print(zdiff)
     if atom.index > index:
-        atom.z += 0.2 * dz
+        atom.z += zdiff
         
 write('restart.json', atoms)
