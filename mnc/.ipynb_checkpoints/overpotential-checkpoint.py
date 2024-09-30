@@ -27,6 +27,7 @@ hydrogen2_E = -6.77412273
 hydrogen2_Cv = 0.0905
 hydrogen2_TS = 0.408
 hydrogen2_ZPE = 0.273
+hydrogen2_G = hydrogen2_E + hydrogen2_Cv - hydrogen2_TS + hydrogen2_ZPE
 hydrogen_G = hydrogen2_G / 2
 
 oxygen_G = water_G - hydrogen2_G
