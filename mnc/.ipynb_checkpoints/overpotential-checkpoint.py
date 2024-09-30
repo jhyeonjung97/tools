@@ -143,7 +143,7 @@ def main():
         
         plotting(gibbs_energies, spin_cross_over, row, group, metal, 'OER', 'dGmax', gibbs_energies['OER'],
                 ymin=0.2, ymax=1.4)
-        plotting(gibbs_energies, spin_cross_over, row, group, metal, 'ORR', 'dGmin', gibbs_energies['ORR']
+        plotting(gibbs_energies, spin_cross_over, row, group, metal, 'ORR', 'dGmin', gibbs_energies['ORR'],
                 ymin=0.2, ymax=1.4)
         print(f"Figures saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
     
