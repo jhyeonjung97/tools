@@ -236,11 +236,11 @@ def scaling(scaling_relationship, metals):
     line = np.poly1d(coeffs)
     plt.plot(xx, line(xx), label=r'$\Delta$G$_{\sf O}$ (trend)', linestyle='-', color='black')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
-    plt.text(0.1, 0.9 if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
+    plt.text(0.1, 0.8 if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
     plt.xlabel(r'$\Delta$G$_{\sf OH}$ (eV)')
     plt.ylabel(r'$\Delta$G$_{\sf O}$ (eV)')
     plt.xlim(-2.5, 1.5)
-    plt.ylim(-5.0, 5.0)
+    plt.ylim(-4.5, 4.5)
     plt.tight_layout()
     plt.savefig('scaling_relationship.png')
     print("Figure saved as scaling_relationship.png")
