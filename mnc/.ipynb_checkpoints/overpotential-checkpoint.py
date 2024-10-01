@@ -13,7 +13,8 @@ rows = ['3d', '3d', '3d', '3d', '4d', '5d']
 groups = ['5', '6', '7', '8', '4', '4']
 metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
 adsorbates = ['clean', 'O', 'OH']
-colors = ['#FFC3BD', '#A8E6A1', '#FFD92F', '#A0C8F8']
+# colors = ['#FFC3BD', '#A8E6A1', '#FFD92F', '#A0C8F8']
+colors = ['blue', 'orange', 'green', 'red']
 ms_colors = {'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
 
 # Water and hydrogen properties
