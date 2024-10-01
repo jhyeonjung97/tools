@@ -16,31 +16,31 @@ rows = {
     '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
 
-standard_electrode_potentials = {
-    "Ti": -1.63,  # Ti^2+ + 2e- → Ti (Ti^2+ prioritized over Ti^4+)
-    "V": -1.18,   # V^2+ + 2e- → V (V^2+ prioritized over V^3+)
-    "Cr": -0.91,  # Cr^2+ + 2e- → Cr (Cr^2+ prioritized over Cr^3+)
-    "Mn": -1.18,  # Mn^2+ + 2e- → Mn
-    "Fe": -0.44,  # Fe^2+ + 2e- → Fe (Fe^2+ prioritized over Fe^3+)
-    "Co": -0.28,  # Co^2+ + 2e- → Co (Co^2+ prioritized over Co^3+)
-    "Ni": -0.25,  # Ni^2+ + 2e- → Ni
-    "Cu": 0.34,    # Cu^2+ + 2e- → Cu
+elements_data = {
+    "Ti": {"electrode_potential": -1.63, "cation_charge": 2},  # Ti^2+ + 2e- → Ti (Ti^2+ prioritized over Ti^4+)
+    "V":  {"electrode_potential": -1.18, "cation_charge": 2},  # V^2+ + 2e- → V (V^2+ prioritized over V^3+)
+    "Cr": {"electrode_potential": -0.91, "cation_charge": 2},  # Cr^2+ + 2e- → Cr (Cr^2+ prioritized over Cr^3+)
+    "Mn": {"electrode_potential": -1.18, "cation_charge": 2},  # Mn^2+ + 2e- → Mn
+    "Fe": {"electrode_potential": -0.44, "cation_charge": 2},  # Fe^2+ + 2e- → Fe (Fe^2+ prioritized over Fe^3+)
+    "Co": {"electrode_potential": -0.28, "cation_charge": 2},  # Co^2+ + 2e- → Co (Co^2+ prioritized over Co^3+)
+    "Ni": {"electrode_potential": -0.25, "cation_charge": 2},  # Ni^2+ + 2e- → Ni
+    "Cu": {"electrode_potential": 0.34,  "cation_charge": 2},  # Cu^2+ + 2e- → Cu
 
-    "Zr": -1.45,  # Zr^2+ + 2e- → Zr (Zr^2+ prioritized over Zr^4+)
-    "Nb": -1.00,  # Nb^3+ + 3e- → Nb (Nb^3+ prioritized over Nb^5+)
-    "Mo": -0.20,  # Mo^3+ + 3e- → Mo (Mo^3+ prioritized over Mo^6+)
-    "Tc": 0.74,   # Tc^7+ + 7e- → Tc (No lower oxidation state available)
-    "Ru": 0.45,   # Ru^2+ + 2e- → Ru (Ru^2+ prioritized over Ru^3+)
-    "Rh": 0.76,   # Rh^2+ + 2e- → Rh (Rh^2+ prioritized over Rh^3+)
-    "Pd": 0.95,    # Pd^2+ + 2e- → Pd
+    "Zr": {"electrode_potential": -1.45, "cation_charge": 2},  # Zr^2+ + 2e- → Zr (Zr^2+ prioritized over Zr^4+)
+    "Nb": {"electrode_potential": -1.00, "cation_charge": 3},  # Nb^3+ + 3e- → Nb (Nb^3+ prioritized over Nb^5+)
+    "Mo": {"electrode_potential": -0.20, "cation_charge": 3},  # Mo^3+ + 3e- → Mo (Mo^3+ prioritized over Mo^6+)
+    "Tc": {"electrode_potential": 0.74,  "cation_charge": 7},  # Tc^7+ + 7e- → Tc (No lower oxidation state available)
+    "Ru": {"electrode_potential": 0.45,  "cation_charge": 2},  # Ru^2+ + 2e- → Ru (Ru^2+ prioritized over Ru^3+)
+    "Rh": {"electrode_potential": 0.76,  "cation_charge": 2},  # Rh^2+ + 2e- → Rh (Rh^2+ prioritized over Rh^3+)
+    "Pd": {"electrode_potential": 0.95,  "cation_charge": 2},  # Pd^2+ + 2e- → Pd
 
-    "Hf": -1.55,  # Hf^4+ + 4e- → Hf (No lower oxidation state available)
-    "Ta": -1.10,  # Ta^3+ + 3e- → Ta (Ta^3+ prioritized over Ta^5+)
-    "W": -0.11,   # W^4+ + 4e- → W (W^4+ prioritized over W^6+)
-    "Re": 0.30,   # Re^4+ + 4e- → Re (Re^4+ prioritized over Re^7+)
-    "Os": 0.40,   # Os^2+ + 2e- → Os (Os^2+ prioritized over Os^4+)
-    "Ir": 1.16,   # Ir^2+ + 2e- → Ir (Ir^2+ prioritized over Ir^3+)
-    "Pt": 1.20    # Pt^2+ + 2e- → Pt
+    "Hf": {"electrode_potential": -1.55, "cation_charge": 4},  # Hf^4+ + 4e- → Hf (No lower oxidation state available)
+    "Ta": {"electrode_potential": -1.10, "cation_charge": 3},  # Ta^3+ + 3e- → Ta (Ta^3+ prioritized over Ta^5+)
+    "W":  {"electrode_potential": -0.11, "cation_charge": 4},  # W^4+ + 4e- → W (W^4+ prioritized over W^6+)
+    "Re": {"electrode_potential": 0.30,  "cation_charge": 4},  # Re^4+ + 4e- → Re (Re^4+ prioritized over Re^7+)
+    "Os": {"electrode_potential": 0.40,  "cation_charge": 2},  # Os^2+ + 2e- → Os (Os^2+ prioritized over Os^4+)
+    "Ir": {"electrode_potential": 1.16,  "cation_charge": 2},  # Ir^2+ + 2e- → Ir (Ir^2+ prioritized over Ir^3+)
+    "Pt": {"electrode_potential": 1.20,  "cation_charge": 2},  # Pt^2+ + 2e- → Pt
 }
 
 vacancy = {}
@@ -49,8 +49,6 @@ for i in range(9):
     path = f"/pscratch/sd/j/jiuy97/6_MNC/empty/2_/final_with_calculator.json"
     atoms = read(path)
     vacancy[i] = atoms.get_total_energy()
-    
-print(vacancy)
     
 # spins = {'LS': '#ffe2cc', 'IS': '#cceaff', 'HS': '#e8dff2'}
 spins = {'LS': '#ffd199', 'IS': '#a8d9f9', 'HS': '#d5c8e4'}
@@ -84,10 +82,6 @@ carbon_E = -9.3573635
 
 metal_path = '/pscratch/sd/j/jiuy97/6_MNC/gas/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
-
-# C26N4_atoms = read('/pscratch/sd/j/jiuy97/6_MNC/empty/final_with_calculator.json')
-# C26N4_energy = C26N4_atoms.get_total_energy()
-C26N4_energy = -270.0
 
 def main():
     for row_key, metals in rows.items():
@@ -192,14 +186,12 @@ def main():
                             atoms = read(atoms_path)
                             energy = atoms.get_total_energy()
                             df.at[dz, spin] = energy
-                            # formation_energy = (energy 
-                            #                     - metal_df.at[metal, 'energy'] 
-                            #                     - 26 * carbon_E 
-                            #                     - 4 * nitrogen_G)
-                            formation_energy = (energy 
+                            formation_energy = (energy
+                                                - vacancy[elements_data[metal]['cation_charge']]
                                                 - metal_df.at[metal, 'energy']
-                                                + standard_electrode_potentials[metal] 
-                                                - C26N4_energy)
+                                                + elements_data[metal]['electrode_potential']
+                                                + elements_data[metal]['cation_charge'] * hydrogen_G
+                                               )
                             Ef.at[dz, spin] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
@@ -221,17 +213,14 @@ def main():
                             atoms = read(atoms_path)
                             energy_O = atoms.get_total_energy()
                             df_O.at[dz, spin] = energy_O
-                            # adsorption_energy = (energy_O 
-                            #                      - metal_df.at[metal, 'energy'] 
-                            #                      - 26 * carbon_E 
-                            #                      - 4 * nitrogen_G 
-                            #                      - oxygen_G)
-                            adsorption_energy = (energy_O 
-                                                 - metal_df.at[metal, 'energy']
-                                                 + standard_electrode_potentials[metal] 
-                                                 - C26N4_energy 
-                                                 - oxygen_G)
-                            Ef_O.at[dz, spin] = adsorption_energy
+                            formation_energy = (energy_O
+                                                - vacancy[elements_data[metal]['cation_charge']]
+                                                - metal_df.at[metal, 'energy']
+                                                + elements_data[metal]['electrode_potential']
+                                                + elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - oxygen_G
+                                                )
+                            Ef_O.at[dz, spin] = formation_energy
                             energy_O = None
                             try:
                                 magmoms = atoms.get_magnetic_moments()
@@ -259,17 +248,14 @@ def main():
                             atoms = read(atoms_path)
                             energy_OH = atoms.get_total_energy()
                             df_OH.at[dz, spin] = energy_OH
-                            # adsorption_energy = (energy_OH 
-                            #                      - metal_df.at[metal, 'energy'] 
-                            #                      - 26 * carbon_E 
-                            #                      - 4 * nitrogen_G 
-                            #                      - hydroxide_G)
-                            adsorption_energy = (energy_OH 
-                                                 - metal_df.at[metal, 'energy']
-                                                 + standard_electrode_potentials[metal] 
-                                                 - C26N4_energy 
-                                                 - hydroxide_G)
-                            Ef_OH.at[dz, spin] = adsorption_energy
+                            formation_energy = (energy_OH
+                                                - vacancy[elements_data[metal]['cation_charge']]
+                                                - metal_df.at[metal, 'energy']
+                                                + elements_data[metal]['electrode_potential']
+                                                + elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - hydroxide_G
+                                                )
+                            Ef_OH.at[dz, spin] = formation_energy
                             energy_OH = None
                             try:
                                 magmoms = atoms.get_magnetic_moments()
@@ -301,14 +287,12 @@ def main():
                         df_dz_relaxed.at[dz_relaxed, spin] = dz_relaxed
                         energy = atoms.get_total_energy()
                         df_relaxed.at[dz_relaxed, spin] = energy
-                        # formation_energy = (energy 
-                        #                     - metal_df.at[metal, 'energy'] 
-                        #                     - 26 * carbon_E 
-                        #                     - 4 * nitrogen_G)
-                        formation_energy = (energy 
+                        formation_energy = (energy
+                                            - vacancy[elements_data[metal]['cation_charge']]
                                             - metal_df.at[metal, 'energy']
-                                            + standard_electrode_potentials[metal] 
-                                            - C26N4_energy)
+                                            + elements_data[metal]['electrode_potential']
+                                            + elements_data[metal]['cation_charge'] * hydrogen_G
+                                           )
                         Ef_relaxed.at[dz_relaxed, spin] = formation_energy
                         try:
                             magmoms = atoms.get_magnetic_moments()
@@ -329,17 +313,14 @@ def main():
                         df_O_relaxed_dz.at[dz_relaxed, spin] = dz_relaxed
                         energy_O = atoms.get_total_energy()
                         df_O_relaxed.at[dz_relaxed, spin] = energy_O
-                        # adsorption_energy = (energy_O 
-                        #                      - metal_df.at[metal, 'energy'] 
-                        #                      - 26 * carbon_E 
-                        #                      - 4 * nitrogen_G 
-                        #                      - oxygen_G)
-                        adsorption_energy = (energy_O 
-                                             - metal_df.at[metal, 'energy']
-                                             + standard_electrode_potentials[metal] 
-                                             - C26N4_energy 
-                                             - oxygen_G)
-                        Ef_O_relaxed.at[dz_relaxed, spin] = adsorption_energy
+                        formation_energy = (energy_O
+                                            - vacancy[elements_data[metal]['cation_charge']]
+                                            - metal_df.at[metal, 'energy']
+                                            + elements_data[metal]['electrode_potential']
+                                            + elements_data[metal]['cation_charge'] * hydrogen_G
+                                            - oxygen_G
+                                           )
+                        Ef_O_relaxed.at[dz_relaxed, spin] = formation_energy
                         energy = None
                         try:
                             magmoms = atoms.get_magnetic_moments()
@@ -364,17 +345,14 @@ def main():
                         df_OH_relaxed_dz.at[dz_relaxed, spin] = dz_relaxed
                         energy_OH = atoms.get_total_energy()
                         df_OH_relaxed.at[dz_relaxed, spin] = energy_OH
-                        # adsorption_energy = (energy_OH 
-                        #                      - metal_df.at[metal, 'energy'] 
-                        #                      - 26 * carbon_E 
-                        #                      - 4 * nitrogen_G 
-                        #                      - hydroxide_G)
-                        adsorption_energy = (energy_OH 
-                                             - metal_df.at[metal, 'energy']
-                                             + standard_electrode_potentials[metal] 
-                                             - C26N4_energy 
-                                             - hydroxide_G)
-                        Ef_OH_relaxed.at[dz_relaxed, spin] = adsorption_energy
+                        formation_energy = (energy_OH
+                                            - vacancy[elements_data[metal]['cation_charge']]
+                                            - metal_df.at[metal, 'energy']
+                                            + elements_data[metal]['electrode_potential']
+                                            + elements_data[metal]['cation_charge'] * hydrogen_G
+                                            - hydroxide_G
+                                           )
+                        Ef_OH_relaxed.at[dz_relaxed, spin] = formation_energy
                         energy = None
                         try:
                             magmoms = atoms.get_magnetic_moments()
@@ -411,11 +389,12 @@ def main():
                             atoms = read(atoms_path)
                             energy = atoms.get_total_energy()
                             df.at[dz, f'MS({ms})'] = energy
-                            # formation_energy = energy - metal_df.at[metal, 'energy'] - 26 * carbon_E - 4 * nitrogen_G
-                            formation_energy = (energy 
+                            formation_energy = (energy
+                                                - vacancy[elements_data[metal]['cation_charge']]
                                                 - metal_df.at[metal, 'energy']
-                                                + standard_electrode_potentials[metal] 
-                                                - C26N4_energy)
+                                                + elements_data[metal]['electrode_potential']
+                                                + elements_data[metal]['cation_charge'] * hydrogen_G
+                                               )
                             Ef.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
@@ -446,16 +425,13 @@ def main():
                             atoms = read(atoms_path)
                             energy_O = atoms.get_total_energy()
                             df_O.at[dz, f'MS({ms})'] = energy_O
-                            # formation_energy = (energy_O 
-                            #                     - metal_df.at[metal, 'energy'] 
-                            #                     - 26 * carbon_E 
-                            #                     - 4 * nitrogen_G 
-                            #                     - oxygen_G)
-                            formation_energy = (energy_O 
+                            formation_energy = (energy_O
+                                                - vacancy[elements_data[metal]['cation_charge']]
                                                 - metal_df.at[metal, 'energy']
-                                                + standard_electrode_potentials[metal] 
-                                                - C26N4_energy 
-                                                - oxygen_G)
+                                                + elements_data[metal]['electrode_potential']
+                                                + elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - oxygen_G
+                                               )
                             Ef_O.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
@@ -487,16 +463,13 @@ def main():
                             atoms = read(atoms_path)
                             energy_OH = atoms.get_total_energy()
                             df_OH.at[dz, f'MS({ms})'] = energy_OH
-                            # formation_energy = (energy_OH 
-                            #                     - metal_df.at[metal, 'energy'] 
-                            #                     - 26 * carbon_E 
-                            #                     - 4 * nitrogen_G 
-                            #                     - hydroxide_G)
-                            formation_energy = (energy_OH 
+                            formation_energy = (energy_OH
+                                                - vacancy[elements_data[metal]['cation_charge']]
                                                 - metal_df.at[metal, 'energy']
-                                                + standard_electrode_potentials[metal] 
-                                                - C26N4_energy 
-                                                - hydroxide_G)
+                                                + elements_data[metal]['electrode_potential']
+                                                + elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - hydroxide_G
+                                               )
                             Ef_OH.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
