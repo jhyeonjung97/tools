@@ -238,7 +238,7 @@ def scaling(scaling_relationship, metals):
         line = np.poly1d(coeffs[i])
         plt.plot(xx, line(xx), label=f'{dG} (trend)', linestyle='-', color='black')
         equation = f'y = {coeffs[i][0]:.2f}x + {coeffs[i][1]:.2f}'
-        plt.text(0.1, 0.9 if coeffs[i][0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')])
+        plt.text(0.1, 0.9 if coeffs[i][0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
         plt.xlabel('dG_OH (eV)')
         plt.ylabel(f'{dG} (eV)')
         plt.tight_layout()
