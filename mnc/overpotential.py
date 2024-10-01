@@ -181,6 +181,7 @@ def main():
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     volcano(scaling_relationship, rxn='ORR', rds='dGmin', descriptor='dG1', xlabel='OH (dG1)', 
             xmin=-3.0, xmax=2.0, ymin=-4.0, ymax=1.0)
+    
     scaling(scaling_relationship, metals)
 
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
@@ -220,6 +221,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     # Tight layout and save the plot
     plt.tight_layout()
     plt.savefig(f'volcano_{rxn}.png')
+    print(f"Figure saved as volcano_{rxn}.png")
     plt.close()
 
 def scaling(scaling_relationship, metals):
@@ -241,6 +243,7 @@ def scaling(scaling_relationship, metals):
         plt.ylabel(f'{dG} (eV)')
         plt.tight_layout()
         plt.savefig(f'scaling_relationship{i}.png')
+        print(f"Figure saved as scaling_relationship{i}.png")
         plt.close()
         
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overpotential, ymin, ymax):
