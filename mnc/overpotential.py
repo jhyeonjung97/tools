@@ -241,7 +241,7 @@ def scaling(scaling_relationship, metals):
     plt.ylabel(r'$\Delta$G$_{\sf O}$ (eV)')
     plt.tight_layout()
     plt.savefig(f'scaling_relationship{i}.png')
-    print(f"Figure saved as scaling_relationship{i}.png")
+    print(f"Figure saved as scaling_relationship.png")
     plt.close()
         
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overpotential, ymin, ymax):
