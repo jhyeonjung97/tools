@@ -225,26 +225,24 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.close()
 
 def scaling(scaling_relationship, metals):
-    coeffs = {}
     xx = np.linspace(min(scaling_relationship['dG_OH']), max(scaling_relationship['dG_OH']), 100)
-    for i, dG in enumerate(['dG_O', 'dG_OOH']):
-        x = scaling_relationship['dG_OH']
-        y = scaling_relationship[dG]
-        plt.figure(figsize=(4, 3))
-        plt.scatter(x, y, color='black', s=20)
-        for xi, yi, metal in zip(x, y, metals):
-            plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
-        coeffs[i] = np.polyfit(x, y, 1)
-        line = np.poly1d(coeffs[i])
-        plt.plot(xx, line(xx), label=f'{dG} (trend)', linestyle='-', color='black')
-        equation = f'y = {coeffs[i][0]:.2f}x + {coeffs[i][1]:.2f}'
-        plt.text(0.1, 0.9 if coeffs[i][0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
-        plt.xlabel('dG_OH (eV)')
-        plt.ylabel(f'{dG} (eV)')
-        plt.tight_layout()
-        plt.savefig(f'scaling_relationship{i}.png')
-        print(f"Figure saved as scaling_relationship{i}.png")
-        plt.close()
+    x = scaling_relationship['dG_OH']
+    y = scaling_relationship['dG_O']
+    plt.figure(figsize=(4, 3))
+    plt.scatter(x, y, color='black', s=20)
+    for xi, yi, metal in zip(x, y, metals):
+        plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
+    coeffs = np.polyfit(x, y, 1)
+    line = np.poly1d(coeffs)
+    plt.plot(xx, line(xx), label=f'{dG} (trend)', linestyle='-', color='black')
+    equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
+    plt.text(0.1, 0.9 if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
+    plt.xlabel('dG_OH (eV)')
+    plt.ylabel(f'{dG} (eV)')
+    plt.tight_layout()
+    plt.savefig(f'scaling_relationship{i}.png')
+    print(f"Figure saved as scaling_relationship{i}.png")
+    plt.close()
         
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overpotential, ymin, ymax):
     if gibbs_energies.isna().all().all():
