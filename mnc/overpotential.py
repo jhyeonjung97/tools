@@ -195,7 +195,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         y_vals = [-(1.23 - scaling_relationship[f'dG{i+1}']) for i in range(4)]
         
     xx = np.linspace(xmin, xmax, 100)
-    plt.figure(figsize=(4, 3))
+    plt.figure(figsize=(4, 3), dpi=300)
     
     for i in range(4):
         coeffs = np.polyfit(x, y_vals[i], 1)  # Fit a linear trend
@@ -229,7 +229,7 @@ def scaling(scaling_relationship, metals):
     xx = np.linspace(min(scaling_relationship['dG_OH']), max(scaling_relationship['dG_OH']), 100)
     x = scaling_relationship['dG_OH']
     y = scaling_relationship['dG_O']
-    plt.figure(figsize=(4, 3))
+    plt.figure(figsize=(4, 3), dpi=300)
     plt.scatter(x, y, color='black', s=20)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
@@ -253,7 +253,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
         return
     png_filename = f'{row}_{group}{metal}_{rxn}.png'
     marker_size = 0.03
-    fig, ax = plt.subplots(figsize=(4, 3))
+    fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
     plt.xlabel('dz (Å)')
     plt.ylabel(f'{rxn} overpotential (eV)')
     plt.ylim(ymin, ymax)
