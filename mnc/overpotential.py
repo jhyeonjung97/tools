@@ -240,7 +240,7 @@ def scaling(scaling_relationship, metals):
     plt.xlabel(r'$\Delta$G$_{\sf OH}$ (eV)')
     plt.ylabel(r'$\Delta$G$_{\sf O}$ (eV)')
     plt.xlim(-2.5, 1.5)
-    plt.ylim(-3.0, 3.0)
+    plt.ylim(-5.0, 5.0)
     plt.tight_layout()
     plt.savefig('scaling_relationship.png')
     print("Figure saved as scaling_relationship.png")
