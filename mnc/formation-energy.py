@@ -43,6 +43,15 @@ standard_electrode_potentials = {
     "Pt": 1.20    # Pt^2+ + 2e- → Pt
 }
 
+vacancy = {}
+for i in range(9):
+    # path = f"/pscratch/sd/j/jiuy97/6_MNC/empty/{i}_/final_with_calculator.json"
+    path = f"/pscratch/sd/j/jiuy97/6_MNC/empty/2_/final_with_calculator.json"
+    atoms = read(path)
+    vacancy[i] = atoms.get_total_energy()
+    
+print(vacancy)
+    
 # spins = {'LS': '#ffe2cc', 'IS': '#cceaff', 'HS': '#e8dff2'}
 spins = {'LS': '#ffd199', 'IS': '#a8d9f9', 'HS': '#d5c8e4'}
 min_spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
