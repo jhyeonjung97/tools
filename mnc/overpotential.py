@@ -181,56 +181,69 @@ def main():
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     volcano(scaling_relationship, rxn='ORR', rds='dGmin', descriptor='dG1', xlabel='OH (dG1)', 
             xmin=-3.0, xmax=2.0, ymin=-4.0, ymax=1.0)
+    scaling(scaling_relationship, metals)
 
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
     x = scaling_relationship[descriptor]
     y = -scaling_relationship[rxn]
-
+    
     if rxn == 'OER':
         y_vals = [-(scaling_relationship[f'dG{i+1}'] - 1.23) for i in range(4)]
     elif rxn == 'ORR':
         y_vals = [-(1.23 - scaling_relationship[f'dG{i+1}']) for i in range(4)]
-
-    coeffs = {}
+        
     xx = np.linspace(xmin, xmax, 100)
-
-    for i in range(4):
-        plt.figure(figsize=(4, 3))
-        plt.scatter(x, y_vals[i], color='black', s=20)
-        for xi, yi, metal in zip(x, y_vals[i], metals):
-            plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
-        coeffs[i] = np.polyfit(x, y_vals[i], 1)
-        line = np.poly1d(coeffs[i])
-        plt.plot(xx, line(xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
-        equation = f'y = {coeffs[i][0]:.2f}x + {coeffs[i][1]:.2f}'
-        plt.text(0.1, 0.9 if coeffs[i][0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color=colors[i])
-        plt.xlabel(xlabel)
-        plt.ylabel(f'overpotential from dG{i+1} (eV)')
-        plt.tight_layout()
-        plt.savefig(f'scaling_relationship_{rxn}{i}.png')
-        plt.close()
-
     plt.figure(figsize=(4, 3))
+    
     for i in range(4):
-        plt.plot(xx, np.poly1d(coeffs[i])(xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
-    plt.scatter(x, y, color='black', s=20, zorder=3)
-    for xi, yi, metal in zip(x, y, metals):
+        coeffs = np.polyfit(x, y_vals[i], 1)  # Fit a linear trend
+        trendline = np.poly1d(coeffs)
+        plt.plot(xx, trendline(xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
+        
+    plt.scatter(x, -scaling_relationship[rxn], color='black', s=20, zorder=3)  # Activity vs. Descriptor
+    
+    # Annotate the points with metal labels
+    for xi, yi, metal in zip(x, -scaling_relationship[rxn], metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
+
+    # Format axes and limits
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
+    
+    # Set labels and legend
     plt.xlabel(xlabel)
-    plt.ylabel(f'{rxn} activity (-Ƞ, eV)')
+    plt.ylabel(f'{rxn} activity (-η, eV)')
     plt.legend(labelspacing=0.3)
+    
+    # Tight layout and save the plot
     plt.tight_layout()
     plt.savefig(f'volcano_{rxn}.png')
     plt.close()
 
+def scaling(scaling_relationship, metals):
+    coeffs = {}
+    xx = np.linspace(min(scaling_relationship['dG_OH']), max(scaling_relationship['dG_OH']), 100)
+    for i, dG in enumerate(['dG_O', 'dG_OOH']):
+        x = scaling_relationship['dG_OH']
+        y = scaling_relationship[dG]
+        plt.figure(figsize=(4, 3))
+        plt.scatter(x, y, color='black', s=20)
+        for xi, yi, metal in zip(x, y, metals):
+            plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
+        coeffs[i] = np.polyfit(x, y, 1)
+        line = np.poly1d(coeffs[i])
+        plt.plot(xx, line(xx), label=f'{dG} (trend)', linestyle='-', color='black')
+        equation = f'y = {coeffs[i][0]:.2f}x + {coeffs[i][1]:.2f}'
+        plt.text(0.1, 0.9 if coeffs[i][0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')])
+        plt.xlabel('dG_OH (eV)')
+        plt.ylabel(f'{dG} (eV)')
+        plt.tight_layout()
+        plt.savefig(f'scaling_relationship{i}.png')
+        plt.close()
+        
 def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overpotential, ymin, ymax):
-    """
-    Generates a plot for the specified reaction and saves it as a PNG file.
-    """
     if gibbs_energies.isna().all().all():
         print("Dataframe contains only NaN values, skipping plot.")
         return
