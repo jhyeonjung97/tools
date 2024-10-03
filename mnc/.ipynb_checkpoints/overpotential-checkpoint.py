@@ -285,7 +285,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
                         plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_O, color2=color_OOH)
                     elif dGrds == 'dG4':
                         plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OOH, color2=color_)
-                elif rxn == 'ORR'
+                elif rxn == 'ORR':
                     if dGrds == 'dG1':
                         plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_, color2=color_OOH)
                     elif dGrds == 'dG2':
