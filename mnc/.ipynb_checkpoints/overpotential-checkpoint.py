@@ -160,11 +160,11 @@ def main():
         spin_cross_over.to_csv(f'{row}_{group}{metal}_spin.tsv', sep='\t')
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
-        # plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-        #          rxn='OER', rds='dGmax', overpotential=OER, ymin=0.2, ymax=1.4)
-        # plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-        #          rxn='ORR', rds='dGmin', overpotential=ORR, ymin=0.2, ymax=1.4)
-        # print(f"Figures saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
+        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+                 rxn='OER', rds='dGmax', overpotential=OER, ymin=0.2, ymax=1.4)
+        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+                 rxn='ORR', rds='dGmin', overpotential=ORR, ymin=0.2, ymax=1.4)
+        print(f"Figures saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
     
     scaling_relationship['G_'] = scaling_relationship['G_']
     scaling_relationship['G_OH'] = scaling_relationship['G_OH'] + OH_corr
