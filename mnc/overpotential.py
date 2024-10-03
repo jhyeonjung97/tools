@@ -14,7 +14,7 @@ groups = ['5', '6', '7', '8', '4', '4']
 metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
 adsorbates = ['clean', 'O', 'OH']
 # colors = ['#FFC3BD', '#A8E6A1', '#FFD92F', '#A0C8F8']
-colors = ['blue', 'orange', 'green', 'red']
+colors = ['blue', 'green', 'orange', 'red', 'purple', 'grey']
 ms_colors = {'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
 
 # Water and hydrogen properties
@@ -230,7 +230,7 @@ def scaling(scaling_relationship, metals):
     x = scaling_relationship['dG_OH']
     y = scaling_relationship['dG_O']
     plt.figure(figsize=(4, 3), dpi=300)
-    plt.scatter(x, y, color='black', s=20)
+    plt.scatter(x, y, c=colors, s=20)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
     coeffs = np.polyfit(x, y, 1)
