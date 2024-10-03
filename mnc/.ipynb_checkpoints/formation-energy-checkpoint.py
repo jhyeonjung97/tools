@@ -86,6 +86,8 @@ metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 def main():
     for row_key, metals in rows.items():
         for m, metal in enumerate(metals):
+            if metal != 'Ti' and metal != 'Mn' and metal != 'Co':
+                continue
             df = pd.DataFrame()
             Ef = pd.DataFrame()
             df_dz = pd.DataFrame()
