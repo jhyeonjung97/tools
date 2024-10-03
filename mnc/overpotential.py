@@ -24,6 +24,7 @@ adsorbates = ['clean', 'O', 'OH']
 # colors = ['#FFC3BD', '#A8E6A1', '#FFD92F', '#A0C8F8']
 colors = ['blue', 'green', 'orange', 'red', 'purple', 'grey']
 ms_colors = {'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
+replacement_map = {'dG1': 'dG4', 'dG2': 'dG3', 'dG3': 'dG2', 'dG4': 'dG1'}
 
 # Water and hydrogen properties
 water_E = -14.23797429
@@ -143,7 +144,8 @@ def main():
             gibbs_energies['dGmin'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
         else:
             gibbs_energies[['OER', 'ORR', 'dGmax', 'dGmin']] = None
-            
+        gibbs_energies['dGmin'] = gibbs_energies['dGmin'].apply(lambda x: replacement_map.get(x, x))
+        
         gibbs_energies = gibbs_energies.set_index(energies['clean'].index)
 
         OER = max(dG1, dG2, dG3, dG4) - 1.23
@@ -184,7 +186,8 @@ def main():
         scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
     else:
         scaling_relationship[['OER', 'ORR', 'dGmax', 'dGmin']] = None
-        
+    scaling_relationship['dGmin'] = scaling_relationship['dGmin'].apply(lambda x: replacement_map.get(x, x))
+    
     scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
     volcano(scaling_relationship, rxn='OER', rds='dGmax', descriptor='dG2', xlabel='O-OH (dG2)', 
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
