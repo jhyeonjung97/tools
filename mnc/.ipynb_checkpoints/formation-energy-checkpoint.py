@@ -577,7 +577,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     if df.isna().all().all():
         print("df contains only NaN values, skipping plot.")
         return    
-    plt.figure(figsize=(4, 3.2), dpi=300)
+    plt.figure(figsize=(3.8, 3.2), dpi=300)
     df_smooth_y = pd.DataFrame()
     for column in df.columns:
         filtered_df = df[column].dropna()
