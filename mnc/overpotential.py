@@ -256,7 +256,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
     marker_size = 0.03
     fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
     plt.xlabel('dz (Å)', fontsize='large')
-    plt.ylabel(f'{rxn} overpotential (eV)', fontsize='large')
+    plt.ylabel(rf'$\eta_{{\sf {rxn}}}$ (V)', fontsize='large')
     plt.ylim(ymin, ymax)
     plt.yticks(np.arange(ymin, ymax+0.2, 0.2))
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
