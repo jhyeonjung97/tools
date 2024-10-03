@@ -276,15 +276,25 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
                 color_OOH = 'white'
                 dGrds = gibbs_energies.loc[xi, rds]
 
-                if dGrds == 'dG1':
-                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_, color2=color_OH)
-                elif dGrds == 'dG2':
-                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OH, color2=color_O)
-                elif dGrds == 'dG3':
-                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_O, color2=color_OOH)
-                elif dGrds == 'dG4':
-                    plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OOH, color2=color_)
-                
+                if rxn == 'OER':
+                    if dGrds == 'dG1':
+                        plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_, color2=color_OH)
+                    elif dGrds == 'dG2':
+                        plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OH, color2=color_O)
+                    elif dGrds == 'dG3':
+                        plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_O, color2=color_OOH)
+                    elif dGrds == 'dG4':
+                        plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OOH, color2=color_)
+                elif rxn == 'ORR'
+                    if dGrds == 'dG1':
+                        plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_, color2=color_OOH)
+                    elif dGrds == 'dG2':
+                        plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OOH, color2=color_O)
+                    elif dGrds == 'dG3':
+                        plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_O, color2=color_OH)
+                    elif dGrds == 'dG4':
+                        plot_two_color_marker(ax, xi, yi, size=marker_size, color1=color_OH, color2=color_)
+                        
                 ax.annotate(dGrds, (xi, yi), textcoords="offset points", xytext=(0, 6), ha='center', color='black')
         except ValueError as e:
             print(f"Error while creating spline: {e}")    
