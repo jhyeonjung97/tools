@@ -500,7 +500,7 @@ def main():
             plotting(df=df, df_relaxed=df_relaxed, dzs=dzs, spins=spins, 
                      ylabel='Energy (eV)', png_filename=png_filename)
             plotting(df=Ef, df_relaxed=Ef_relaxed, dzs=dzs, spins=spins, 
-                     ylabel=r'E$_{\sf f}$', png_filename=png_Ef_filename)
+                     ylabel=r'E$_{\sf f}$ (eV)', png_filename=png_Ef_filename)
             plotting(df=df_dz, df_relaxed=df_dz_relaxed, dzs=dzs, spins=spins, 
                      ylabel='dz (Å)', png_filename=png_dz_filename)
             # plotting(df=df_rel, df_relaxed=df_relaxed_rel, dzs=dzs, spins=spins, color='black', 
