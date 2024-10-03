@@ -248,6 +248,8 @@ def scaling(scaling_relationship, metals):
     plt.text(0.1, 0.8 if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
     plt.xlabel(r'$\Delta$G$_{\sf OH}$ (eV)', fontsize='large')
     plt.ylabel(r'$\Delta$G$_{\sf O}$ (eV)', fontsize='large')
+    plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.xlim(-2.5, 1.5)
     plt.ylim(-4.5, 4.5)
     plt.tight_layout()
