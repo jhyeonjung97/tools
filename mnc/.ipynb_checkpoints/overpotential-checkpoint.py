@@ -12,6 +12,7 @@ inches_per_pt = 1.0 / 72.27
 golden_mean = (np.sqrt(5) - 1.0) / 2.0
 fig_width = fig_width_pt * inches_per_pt
 fig_height = fig_width * golden_mean
+print(fig_width, fig_height)
 
 # Constants for Gibbs energy calculations
 OERs = ['H2O->*OH', '*OH->*O', '*O->*OOH', '*OOH->O2']
@@ -236,7 +237,7 @@ def scaling(scaling_relationship, metals):
     xx = np.linspace(min(scaling_relationship['dG_OH']), max(scaling_relationship['dG_OH']), 100)
     x = scaling_relationship['dG_OH']
     y = scaling_relationship['dG_O']
-    plt.figure(figsize=(7.4, 6), dpi=300)
+    plt.figure(figsize=(fig_width, fig_height), dpi=300)
     plt.scatter(x, y, c=colors, s=20)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
