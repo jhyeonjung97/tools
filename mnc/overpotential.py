@@ -196,38 +196,26 @@ def main():
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
     x = scaling_relationship[descriptor]
     y = -scaling_relationship[rxn]
-    
     if rxn == 'OER':
         y_vals = [-(scaling_relationship[f'dG{i+1}'] - 1.23) for i in range(4)]
     elif rxn == 'ORR':
         y_vals = [-(1.23 - scaling_relationship[f'dG{i+1}']) for i in range(4)]
-        
     xx = np.linspace(xmin, xmax, 100)
     plt.figure(figsize=(4, 3), dpi=300)
-    
     for i in range(4):
         coeffs = np.polyfit(x, y_vals[i], 1)  # Fit a linear trend
         trendline = np.poly1d(coeffs)
         plt.plot(xx, trendline(xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
-        
     plt.scatter(x, -scaling_relationship[rxn], color='black', s=20, zorder=3)  # Activity vs. Descriptor
-    
-    # Annotate the points with metal labels
     for xi, yi, metal in zip(x, -scaling_relationship[rxn], metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
-
-    # Format axes and limits
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
-    
-    # Set labels and legend
     plt.xlabel(xlabel)
     plt.ylabel(f'{rxn} activity (-η, eV)')
     plt.legend(labelspacing=0.3)
-    
-    # Tight layout and save the plot
     plt.tight_layout()
     plt.savefig(f'volcano_{rxn}.png')
     print(f"Figure saved as volcano_{rxn}.png")
@@ -245,7 +233,7 @@ def scaling(scaling_relationship, metals):
     line = np.poly1d(coeffs)
     plt.plot(xx, line(xx), label=r'$\Delta$G$_{\sf O}$ (trend)', linestyle='-', color='black')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
-    plt.text(0.1, 0.8 if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize='large', color='black')
+    plt.text(0.1, 0.8 if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
     plt.xlabel(r'$\Delta$G$_{\sf OH}$ (eV)', fontsize='large')
     plt.ylabel(r'$\Delta$G$_{\sf O}$ (eV)', fontsize='large')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))

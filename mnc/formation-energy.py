@@ -575,7 +575,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     if df.isna().all().all():
         print("df contains only NaN values, skipping plot.")
         return    
-    plt.figure(figsize=(4, 3))
+    plt.figure(figsize=(5, 4), dpi=300)
     df_smooth_y = pd.DataFrame()
     for column in df.columns:
         filtered_df = df[column].dropna()
@@ -611,12 +611,14 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             x = filtered_df.index
             y = filtered_df.values
             plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), zorder=3)
+            for xi, yi in zip(x, y):
+                plt.annotate(f'{xi}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
     if color:
         plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
         plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
     plt.xticks(dzs)
-    plt.xlabel('dz (Å)')
-    plt.ylabel(ylabel)
+    plt.xlabel('dz (Å)', fontsize='large')
+    plt.ylabel(ylabel, fontsize='large')
     if ymin and ymax:
         plt.ylim(ymin, ymax)
     if yticks is not None:
