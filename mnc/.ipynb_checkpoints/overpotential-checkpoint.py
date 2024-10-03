@@ -216,8 +216,8 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
-    plt.xlabel(xlabel)
-    plt.ylabel(f'{rxn} activity (-η, eV)')
+    plt.xlabel(xlabel, fontsize='large')
+    plt.ylabel(f'{rxn} activity (-η, eV)', fontsize='large')
     plt.legend(labelspacing=0.3)
     plt.tight_layout()
     plt.savefig(f'volcano_{rxn}.png')
@@ -255,8 +255,8 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
     png_filename = f'{row}_{group}{metal}_{rxn}.png'
     marker_size = 0.03
     fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
-    plt.xlabel('dz (Å)')
-    plt.ylabel(f'{rxn} overpotential (eV)')
+    plt.xlabel('dz (Å)', fontsize='large')
+    plt.ylabel(f'{rxn} overpotential (eV)', fontsize='large')
     plt.ylim(ymin, ymax)
     plt.yticks(np.arange(ymin, ymax+0.2, 0.2))
     filtered_gibbs_energies = gibbs_energies[rxn].dropna()
