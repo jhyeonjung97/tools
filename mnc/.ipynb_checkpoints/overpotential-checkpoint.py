@@ -158,11 +158,11 @@ def main():
         spin_cross_over.to_csv(f'{row}_{group}{metal}_spin.tsv', sep='\t')
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
-        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn='OER', rds='dGmax', overpotential=OER, ymin=0.2, ymax=1.4)
-        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn='ORR', rds='dGmin', overpotential=ORR, ymin=0.2, ymax=1.4)
-        print(f"Figures saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
+        # plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+        #          rxn='OER', rds='dGmax', overpotential=OER, ymin=0.2, ymax=1.4)
+        # plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+        #          rxn='ORR', rds='dGmin', overpotential=ORR, ymin=0.2, ymax=1.4)
+        # print(f"Figures saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
     
     scaling_relationship['G_'] = scaling_relationship['G_']
     scaling_relationship['G_OH'] = scaling_relationship['G_OH'] + OH_corr
@@ -237,7 +237,7 @@ def scaling(scaling_relationship, metals):
     xx = np.linspace(min(scaling_relationship['dG_OH']), max(scaling_relationship['dG_OH']), 100)
     x = scaling_relationship['dG_OH']
     y = scaling_relationship['dG_O']
-    plt.figure(figsize=(fig_width, fig_height), dpi=300)
+    plt.figure(figsize=(4.75, fig_height), dpi=300)
     plt.scatter(x, y, c=colors, s=20)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
@@ -246,8 +246,8 @@ def scaling(scaling_relationship, metals):
     plt.plot(xx, line(xx), label=r'$\Delta$G$_{\sf O}$ (trend)', linestyle='-', color='black')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
     plt.text(0.1, 0.8 if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
-    plt.xlabel(r'$\Delta$G$_{\sf OH}$ (eV)')
-    plt.ylabel(r'$\Delta$G$_{\sf O}$ (eV)')
+    plt.xlabel(r'$\Delta$G$_{\sf OH}$ (eV)', fontsize='large')
+    plt.ylabel(r'$\Delta$G$_{\sf O}$ (eV)', fontsize='large')
     plt.xlim(-2.5, 1.5)
     plt.ylim(-4.5, 4.5)
     plt.tight_layout()
