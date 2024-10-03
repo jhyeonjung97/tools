@@ -658,7 +658,7 @@ if __name__ == '__main__':
                label='HS (fixed, w/o nupdown)', markersize=8, linestyle='None'),
     ]
     fig, ax = plt.subplots()
-    ax.legend(handles=custom_legend)
+    ax.legend(handles=custom_legend, ncol=3)
     ax.axis('off')
     png_filename = "custom_legend_markers_only.png"  # Update with your file path
     plt.savefig(png_filename, bbox_inches="tight")
