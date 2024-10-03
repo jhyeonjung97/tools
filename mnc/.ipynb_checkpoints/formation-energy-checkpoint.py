@@ -86,8 +86,6 @@ metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 def main():
     for row_key, metals in rows.items():
         for m, metal in enumerate(metals):
-            if metal != 'X':
-                continue
             df = pd.DataFrame()
             Ef = pd.DataFrame()
             df_dz = pd.DataFrame()
@@ -634,7 +632,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     plt.close()
 
 if __name__ == '__main__':
-    main()
+    # main()
     custom_legend = [
         Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#ff7f0e', 
                label='LS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
