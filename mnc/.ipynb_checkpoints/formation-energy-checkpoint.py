@@ -86,8 +86,6 @@ metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 def main():
     for row_key, metals in rows.items():
         for m, metal in enumerate(metals):
-            if not metal == 'Ti':
-                exit()
             df = pd.DataFrame()
             Ef = pd.DataFrame()
             df_dz = pd.DataFrame()
@@ -577,7 +575,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     if df.isna().all().all():
         print("df contains only NaN values, skipping plot.")
         return    
-    plt.figure(figsize=(4, 3.5), dpi=300)
+    plt.figure(figsize=(4, 3.2), dpi=300)
     df_smooth_y = pd.DataFrame()
     for column in df.columns:
         filtered_df = df[column].dropna()
