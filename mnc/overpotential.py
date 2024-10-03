@@ -237,7 +237,7 @@ def scaling(scaling_relationship, metals):
     xx = np.linspace(min(scaling_relationship['dG_OH']), max(scaling_relationship['dG_OH']), 100)
     x = scaling_relationship['dG_OH']
     y = scaling_relationship['dG_O']
-    plt.figure(figsize=(4.8, fig_height), dpi=300)
+    plt.figure(figsize=(4.7, fig_height), dpi=300)
     plt.scatter(x, y, c=colors, s=20)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
