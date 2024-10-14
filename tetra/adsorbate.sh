@@ -24,13 +24,13 @@ do
     # Case where 'restart-o.json' exists (single file case)
     if [[ -f restart-o.json ]]; then
         mkdir -p o oh
-        cp ./restart-o.json o/
-        cp ./restart-oh.json oh/
+        cp ./restart-o.json o/restart.json
+        cp ./restart-oh.json oh/restart.json
         cp ~/bin/tools/tetra/submit-slab.sh o/submit.sh
         cp ~/bin/tools/tetra/submit-slab.sh oh/submit.sh
         # Update jobname in both directories' submit.sh
-        sed -i -e "s/jobname/$coord$row$numb/" o/submit.sh
-        sed -i -e "s/jobname/$coord$row$numb/" oh/submit.sh
+        sed -i -e "s/jobname/${coord}${row}${numb}o/" o/submit.sh
+        sed -i -e "s/jobname/${coord}${row}${numb}oh/" oh/submit.sh
 
     # Case where 'restart-o1.json' and 'restart-o2.json' exist (multi-file case)
     elif [[ -f restart-o1.json ]] && [[ -f restart-o2.json ]]; then
@@ -38,15 +38,15 @@ do
         mkdir -p o1 o2 oh1 oh2
         
         # Copy restart files to the appropriate directories
-        cp ./restart-o1.json o1/
-        cp ./restart-o2.json o2/
-        cp ./restart-oh1.json oh1/
-        cp ./restart-oh2.json oh2/
+        cp ./restart-o1.json o1/restart.json
+        cp ./restart-o2.json o2/restart.json
+        cp ./restart-oh1.json oh1/restart.json
+        cp ./restart-oh2.json oh2/restart.json
         
         # Loop through directories and copy submit scripts, then update jobname
         for d in o1 o2 oh1 oh2; do
             cp ~/bin/tools/tetra/submit-slab.sh "$d/submit.sh"
-            sed -i -e "s/jobname/$coord$row$numb/" "$d/submit.sh"
+            sed -i -e "s/jobname/${coord}${row}${numb}${d}/" "$d/submit.sh"
         done
 
     # If no restart files are found, report an error
