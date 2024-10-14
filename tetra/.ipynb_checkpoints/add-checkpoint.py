@@ -53,7 +53,7 @@ for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
             add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
 
         elif '3_SquarePlanar_TN' in dir:
-            bond_vector = (0.0, 0.5, 2.0)
+            bond_vector = atoms[oxygen_indices[-4]].position - atoms[metal_indices[-8]].position
             oxygen_positions = [atoms[metal_indices[-4]].position + bond_vector,
                                 atoms[metal_indices[-3]].position + bond_vector]
             hydrogen_positions = [pos + (-1.0, 0.0, 0.0) for pos in oxygen_positions]
@@ -61,7 +61,7 @@ for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
             
             # Reset atoms and perform the second operation
             atoms = read('restart.json')
-            bond_vector = atoms[oxygen_indices[-4]].position - atoms[metal_indices[-8]].position
+            bond_vector = (0.0, 0.5, 2.0)
             oxygen_positions = [atoms[metal_indices[-2]].position + bond_vector,
                                 atoms[metal_indices[-1]].position + bond_vector]
             hydrogen_positions = [pos + (-1.0, 0.0, 0.0) for pos in oxygen_positions]
