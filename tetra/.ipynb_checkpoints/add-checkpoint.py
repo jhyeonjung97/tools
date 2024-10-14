@@ -3,7 +3,15 @@ import glob
 from ase import Atoms
 from ase.io import read, write
 
-def add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, o_file, oh_file):
+def add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, z_addition, o_file, oh_file):
+    l1 = atoms.cell.lengths()[0]
+    l2 = atoms.cell.lengths()[1]
+    l3 = atoms.cell.lengths()[2]
+    a1 = atoms.cell.angles()[0]
+    a2 = atoms.cell.angles()[1]
+    a3 = atoms.cell.angles()[2]
+    atoms.cell = (l1, l2, l3+z_addition, a1, a2, a3)
+    
     # Add oxygen atoms
     for position in oxygen_positions:
         atoms += Atoms('O', positions=[position])
@@ -41,24 +49,23 @@ for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
     try:
         if '1_Tetrahedral_WZ' in dir:
             bond_vector = atoms[oxygen_indices[-2]].position - atoms[metal_indices[-3]].position
-            atoms.cell.cellpar()[2] += bond_vector[2]
             oxygen_positions = [atoms[metal_indices[-1]].position + bond_vector]
             hydrogen_positions = [oxygen_positions[0] + (0.0, 1.0, 0.0)]
-            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o.json', 'restart-oh.json')
         
         elif '2_Tetrahedral_ZB' in dir:
             bond_vector = atoms[oxygen_indices[-2]].position - atoms[metal_indices[-4]].position
             oxygen_positions = [atoms[metal_indices[-2]].position + bond_vector,
                                 atoms[metal_indices[-1]].position + bond_vector]
             hydrogen_positions = [pos + (-0.7, 0.7, 0.0) for pos in oxygen_positions]
-            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o.json', 'restart-oh.json')
 
         # elif '3_SquarePlanar_TN' in dir:
         #     bond_vector = atoms[oxygen_indices[-4]].position - atoms[metal_indices[-8]].position
         #     oxygen_positions = [atoms[metal_indices[-4]].position + bond_vector,
         #                         atoms[metal_indices[-3]].position + bond_vector]
         #     hydrogen_positions = [pos + (-1.0, 0.0, 0.0) for pos in oxygen_positions]
-        #     add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o1.json', 'restart-oh1.json')
+        #     add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o1.json', 'restart-oh1.json')
             
         #     # Reset atoms and perform the second operation
         #     atoms = read('restart.json')
@@ -66,13 +73,13 @@ for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
         #     oxygen_positions = [atoms[metal_indices[-2]].position + bond_vector,
         #                         atoms[metal_indices[-1]].position + bond_vector]
         #     hydrogen_positions = [pos + (-1.0, 0.0, 0.0) for pos in oxygen_positions]
-        #     add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o2.json', 'restart-oh2.json')
+        #     add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o2.json', 'restart-oh2.json')
 
         elif '4_SquarePlanar_PD' in dir:
             bond_vector = (0.7, 0.0, 2.2)
             oxygen_positions = [atoms[metal_indices[-1]].position + bond_vector]
             hydrogen_positions = [oxygen_positions[0] + (0.0, 1.0, 0.0)]
-            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o1.json', 'restart-oh1.json')
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o1.json', 'restart-oh1.json')
 
             atoms = read('restart.json')
             if '02_Hf' in dir or '03_Ta' in dir:
@@ -81,25 +88,25 @@ for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
                 bond_vector = atoms[oxygen_indices[-2]].position - atoms[metal_indices[-4]].position
             oxygen_positions = [atoms[metal_indices[-2]].position + bond_vector]
             hydrogen_positions = [oxygen_positions[0] + (0.0, 1.0, 0.0)]
-            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o2.json', 'restart-oh2.json')
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o2.json', 'restart-oh2.json')
 
         elif '5_SquarePlanar_NB' in dir:
-            bond_vector = (0.0, 0.0, atoms[oxygen_indices[-1]].z - atoms[metal_indices[-3]].z)
+            bond_vector = (0.0, 0.0, atoms[oxygen_indices[-1]].position[2] - atoms[metal_indices[-3]].position[2])
             oxygen_positions = [atoms[metal_indices[-2]].position + bond_vector,
                                 atoms[metal_indices[-1]].position + bond_vector]
             hydrogen_positions = [pos + (-0.7, 0.7, 0.0) for pos in oxygen_positions]
-            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o.json', 'restart-oh.json')
 
         elif '6_Octahedral_RS' in dir:
             oxygen_positions = [atoms[metal_indices[-2]].position + (0.0, 0.0, 2.5),
                                 atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
             hydrogen_positions = [pos + (-0.7, 0.7, 0.0) for pos in oxygen_positions]
-            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o.json', 'restart-oh.json')
 
         elif '7_Pyramidal_LT' in dir:
             oxygen_positions = [atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
             hydrogen_positions = [oxygen_positions[0] + (0.0, 1.0, 0.0)]
-            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o.json', 'restart-oh.json')
 
         print(f'Saved json files in {dir}')
     except Exception as e:
