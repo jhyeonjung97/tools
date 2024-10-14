@@ -15,7 +15,7 @@ do
     # Skip directories where 'numb' ends with 'x', 'z', or 's'
     if [[ $numb == *x ]] || [[ $numb == *z ]] || [[ $numb == *s ]]; then
         continue
-    elif [[ $coord == '8_Tetrahedral_AQ' ]] || [[ $coord == '9_SquarePlanar_AU' ]]; then
+    elif [[ $coord == 'AQ' ]] || [[ $coord == 'AU' ]]; then
         continue
     else
         pwd
