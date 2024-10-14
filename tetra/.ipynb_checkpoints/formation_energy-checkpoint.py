@@ -81,9 +81,9 @@ for element, data in nist.items():
     data['E_oxide'] = oxide_df.loc[element, 'energy'] # - oxide_df.loc[element, 'TS'] + oxide_df.loc[element, 'ZPE']
     data['E_metal'] = data['E_oxide'] - data['H_form'] - data['OtoM'] * Ref_O
 
-for i, metal in enumerate(metal_rows['3d']):
-    if metal in nist:
-        min_values.loc[metal] = nist[metal]['E_metal']
+# for i, metal in enumerate(metal_rows['3d']):
+#     if metal in nist:
+#         min_values.loc[metal] = nist[metal]['E_metal']
 # df.insert(0, '3d', min_values)
 # df.to_csv('/pscratch/sd/j/jiuy97/3_V_bulk/metal/corrected_norm_energy.tsv', sep='\t', float_format='%.2f')
 
