@@ -99,7 +99,7 @@ def get_kpoints(atoms, effective_length=effective_length, bulk=False):
     return((nkx, nky, nkz))
 
 nbands = get_bands(atoms)
-kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
+kpoints = get_kpoints(atoms, effective_length=25, bulk=False)
 
 atoms.calc = vasp_calculator.Vasp(
                     encut=600,
@@ -131,7 +131,7 @@ atoms.calc = vasp_calculator.Vasp(
                     ldau=True,
                     ldautype=2,
                     laechg=True,
-                    lreal='False',
+                    lreal='Auto',
                     lasph=True, 
                     ldau_luj=ldau_luj,
                     ldauprint=2,
@@ -142,7 +142,7 @@ atoms.calc = vasp_calculator.Vasp(
                     idipol=3,
                     dipol=(0.5, 0.5, 0.5),
                     # ldipol=True
-                    nupdown=0
+                    # nupdown=0
                     )
 
 energy = atoms.get_potential_energy()
