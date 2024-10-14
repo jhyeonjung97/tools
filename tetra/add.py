@@ -42,7 +42,7 @@ for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
         if '1_Tetrahedral_WZ' in dir:
             bond_vector = atoms[oxygen_indices[-2]].position - atoms[metal_indices[-3]].position
             oxygen_positions = [atoms[metal_indices[-1]].position + bond_vector]
-            hydrogen_positions = [atoms[-1].position + (-1.0, 0.0, 0.0)]
+            hydrogen_positions = [oxygen_positions + (-1.0, 0.0, 0.0)]
             add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
         
         elif '2_Tetrahedral_ZB' in dir:
