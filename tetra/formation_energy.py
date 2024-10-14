@@ -48,6 +48,7 @@ exp_df = pd.read_csv(exp_path, delimiter='\t')
 metal_df = pd.read_csv(metal_path, delimiter='\t').iloc[:, 1:]
 oxide_df = pd.read_csv(oxide_path, delimiter='\t').iloc[:, 1:]
 df = pd.read_csv(path, delimiter='\t').iloc[:, 1:]
+print(df)
 
 exp_df['dH_form'] = exp_df['dH_form'] / 96.48
 metal_df.index = list(nist.keys())
@@ -56,7 +57,7 @@ df.index = metal_rows['3d']
 
 min_values = df.iloc[:, :3].min(axis=1)
 df = df.iloc[:, 3:]
-print(df)
+
 E_H2O = -14.23919983
 E_H2 = -6.77409008
 
