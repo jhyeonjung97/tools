@@ -11,14 +11,18 @@ do
 
     # Move to the current directory, skip if it fails
     cd "$dir" || { echo "Failed to change directory to $dir"; continue; }
-    pwd
 
     # Skip directories where 'numb' ends with 'x', 'z', or 's'
     if [[ $numb == *x ]] || [[ $numb == *z ]] || [[ $numb == *s ]]; then
         continue
+    elif [[ $coord == '8_Tetrahedral_AQ' ]] || [[ $coord == '9_SquarePlanar_AU' ]]; then
+        continue
+    else
+        pwd
+    fi
 
     # Case where 'restart-o.json' exists (single file case)
-    elif [[ -f restart-o.json ]]; then
+    if [[ -f restart-o.json ]]; then
         mkdir -p o oh
         cp ./restart-o.json o/
         cp ./restart-oh.json oh/
