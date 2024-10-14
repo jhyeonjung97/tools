@@ -3,98 +3,93 @@ import glob
 from ase import Atoms
 from ase.io import read, write
 
-def main():
-    # Loop through directories
-    for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
-        # Skip directories with specific patterns in their names
-        if 'x_' in dir or 's_' in dir or 'z_' in dir:
-            continue
-        if '8_Tetrahedral_AQ' in dir or '9_SquarePlanar_AU' in dir:
-            continue
-        
-        # Change to the current directory
-        os.chdir(dir)
+def add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, o_file, oh_file):
+    # Add oxygen atoms
+    for position in oxygen_positions:
+        atoms += Atoms('O', positions=[position])
+    write(o_file, atoms)
+    
+    # Add hydrogen atoms
+    for position in hydrogen_positions:
+        atoms += Atoms('H', positions=[position])
+    write(oh_file, atoms)
 
-        # Check if the 'DONE' file exists
-        if not os.path.exists('DONE'):
-            print(f"'DONE' file missing in directory: {dir}")
-            continue
+# Loop through directories
+for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
+    # Skip directories with specific patterns in their names
+    if any(x in dir for x in ['x_', 's_', 'z_', '8_Tetrahedral_AQ', '9_SquarePlanar_AU']):
+        continue
+    
+    # Change to the current directory
+    os.chdir(dir)
 
-        # Read the atoms object from the file
+    # Check if the 'DONE' file exists
+    if not os.path.exists('DONE'):
+        print(f"'DONE' file missing in directory: {dir}")
+        continue
+
+    # Read the atoms object from the file
+    try:
         atoms = read('restart.json')
-        
-        # Assign marker and color based on the directory name and perform the respective operations
-        metal_indices = [atom.index for atom in atoms if atom.symbol != 'O']
-        
+    except Exception as e:
+        print(f"Error reading 'restart.json' in {dir}: {e}")
+        continue
+    
+    metal_indices = [atom.index for atom in atoms if atom.symbol != 'O']
+    oxygen_indices = [atom.index for atom in atoms if atom.symbol == 'O']
+    
+    try:
         if '1_Tetrahedral_WZ' in dir:
-            atoms += Atoms('O', positions=[atoms[metal_indices[-1]].position + (-0.7, 0.0, 2.0)])
-            write('restart-o.json', atoms)
-            atoms += Atoms('H', positions=[atoms[-1].position + (0.8, 0.0, 0.6)])
-            write('restart-oh.json', atoms)
-            print(f'Saved json files in {dir}')
+            bond_vector = atoms[oxygen_indices[-2]].position - atoms[metal_indices[-3]].position
+            oxygen_positions = [atoms[metal_indices[-1]].position + bond_vector]
+            hydrogen_positions = [atoms[-1].position + (-1.0, 0.0, 0.0)]
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
         
         elif '2_Tetrahedral_ZB' in dir:
-            atoms += Atoms('O', positions=[atoms[metal_indices[-2]].position + (0.0, 0.0, 2.5)])
-            atoms += Atoms('O', positions=[atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)])
-            write('restart-o.json', atoms)
-            atoms += Atoms('H', positions=[atoms[-2].position + (0.8, 0.0, 0.6)])
-            atoms += Atoms('H', positions=[atoms[-1].position + (0.8, 0.0, 0.6)])
-            write('restart-oh.json', atoms)
-            print(f'Saved json files in {dir}')
+            oxygen_positions = [atoms[metal_indices[-2]].position + (0.0, 0.0, 2.5),
+                                atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
+            hydrogen_positions = [atoms[-2].position + (0.8, 0.0, 0.6), atoms[-1].position + (0.8, 0.0, 0.6)]
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
 
         elif '3_SquarePlanar_TN' in dir:
-            atoms += Atoms('O', positions=[atoms[metal_indices[-3]].position + (0.0, 0.0, 2.5)])
-            atoms += Atoms('O', positions=[atoms[metal_indices[-2]].position + (0.0, 0.0, 2.5)])
-            write('restart-o1.json', atoms)
-            atoms += Atoms('H', positions=[atoms[-2].position + (0.8, 0.0, 0.6)])
-            atoms += Atoms('H', positions=[atoms[-1].position + (0.8, 0.0, 0.6)])
-            write('restart-oh1.json', atoms)
-            # Reset atoms for the next operation
+            oxygen_positions = [atoms[metal_indices[-3]].position + (0.0, 0.0, 2.5),
+                                atoms[metal_indices[-2]].position + (0.0, 0.0, 2.5)]
+            hydrogen_positions = [atoms[-2].position + (0.8, 0.0, 0.6), atoms[-1].position + (0.8, 0.0, 0.6)]
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o1.json', 'restart-oh1.json')
+            
+            # Reset atoms and perform the second operation
             atoms = read('restart.json')
-            atoms += Atoms('O', positions=[atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)])
-            atoms += Atoms('O', positions=[atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)])
-            write('restart-o2.json', atoms)
-            atoms += Atoms('H', positions=[atoms[-2].position + (0.8, 0.0, 0.6)])
-            atoms += Atoms('H', positions=[atoms[-1].position + (0.8, 0.0, 0.6)])
-            write('restart-oh2.json', atoms)
-            print(f'Saved json files in {dir}')
+            oxygen_positions = [atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
+            hydrogen_positions = [atoms[-1].position + (0.8, 0.0, 0.6)]
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o2.json', 'restart-oh2.json')
 
         elif '4_SquarePlanar_PD' in dir:
-            atoms += Atoms('O', positions=[atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)])
-            write('restart-o1.json', atoms)
-            atoms += Atoms('H', positions=[atoms[-1].position + (0.8, 0.0, 0.6)])
-            write('restart-oh1.json', atoms)
+            oxygen_positions = [atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
+            hydrogen_positions = [atoms[-1].position + (0.8, 0.0, 0.6)]
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o1.json', 'restart-oh1.json')
+
             atoms = read('restart.json')
-            atoms += Atoms('O', positions=[atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)])
-            write('restart-o2.json', atoms)
-            atoms += Atoms('H', positions=[atoms[-1].position + (0.8, 0.0, 0.6)])
-            write('restart-oh2.json', atoms)
-            print(f'Saved json files in {dir}')
+            oxygen_positions = [atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
+            hydrogen_positions = [atoms[-1].position + (0.8, 0.0, 0.6)]
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o2.json', 'restart-oh2.json')
 
         elif '5_SquarePlanar_NB' in dir:
-            atoms += Atoms('O', positions=[atoms[metal_indices[-2]].position + (0.0, 0.0, 2.5)])
-            atoms += Atoms('O', positions=[atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)])
-            write('restart-o.json', atoms)
-            atoms += Atoms('H', positions=[atoms[-2].position + (0.8, 0.0, 0.6)])
-            atoms += Atoms('H', positions=[atoms[-1].position + (0.8, 0.0, 0.6)])
-            write('restart-oh.json', atoms)
-            print(f'Saved json files in {dir}')
+            oxygen_positions = [atoms[metal_indices[-2]].position + (0.0, 0.0, 2.5),
+                                atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
+            hydrogen_positions = [atoms[-2].position + (0.8, 0.0, 0.6), atoms[-1].position + (0.8, 0.0, 0.6)]
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
 
         elif '6_Octahedral_RS' in dir:
-            atoms += Atoms('O', positions=[atoms[metal_indices[-2]].position + (0.0, 0.0, 2.5)])
-            atoms += Atoms('O', positions=[atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)])
-            write('restart-o.json', atoms)
-            atoms += Atoms('H', positions=[atoms[-2].position + (0.8, 0.0, 0.6)])
-            atoms += Atoms('H', positions=[atoms[-1].position + (0.8, 0.0, 0.6)])
-            write('restart-oh.json', atoms)
-            print(f'Saved json files in {dir}')
+            oxygen_positions = [atoms[metal_indices[-2]].position + (0.0, 0.0, 2.5),
+                                atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
+            hydrogen_positions = [atoms[-2].position + (0.8, 0.0, 0.6), atoms[-1].position + (0.8, 0.0, 0.6)]
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
 
         elif '7_Pyramidal_LT' in dir:
-            atoms += Atoms('O', positions=[atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)])
-            write('restart-o.json', atoms)
-            atoms += Atoms('H', positions=[atoms[-1].position + (0.8, 0.0, 0.6)])
-            write('restart-oh.json', atoms)
-            print(f'Saved json files in {dir}')
+            oxygen_positions = [atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
+            hydrogen_positions = [atoms[-1].position + (0.8, 0.0, 0.6)]
+            add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
 
-if __name__ == '__main__':
-    main()
+        print(f'Saved json files in {dir}')
+    except Exception as e:
+        print(f"Error processing directory {dir}: {e}")
