@@ -90,9 +90,11 @@ df.to_csv('/pscratch/sd/j/jiuy97/3_V_bulk/metal/corrected_norm_energy.tsv', sep=
 energy_path = './energy_norm_energy.tsv'
 if not os.path.exists(energy_path):
     exit(1)
-else:
-    energy_df = pd.read_csv(energy_path, delimiter='\t', index_col=0)
-    formation = pd.DataFrame(index=energy_df.index, columns=energy_df.columns)
+    
+energy_df = pd.read_csv(energy_path, delimiter='\t', index_col=0)
+formation = pd.DataFrame(index=energy_df.index, columns=energy_df.columns)
+
+print(df)
 
 for row in metal_rows:
     if metal_rows[row] == energy_df.index.tolist():
