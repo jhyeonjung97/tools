@@ -1,5 +1,6 @@
 import os
 import glob
+import numpy as np
 from ase import Atoms
 from ase.io import read, write
 
@@ -105,7 +106,8 @@ for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
             add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o.json', 'restart-oh.json')
 
         elif '7_Pyramidal_LT' in dir:
-            oxygen_positions = [atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
+            bond_vector = atoms[oxygen_indices[-1]].position - atoms[metal_indices[-1]].position
+            oxygen_positions = [atoms[metal_indices[-1]].position + (0.0, 0.0, np.linalg.norm(bond_vector))]
             hydrogen_positions = [oxygen_positions[0] + (0.0, 1.0, 0.0)]
             add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o.json', 'restart-oh.json')
 
