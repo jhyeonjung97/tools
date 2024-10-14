@@ -96,7 +96,7 @@ else:
 
 for row in metal_rows:
     if metal_rows[row] == energy_df.index.tolist():
-        formation = energy_df.sub(df.loc[row].values, axis=0) - Ref_O  # row가 인덱스일 때
+        formation = energy_df.sub(df[row].values, axis=0) - Ref_O  # G_oxygen
         break
 formation.to_csv(tsv_filename, sep='\t', float_format='%.2f')
 print(f"Merged data saved to {tsv_filename}")
