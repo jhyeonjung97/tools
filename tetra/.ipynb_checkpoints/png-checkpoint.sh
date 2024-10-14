@@ -7,74 +7,78 @@ if [[ ${here} == 'slac' ]]; then
      jiuy97@perlmutter.nersc.gov:/pscratch/sd/j/jiuy97/3_V_bulk .
 elif [[ ${here} == 'nersc' ]]; then
 
-    for dir in /pscratch/sd/j/jiuy97/3_V_bulk/metal/*/; do
-        cd $dir
-        python ~/bin/tools/tetra/energy.py --save -x "Metal (M)" -y "Total energy (eV/M)" -n m
-    done
-    
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/metal
-    python ~/bin/tools/tetra/tsv.py -l  3d 4d 5d -x "Metal (MO)" -y "Total energy (eV)" -o norm_energy *d/energy_norm_energy.tsv
-    
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/oxide/0_min
-    python ~/bin/tools/tetra/energy.py --save -x "Metal (MxOy)" -y "Total energy (eV/M)" -n m
-    
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS
-    
-    python ~/bin/tools/tetra/mendeleev2tsv.py -p \
-    group_id atomic_number atomic_volume  \
-    boiling_point melting_point \
-    mass density dipole_polarizability en_pauling \
-    covalent_radius metallic_radius vdw_radius \
-    evaporation_heat fusion_heat heat_of_formation \
-    ionenergies[1] ionenergies[2] ionenergies[3]
-    
-    python ~/bin/tools/tetra/operator.py -o + \
-    -x mendeleev_ionenergies_1.tsv \
-    -y mendeleev_ionenergies_2.tsv \
-    -z mendeleev_ionenergies_12.tsv
-    
-    python ~/bin/tools/tetra/operator.py -o + \
-    -x mendeleev_evaporation_heat.tsv \
-    -y mendeleev_fusion_heat.tsv \
-    -z mendeleev_sublimation_heat.tsv
-    
-    sed -i 's/\x0//g' *.tsv
-    
-    # for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*d/; do
+    # for dir in /pscratch/sd/j/jiuy97/3_V_bulk/metal/*/
+    # do
     #     cd $dir
-    #     if [[ $dir == *'Tetrahedral'* ]]; then
-    #         n=4; python ~/bin/tools/tetra/energy.py --save -p hexa -x "Metal (MO)" -y "Hexagonal ratio [c/a]"
-    #     elif [[ $dir == *'Pyramidal'* ]] || [[ $dir == *'Tetragonal'* ]] || [[ $dir == *'Square_Planar'* ]]; then
-    #         n=4; python ~/bin/tools/tetra/energy.py --save -p hexa -x "Metal (MO)" -y "Square prism ratio [c/a]"
-    #     elif [[ $dir == *'Octahedral'* ]]; then
-    #         n=6
-    #     fi
-    #     python ~/bin/tools/tetra/energy.py --save -p energy -x "Metal (MO)" -y "Total energy (eV)"
-    #     python ~/bin/tools/tetra/energy.py --save -p energy -x "Metal (MO)" -y "Total energy (eV/MO)" -n m
-    #     python ~/bin/tools/tetra/energy.py --save -p bond  -x "Metal (MO)" -y "Bond length (A)"
-    #     python ~/bin/tools/tetra/energy.py --save -p bond -x "Metal (MO)" -y "Bond length (A/M-O)" -n $n
-    #     python ~/bin/tools/tetra/energy.py --save -p volume -x "Metal (MO)" -y "Volume (A^3/MO)" -n m
-    #     python ~/bin/tools/tetra/energy.py --save -p chg -e M  -x "Metal (MO)" -y "Bader charge (e-)"
-    #     python ~/bin/tools/tetra/energy.py --save -p mag -e M -x "Metal (MO)" -y "|Magnetization|"
-    #     python ~/bin/tools/tetra/energy.py --save -p ICOHP -x "Metal (MO)" -y "ICOHP (eV/MO)"
-    #     python ~/bin/tools/tetra/energy.py --save -p ICOHP -x "Metal (MO)" -y "ICOHP (eV/M-O)" -n $n
-    #     python ~/bin/tools/tetra/energy.py --save -p ICOBI -x "Metal (MO)" -y "ICOBI (/MO)"
-    #     python ~/bin/tools/tetra/energy.py --save -p ICOBI -x "Metal (MO)" -y "ICOBI (eV/M-O)" -n $n
-    #     python ~/bin/tools/tetra/energy.py --save -p GP_L -e M  -x "Metal (MO)" -y "Gross population (Loewdin)"
-    #     python ~/bin/tools/tetra/energy.py --save -p Madelung_L -x "Metal (MO)" -y "Madelugn energy (Loewdin, eV/MO)" -n m
-    #     python ~/bin/tools/tetra/formation_energy.py
-    #     python ~/bin/tools/tetra/cohesive_energy.py
-    #     python ~/bin/tools/tetra/energy.py --save -p PSCENC -x "Metal (MO)" -y "PSCENC (eV/MO)" -n m
-    #     python ~/bin/tools/tetra/energy.py --save -p TEWEN -x "Metal (MO)" -y "TEWEN (eV/MO)" -n m
-    #     python ~/bin/tools/tetra/energy.py --save -p DENC -x "Metal (MO)" -y "DENC (eV/MO)" -n m
-    #     python ~/bin/tools/tetra/energy.py --save -p EXHF -x "Metal (MO)" -y "EXHF (eV/MO)" -n m
-    #     python ~/bin/tools/tetra/energy.py --save -p XCENC -x "Metal (MO)" -y "XCENC (eV/MO)" -n m
-    #     python ~/bin/tools/tetra/energy.py --save -p PAW_double_counting -x "Metal (MO)" -y "PAW_double_counting (eV/MO)" -n m
-    #     python ~/bin/tools/tetra/energy.py --save -p EENTRO -x "Metal (MO)" -y "EENTRO (eV/MO)" -n m
-    #     python ~/bin/tools/tetra/energy.py --save -p EBANDS -x "Metal (MO)" -y "EBANDS (eV/MO)" -n m
-    #     python ~/bin/tools/tetra/energy.py --save -p EATOM -x "Metal (MO)" -y "EATOM (eV/MO)" -n m
-    #     sed -i 's/\x0//g' *.tsv
+    #     python ~/bin/tools/tetra/energy.py --save -x "Metal (M)" -y "Total energy (eV/M)" -n m
     # done
+    
+    # cd /pscratch/sd/j/jiuy97/3_V_bulk/metal
+    # python ~/bin/tools/tetra/tsv.py -l  3d 4d 5d -x "Metal (MO)" -y "Total energy (eV)" -o norm_energy *d/energy_norm_energy.tsv
+    
+    # cd /pscratch/sd/j/jiuy97/3_V_bulk/oxide/0_min
+    # python ~/bin/tools/tetra/energy.py --save -x "Metal (MxOy)" -y "Total energy (eV/M)" -n m
+    
+    # cd /pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS
+    
+    # python ~/bin/tools/tetra/mendeleev2tsv.py -p \
+    # group_id atomic_number atomic_volume  \
+    # boiling_point melting_point \
+    # mass density dipole_polarizability en_pauling \
+    # covalent_radius metallic_radius vdw_radius \
+    # evaporation_heat fusion_heat heat_of_formation \
+    # ionenergies[1] ionenergies[2] ionenergies[3]
+    
+    # python ~/bin/tools/tetra/operator.py -o + \
+    # -x mendeleev_ionenergies_1.tsv \
+    # -y mendeleev_ionenergies_2.tsv \
+    # -z mendeleev_ionenergies_12.tsv
+    
+    # python ~/bin/tools/tetra/operator.py -o + \
+    # -x mendeleev_evaporation_heat.tsv \
+    # -y mendeleev_fusion_heat.tsv \
+    # -z mendeleev_sublimation_heat.tsv
+    
+    # sed -i 's/\x0//g' *.tsv
+    
+    for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*d/
+    do
+        cd $dir
+        if [[ $dir == *'Tetrahedral'* ]]; then
+            n=4; python ~/bin/tools/tetra/energy.py --save -p hexa -x "Metal (MO)" -y "Hexagonal ratio [c/a]"
+        elif [[ $dir == *'Pyramidal'* ]] || [[ $dir == *'Tetrahedral'* ]] || [[ $dir == *'SquarePlanar'* ]]; then
+            n=4; #python ~/bin/tools/tetra/energy.py --save -p hexa -x "Metal (MO)" -y "Square prism ratio [c/a]"
+        elif [[ $dir == *'Octahedral'* ]]; then
+            n=6
+        fi
+        
+        python ~/bin/tools/tetra/energy.py --save -p energy -x "Metal (MO)" -y "Total energy (eV)"
+        python ~/bin/tools/tetra/energy.py --save -p energy -x "Metal (MO)" -y "Total energy (eV/MO)" -n m
+        python ~/bin/tools/tetra/energy.py --save -p bond  -x "Metal (MO)" -y "Bond length (A)"
+        python ~/bin/tools/tetra/energy.py --save -p bond -x "Metal (MO)" -y "Bond length (A/M-O)" -n $n
+        python ~/bin/tools/tetra/energy.py --save -p volume -x "Metal (MO)" -y "Volume (A^3/MO)" -n m
+        python ~/bin/tools/tetra/energy.py --save -p chg -e M  -x "Metal (MO)" -y "Bader charge (e-)"
+        python ~/bin/tools/tetra/energy.py --save -p mag -e M -x "Metal (MO)" -y "|Magnetization|"
+        python ~/bin/tools/tetra/energy.py --save -p ICOHP -x "Metal (MO)" -y "ICOHP (eV/MO)"
+        python ~/bin/tools/tetra/energy.py --save -p ICOHP -x "Metal (MO)" -y "ICOHP (eV/M-O)" -n $n
+        python ~/bin/tools/tetra/energy.py --save -p ICOBI -x "Metal (MO)" -y "ICOBI (/MO)"
+        python ~/bin/tools/tetra/energy.py --save -p ICOBI -x "Metal (MO)" -y "ICOBI (eV/M-O)" -n $n
+        python ~/bin/tools/tetra/energy.py --save -p GP_L -e M  -x "Metal (MO)" -y "Gross population (Loewdin)"
+        python ~/bin/tools/tetra/energy.py --save -p Madelung_L -x "Metal (MO)" -y "Madelugn energy (Loewdin, eV/MO)" -n m
+        python ~/bin/tools/tetra/formation_energy.py
+        python ~/bin/tools/tetra/cohesive_energy.py
+        
+        # python ~/bin/tools/tetra/energy.py --save -p PSCENC -x "Metal (MO)" -y "PSCENC (eV/MO)" -n m
+        # python ~/bin/tools/tetra/energy.py --save -p TEWEN -x "Metal (MO)" -y "TEWEN (eV/MO)" -n m
+        # python ~/bin/tools/tetra/energy.py --save -p DENC -x "Metal (MO)" -y "DENC (eV/MO)" -n m
+        # python ~/bin/tools/tetra/energy.py --save -p EXHF -x "Metal (MO)" -y "EXHF (eV/MO)" -n m
+        # python ~/bin/tools/tetra/energy.py --save -p XCENC -x "Metal (MO)" -y "XCENC (eV/MO)" -n m
+        # python ~/bin/tools/tetra/energy.py --save -p PAW_double_counting -x "Metal (MO)" -y "PAW_double_counting (eV/MO)" -n m
+        # python ~/bin/tools/tetra/energy.py --save -p EENTRO -x "Metal (MO)" -y "EENTRO (eV/MO)" -n m
+        # python ~/bin/tools/tetra/energy.py --save -p EBANDS -x "Metal (MO)" -y "EBANDS (eV/MO)" -n m
+        # python ~/bin/tools/tetra/energy.py --save -p EATOM -x "Metal (MO)" -y "EATOM (eV/MO)" -n m
+        sed -i 's/\x0//g' *.tsv
+    done
     
     # for dir in /pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/; do
     #     cd $dir
