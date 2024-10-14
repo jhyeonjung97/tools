@@ -53,10 +53,9 @@ exp_df['dH_form'] = exp_df['dH_form'] / 96.48
 metal_df.index = list(nist.keys())
 oxide_df.index = list(nist.keys())
 df.index = metal_rows['3d']
-print(df)
 
-min_values = df.iloc[:, :3].min(axis=1)
-df = df.iloc[:, 3:]
+# min_values = df.iloc[:, :3].min(axis=1)
+# df = df.iloc[:, 3:]
 
 E_H2O = -14.23919983
 E_H2 = -6.77409008
@@ -85,8 +84,8 @@ for element, data in nist.items():
 for i, metal in enumerate(metal_rows['3d']):
     if metal in nist:
         min_values.loc[metal] = nist[metal]['E_metal']
-df.insert(0, '3d', min_values)
-df.to_csv('/pscratch/sd/j/jiuy97/3_V_bulk/metal/corrected_norm_energy.tsv', sep='\t', float_format='%.2f')
+# df.insert(0, '3d', min_values)
+# df.to_csv('/pscratch/sd/j/jiuy97/3_V_bulk/metal/corrected_norm_energy.tsv', sep='\t', float_format='%.2f')
 
 energy_path = './energy_norm_energy.tsv'
 if not os.path.exists(energy_path):
