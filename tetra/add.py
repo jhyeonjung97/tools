@@ -27,7 +27,7 @@ def main():
         metal_indices = [atom.index for atom in atoms if atom.symbol != 'O']
         
         if '1_Tetrahedral_WZ' in dir:
-            atoms += Atoms('O', positions=[atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)])
+            atoms += Atoms('O', positions=[atoms[metal_indices[-1]].position + (-1.5, 0.0, 2.0)])
             write('restart-o.json', atoms)
             atoms += Atoms('H', positions=[atoms[-1].position + (0.8, 0.0, 0.6)])
             write('restart-oh.json', atoms)
