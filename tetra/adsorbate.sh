@@ -55,8 +55,8 @@ do
     fi
 done
 
-for dir in /pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/o*/
-do
-    cd $dir; pwd
-    sbatch submit.sh
-done
+# for dir in /pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/o*/
+# do
+#     cd $dir; pwd
+#     sbatch submit.sh
+# done
