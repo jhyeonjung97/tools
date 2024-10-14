@@ -98,9 +98,10 @@ for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
             add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o.json', 'restart-oh.json')
 
         elif '6_Octahedral_RS' in dir:
-            oxygen_positions = [atoms[metal_indices[-2]].position + (0.0, 0.0, 2.5),
-                                atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
-            hydrogen_positions = [pos + (-0.7, 0.7, 0.0) for pos in oxygen_positions]
+            bond_vector = (0.0, 0.0, atoms[oxygen_indices[-1]].position[2] - atoms[metal_indices[-3]].position[2])
+            oxygen_positions = [atoms[metal_indices[-2]].position + bond_vector,
+                                atoms[metal_indices[-1]].position + bond_vector]
+            hydrogen_positions = [pos + (1.0, 0.0, 0.0) for pos in oxygen_positions]
             add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, bond_vector[2], 'restart-o.json', 'restart-oh.json')
 
         elif '7_Pyramidal_LT' in dir:
