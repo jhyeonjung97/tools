@@ -68,7 +68,7 @@ for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
         #     add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o2.json', 'restart-oh2.json')
 
         elif '4_SquarePlanar_PD' in dir:
-            bond_vector = (0.5, 0.0, 2.0)
+            bond_vector = (0.7, 0.0, 2.2)
             oxygen_positions = [atoms[metal_indices[-1]].position + bond_vector]
             hydrogen_positions = [oxygen_positions[0] + (1.0, 0.0, 0.0)]
             add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o1.json', 'restart-oh1.json')
