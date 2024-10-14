@@ -7,7 +7,7 @@ dir_now = os.getcwd()
 print(f"\033[92m{dir_now}\033[0m")
 
 # Read input data
-Ef_oxide = pd.read_csv('energy_norm_formation.tsv', delimiter='\t', index_col=0)
+Ef_oxide = pd.read_csv('./energy_norm_formation.tsv', delimiter='\t', index_col=0)
 Ec_metal = pd.read_csv('/pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS/mendeleev_sublimation_heat.tsv', delimiter='\t', index_col=0)
 
 # Define the rows for different series of metals
@@ -26,7 +26,7 @@ Ec_metal.index = Ef_oxide.index
 
 # Determine the current working directory and perform calculations accordingly
 
-if '1_afm' in dir_now or '2_fm' in dir_now or '3d' in dir_now:
+if 'fm' in dir_now or '3d' in dir_now:
     row = '3d'
 elif '4d' in dir_now:
     row = '4d'
