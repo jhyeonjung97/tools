@@ -92,7 +92,7 @@ for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
         elif '6_Octahedral_RS' in dir:
             oxygen_positions = [atoms[metal_indices[-2]].position + (0.0, 0.0, 2.5),
                                 atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
-            hydrogen_positions = [atoms[-2].position + (0.8, 0.0, 0.6), atoms[-1].position + (0.8, 0.0, 0.6)]
+            hydrogen_positions = [pos + (-0.7, 0.7, 0.0) for pos in oxygen_positions]
             add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
 
         elif '7_Pyramidal_LT' in dir:
