@@ -97,7 +97,7 @@ for dir in glob.glob('/pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/*_*/'):
 
         elif '7_Pyramidal_LT' in dir:
             oxygen_positions = [atoms[metal_indices[-1]].position + (0.0, 0.0, 2.5)]
-            hydrogen_positions = [atoms[-1].position + (0.8, 0.0, 0.6)]
+            hydrogen_positions = [oxygen_positions[0] + (0.0, 1.0, 0.0)]
             add_atoms_and_save(atoms, oxygen_positions, hydrogen_positions, 'restart-o.json', 'restart-oh.json')
 
         print(f'Saved json files in {dir}')
