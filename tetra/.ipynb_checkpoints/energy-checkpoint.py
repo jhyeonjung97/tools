@@ -543,7 +543,7 @@ def plot_merged(values_dict, dir_names, xlabel, ylabel, save, filename, filtered
         # df.to_csv(f"{tsv_filename}", sep='\t')    
 
         filtered_df = pd.DataFrame({k: values_dict[k] for k in filtered_patterns_order}, index=dir_names)
-        filtered_df.to_csv(tsv_filename, sep='\t')        
+        filtered_df.to_csv(tsv_filename, sep='\t', float_format='%.2f')        
         
         print(f"Data saved as {tsv_filename}")
     else:
