@@ -56,7 +56,7 @@ df.index = metal_rows['3d']
 
 min_values = df.iloc[:, :3].min(axis=1)
 df = df.iloc[:, 3:]
-
+print(df)
 E_H2O = -14.23919983
 E_H2 = -6.77409008
 
@@ -93,8 +93,6 @@ if not os.path.exists(energy_path):
     
 energy_df = pd.read_csv(energy_path, delimiter='\t', index_col=0)
 formation = pd.DataFrame(index=energy_df.index, columns=energy_df.columns)
-
-print(df)
 
 for row in metal_rows:
     if metal_rows[row] == energy_df.index.tolist():
