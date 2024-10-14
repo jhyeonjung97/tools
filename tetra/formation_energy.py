@@ -85,7 +85,7 @@ for i, metal in enumerate(metal_rows['3d']):
     if metal in nist:
         min_values.loc[metal] = nist[metal]['E_metal']
 df.insert(0, '3d', min_values)
-df.to_csv('/pscratch/sd/j/jiuy97/3_V_bulk/metal/corrected_norm_energy.tsv', sep='\t')
+df.to_csv('/pscratch/sd/j/jiuy97/3_V_bulk/metal/corrected_norm_energy.tsv', sep='\t', float_format='%.2f')
 
 energy_path = './energy_norm_energy.tsv'
 if not os.path.exists(energy_path):
@@ -98,7 +98,7 @@ for row in metal_rows:
     if metal_rows[row] == energy_df.index.tolist():
         formation = energy_df.sub(df[row].values, axis=0) - Ref_O # G_oxygen
         break
-formation.to_csv(tsv_filename, sep='\t')
+formation.to_csv(tsv_filename, sep='\t', float_format='%.2f')
 print(f"Merged data saved to {tsv_filename}")
 
 plt.figure(figsize=(8, 6))

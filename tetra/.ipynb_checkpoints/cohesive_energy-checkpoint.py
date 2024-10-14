@@ -39,7 +39,7 @@ else:
 Ec_oxide['energy'] = Ec_metal[row] / 96.48 + Ec_oxygen / 2 - Ef_oxide['energy']
 
 # Save the calculated cohesive energies to a TSV file
-Ec_oxide.to_csv('energy_norm_cohesive.tsv', sep='\t', index=True)
+Ec_oxide.to_csv('energy_norm_cohesive.tsv', sep='\t', index=True, float_format='%.2f')
 print(f"Data saved to energy_norm_cohesive.tsv")
 
 # Set plotting parameters based on the current working directory
