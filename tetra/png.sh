@@ -81,37 +81,37 @@ elif [[ ${here} == 'nersc' ]]; then
     for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/; do
         cd $dir
         
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Total energy (eV)" \
-        -o energy 3d/energy_energy.tsv 4d/energy_energy.tsv 5d/energy_energy.tsv
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Total energy (eV/MO)" \
-        -o norm_energy 3d/energy_norm_energy.tsv 4d/energy_norm_energy.tsv 5d/energy_norm_energy.tsv
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Bond length (A/M-O)" \
-        -o bond 3d/energy_bond.tsv 4d/energy_bond.tsv 5d/energy_bond.tsv
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Volume (A^3/MO)" \
-        -o norm_volume 3d/energy_norm_volume.tsv 4d/energy_norm_volume.tsv 5d/energy_norm_volume.tsv
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Bader charge (e-)" \
-        -o chg 3d/energy_chg_M.tsv 4d/energy_chg_M.tsv 5d/energy_chg_M.tsv
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "|Magnetization|" \
-        -o mag_M 3d/energy_mag_M.tsv 4d/energy_mag_M.tsv 5d/energy_mag_M.tsv
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "ICOHP (eV/MO)" \
-        -o ICOHP 3d/energy_ICOHP.tsv 4d/energy_ICOHP.tsv 5d/energy_ICOHP.tsv
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "ICOHP (eV/M-O)" \
-        -o norm_ICOHP 3d/energy_norm_ICOHP.tsv 4d/energy_norm_ICOHP.tsv 5d/energy_norm_ICOHP.tsv
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "ICOBI (/MO)" \
-        -o ICOBI 3d/energy_ICOBI.tsv 4d/energy_ICOBI.tsv 5d/energy_ICOBI.tsv
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "ICOBI (/M-O)" \
-        -o norm_ICOBI 3d/energy_norm_ICOBI.tsv 4d/energy_norm_ICOBI.tsv 5d/energy_norm_ICOBI.tsv
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Gross population (Loewdin)" \
-        -o GP_L_M 3d/energy_GP_Loewdin_M.tsv 4d/energy_GP_Loewdin_M.tsv 5d/energy_GP_Loewdin_M.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Total energy (eV)" \
+#         -o energy 3d/energy_energy.tsv 4d/energy_energy.tsv 5d/energy_energy.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Total energy (eV/MO)" \
+#         -o norm_energy 3d/energy_norm_energy.tsv 4d/energy_norm_energy.tsv 5d/energy_norm_energy.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Bond length (A/M-O)" \
+#         -o bond 3d/energy_bond.tsv 4d/energy_bond.tsv 5d/energy_bond.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Volume (A^3/MO)" \
+#         -o norm_volume 3d/energy_norm_volume.tsv 4d/energy_norm_volume.tsv 5d/energy_norm_volume.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Bader charge (e-)" \
+#         -o chg 3d/energy_chg_M.tsv 4d/energy_chg_M.tsv 5d/energy_chg_M.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "|Magnetization|" \
+#         -o mag_M 3d/energy_mag_M.tsv 4d/energy_mag_M.tsv 5d/energy_mag_M.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "ICOHP (eV/MO)" \
+#         -o ICOHP 3d/energy_ICOHP.tsv 4d/energy_ICOHP.tsv 5d/energy_ICOHP.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "ICOHP (eV/M-O)" \
+#         -o norm_ICOHP 3d/energy_norm_ICOHP.tsv 4d/energy_norm_ICOHP.tsv 5d/energy_norm_ICOHP.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "ICOBI (/MO)" \
+#         -o ICOBI 3d/energy_ICOBI.tsv 4d/energy_ICOBI.tsv 5d/energy_ICOBI.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "ICOBI (/M-O)" \
+#         -o norm_ICOBI 3d/energy_norm_ICOBI.tsv 4d/energy_norm_ICOBI.tsv 5d/energy_norm_ICOBI.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Gross population (Loewdin)" \
+#         -o GP_L_M 3d/energy_GP_Loewdin_M.tsv 4d/energy_GP_Loewdin_M.tsv 5d/energy_GP_Loewdin_M.tsv
         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Madelung energy (Loewdin, eV/MO)" \
         -o norm_Madelung_L 3d/energy_norm_Madelung_Loewdin.tsv 4d/energy_norm_Madelung_Loewdin.tsv 5d/energy_norm_Madelung_Loewdin.tsv
         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Formation energy (eV/MO)" \
         -o norm_formation 3d/energy_norm_formation.tsv 4d/energy_norm_formation.tsv 5d/energy_norm_formation.tsv
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Cohesive energy (eV/MO)" \
-        -o norm_cohesive 3d/energy_norm_cohesive.tsv 4d/energy_norm_cohesive.tsv 5d/energy_norm_cohesive.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Cohesive energy (eV/MO)" \
+#         -o norm_cohesive 3d/energy_norm_cohesive.tsv 4d/energy_norm_cohesive.tsv 5d/energy_norm_cohesive.tsv
         
-        python ~/bin/tools/tetra/tsv.py -l 3d fm -x "Metal (MO)" -y "Formation energy (eV/MO)" \
-        -o AFMvsFM 3d/energy_norm_formation.tsv fm/energy_norm_formation.tsv
+#         python ~/bin/tools/tetra/tsv.py -l 3d fm -x "Metal (MO)" -y "Formation energy (eV/MO)" \
+#         -o AFMvsFM 3d/energy_norm_formation.tsv fm/energy_norm_formation.tsv
         
         # python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "PSCENC (eV/MO)" \
         # -o norm_PSCENC 3d/energy_norm_PSCENC.tsv 4d/energy_norm_PSCENC.tsv 5d/energy_norm_PSCENC.tsv
