@@ -127,7 +127,7 @@ def plot_patterns_from_multiple_tsv(filenames, output, xlabel, ylabel, labels, a
                     plt.scatter(exp_df['numb'][i], exp_df['dH_form'][i],
                                 marker=exp_marker, color=exp_color, edgecolors=exp_color, facecolors='white')
     
-    merged_df.to_csv(tsv_filename, sep='\t', float_format='%.2f')
+    merged_df.to_csv(tsv_filename, sep='\t', float_format='%.4f')
     print(f"Merged data saved to {tsv_filename}")
 
     plt.xticks(np.arange(len(indice)), indice, fontsize=fontsize)
