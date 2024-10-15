@@ -40,6 +40,7 @@ elif [[ ${here} == 'nersc' ]]; then
     
     for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/
     do
+        dir=$pwd
         cd $dir
         if [[ $dir == *'Tetrahedral'* ]]; then
             n=4; python ~/bin/tools/tetra/energy.py --save -p hexa -x "Metal (MO)" -y "Hexagonal ratio [c/a]"
