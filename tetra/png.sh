@@ -169,7 +169,7 @@ elif [[ ${here} == 'nersc' ]]; then
     """
     section 5-1
     """
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/figure
+    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures
     for row in 3d 4d 5d
     do
         python ~/bin/tools/tetra/tsv.py -r ${row} -x "Metal (MO)" -y "Total energy (eV)" \
@@ -291,7 +291,7 @@ elif [[ ${here} == 'nersc' ]]; then
     done
 
     """
-    section 1
+    section 5-4
     """
     cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel6
     python ~/bin/tools/tetra/mendeleev2tsv.py -n 9 -p \
@@ -316,6 +316,9 @@ elif [[ ${here} == 'nersc' ]]; then
         sh $file
     done   
 
+    """
+    section 6
+    """
     for dir in /pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/; do
         cd $dir
         python ~/bin/tools/tetra/energy.py --save -p energy -x "Metal (MO)" -y "Total energy (eV)"
