@@ -218,7 +218,7 @@ elif [[ ${here} == 'nersc' ]]; then
     # mv concat*rel.tsv rel5/
     # mv concat*.tsv rel6/
 
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/figure/rel5
+    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel5
     python ~/bin/tools/tetra/mendeleev2tsv.py -n 5 -p \
     group_id atomic_number atomic_volume  \
     boiling_point melting_point \
@@ -266,7 +266,7 @@ elif [[ ${here} == 'nersc' ]]; then
         sh $file
     done
     
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/figure/rel6
+    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel6
     python ~/bin/tools/tetra/mendeleev2tsv.py -n 6 -p \
     group_id atomic_number atomic_volume  \
     boiling_point melting_point \
