@@ -223,12 +223,12 @@ elif [[ ${here} == 'nersc' ]]; then
     python ~/bin/tools/tetra/rel2octa.py concat_norm_ICOBI.tsv
     python ~/bin/tools/tetra/rel2octa.py concat_norm_MadelungL.tsv
     python ~/bin/tools/tetra/rel2octa.py concat_norm_volume.tsv
-    cp concat*rel.tsv rel5/
-    cp concat*.tsv rel6/
-    
+    mv concat*rel.tsv rel8/
+    mv concat*.tsv rel9/
+
     ### section5-3
     
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel5
+    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel8
     python ~/bin/tools/tetra/mendeleev2tsv.py -n 8 -p \
     group_id atomic_number atomic_volume  \
     boiling_point melting_point \
@@ -256,7 +256,6 @@ elif [[ ${here} == 'nersc' ]]; then
         /pscratch/sd/j/jiuy97/3_V_bulk/4_SquarePlanar_PD/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/5_SquarePlanar_NB/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/5_SquarePlanar_NB/${files_A[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/7_Pyramidal_LT/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/8_Tetrahedral_AQ/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/9_SquarePlanar_AU/${files_A[$key]}
@@ -270,15 +269,18 @@ elif [[ ${here} == 'nersc' ]]; then
         /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]}
     done
-    for file in ~/bin/tools/tetra/png_rel/lr*.sh; do
+    for file in ~/bin/tools/tetra/png_rel/*.sh; do
         sh $file
     done
     
     ### section5-4
     
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel6
+    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel9
     python ~/bin/tools/tetra/mendeleev2tsv.py -n 9 -p \
     group_id atomic_number atomic_volume  \
     boiling_point melting_point \
@@ -297,7 +299,7 @@ elif [[ ${here} == 'nersc' ]]; then
     python ~/bin/tools/tetra/concat.py -o coord --X /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/merged_coord.tsv
     python ~/bin/tools/tetra/concat.py -o element --X /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/merged_element.tsv
     python ~/bin/tools/tetra/concat.py -o row --X /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/merged_row.tsv
-    for file in ~/bin/tools/tetra/png/lr*.sh; do
+    for file in ~/bin/tools/tetra/png/*.sh; do
         sh $file
     done
     
