@@ -6,7 +6,9 @@ if [[ ${here} == 'slac' ]]; then
     	--exclude="*" \
      jiuy97@perlmutter.nersc.gov:/pscratch/sd/j/jiuy97/3_V_bulk .
 elif [[ ${here} == 'nersc' ]]; then
-
+    """
+    section 1
+    """
     for dir in /pscratch/sd/j/jiuy97/3_V_bulk/metal/*/
     do
         cd $dir
@@ -41,6 +43,9 @@ elif [[ ${here} == 'nersc' ]]; then
     
     sed -i 's/\x0//g' *.tsv
     
+    """
+    section 2
+    """
     for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/
     do
         cd $dir
@@ -78,6 +83,9 @@ elif [[ ${here} == 'nersc' ]]; then
         sed -i 's/\x0//g' *.tsv
     done
 
+    """
+    section 3
+    """
     for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/; do
         cd $dir
         python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Total energy (eV)" \
@@ -130,12 +138,18 @@ elif [[ ${here} == 'nersc' ]]; then
         # -o norm_EATOM 3d/energy_norm_EATOM.tsv 4d/energy_norm_EATOM.tsv 5d/energy_norm_EATOM.tsv
     done
     
+    """
+    section 4-1
+    """
     cd /pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS
     python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Standard reduction potential (V)" -o redoxP \
     ../oxide/energy_redoxP_3d.tsv ../oxide/energy_redoxP_4d.tsv ../oxide/energy_redoxP_5d.tsv
     python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Standard reduction potential (V)" -o redoxP_clean \
     ../oxide/energy_redoxP_clean_3d.tsv ../oxide/energy_redoxP_clean_4d.tsv ../oxide/energy_redoxP_clean_5d.tsv
-    
+
+    """
+    section 4-2
+    """
     cd /pscratch/sd/j/jiuy97/3_V_bulk
     sh ~/bin/verve/spread.sh 6_Octahedral_RS/merged_redoxP.tsv
     sh ~/bin/verve/spread.sh 6_Octahedral_RS/merged_redoxP_clean.tsv
@@ -151,7 +165,10 @@ elif [[ ${here} == 'nersc' ]]; then
     sed -i -e 's/CN/LT/g' 7_Pyramidal_LT/merged_coord.tsv
     sed -i -e 's/CN/AQ/g' 8_Tetrahedral_AQ/merged_coord.tsv
     sed -i -e 's/CN/AU/g' 9_SquarePlanar_AU/merged_coord.tsv
-    
+
+    """
+    section 5-1
+    """
     cd /pscratch/sd/j/jiuy97/3_V_bulk/figure
     for row in 3d 4d 5d
     do
@@ -185,7 +202,10 @@ elif [[ ${here} == 'nersc' ]]; then
         -o norm_Madelung_L_${row} /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/${row}/energy_norm_Madelung_Loewdin.tsv
     done
 
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel5
+    """
+    section 5-2
+    """
+    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures
     python ~/bin/tools/tetra/concat.py -o energy --X /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/merged_energy.tsv
     python ~/bin/tools/tetra/concat.py -o norm_energy --X /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/merged_norm_energy.tsv
     python ~/bin/tools/tetra/concat.py -o norm_formation --X /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/merged_norm_formation.tsv
@@ -219,6 +239,9 @@ elif [[ ${here} == 'nersc' ]]; then
     mv concat*rel.tsv rel5/
     mv concat*.tsv rel6/
 
+    """
+    section 5-3
+    """
     cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel5
     python ~/bin/tools/tetra/mendeleev2tsv.py -n 8 -p \
     group_id atomic_number atomic_volume  \
@@ -266,7 +289,10 @@ elif [[ ${here} == 'nersc' ]]; then
     for file in ~/bin/tools/tetra/png_rel/lr*.sh; do
         sh $file
     done
-    
+
+    """
+    section 1
+    """
     cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel6
     python ~/bin/tools/tetra/mendeleev2tsv.py -n 9 -p \
     group_id atomic_number atomic_volume  \
