@@ -218,7 +218,7 @@ elif [[ ${here} == 'nersc' ]]; then
     # mv concat*rel.tsv rel5/
     # mv concat*.tsv rel6/
 
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/rel5
+    cd /pscratch/sd/j/jiuy97/3_V_bulk/figure/rel5
     python ~/bin/tools/tetra/mendeleev2tsv.py -n 5 -p \
     group_id atomic_number atomic_volume  \
     boiling_point melting_point \
@@ -240,28 +240,33 @@ elif [[ ${here} == 'nersc' ]]; then
     files_A[redoxP_clean]="merged_redoxP_clean.tsv"
     for key in "${!files_A[@]}"; do
         python ~/bin/verve/concat.py -o $key --X \
-        ../1_Tetrahedral_WZ/${files_A[$key]} \
-        ../2_Tetrahedral_ZB/${files_A[$key]} \
-        ../3_Pyramidal_LT/${files_A[$key]} \
-        ../4_Square_Planar_TN/${files_A[$key]} \
-        ../5_Square_Planar_NB/${files_A[$key]}
+        /pscratch/sd/j/jiuy97/3_V_bulk/1_Tetrahedral_WZ/${files_A[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/2_Tetrahedral_ZB/${files_A[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/3_SquarePlanar_TN/${files_A[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/4_SquarePlanar_PD/${files_A[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/5_SquarePlanar_NB/${files_A[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/5_SquarePlanar_NB/${files_A[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS/${files_A[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/7_Pyramidal_LT/${files_A[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/8_Tetrahedral_AQ/${files_A[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/9_SquarePlanar_AU/${files_A[$key]}
     done
     declare -A files_B
     files_B[element]="merged_element.tsv"
     files_B[row]="merged_row.tsv"
     for key in "${!files_B[@]}"; do
         python ~/bin/verve/concat.py -o $key --X \
-        ../metal/${files_B[$key]} \
-        ../metal/${files_B[$key]} \
-        ../metal/${files_B[$key]} \
-        ../metal/${files_B[$key]} \
-        ../metal/${files_B[$key]}
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]}
     done
     for file in ~/bin/verve/png_rel/lr*.sh; do
         sh $file
     done
     
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/rel6
+    cd /pscratch/sd/j/jiuy97/3_V_bulk/figure/rel6
     python ~/bin/tools/tetra/mendeleev2tsv.py -n 6 -p \
     group_id atomic_number atomic_volume  \
     boiling_point melting_point \
