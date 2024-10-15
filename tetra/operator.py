@@ -28,6 +28,6 @@ elif operator == '/':
     Z = X / Y
 
 # Save the result to a new TSV file
-Z.to_csv(args.file_z, sep='\t', index=True, float_format='%.2f')
+Z.to_csv(args.file_z, sep='\t', index=True, float_format='%.4f')
 
 print(f"Result saved to {args.file_z}")

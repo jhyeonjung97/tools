@@ -72,7 +72,7 @@ for pattern in args.patterns:
         tsv_filename=f'concat_{filename}.tsv'
         png_filename=f'concat_{filename}.png'
     
-    df.to_csv(f'{tsv_filename}', sep='\t', index=True, float_format='%.2f')
+    df.to_csv(f'{tsv_filename}', sep='\t', index=True, float_format='%.4f')
 
     print(f"DataFrame saved as {tsv_filename}")
 
