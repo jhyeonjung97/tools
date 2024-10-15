@@ -130,6 +130,25 @@ elif [[ ${here} == 'nersc' ]]; then
     #     # -o norm_EATOM 3d/energy_norm_EATOM.tsv 4d/energy_norm_EATOM.tsv 5d/energy_norm_EATOM.tsv
     # done
     
+    cd /pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS
+    python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Standard reduction potential (V)" -o redoxP \
+    ../oxide/energy_redoxP_3d.tsv ../oxide/energy_redoxP_4d.tsv ../oxide/energy_redoxP_5d.tsv
+    python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Standard reduction potential (V)" -o redoxP_clean \
+    ../oxide/energy_redoxP_clean_3d.tsv ../oxide/energy_redoxP_clean_4d.tsv ../oxide/energy_redoxP_clean_5d.tsv
+    
+    cd /pscratch/sd/j/jiuy97/3_V_bulk
+    sh ~/bin/verve/spread.sh 6_Octahedral_RS/merged_redoxP.tsv
+    sh ~/bin/verve/spread.sh 6_Octahedral_RS/merged_redoxP_clean.tsv
+    sh ~/bin/verve/spread.sh oxide/merged_coord.tsv
+    sh ~/bin/verve/spread.sh metal/merged_element.tsv
+    sh ~/bin/verve/spread.sh metal/merged_row.tsv
+    sed -i -e 's/CN/WZ/g' 1_Tetrahedral_WZ/merged_coord.tsv
+    sed -i -e 's/CN/ZB/g' 2_Tetrahedral_ZB/merged_coord.tsv
+    sed -i -e 's/CN/LT/g' 3_Pyramidal_LT/merged_coord.tsv
+    sed -i -e 's/CN/TN/g' 4_Square_Planar_TN/merged_coord.tsv
+    sed -i -e 's/CN/NB/g' 5_Square_Planar_NB/merged_coord.tsv
+    sed -i -e 's/CN/RS/g' 6_Octahedral_RS/merged_coord.tsv
+    
     # for dir in /pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/; do
     #     cd $dir
     #     python ~/bin/tools/tetra/energy.py --save -p energy -x "Metal (MO)" -y "Total energy (eV)"
@@ -149,23 +168,6 @@ elif [[ ${here} == 'nersc' ]]; then
     
 
     
-    # cd /pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS
-    # python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Standard reduction potential (V)" -o redoxP \
-    # ../oxide/energy_redoxP_3d.tsv ../oxide/energy_redoxP_4d.tsv ../oxide/energy_redoxP_5d.tsv
-    # python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Standard reduction potential (V)" -o redoxP_clean \
-    # ../oxide/energy_redoxP_clean_3d.tsv ../oxide/energy_redoxP_clean_4d.tsv ../oxide/energy_redoxP_clean_5d.tsv
-    # cd /pscratch/sd/j/jiuy97/3_V_bulk
-    # sh ~/bin/verve/spread.sh 6_Octahedral_RS/merged_redoxP.tsv
-    # sh ~/bin/verve/spread.sh 6_Octahedral_RS/merged_redoxP_clean.tsv
-    # sh ~/bin/verve/spread.sh oxide/merged_coord.tsv
-    # sh ~/bin/verve/spread.sh metal/merged_element.tsv
-    # sh ~/bin/verve/spread.sh metal/merged_row.tsv
-    # sed -i -e 's/CN/WZ/g' 1_Tetrahedral_WZ/merged_coord.tsv
-    # sed -i -e 's/CN/ZB/g' 2_Tetrahedral_ZB/merged_coord.tsv
-    # sed -i -e 's/CN/LT/g' 3_Pyramidal_LT/merged_coord.tsv
-    # sed -i -e 's/CN/TN/g' 4_Square_Planar_TN/merged_coord.tsv
-    # sed -i -e 's/CN/NB/g' 5_Square_Planar_NB/merged_coord.tsv
-    # sed -i -e 's/CN/RS/g' 6_Octahedral_RS/merged_coord.tsv
     # rows=('3d' '4d' '5d')
     # dirs=('1_afm' '4d' '5d')
     # for i in {0..2}; do
@@ -202,20 +204,20 @@ elif [[ ${here} == 'nersc' ]]; then
     # python ~/bin/verve/concat.py -o GrossPopulationL --X *_*_*/merged_GP_L_M.tsv
     # python ~/bin/verve/concat.py -o redoxP --X *_*_*/merged_redoxP.tsv
     # python ~/bin/verve/concat.py -o redoxP_clean --X *_*_*/merged_redoxP_clean.tsv
-    # python ~/bin/verve/rel2octa.py concat_bond.tsv
-    # python ~/bin/verve/rel2octa.py concat_chg.tsv
-    # python ~/bin/verve/rel2octa.py concat_energy.tsv
-    # python ~/bin/verve/rel2octa.py concat_GrossPopulationL.tsv
-    # python ~/bin/verve/rel2octa.py concat_ICOBI.tsv
-    # python ~/bin/verve/rel2octa.py concat_ICOHP.tsv
-    # python ~/bin/verve/rel2octa.py concat_mag.tsv
-    # python ~/bin/verve/rel2octa.py concat_norm_energy.tsv
-    # python ~/bin/verve/rel2octa.py concat_norm_formation.tsv
-    # python ~/bin/verve/rel2octa.py concat_norm_cohesive.tsv
-    # python ~/bin/verve/rel2octa.py concat_norm_ICOHP.tsv
-    # python ~/bin/verve/rel2octa.py concat_norm_ICOBI.tsv
-    # python ~/bin/verve/rel2octa.py concat_norm_MadelungL.tsv
-    # python ~/bin/verve/rel2octa.py concat_norm_volume.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_bond.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_chg.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_energy.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_GrossPopulationL.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_ICOBI.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_ICOHP.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_mag.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_energy.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_formation.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_cohesive.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_ICOHP.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_ICOBI.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_MadelungL.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_volume.tsv
     # mv concat*rel.tsv rel5
     # mv concat*.tsv rel6
     # cd /pscratch/sd/j/jiuy97/3_V_bulk/rel5
