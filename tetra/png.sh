@@ -130,11 +130,11 @@ elif [[ ${here} == 'nersc' ]]; then
     #     # -o norm_EATOM 3d/energy_norm_EATOM.tsv 4d/energy_norm_EATOM.tsv 5d/energy_norm_EATOM.tsv
     # done
     
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS
-    python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Standard reduction potential (V)" -o redoxP \
-    ../oxide/energy_redoxP_3d.tsv ../oxide/energy_redoxP_4d.tsv ../oxide/energy_redoxP_5d.tsv
-    python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Standard reduction potential (V)" -o redoxP_clean \
-    ../oxide/energy_redoxP_clean_3d.tsv ../oxide/energy_redoxP_clean_4d.tsv ../oxide/energy_redoxP_clean_5d.tsv
+    # cd /pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS
+    # python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Standard reduction potential (V)" -o redoxP \
+    # ../oxide/energy_redoxP_3d.tsv ../oxide/energy_redoxP_4d.tsv ../oxide/energy_redoxP_5d.tsv
+    # python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Standard reduction potential (V)" -o redoxP_clean \
+    # ../oxide/energy_redoxP_clean_3d.tsv ../oxide/energy_redoxP_clean_4d.tsv ../oxide/energy_redoxP_clean_5d.tsv
     
     cd /pscratch/sd/j/jiuy97/3_V_bulk
     sh ~/bin/verve/spread.sh 6_Octahedral_RS/merged_redoxP.tsv
@@ -144,11 +144,14 @@ elif [[ ${here} == 'nersc' ]]; then
     sh ~/bin/verve/spread.sh metal/merged_row.tsv
     sed -i -e 's/CN/WZ/g' 1_Tetrahedral_WZ/merged_coord.tsv
     sed -i -e 's/CN/ZB/g' 2_Tetrahedral_ZB/merged_coord.tsv
-    sed -i -e 's/CN/LT/g' 3_Pyramidal_LT/merged_coord.tsv
-    sed -i -e 's/CN/TN/g' 4_Square_Planar_TN/merged_coord.tsv
-    sed -i -e 's/CN/NB/g' 5_Square_Planar_NB/merged_coord.tsv
+    sed -i -e 's/CN/TN/g' 3_SquarePlanar_TN/merged_coord.tsv
+    sed -i -e 's/CN/PD/g' 4_SquarePlanar_PD/merged_coord.tsv
+    sed -i -e 's/CN/NB/g' 5_SquarePlanar_NB/merged_coord.tsv
     sed -i -e 's/CN/RS/g' 6_Octahedral_RS/merged_coord.tsv
-    
+    sed -i -e 's/CN/LT/g' 7_Pyramidal_LT/merged_coord.tsv
+    sed -i -e 's/CN/AQ/g' 8_Tetrahedral_AQ/merged_coord.tsv
+    sed -i -e 's/CN/AU/g' 9_SquarePlanar_AU/merged_coord.tsv
+
     # for dir in /pscratch/sd/j/jiuy97/4_V_slab/*_*_*/*d/; do
     #     cd $dir
     #     python ~/bin/tools/tetra/energy.py --save -p energy -x "Metal (MO)" -y "Total energy (eV)"
