@@ -255,7 +255,6 @@ elif [[ ${here} == 'nersc' ]]; then
         /pscratch/sd/j/jiuy97/3_V_bulk/3_SquarePlanar_TN/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/4_SquarePlanar_PD/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/5_SquarePlanar_NB/${files_A[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/5_SquarePlanar_NB/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/7_Pyramidal_LT/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/8_Tetrahedral_AQ/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/9_SquarePlanar_AU/${files_A[$key]}

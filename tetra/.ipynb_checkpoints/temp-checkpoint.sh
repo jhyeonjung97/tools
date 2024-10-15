@@ -63,10 +63,6 @@ for key in "${!files_A[@]}"; do
     /pscratch/sd/j/jiuy97/3_V_bulk/3_SquarePlanar_TN/${files_A[$key]} \
     /pscratch/sd/j/jiuy97/3_V_bulk/4_SquarePlanar_PD/${files_A[$key]} \
     /pscratch/sd/j/jiuy97/3_V_bulk/5_SquarePlanar_NB/${files_A[$key]} \
-    /pscratch/sd/j/jiuy97/3_V_bulk/5_SquarePlanar_NB/${files_A[$key]} \
-    /pscratch/sd/j/jiuy97/3_V_bulk/7_Pyramidal_LT/${files_A[$key]} \
-    /pscratch/sd/j/jiuy97/3_V_bulk/8_Tetrahedral_AQ/${files_A[$key]} \
-    /pscratch/sd/j/jiuy97/3_V_bulk/9_SquarePlanar_AU/${files_A[$key]}
 done
 declare -A files_B
 files_B[element]="merged_element.tsv"
@@ -77,12 +73,9 @@ for key in "${!files_B[@]}"; do
     /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
     /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
     /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
-    /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
-    /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
-    /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
     /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]}
 done
-for file in ~/bin/tools/tetra/png_rel/*.sh; do
+for file in ~/bin/tools/tetra/png_rel/lr*.sh; do
     sh $file
 done
 
@@ -107,6 +100,6 @@ python ~/bin/tools/tetra/operator.py -o + \
 python ~/bin/tools/tetra/concat.py -o coord --X /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/merged_coord.tsv
 python ~/bin/tools/tetra/concat.py -o element --X /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/merged_element.tsv
 python ~/bin/tools/tetra/concat.py -o row --X /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/merged_row.tsv
-for file in ~/bin/tools/tetra/png/*.sh; do
+for file in ~/bin/tools/tetra/png/lr*.sh; do
     sh $file
 done
