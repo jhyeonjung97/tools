@@ -1,11 +1,12 @@
-for dir in ./*/
+root=$PWD
+for dir in $root/*/
 do
-    cd $dir
-    if [[ $PWD == *'Tetrahedral'* ]]; then
+    cd $dir; pwd
+    if [[ $dir == *'Tetrahedral'* ]]; then
         n=4; python ~/bin/tools/tetra/energy.py --save -p hexa -x "Metal (MO)" -y "Hexagonal ratio [c/a]"
-    elif [[ $PWD == *'Pyramidal'* ]] || [[ $PWD == *'Tetrahedral'* ]] || [[ $PWD == *'SquarePlanar'* ]]; then
+    elif [[ $dir == *'Pyramidal'* ]] || [[ $dir == *'Tetrahedral'* ]] || [[ $dir == *'SquarePlanar'* ]]; then
         n=4; #python ~/bin/tools/tetra/energy.py --save -p hexa -x "Metal (MO)" -y "Square prism ratio [c/a]"
-    elif [[ $PWD == *'Octahedral'* ]]; then
+    elif [[ $dir == *'Octahedral'* ]]; then
         n=6
     fi
     python ~/bin/tools/tetra/energy.py --save -p energy -x "Metal (MO)" -y "Total energy (eV)"
