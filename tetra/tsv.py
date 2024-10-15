@@ -50,15 +50,15 @@ def plot_patterns_from_multiple_tsv(filenames, output, xlabel, ylabel, labels, a
         elif '7_Pyramidal_LT' in os.getcwd():
             coordination = 'LT'
             markers = ['h'] * l  # Hexagon marker for variation
-            colors = plt.cm.Cool(np.linspace(0.4, 0.9, l))  # Cool colormap
+            colors = plt.cm.cool(np.linspace(0.4, 0.9, l))  # Cool colormap
         elif '8_Tetrahedral_AQ' in os.getcwd():
             coordination = 'AQ'
             markers = ['^'] * l  # Upward-pointing triangle for variation
-            colors = plt.cm.Summer(np.linspace(0.4, 0.9, l))  # Summer colormap
+            colors = plt.cm.summer(np.linspace(0.4, 0.9, l))  # Summer colormap
         elif '9_SquarePlanar_AU' in os.getcwd():
             coordination = 'AU'
             markers = ['v'] * l  # Downward-pointing triangle for variation
-            colors = plt.cm.Winter(np.linspace(0.4, 0.9, l))  # Winter colormap
+            colors = plt.cm.winter(np.linspace(0.4, 0.9, l))  # Winter colormap
         else:
             coordination = 'Unknown'
             markers = ['d'] * l  # Default to diamonds
