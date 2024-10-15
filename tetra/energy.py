@@ -240,6 +240,11 @@ def extract_values(directory, patterns, norm, dir_range):
                         if 'Madelung_Loewdin' in specific_patterns:
                             values.setdefault('Madelung_Loewdin', []).append(float(match.group(2))/norm_numb)
                         break
+            else:
+                if 'Madelung_Mulliken' in specific_patterns:
+                    values.setdefault('Madelung_Mulliken', []).append(np.nan)
+                if 'Madelung_Loewdin' in specific_patterns:
+                    values.setdefault('Madelung_Loewdin', []).append(np.nan)
         if 'GP_Mulliken' in specific_patterns or 'GP_Loewdin' in specific_patterns:
             gp_path = os.path.join(dir_path, 'GROSSPOP.lobster')
             if os.path.exists(gp_path) and os.path.getsize(gp_path) != 0:
