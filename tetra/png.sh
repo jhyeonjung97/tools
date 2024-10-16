@@ -273,7 +273,13 @@ elif [[ ${here} == 'nersc' ]]; then
         /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]}
     done
-    for file in ~/bin/tools/tetra/png_rel/*.sh; do
+    for file in ~/bin/tools/tetra/png_rel/lr*.sh; do
+        sh $file
+    done
+    for file in ~/bin/tools/tetra/png_rel/gbr*.sh; do
+        sh $file
+    done
+    for file in ~/bin/tools/tetra/png_rel/nn*.sh; do
         sh $file
     done
     
@@ -298,7 +304,13 @@ elif [[ ${here} == 'nersc' ]]; then
     python ~/bin/tools/tetra/concat.py -o coord --X /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/merged_coord.tsv
     python ~/bin/tools/tetra/concat.py -o element --X /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/merged_element.tsv
     python ~/bin/tools/tetra/concat.py -o row --X /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/merged_row.tsv
-    for file in ~/bin/tools/tetra/png/*.sh; do
+    for file in ~/bin/tools/tetra/png/lr*.sh; do
+        sh $file
+    done
+    for file in ~/bin/tools/tetra/png/gbr*.sh; do
+        sh $file
+    done
+    for file in ~/bin/tools/tetra/png/nn*.sh; do
         sh $file
     done
     

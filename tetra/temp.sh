@@ -62,7 +62,7 @@ for key in "${!files_A[@]}"; do
     /pscratch/sd/j/jiuy97/3_V_bulk/2_Tetrahedral_ZB/${files_A[$key]} \
     /pscratch/sd/j/jiuy97/3_V_bulk/3_SquarePlanar_TN/${files_A[$key]} \
     /pscratch/sd/j/jiuy97/3_V_bulk/4_SquarePlanar_PD/${files_A[$key]} \
-    /pscratch/sd/j/jiuy97/3_V_bulk/5_SquarePlanar_NB/${files_A[$key]} \
+    /pscratch/sd/j/jiuy97/3_V_bulk/5_SquarePlanar_NB/${files_A[$key]}
 done
 declare -A files_B
 files_B[element]="merged_element.tsv"
