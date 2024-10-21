@@ -71,6 +71,7 @@ for row in "${ordered_rows[@]}"; do
 
                         if [ -f "$restart_file" ]; then
                             cp "$restart_file" ./restart.json
+                            sed -i -e '/constraints/d' 'restart.json'
                             ase convert -f 'restart.json' 'POSCAR'
                             ase convert -f 'POSCAR' 'start.traj'
                             rm 'restart.json'
