@@ -76,7 +76,7 @@ for row in "${ordered_rows[@]}"; do
                         fi
 
                         cp ~/bin/tools/mnc/submit.sh .
-                        sed -i -e "s/jobname/${index}${metal}${adsorbate}${spin}${dz}/" submit.sh
+                        sed -i -e "s/jobname/${index}${metal}${spin}${adsorbate}${dz}/" submit.sh
                         sed -i -e "s/mnc-sol/mnc-sol-${small_spin}/" submit.sh
                     done
                 done
