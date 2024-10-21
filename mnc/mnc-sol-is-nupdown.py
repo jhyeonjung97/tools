@@ -50,12 +50,12 @@ ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
-    amix_mag = 0.01
-    bmix_mag = 0.00001
+    #amix_mag = 0.01
+    #bmix_mag = 0.00001
 elif path.exists('start.traj'):
     atoms = read('start.traj')
-    amix_mag = 0.05
-    bmix_mag = 0.0001
+    #amix_mag = 0.05
+    #bmix_mag = 0.0001
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
 
@@ -107,11 +107,11 @@ atoms.calc = vasp_calculator.Vasp(
                     gamma=True,
                     ismear=0,
                     sigma=0.05,
-                    inimix=0,
-                    amix=0.05,
-                    bmix=0.0001,
-                    amix_mag=amix_mag,
-                    bmix_mag=bmix_mag,
+                    #inimix=0,
+                    #amix=0.05,
+                    #bmix=0.0001,
+                    #amix_mag=amix_mag,
+                    #bmix_mag=bmix_mag,
                     nelm=250,
                     algo='Normal',
                     ibrion=2,
