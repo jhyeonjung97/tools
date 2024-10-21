@@ -10,7 +10,8 @@ rows=(
 spins=("LS" "IS" "HS")
 small_spins=("ls" "is" "hs")
 specific_metals=("Fe" "Ni" "Mo" "W" "Ru" "Pd" "Pt")
-adsorbates=("clean" "h" "o-o" "o-oh" "o" "oh-o" "oh-oh" "oh" "oho" "ohoh" "oo" "ooh")
+# adsorbates=("clean" "h" "o-o" "o-oh" "o" "oh-o" "oh-oh" "oh" "oho" "ohoh" "oo" "ooh")
+adsorbates=("ooh-oh" "oh-ooh" "ooh-o" "o-ooh" "oo-oh" "oh-oo" "oo-o" "o-oo")
 
 # 순서를 보장하기 위해 명시적으로 행을 지정
 ordered_rows=("3d" "4d" "5d")
@@ -47,6 +48,14 @@ for row in "${ordered_rows[@]}"; do
                             # for file in ~/bin/tools/mnc/add*.py; do
                             #     python "$file"
                             # done
+                            python ~/bin/tools/mnc/add-ooh-oh.py
+                            python ~/bin/tools/mnc/add-oh-ooh.py
+                            python ~/bin/tools/mnc/add-ooh-o.py
+                            python ~/bin/tools/mnc/add-o-ooh.py
+                            python ~/bin/tools/mnc/add-oo-oh.py
+                            python ~/bin/tools/mnc/add-oh-oo.py
+                            python ~/bin/tools/mnc/add-oo-o.py
+                            python ~/bin/tools/mnc/add-o-oo.py
                         else
                             echo "Target directory does not exist: $target_dir"
                             continue
