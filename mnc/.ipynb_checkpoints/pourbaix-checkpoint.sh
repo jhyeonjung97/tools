@@ -71,11 +71,14 @@ for row in "${ordered_rows[@]}"; do
 
                         if [ -f "$restart_file" ]; then
                             cp "$restart_file" ./restart.json
+                            ase convert 'restart.json' 'POSCAR'
+                            ase convert 'POSCAR' 'start.traj'
+                            rm 'restart.json'
                         else
                             echo "File not found: $restart_file"
                             continue
                         fi
-
+                        
                         cp ~/bin/tools/mnc/submit.sh .
                         sed -i -e "s/jobname/${index}${metal}${spin}${adsorbate}${dz}/" submit.sh
                         sed -i -e "s/mnc-sol/mnc-sol-${small_spin}-nupdown/" submit.sh
