@@ -37,7 +37,15 @@ spin_states_plus_6 = {'Ti': 0, 'V': 0, 'Cr': 0, 'Mn': 1, 'Fe': 0, 'Co': 1, 'Ni':
                       'Zr': 0, 'Nb': 0, 'Mo': 0, 'Tc': 1, 'Ru': 0, 'Rh': 1, 'Pd': 0, 
                       'Hf': 0, 'Ta': 0, 'W': 0, 'Re': 1, 'Os': 0, 'Ir': 1, 'Pt': 0
                       }
-        
+spin_states_plus_7 = {'Ti': 0, 'V': 0, 'Cr': 0, 'Mn': 0, 'Fe': 1, 'Co': 0, 'Ni': 1, 'Cu': 0,
+                      'Zr': 0, 'Nb': 0, 'Mo': 0, 'Tc': 0, 'Ru': 1, 'Rh': 0, 'Pd': 1, 
+                      'Hf': 0, 'Ta': 0, 'W': 0, 'Re': 0, 'Os': 1, 'Ir': 0, 'Pt': 1
+                      }
+spin_states_plus_8 = {'Ti': 0, 'V': 0, 'Cr': 0, 'Mn': 0, 'Fe': 0, 'Co': 1, 'Ni': 0, 'Cu': 1,
+                      'Zr': 0, 'Nb': 0, 'Mo': 0, 'Tc': 0, 'Ru': 0, 'Rh': 1, 'Pd': 0, 
+                      'Hf': 0, 'Ta': 0, 'W': 0, 'Re': 0, 'Os': 0, 'Ir': 1, 'Pt': 0
+                      }
+
 ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
             'Cr': {'L':2, 'U':3.50, 'J':0.0},
@@ -50,12 +58,12 @@ ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
-    amix_mag = 0.01
-    bmix_mag = 0.00001
+    #amix_mag = 0.01
+    #bmix_mag = 0.00001
 elif path.exists('start.traj'):
     atoms = read('start.traj')
-    amix_mag = 0.05
-    bmix_mag = 0.0001
+    #amix_mag = 0.05
+    #bmix_mag = 0.0001
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
 
@@ -77,6 +85,10 @@ elif oxi == 5:
     spin_states = spin_states_plus_5
 elif oxi == 6:
     spin_states = spin_states_plus_6
+elif oxi == 7:
+    spin_states = spin_states_plus_7
+elif oxi == 8:
+    spin_states = spin_states_plus_8
 else:
     spin_states = spin_states_plus_2
 
@@ -103,15 +115,15 @@ atoms.calc = vasp_calculator.Vasp(
                     ivdw=12,
                     kpts=(5,5,1),
                     kpar=8,
-                    npar=1,
+                    npar=4,
                     gamma=True,
                     ismear=0,
                     sigma=0.05,
-                    inimix=0,
-                    amix=0.05,
-                    bmix=0.0001,
-                    amix_mag=amix_mag,
-                    bmix_mag=bmix_mag,
+                    #inimix=0,
+                    #amix=0.05,
+                    #bmix=0.0001,
+                    #amix_mag=amix_mag,
+                    #bmix_mag=bmix_mag,
                     nelm=250,
                     algo='Normal',
                     ibrion=2,

@@ -37,6 +37,14 @@ spin_states_plus_6 = {'Fe': 2, 'Co': 3, 'Ni': 4, 'Cu': 5,
                       'Ru': 2, 'Rh': 3, 'Pd': 4,
                       'Os': 2, 'Ir': 3, 'Pt': 4
                       }
+spin_states_plus_7 = {'Co': 2, 'Ni': 3, 'Cu': 4,
+                      'Rh': 2, 'Pd': 3,
+                      'Ir': 2, 'Pt': 3
+                      }
+spin_states_plus_8 = {'Ni': 2, 'Cu': 3,
+                      'Pd': 2,
+                      'Pt': 2
+                      }
 
 ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
@@ -50,12 +58,12 @@ ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
-    amix_mag = 0.01
-    bmix_mag = 0.00001
+    #amix_mag = 0.01
+    #bmix_mag = 0.00001
 elif path.exists('start.traj'):
     atoms = read('start.traj')
-    amix_mag = 0.05
-    bmix_mag = 0.0001
+    #amix_mag = 0.05
+    #bmix_mag = 0.0001
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
 
@@ -77,6 +85,10 @@ elif oxi == 5:
     spin_states = spin_states_plus_5
 elif oxi == 6:
     spin_states = spin_states_plus_6
+elif oxi == 7:
+    spin_states = spin_states_plus_7
+elif oxi == 8:
+    spin_states = spin_states_plus_8
 else:
     spin_states = spin_states_plus_2
     
@@ -103,15 +115,15 @@ atoms.calc = vasp_calculator.Vasp(
                     ivdw=12,
                     kpts=(5,5,1),
                     kpar=8,
-                    npar=1,
+                    npar=4,
                     gamma=True,
                     ismear=0,
                     sigma=0.05,
-                    inimix=0,
-                    amix=0.05,
-                    bmix=0.0001,
-                    amix_mag=amix_mag,
-                    bmix_mag=bmix_mag,
+                    #inimix=0,
+                    #amix=0.05,
+                    #bmix=0.0001,
+                    #amix_mag=amix_mag,
+                    #bmix_mag=bmix_mag,
                     nelm=250,
                     algo='Normal',
                     ibrion=2,

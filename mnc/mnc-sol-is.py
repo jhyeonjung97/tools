@@ -37,6 +37,10 @@ spin_states_plus_6 = {'Ni': 2, 'Cu': 3,
                       'Pd': 2,
                       'Pt': 2
                      }
+spin_states_plus_7 = {'Cu': 2
+                     }
+spin_states_plus_8 = {
+                     }
 
 ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
@@ -77,6 +81,10 @@ elif oxi == 5:
     spin_states = spin_states_plus_5
 elif oxi == 6:
     spin_states = spin_states_plus_6
+elif oxi == 7:
+    spin_states = spin_states_plus_7
+elif oxi == 8:
+    spin_states = spin_states_plus_8
 else:
     spin_states = spin_states_plus_2
     
