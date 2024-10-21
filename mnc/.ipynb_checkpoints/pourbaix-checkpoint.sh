@@ -33,6 +33,7 @@ for row in "${ordered_rows[@]}"; do
                 for dz in "1" "5"; do
                     base_path="/pscratch/sd/j/jiuy97/6_MNC/0_clean/${row}/${metal_index}_${metal}"
                     path=$(find "$base_path" -maxdepth 1 -type d -name "*_${spin}" 2>/dev/null)
+                    pourbaix="/pscratch/sd/j/jiuy97/6_MNC/pourbaix/${metal_index}_${metal}"
 
                     # Check if path exists
                     if [ -n "$path" ]; then
@@ -52,13 +53,13 @@ for row in "${ordered_rows[@]}"; do
                         fi
                     else
                         echo "Path does not exist: $base_path/*_${spin}"
+                        rm -r "${pourbaix}/${adsorbate}/${spin}${dz}"
                         continue
                     fi
                     
-                    pourbaix="/pscratch/sd/j/jiuy97/6_MNC/pourbaix/${metal_index}_${metal}"
-
                     for adsorbate in "${adsorbates[@]}"; do
                         adsorbate_dir="${pourbaix}/${adsorbate}/${spin}${dz}"
+                        echo $adsorbate_dir
                         mkdir -p "$adsorbate_dir"
                         cd "$adsorbate_dir" || continue
 
