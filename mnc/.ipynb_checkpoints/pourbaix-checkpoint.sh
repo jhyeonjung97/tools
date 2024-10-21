@@ -9,7 +9,7 @@ rows=(
 
 spins=("LS" "IS" "HS")
 small_spins=("ls" "is" "hs")
-specific_metals=("Fe" "Ni" "Mo" "W" "Ru" "Pd" "Pt")
+specific_metals=("Fe" "Ni" "Mo" "Ru" "Pd" "W" "Pt")
 adsorbates=("clean" "h" "o-o" "o-oh" "o" "oh-o" "oh-oh" "oh" "oho" "ohoh" "oo" "ooh")
 
 i=0
@@ -30,30 +30,51 @@ for row in "${!rows[@]}"; do
                 small_spin=${small_spins[$s]}
 
                 for dz in "1" "5"; do
-                    path="/pscratch/sd/j/jiuy97/6_MNC/0_clean/${row}/${m}_${metal}/*_${spin}/${dz}_"
-                    pourbaix="/pscratch/sd/j/jiuy97/6_MNC/pourbaix/${i}_${metal}"
+                    echo $row $metal $m $i $s
+                    # Find the first matching directory
+                    base_path="/pscratch/sd/j/jiuy97/6_MNC/0_clean/${row}/${m}_${metal}"
+                    path=$(find "$base_path" -maxdepth 1 -type d -name "*_${spin}" 2>/dev/null)
 
                     # Check if path exists
-                    if [ -d "$path" ]; then
-                        cd "$path" || continue
+                    if [ -n "$path" ]; then
+                        target_dir="${path}/${dz}_"
+                        echo "Processing: $target_dir"
 
-                        # Loop through add*.py scripts in ~/bin/tools/mnc/ and execute them
-                        for file in ~/bin/tools/mnc/add*.py; do
-                            python "$file"
-                        done
+                        if [ -d "$target_dir" ]; then
+                            cd "$target_dir" || continue
+
+                            # Loop through add*.py scripts in ~/bin/tools/mnc/ and execute them
+                            for file in ~/bin/tools/mnc/add*.py; do
+                                python "$file"
+                            done
+                        else
+                            echo "Target directory does not exist: $target_dir"
+                            continue
+                        fi
                     else
-                        echo "Path does not exist: $path"
+                        echo "Path does not exist: $base_path/*_${spin}"
+                        continue
                     fi
                     
+                    pourbaix="/pscratch/sd/j/jiuy97/6_MNC/pourbaix/${i}_${metal}"
+                    mkdir -p "$pourbaix"
+
                     for adsorbate in "${adsorbates[@]}"; do
-                        adsorbate_dir="${pourbaix}/${adsorbate}/${m}_${small_spin}${dz}"
+                        adsorbate_dir="${pourbaix}/${adsorbate}/${spin}${dz}"
                         mkdir -p "$adsorbate_dir"
                         cd "$adsorbate_dir" || continue
 
                         if [[ "$adsorbate" == "clean" ]]; then
-                            cp "${path}/restart.json" .
+                            restart_file="${target_dir}/restart.json"
                         else
-                            cp "${path}/restart-${adsorbate}.json" .
+                            restart_file="${target_dir}/restart-${adsorbate}.json"
+                        fi
+
+                        if [ -f "$restart_file" ]; then
+                            cp "$restart_file" .
+                        else
+                            echo "File not found: $restart_file"
+                            continue
                         fi
 
                         cp ~/bin/tools/mnc/submit.sh .
