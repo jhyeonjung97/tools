@@ -13,6 +13,6 @@ for vasp_file in vasp_files:
     png_file = vasp_file.replace('.vasp', '.png')
     
     # ASE의 write 함수를 사용해 x축에서 본 구조를 PNG로 저장
-    write(png_file, atoms, rotation='90x, 0y, 0z', show_unit_cell=2)
+    write(png_file, atoms, rotation='0x, 0y, 0z')
 
     print(f"{png_file}로 저장되었습니다.")
