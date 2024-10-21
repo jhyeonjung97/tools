@@ -9,18 +9,19 @@ rows=(
 
 spins=("LS" "IS" "HS")
 small_spins=("ls" "is" "hs")
-specific_metals=("Fe" "Ni" "Mo" "Ru" "Pd" "W" "Pt")
+specific_metals=("Fe" "Ni" "Mo" "W" "Ru" "Pd" "Pt")
 adsorbates=("clean" "h" "o-o" "o-oh" "o" "oh-o" "oh-oh" "oh" "oho" "ohoh" "oo" "ooh")
 
+# 순서를 보장하기 위해 명시적으로 행을 지정
+ordered_rows=("3d" "4d" "5d")
+
+# Loop through rows in defined order
 i=0
-
-# Loop through rows and metals
-for row in "${!rows[@]}"; do
+for row in "${ordered_rows[@]}"; do
     metals=${rows[$row]}
-    m=1
-    for metal in $metals; do
-        ((m++))
+    metal_index=1  # Reset index for each row
 
+    for metal in $metals; do
         # Check if the metal is in specific_metals
         if [[ " ${specific_metals[@]} " =~ " ${metal} " ]]; then
             ((i++))
@@ -30,9 +31,7 @@ for row in "${!rows[@]}"; do
                 small_spin=${small_spins[$s]}
 
                 for dz in "1" "5"; do
-                    echo $row $metal $m $i $s
-                    # Find the first matching directory
-                    base_path="/pscratch/sd/j/jiuy97/6_MNC/0_clean/${row}/${m}_${metal}"
+                    base_path="/pscratch/sd/j/jiuy97/6_MNC/0_clean/${row}/${metal_index}_${metal}"
                     path=$(find "$base_path" -maxdepth 1 -type d -name "*_${spin}" 2>/dev/null)
 
                     # Check if path exists
@@ -43,7 +42,7 @@ for row in "${!rows[@]}"; do
                         if [ -d "$target_dir" ]; then
                             cd "$target_dir" || continue
 
-                            # Loop through add*.py scripts in ~/bin/tools/mnc/ and execute them
+                            # Execute add*.py scripts
                             for file in ~/bin/tools/mnc/add*.py; do
                                 python "$file"
                             done
@@ -56,8 +55,7 @@ for row in "${!rows[@]}"; do
                         continue
                     fi
                     
-                    pourbaix="/pscratch/sd/j/jiuy97/6_MNC/pourbaix/${i}_${metal}"
-                    mkdir -p "$pourbaix"
+                    pourbaix="/pscratch/sd/j/jiuy97/6_MNC/pourbaix/${metal_index}_${metal}"
 
                     for adsorbate in "${adsorbates[@]}"; do
                         adsorbate_dir="${pourbaix}/${adsorbate}/${spin}${dz}"
@@ -84,5 +82,6 @@ for row in "${!rows[@]}"; do
                 done
             done
         fi
+        ((metal_index++))  # Increment metal index
     done
 done
