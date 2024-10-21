@@ -16,7 +16,7 @@ adsorbates=("clean" "h" "o-o" "o-oh" "o" "oh-o" "oh-oh" "oh" "oho" "ohoh" "oo" "
 ordered_rows=("3d" "4d" "5d")
 
 # Loop through rows in defined order
-i=0
+index=0
 for row in "${ordered_rows[@]}"; do
     metals=${rows[$row]}
     metal_index=2  # Reset index for each row
@@ -24,7 +24,7 @@ for row in "${ordered_rows[@]}"; do
     for metal in $metals; do
         # Check if the metal is in specific_metals
         if [[ " ${specific_metals[@]} " =~ " ${metal} " ]]; then
-            ((i++))
+            ((index++))
 
             for s in $(seq 0 2); do
                 spin=${spins[$s]}
@@ -33,7 +33,7 @@ for row in "${ordered_rows[@]}"; do
                 for dz in "1" "5"; do
                     base_path="/pscratch/sd/j/jiuy97/6_MNC/0_clean/${row}/${metal_index}_${metal}"
                     path=$(find "$base_path" -maxdepth 1 -type d -name "*_${spin}" 2>/dev/null)
-                    pourbaix="/pscratch/sd/j/jiuy97/6_MNC/pourbaix/${metal_index}_${metal}"
+                    pourbaix="/pscratch/sd/j/jiuy97/6_MNC/pourbaix/${index}_${metal}"
 
                     # Check if path exists
                     if [ -n "$path" ]; then
@@ -53,13 +53,13 @@ for row in "${ordered_rows[@]}"; do
                         fi
                     else
                         echo "Path does not exist: $base_path/*_${spin}"
-                        rm -r "${pourbaix}/${adsorbate}/${spin}${dz}"
                         continue
                     fi
                     
+                    # Create pourbaix directories
                     for adsorbate in "${adsorbates[@]}"; do
                         adsorbate_dir="${pourbaix}/${adsorbate}/${spin}${dz}"
-                        echo $adsorbate_dir
+                        echo "$adsorbate_dir"
                         mkdir -p "$adsorbate_dir"
                         cd "$adsorbate_dir" || continue
 
@@ -70,7 +70,7 @@ for row in "${ordered_rows[@]}"; do
                         fi
 
                         if [ -f "$restart_file" ]; then
-                            cp "$restart_file" .
+                            cp "$restart_file" ./restart.json
                         else
                             echo "File not found: $restart_file"
                             continue
