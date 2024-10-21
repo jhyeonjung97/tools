@@ -29,6 +29,14 @@ spin_states_plus_4 = {'Fe': 2, 'Co': 3, 'Ni': 2,
                       'Ru': 2, 'Rh': 3, 'Pd': 2,
                       'Os': 2, 'Ir': 3, 'Pt': 2
                      }
+spin_states_plus_5 = {'Co': 2, 'Ni': 3, 'Cu': 2,
+                      'Rh': 2, 'Pd': 3,
+                      'Ir': 2, 'Pt': 3
+                     }
+spin_states_plus_6 = {'Ni': 2, 'Cu': 3,
+                      'Pd': 2,
+                      'Pt': 2
+                     }
 
 ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
@@ -51,16 +59,27 @@ elif path.exists('start.traj'):
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
 
-if atoms[-2].symbol == 'C' and atoms[-1].symbol == 'O':
+count_c = len([atom for atom in atoms if atom.symbol == 'C']) - 26
+count_n = len([atom for atom in atoms if atom.symbol == 'N'])
+count_o = len([atom for atom in atoms if atom.symbol == 'O'])
+count_h = len([atom for atom in atoms if atom.symbol == 'H'])
+oxi = count_n / 2 + count_o * 2 - count_h
+
+if count_c == 1 or oxi == 2:
     spin_states = spin_states_plus_2
-elif atoms[-2].symbol == 'O' and atoms[-1].symbol == 'H':
-    spin_states = spin_states_plus_3
-elif atoms[-1].symbol == 'O':
-    spin_states = spin_states_plus_4
-elif atoms[-1].symbol == 'H':
+elif oxi == 1:
     spin_states = spin_states_plus_1
+elif oxi == 3:
+    spin_states = spin_states_plus_3
+elif oxi == 4:
+    spin_states = spin_states_plus_4
+elif oxi == 5:
+    spin_states = spin_states_plus_5
+elif oxi == 6:
+    spin_states = spin_states_plus_6
 else:
     spin_states = spin_states_plus_2
+
 for atom in atoms:
     if atom.symbol in spin_states:
         spin = spin_states.get(atom.symbol)

@@ -29,6 +29,14 @@ spin_states_plus_4 = {'Cr': 2, 'Mn': 3, 'Fe': 4, 'Co': 5, 'Ni': 4, 'Cu': 3,
                       'Mo': 2, 'Tc': 3, 'Ru': 4, 'Rh': 5, 'Pd': 4,
                       'W': 2, 'Re': 3, 'Os': 4, 'Ir': 5, 'Pt': 4
                       }
+spin_states_plus_5 = {'Mn': 2, 'Fe': 3, 'Co': 4, 'Ni': 5, 'Cu': 4,
+                      'Tc': 2, 'Ru': 3, 'Rh': 4, 'Pd': 5,
+                      'Re': 2, 'Os': 3, 'Ir': 4, 'Pt': 5
+                      }
+spin_states_plus_6 = {'Fe': 2, 'Co': 3, 'Ni': 4, 'Cu': 5,
+                      'Ru': 2, 'Rh': 3, 'Pd': 4,
+                      'Os': 2, 'Ir': 3, 'Pt': 4
+                      }
 
 ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
@@ -51,16 +59,27 @@ elif path.exists('start.traj'):
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
 
-if atoms[-2].symbol == 'C' and atoms[-1].symbol == 'O':
+count_c = len([atom for atom in atoms if atom.symbol == 'C']) - 26
+count_n = len([atom for atom in atoms if atom.symbol == 'N'])
+count_o = len([atom for atom in atoms if atom.symbol == 'O'])
+count_h = len([atom for atom in atoms if atom.symbol == 'H'])
+oxi = count_n / 2 + count_o * 2 - count_h
+
+if count_c == 1 or oxi == 2:
     spin_states = spin_states_plus_2
-elif atoms[-2].symbol == 'O' and atoms[-1].symbol == 'H':
-    spin_states = spin_states_plus_3
-elif atoms[-1].symbol == 'O':
-    spin_states = spin_states_plus_4
-elif atoms[-1].symbol == 'H':
+elif oxi == 1:
     spin_states = spin_states_plus_1
+elif oxi == 3:
+    spin_states = spin_states_plus_3
+elif oxi == 4:
+    spin_states = spin_states_plus_4
+elif oxi == 5:
+    spin_states = spin_states_plus_5
+elif oxi == 6:
+    spin_states = spin_states_plus_6
 else:
     spin_states = spin_states_plus_2
+    
 for atom in atoms:
     if atom.symbol in spin_states:
         spin = spin_states.get(atom.symbol)
@@ -98,7 +117,7 @@ atoms.calc = vasp_calculator.Vasp(
                     ibrion=2,
                     isif=2,
                     ediffg=-0.02,
-                    ediff=1e-6,
+                    ediff=1e-5,
                     prec='Normal',
                     nsw=200,
                     lvhar=True,
