@@ -52,6 +52,7 @@ for row in "${ordered_rows[@]}"; do
                             continue
                         fi
                     else
+                        echo "Processing: $target_dir"
                         spin='IS'
                     fi
                     
