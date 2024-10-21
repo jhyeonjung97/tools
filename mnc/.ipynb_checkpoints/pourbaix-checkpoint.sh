@@ -19,7 +19,7 @@ ordered_rows=("3d" "4d" "5d")
 i=0
 for row in "${ordered_rows[@]}"; do
     metals=${rows[$row]}
-    metal_index=1  # Reset index for each row
+    metal_index=2  # Reset index for each row
 
     for metal in $metals; do
         # Check if the metal is in specific_metals
