@@ -52,8 +52,7 @@ for row in "${ordered_rows[@]}"; do
                             continue
                         fi
                     else
-                        echo "Path does not exist: $base_path/*_${spin}"
-                        continue
+                        spin='IS'
                     fi
                     
                     # Create pourbaix directories
@@ -77,7 +76,7 @@ for row in "${ordered_rows[@]}"; do
                         fi
 
                         cp ~/bin/tools/mnc/submit.sh .
-                        sed -i -e "s/jobname/${metal}_${adsorbate}/" submit.sh
+                        sed -i -e "s/jobname/${index}${metal}${adsorbate}${spin}${dz}/" submit.sh
                         sed -i -e "s/mnc-sol/mnc-sol-${small_spin}/" submit.sh
                     done
                 done
