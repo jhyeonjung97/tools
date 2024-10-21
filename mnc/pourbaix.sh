@@ -71,8 +71,8 @@ for row in "${ordered_rows[@]}"; do
 
                         if [ -f "$restart_file" ]; then
                             cp "$restart_file" ./restart.json
-                            ase convert 'restart.json' 'POSCAR'
-                            ase convert 'POSCAR' 'start.traj'
+                            ase convert -f 'restart.json' 'POSCAR'
+                            ase convert -f 'POSCAR' 'start.traj'
                             rm 'restart.json'
                         else
                             echo "File not found: $restart_file"
