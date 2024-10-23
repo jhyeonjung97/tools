@@ -9,7 +9,7 @@ rows=(
 
 spins=("LS" "IS" "HS")
 small_spins=("ls" "is" "hs")
-specific_metals=("Fe" "Ni" "Mo" "W" "Ru" "Pd" "Pt")
+specific_metals=("Fe" "Co" "Mo" "W" "Ru" "Pd" "Pt")
 # adsorbates=("clean" "h" "o-o" "o-oh" "o" "oh-o" "oh-oh" "oh" "oho" "ohoh" "oo" "ooh")
 # adsorbates=("ooh-oh" "oh-ooh" "ooh-o" "o-ooh" "oo-oh" "oh-oo" "oo-o" "o-oo")
 adsorbates=("h")
