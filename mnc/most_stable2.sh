@@ -13,10 +13,13 @@ lowest_energy=0
 
 # Loop through the specified subdirectories
 for sub_dir in {HS1,HS5,IS1,IS5,LS1,LS5}; do
-    energy=$(grep -oP 'ENERGY\s+\K[-+]?[0-9]*\.?[0-9]+' "${sub_dir}/DONE")
-    if [[ $(echo "$energy < $lowest_energy" | bc) -eq 1 ]]; then
-        lowest_energy=$energy
-        lowest_dir=$sub_dir
+    # Check if the DONE file exists
+    if [[ -f "${sub_dir}/DONE" ]]; then
+        energy=$(grep -oP 'ENERGY\s+\K[-+]?[0-9]*\.?[0-9]+' "${sub_dir}/DONE")
+        if [[ $(echo "$energy < $lowest_energy" | bc) -eq 1 ]]; then
+            lowest_energy=$energy
+            lowest_dir=$sub_dir
+        fi
     fi
 done
 
@@ -32,4 +35,10 @@ if [[ -n "$lowest_dir" ]]; then
     sed -i -e "/#SBATCH -J/c\#SBATCH -J ${numb}${metal}MS${ads}" most_stable/submit.sh
 else
     echo "No valid directory found with lower energy."
+fi
+
+# If the submit.sh file exists in most_stable, submit the job
+if [[ -f most_stable/submit.sh ]]; then
+    cd most_stable || exit
+    sbatch submit.sh
 fi
