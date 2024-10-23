@@ -82,9 +82,9 @@ for row in "${ordered_rows[@]}"; do
                             continue
                         fi
                         
-                        # cp ~/bin/tools/mnc/submit.sh .
-                        # sed -i -e "s/jobname/${index}${metal}${spin}${adsorbate}${dz}/" submit.sh
-                        # sed -i -e "s/mnc-sol/mnc-sol-${small_spin}-nupdown/" submit.sh
+                        cp ~/bin/tools/mnc/submit.sh .
+                        sed -i -e "s/jobname/${index}${metal}${spin}${adsorbate}${dz}/" submit.sh
+                        sed -i -e "s/mnc-sol/mnc-sol-${small_spin}-nupdown/" submit.sh
                     done
                 done
             done
