@@ -45,7 +45,7 @@ for row in "${ordered_rows[@]}"; do
                         if [ -d "$target_dir" ]; then
                             cd "$target_dir" || continue
 
-                            Execute add*.py scripts
+                            # Execute add*.py scripts
                             for file in ~/bin/tools/mnc/add*.py; do
                                 python "$file"
                             done
