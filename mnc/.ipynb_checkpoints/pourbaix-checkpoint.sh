@@ -45,11 +45,10 @@ for row in "${ordered_rows[@]}"; do
                         if [ -d "$target_dir" ]; then
                             cd "$target_dir" || continue
 
-                            # Execute add*.py scripts
-                            # for file in ~/bin/tools/mnc/add*.py; do
-                            #     python "$file"
-                            # done
-                            python ~/bin/tools/mnc/add-h.py
+                            Execute add*.py scripts
+                            for file in ~/bin/tools/mnc/add*.py; do
+                                python "$file"
+                            done
                         else
                             echo "Target directory does not exist: $target_dir"
                             continue
