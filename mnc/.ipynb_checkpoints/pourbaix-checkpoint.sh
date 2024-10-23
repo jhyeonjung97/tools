@@ -45,10 +45,10 @@ for row in "${ordered_rows[@]}"; do
                         if [ -d "$target_dir" ]; then
                             cd "$target_dir" || continue
 
-                            # Execute add*.py scripts
-                            for file in ~/bin/tools/mnc/add*.py; do
-                                python "$file"
-                            done
+                            # # Execute add*.py scripts
+                            # for file in ~/bin/tools/mnc/add*.py; do
+                            #     python "$file"
+                            # done
                         else
                             echo "Target directory does not exist: $target_dir"
                             continue
@@ -65,22 +65,22 @@ for row in "${ordered_rows[@]}"; do
                         mkdir -p "$adsorbate_dir"
                         cd "$adsorbate_dir" || continue
 
-                        if [[ "$adsorbate" == "clean" ]]; then
-                            restart_file="${target_dir}/restart.json"
-                        else
-                            restart_file="${target_dir}/restart-${adsorbate}.json"
-                        fi
+#                         if [[ "$adsorbate" == "clean" ]]; then
+#                             restart_file="${target_dir}/restart.json"
+#                         else
+#                             restart_file="${target_dir}/restart-${adsorbate}.json"
+#                         fi
 
-                        if [ -f "$restart_file" ]; then
-                            cp "$restart_file" ./restart.json
-                            sed -i -e '/constraints/d' 'restart.json'
-                            ase convert -f 'restart.json' 'POSCAR'
-                            ase convert -f 'POSCAR' 'start.traj'
-                            rm 'restart.json'
-                        else
-                            echo "File not found: $restart_file"
-                            continue
-                        fi
+#                         if [ -f "$restart_file" ]; then
+#                             cp "$restart_file" ./restart.json
+#                             sed -i -e '/constraints/d' 'restart.json'
+#                             ase convert -f 'restart.json' 'POSCAR'
+#                             ase convert -f 'POSCAR' 'start.traj'
+#                             rm 'restart.json'
+#                         else
+#                             echo "File not found: $restart_file"
+#                             continue
+#                         fi
                         
                         cp ~/bin/tools/mnc/submit.sh .
                         sed -i -e "s/jobname/${index}${metal}${spin}${adsorbate}${dz}/" submit.sh
