@@ -119,7 +119,7 @@ def main():
             YY_pred = subset['Predicted']
             plt.scatter(YY, YY_pred, alpha=0.3, color=colors[i], marker=markers[j], label=f'{row}_{coordination}')
             for (x, y, label) in zip(YY, YY_pred, LL):
-                plt.annotate(label, (x, y), fontsize=6)
+                plt.annotate(label, (x, y), fontsize=6, labelspacing=0.3)
             
     plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], 'r--', lw=1)
     plt.xlabel('DFT-calculated Energy (eV)')
