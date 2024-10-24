@@ -143,8 +143,8 @@ if __name__ == "__main__":
     parser.add_argument('-l', '--labels', nargs='+', default=['Tetrahedral_WZ', 'Tetrahedral_ZB', 'Pyramidal_LT',
                                                               'SquarePlanar_TN', 'SquarePlanar_NB', 'Octahedral_RS'])
     parser.add_argument('-r', '--row', type=str, default=None)
-    parser.add_argument('-a', type=float, default=6)
-    parser.add_argument('-b', type=float, default=4)
+    parser.add_argument('-a', type=float, default=8)
+    parser.add_argument('-b', type=float, default=6)
     parser.add_argument('--font', type=float, default=10)
     
     args = parser.parse_args()        
