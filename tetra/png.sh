@@ -42,7 +42,7 @@ elif [[ ${here} == 'nersc' ]]; then
     do
         cd $dir
         if [[ $dir == *'Tetrahedral'* ]]; then
-            n=4; python ~/bin/tools/tetra/energy.py --save -p hexa -x "Metal (MO)" -y "Hexagonal ratio [c/a]"
+            n=4; #python ~/bin/tools/tetra/energy.py --save -p hexa -x "Metal (MO)" -y "Hexagonal ratio [c/a]"
         elif [[ $dir == *'Pyramidal'* ]] || [[ $dir == *'Tetrahedral'* ]] || [[ $dir == *'SquarePlanar'* ]]; then
             n=4; #python ~/bin/tools/tetra/energy.py --save -p hexa -x "Metal (MO)" -y "Square prism ratio [c/a]"
         elif [[ $dir == *'Octahedral'* ]]; then
