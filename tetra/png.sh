@@ -231,7 +231,7 @@ elif [[ ${here} == 'nersc' ]]; then
     ### section5-3
     
     cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel5 #rel8
-    python ~/bin/tools/tetra/mendeleev2tsv.py -n 5 -p # -n 8 -p \
+    python ~/bin/tools/tetra/mendeleev2tsv.py -n 5 -p #8 -p \
     group_id atomic_number atomic_volume  \
     boiling_point melting_point \
     mass density dipole_polarizability en_pauling \

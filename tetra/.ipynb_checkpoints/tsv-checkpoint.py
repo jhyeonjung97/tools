@@ -150,9 +150,11 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output', type=str, default='', help="The filename for the output PNG file.")
     parser.add_argument('-x', '--xlabel', type=str, default='Element or Lattice parameter (Å)', help="xlabel")
     parser.add_argument('-y', '--ylabel', type=str, default='Energy (eV) or Charge (e)', help="ylabel")
-    parser.add_argument('-l', '--labels', nargs='+', default=['Tetrahedral_WZ', 'Tetrahedral_ZB', 'SquarePlanar_TN',
-                                                              'SquarePlanar_PD', 'SquarePlanar_NB', 'Octahedral_RS',
-                                                              'Pyramidal_LT', 'Tetrahedral_AQ', 'SquarePlanar_AU'])
+    parser.add_argument('-l', '--labels', nargs='+', default=['Tetrahedral_WZ', 'Tetrahedral_ZB', 'SquarePlanar_PD', 
+                                                              'SquarePlanar_NB', 'Octahedral_RS', 'Pyramidal_LT'])
+    # parser.add_argument('-l', '--labels', nargs='+', default=['Tetrahedral_WZ', 'Tetrahedral_ZB', 'SquarePlanar_TN',
+    #                                                           'SquarePlanar_PD', 'SquarePlanar_NB', 'Octahedral_RS',
+    #                                                           'Pyramidal_LT', 'Tetrahedral_AQ', 'SquarePlanar_AU'])
     parser.add_argument('-r', '--row', type=str, default=None)
     parser.add_argument('-a', type=float, default=6)
     parser.add_argument('-b', type=float, default=4)
