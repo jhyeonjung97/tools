@@ -223,13 +223,15 @@ elif [[ ${here} == 'nersc' ]]; then
     python ~/bin/tools/tetra/rel2octa.py concat_norm_ICOBI.tsv
     python ~/bin/tools/tetra/rel2octa.py concat_norm_MadelungL.tsv
     python ~/bin/tools/tetra/rel2octa.py concat_norm_volume.tsv
-    mv concat*rel.tsv rel8/
-    mv concat*.tsv rel9/
-
+    mv concat*rel.tsv rel5/
+    mv concat*.tsv rel6/
+    # mv concat*rel.tsv rel8/
+    # mv concat*.tsv rel9/
+    
     ### section5-3
     
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel8
-    python ~/bin/tools/tetra/mendeleev2tsv.py -n 8 -p \
+    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel5 #rel8
+    python ~/bin/tools/tetra/mendeleev2tsv.py -n 5 -p # -n 8 -p \
     group_id atomic_number atomic_volume  \
     boiling_point melting_point \
     mass density dipole_polarizability en_pauling \
@@ -252,12 +254,12 @@ elif [[ ${here} == 'nersc' ]]; then
         python ~/bin/tools/tetra/concat.py -o $key --X \
         /pscratch/sd/j/jiuy97/3_V_bulk/1_Tetrahedral_WZ/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/2_Tetrahedral_ZB/${files_A[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/3_SquarePlanar_TN/${files_A[$key]} \
+        # /pscratch/sd/j/jiuy97/3_V_bulk/3_SquarePlanar_TN/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/4_SquarePlanar_PD/${files_A[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/5_SquarePlanar_NB/${files_A[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/7_Pyramidal_LT/${files_A[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/8_Tetrahedral_AQ/${files_A[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/9_SquarePlanar_AU/${files_A[$key]}
+        /pscratch/sd/j/jiuy97/3_V_bulk/7_Pyramidal_LT/${files_A[$key]} #\
+        # /pscratch/sd/j/jiuy97/3_V_bulk/8_Tetrahedral_AQ/${files_A[$key]} \
+        # /pscratch/sd/j/jiuy97/3_V_bulk/9_SquarePlanar_AU/${files_A[$key]}
     done
     declare -A files_B
     files_B[element]="merged_element.tsv"
@@ -268,9 +270,9 @@ elif [[ ${here} == 'nersc' ]]; then
         /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        # /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        # /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        # /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
         /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]}
     done
     for file in ~/bin/tools/tetra/png_rel/lr*.sh; do
@@ -285,8 +287,8 @@ elif [[ ${here} == 'nersc' ]]; then
     
     ### section5-4
     
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel9
-    python ~/bin/tools/tetra/mendeleev2tsv.py -n 9 -p \
+    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures/rel6 #rel9
+    python ~/bin/tools/tetra/mendeleev2tsv.py -n 6 -p \ # -n 9 -p \
     group_id atomic_number atomic_volume  \
     boiling_point melting_point \
     mass density dipole_polarizability en_pauling \
