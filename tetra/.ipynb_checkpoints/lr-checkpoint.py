@@ -107,7 +107,7 @@ def main():
     df_combined['Residuals'] = Y - Y_pred
     df_combined.to_csv(tsv_filename, sep='\t', index=False)
 
-    plt.figure(figsize=(5.5, 4.5), dpi=300)
+    plt.figure(figsize=(6.0, 4.0), dpi=300)
     colors = ['red', 'green', 'blue']
     markers = ['>', '<', 'o', 's', 'p', 'd']
     for i, row in enumerate([3, 4, 5]):
