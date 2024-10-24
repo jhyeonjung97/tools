@@ -44,19 +44,25 @@ print(f"Data saved to energy_norm_cohesive.tsv")
 
 # Set plotting parameters based on the current working directory
 if '1_Tetrahedral_WZ' in dir_now:
-    marker = '>'; color = '#d62728'
+    marker = ['>']; color = '#d62728'
 elif '2_Tetrahedral_ZB' in dir_now:
-    marker = '<'; color = '#ff7f0e'
-elif '3_Tetragonal_LT' in dir_now:
-    marker = 'o'; color = '#ffd70e'
-elif '4_Square_Planar_TN' in dir_now:
-    marker = 's'; color = '#2ca02c'
-elif '5_Square_Planar_NB' in dir_now:
-    marker = 'p'; color = '#279ff2'
+    marker = ['<']; color = '#ff7f0e'
+elif '3_SquarePlanar_TN' in dir_now:
+    marker = ['o']; color = '#ffd70e'
+elif '4_SquarePlanar_PD' in dir_now:
+    marker = ['s']; color = '#2ca02c'
+elif '5_SquarePlanar_NB' in dir_now:
+    marker = ['p']; color = '#17becf'
 elif '6_Octahedral_RS' in dir_now:
-    marker = 'd'; color = '#9467bd'
+    marker = ['d']; color = '#9467bd'
+elif '7_Pyramidal_LT' in dir_now:
+    marker = ['h']; color = '#8c564b'
+elif '8_Tetrahedral_AQ' in dir_now:
+    marker = ['^']; color = '#e377c2'
+elif '9_SquarePlanar_AU' in dir_now:
+    marker = ['v']; color = '#7f7f7f'
 else:
-    marker = 'x'; color = 'k'
+    marker = ['X']; color = '#bcbd22'
 
 # Plotting the cohesive energy
 plt.figure(figsize=(10, 6))
