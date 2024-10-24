@@ -145,7 +145,7 @@ def main():
     ax.set_yticklabels(M.columns, rotation=0, va='center', fontsize=6)
     # ax.xaxis.set_ticks_position('top')
     # ax.xaxis.set_label_position('top')
-    cbar = ax.collections[0].colorbar
+    cbar = plt.colorbar(ax.collections[0], ax=ax, pad=0.02, shrink=0.8)  # Using pad and shrink here
     cbar.ax.tick_params(labelsize=6)
     plt.tight_layout()
     plt.savefig(f'covariance_matrix{str(filename)}.png', bbox_inches="tight")
