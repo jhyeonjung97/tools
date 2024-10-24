@@ -119,7 +119,7 @@ def main():
             YY_pred = subset['Predicted']
             plt.scatter(YY, YY_pred, alpha=0.3, color=colors[i], marker=markers[j], label=f'{row}_{coordination}')
             for (x, y, label) in zip(YY, YY_pred, LL):
-                plt.annotate(label, (x, y), fontsize=5)
+                plt.annotate(label, (x, y), fontsize=6)
             
     plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], 'r--', lw=1)
     plt.xlabel('DFT-calculated Energy (eV)')
@@ -143,8 +143,8 @@ def main():
     ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=6)
     ax.set_yticks(np.arange(M.shape[1]) + 0.5)
     ax.set_yticklabels(M.columns, rotation=0, va='center', fontsize=6)
-    ax.xaxis.set_ticks_position('top')
-    ax.xaxis.set_label_position('top')
+    # ax.xaxis.set_ticks_position('top')
+    # ax.xaxis.set_label_position('top')
     cbar = ax.collections[0].colorbar
     cbar.ax.tick_params(labelsize=6)
     plt.tight_layout()
@@ -160,8 +160,8 @@ def main():
     ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=6)
     ax.set_yticks(np.arange(M.shape[1]) + 0.5)
     ax.set_yticklabels(M.columns, rotation=0, va='center', fontsize=6)
-    ax.xaxis.set_ticks_position('top')
-    ax.xaxis.set_label_position('top')
+    # ax.xaxis.set_ticks_position('top')
+    # ax.xaxis.set_label_position('top')
     cbar = ax.collections[0].colorbar
     cbar.ax.tick_params(labelsize=6)
     plt.tight_layout()
