@@ -278,27 +278,28 @@ elif [[ ${here} == 'nersc' ]]; then
     
     ### section5-4
     
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/figures/rel6
-    python ~/bin/tools/tetra/mendeleev2tsv.py -n 6 -p \
-    group_id atomic_number atomic_volume  \
-    boiling_point melting_point \
-    mass density dipole_polarizability en_pauling \
-    covalent_radius metallic_radius vdw_radius \
-    evaporation_heat fusion_heat  heat_of_formation \
-    ionenergies[1] ionenergies[2] ionenergies[3]
-    python ~/bin/tools/tetra/operator.py -o + \
-    -x concat_ionenergies_1.tsv \
-    -y concat_ionenergies_2.tsv \
-    -z concat_ionenergies_12.tsv
-    python ~/bin/tools/tetra/operator.py -o + \
-    -x concat_evaporation_heat.tsv \
-    -y concat_fusion_heat.tsv \
-    -z concat_sublimation_heat.tsv
-    python ~/bin/tools/tetra/concat.py -o coord --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_coord.tsv
-    python ~/bin/tools/tetra/concat.py -o element --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_element.tsv
-    python ~/bin/tools/tetra/concat.py -o row --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_row.tsv
+    # cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/figures/rel6
+    # python ~/bin/tools/tetra/mendeleev2tsv.py -n 6 -p \
+    # group_id atomic_number atomic_volume  \
+    # boiling_point melting_point \
+    # mass density dipole_polarizability en_pauling \
+    # covalent_radius metallic_radius vdw_radius \
+    # evaporation_heat fusion_heat  heat_of_formation \
+    # ionenergies[1] ionenergies[2] ionenergies[3]
+    # python ~/bin/tools/tetra/operator.py -o + \
+    # -x concat_ionenergies_1.tsv \
+    # -y concat_ionenergies_2.tsv \
+    # -z concat_ionenergies_12.tsv
+    # python ~/bin/tools/tetra/operator.py -o + \
+    # -x concat_evaporation_heat.tsv \
+    # -y concat_fusion_heat.tsv \
+    # -z concat_sublimation_heat.tsv
+    # python ~/bin/tools/tetra/concat.py -o coord --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_coord.tsv
+    # python ~/bin/tools/tetra/concat.py -o element --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_element.tsv
+    # python ~/bin/tools/tetra/concat.py -o row --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_row.tsv
     for file in ~/bin/tools/tetra/png/lr*.sh; do
         sh $file
+        sh ~/bin/tools/tetra/png/lr-Ef.sh
     done
     # for file in ~/bin/tools/tetra/png/gbr*.sh; do
     #     sh $file

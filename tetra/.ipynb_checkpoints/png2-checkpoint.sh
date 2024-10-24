@@ -225,47 +225,47 @@ elif [[ ${here} == 'nersc' ]]; then
 
     ### section5-3
     
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/figures/rel5
-    python ~/bin/tools/tetra/mendeleev2tsv.py -n 5 -p \
-    group_id atomic_number atomic_volume  \
-    boiling_point melting_point \
-    mass density dipole_polarizability en_pauling \
-    covalent_radius metallic_radius vdw_radius \
-    evaporation_heat fusion_heat  heat_of_formation \
-    ionenergies[1] ionenergies[2] ionenergies[3]
-    python ~/bin/tools/tetra/operator.py -o + \
-    -x concat_ionenergies_1.tsv \
-    -y concat_ionenergies_2.tsv \
-    -z concat_ionenergies_12.tsv
-    python ~/bin/tools/tetra/operator.py -o + \
-    -x concat_evaporation_heat.tsv \
-    -y concat_fusion_heat.tsv \
-    -z concat_sublimation_heat.tsv
-    declare -A files_A
-    files_A[coord]="merged_coord.tsv"
-    files_A[redoxP]="merged_redoxP.tsv"
-    files_A[redoxP_clean]="merged_redoxP_clean.tsv"
-    for key in "${!files_A[@]}"; do
-        python ~/bin/tools/tetra/concat.py -o $key --X \
-        /pscratch/sd/j/jiuy97/3_V_bulk/nersc/1_Tetrahedral_WZ/${files_A[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/nersc/2_Tetrahedral_ZB/${files_A[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/nersc/3_Pyramidal_LT/${files_A[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/nersc/4_Square_Planar_TN/${files_A[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/nersc/5_Square_Planar_NB/${files_A[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/nersc/6_Octahedral_RS/${files_A[$key]}
-    done
-    declare -A files_B
-    files_B[element]="merged_element.tsv"
-    files_B[row]="merged_row.tsv"
-    for key in "${!files_B[@]}"; do
-        python ~/bin/tools/tetra/concat.py -o $key --X \
-        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]}
-    done
+    # cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/figures/rel5
+    # python ~/bin/tools/tetra/mendeleev2tsv.py -n 5 -p \
+    # group_id atomic_number atomic_volume  \
+    # boiling_point melting_point \
+    # mass density dipole_polarizability en_pauling \
+    # covalent_radius metallic_radius vdw_radius \
+    # evaporation_heat fusion_heat  heat_of_formation \
+    # ionenergies[1] ionenergies[2] ionenergies[3]
+    # python ~/bin/tools/tetra/operator.py -o + \
+    # -x concat_ionenergies_1.tsv \
+    # -y concat_ionenergies_2.tsv \
+    # -z concat_ionenergies_12.tsv
+    # python ~/bin/tools/tetra/operator.py -o + \
+    # -x concat_evaporation_heat.tsv \
+    # -y concat_fusion_heat.tsv \
+    # -z concat_sublimation_heat.tsv
+    # declare -A files_A
+    # files_A[coord]="merged_coord.tsv"
+    # files_A[redoxP]="merged_redoxP.tsv"
+    # files_A[redoxP_clean]="merged_redoxP_clean.tsv"
+    # for key in "${!files_A[@]}"; do
+    #     python ~/bin/tools/tetra/concat.py -o $key --X \
+    #     /pscratch/sd/j/jiuy97/3_V_bulk/nersc/1_Tetrahedral_WZ/${files_A[$key]} \
+    #     /pscratch/sd/j/jiuy97/3_V_bulk/nersc/2_Tetrahedral_ZB/${files_A[$key]} \
+    #     /pscratch/sd/j/jiuy97/3_V_bulk/nersc/3_Pyramidal_LT/${files_A[$key]} \
+    #     /pscratch/sd/j/jiuy97/3_V_bulk/nersc/4_Square_Planar_TN/${files_A[$key]} \
+    #     /pscratch/sd/j/jiuy97/3_V_bulk/nersc/5_Square_Planar_NB/${files_A[$key]} \
+    #     /pscratch/sd/j/jiuy97/3_V_bulk/nersc/6_Octahedral_RS/${files_A[$key]}
+    # done
+    # declare -A files_B
+    # files_B[element]="merged_element.tsv"
+    # files_B[row]="merged_row.tsv"
+    # for key in "${!files_B[@]}"; do
+    #     python ~/bin/tools/tetra/concat.py -o $key --X \
+    #     /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+    #     /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+    #     /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+    #     /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+    #     /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+    #     /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]}
+    # done
     for file in ~/bin/tools/tetra/png_rel/lr*.sh; do
         sh $file
     done
@@ -278,27 +278,28 @@ elif [[ ${here} == 'nersc' ]]; then
     
     ### section5-4
     
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/figures/rel6
-    python ~/bin/tools/tetra/mendeleev2tsv.py -n 6 -p \
-    group_id atomic_number atomic_volume  \
-    boiling_point melting_point \
-    mass density dipole_polarizability en_pauling \
-    covalent_radius metallic_radius vdw_radius \
-    evaporation_heat fusion_heat  heat_of_formation \
-    ionenergies[1] ionenergies[2] ionenergies[3]
-    python ~/bin/tools/tetra/operator.py -o + \
-    -x concat_ionenergies_1.tsv \
-    -y concat_ionenergies_2.tsv \
-    -z concat_ionenergies_12.tsv
-    python ~/bin/tools/tetra/operator.py -o + \
-    -x concat_evaporation_heat.tsv \
-    -y concat_fusion_heat.tsv \
-    -z concat_sublimation_heat.tsv
-    python ~/bin/tools/tetra/concat.py -o coord --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_coord.tsv
-    python ~/bin/tools/tetra/concat.py -o element --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_element.tsv
-    python ~/bin/tools/tetra/concat.py -o row --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_row.tsv
+    # cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/figures/rel6
+    # python ~/bin/tools/tetra/mendeleev2tsv.py -n 6 -p \
+    # group_id atomic_number atomic_volume  \
+    # boiling_point melting_point \
+    # mass density dipole_polarizability en_pauling \
+    # covalent_radius metallic_radius vdw_radius \
+    # evaporation_heat fusion_heat  heat_of_formation \
+    # ionenergies[1] ionenergies[2] ionenergies[3]
+    # python ~/bin/tools/tetra/operator.py -o + \
+    # -x concat_ionenergies_1.tsv \
+    # -y concat_ionenergies_2.tsv \
+    # -z concat_ionenergies_12.tsv
+    # python ~/bin/tools/tetra/operator.py -o + \
+    # -x concat_evaporation_heat.tsv \
+    # -y concat_fusion_heat.tsv \
+    # -z concat_sublimation_heat.tsv
+    # python ~/bin/tools/tetra/concat.py -o coord --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_coord.tsv
+    # python ~/bin/tools/tetra/concat.py -o element --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_element.tsv
+    # python ~/bin/tools/tetra/concat.py -o row --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_row.tsv
     for file in ~/bin/tools/tetra/png/lr*.sh; do
         sh $file
+        sh ~/bin/tools/tetra/png/lr-Ef.sh
     done
     # for file in ~/bin/tools/tetra/png/gbr*.sh; do
     #     sh $file
