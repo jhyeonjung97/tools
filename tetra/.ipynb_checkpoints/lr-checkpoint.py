@@ -124,7 +124,7 @@ def main():
     plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], 'r--', lw=1)
     plt.xlabel('DFT-calculated Energy (eV)')
     plt.ylabel('Predicted Energy (eV)')
-    plt.legend(col=3)
+    plt.legend(ncol=3)
     plt.tight_layout()
     plt.savefig(png_filename, bbox_inches="tight")
     plt.close()
