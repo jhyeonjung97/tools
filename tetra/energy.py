@@ -99,25 +99,25 @@ def main():
     filtered_patterns_order = [pattern for pattern in patterns_order if values_dict.get(pattern)]
 
     if '1_Tetrahedral_WZ' in os.getcwd():
-        marker = ['>']; color = '#d62728'
+        marker = '>'; color = '#d62728'
     elif '2_Tetrahedral_ZB' in os.getcwd():
-        marker = ['<']; color = '#ff7f0e'
+        marker = '<'; color = '#ff7f0e'
     elif '3_SquarePlanar_TN' in os.getcwd():
-        marker = ['o']; color = '#ffd70e'
+        marker = 'o'; color = '#ffd70e'
     elif '4_SquarePlanar_PD' in os.getcwd():
-        marker = ['s']; color = '#2ca02c'
+        marker = 's'; color = '#2ca02c'
     elif '5_SquarePlanar_NB' in os.getcwd():
-        marker = ['p']; color = '#17becf'
+        marker = 'p'; color = '#17becf'
     elif '6_Octahedral_RS' in os.getcwd():
-        marker = ['d']; color = '#9467bd'
+        marker = 'd'; color = '#9467bd'
     elif '7_Pyramidal_LT' in os.getcwd():
-        marker = ['h']; color = '#8c564b'
+        marker = 'h'; color = '#8c564b'
     elif '8_Tetrahedral_AQ' in os.getcwd():
-        marker = ['^']; color = '#e377c2'
+        marker = '^'; color = '#e377c2'
     elif '9_SquarePlanar_AU' in os.getcwd():
-        marker = ['v']; color = '#7f7f7f'
+        marker = 'v'; color = '#7f7f7f'
     else:
-        marker = ['X']; color = '#bcbd22'
+        marker = 'X'; color = '#bcbd22'
         
     if any(values_dict.values()):
         plot_merged(values_dict, dir_names, xlabel, ylabel, save, filename, filtered_patterns_order, marker, color)
