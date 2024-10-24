@@ -8,23 +8,23 @@ tsv_filename = "energy_norm_formation.tsv"
 
 print(f"\033[92m{os.getcwd()}\033[0m")
 if '1_Tetrahedral_WZ' in os.getcwd():
-    marker = '>'; color = '#d62728'; coordination = 'WZ', n=1
+    marker = '>'; color = '#d62728'; coordination = 'WZ'; n = 1
 elif '2_Tetrahedral_ZB' in os.getcwd():
-    marker = '<'; color = '#ff7f0e'; coordination = 'ZB', n=1
+    marker = '<'; color = '#ff7f0e'; coordination = 'ZB'; n = 1
 elif '3_SquarePlanar_TN' in os.getcwd():
-    marker = 'o'; color = '#ffd70e'; coordination = 'TN', n=1
+    marker = 'o'; color = '#ffd70e'; coordination = 'TN'; n = 1
 elif '4_SquarePlanar_PD' in os.getcwd():
-    marker = 's'; color = '#2ca02c'; coordination = 'PD', n=1
+    marker = 's'; color = '#2ca02c'; coordination = 'PD'; n = 1
 elif '5_SquarePlanar_NB' in os.getcwd():
-    marker = 'p'; color = '#17becf'; coordination = 'NB', n=1
+    marker = 'p'; color = '#17becf'; coordination = 'NB'; n = 1
 elif '6_Octahedral_RS' in os.getcwd():
-    marker = 'd'; color = '#9467bd'; coordination = 'RS', n=1
+    marker = 'd'; color = '#9467bd'; coordination = 'RS'; n = 1
 elif '7_Pyramidal_LT' in os.getcwd():
-    marker = 'h'; color = '#8c564b'; coordination = 'LT', n=1
+    marker = 'h'; color = '#8c564b'; coordination = 'LT'; n = 1
 elif '8_Tetrahedral_AQ' in os.getcwd():
-    marker = '^'; color = '#e377c2'; coordination = 'AQ', n=2
+    marker = '^'; color = '#e377c2'; coordination = 'AQ'; n = 2
 elif '9_SquarePlanar_AU' in os.getcwd():
-    marker = 'v'; color = '#7f7f7f'; coordination = 'AU', n=2
+    marker = 'v'; color = '#7f7f7f'; coordination = 'AU'; n = 2
 else:
     marker = 'X'; color = '#bcbd22'; coordination = 'XX'
 
