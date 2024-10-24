@@ -107,7 +107,7 @@ def main():
     df_combined['Residuals'] = Y - Y_pred
     df_combined.to_csv(tsv_filename, sep='\t', index=False)
 
-    plt.figure(figsize=(6.0, 4.5), dpi=300)
+    plt.figure(figsize=(5.5, 4.5), dpi=300)
     colors = ['red', 'green', 'blue']
     markers = ['>', '<', 'o', 's', 'p', 'd']
     for i, row in enumerate([3, 4, 5]):
@@ -119,7 +119,7 @@ def main():
             YY_pred = subset['Predicted']
             plt.scatter(YY, YY_pred, alpha=0.3, color=colors[i], marker=markers[j], label=f'{row}_{coordination}')
             for (x, y, label) in zip(YY, YY_pred, LL):
-                plt.annotate(label, (x, y))
+                plt.annotate(label, (x, y), fontsize=5)
             
     plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], 'r--', lw=1)
     plt.xlabel('DFT-calculated Energy (eV)')
@@ -137,7 +137,7 @@ def main():
     covariance_matrix_filename = f'covariance_matrix{str(filename)}.tsv'
     covariance_matrix.to_csv(covariance_matrix_filename, sep='\t')
     
-    plt.figure(figsize=(6.0, 4.5), dpi=300) # Set the figure size as needed
+    plt.figure(figsize=(10, 8), dpi=300) # Set the figure size as needed
     ax = sns.heatmap(covariance_matrix, annot=True, fmt=".2f", annot_kws={"size": 4}, cmap='coolwarm')
     ax.set_xticks(np.arange(M.shape[1]) + 0.5)
     ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=6)
@@ -154,7 +154,7 @@ def main():
     correlation_matrix_filename = f'correlation_matrix{str(filename)}.tsv'
     correlation_matrix.to_csv(correlation_matrix_filename, sep='\t')
     
-    plt.figure(figsize=(6.0, 4.5), dpi=300) # Set the figure size as needed
+    plt.figure(figsize=(10, 8), dpi=300) # Set the figure size as needed
     ax = sns.heatmap(correlation_matrix, annot=True, fmt=".2f", annot_kws={"size": 4}, cmap='coolwarm')
     ax.set_xticks(np.arange(M.shape[1]) + 0.5)
     ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=6)
