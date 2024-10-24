@@ -145,8 +145,9 @@ def main():
     ax.set_yticklabels(M.columns, rotation=0, va='center', fontsize=6)
     # ax.xaxis.set_ticks_position('top')
     # ax.xaxis.set_label_position('top')
-    cbar = plt.colorbar(ax.collections[0], ax=ax, pad=0.02, shrink=0.8)  # Using pad and shrink here
+    cbar = ax.collections[0].colorbar  # Use the existing colorbar from heatmap
     cbar.ax.tick_params(labelsize=6)
+    cbar.ax.set_position([0.91, 0.15, 0.02, 0.7])  # Adjust the position if necessary
     plt.tight_layout()
     plt.savefig(f'covariance_matrix{str(filename)}.png', bbox_inches="tight")
     plt.close()
@@ -162,8 +163,9 @@ def main():
     ax.set_yticklabels(M.columns, rotation=0, va='center', fontsize=6)
     # ax.xaxis.set_ticks_position('top')
     # ax.xaxis.set_label_position('top')
-    cbar = plt.colorbar(ax.collections[0], ax=ax, pad=0.02, shrink=0.8)  # Using pad and shrink here
+    cbar = ax.collections[0].colorbar  # Use the existing colorbar from heatmap
     cbar.ax.tick_params(labelsize=6)
+    cbar.ax.set_position([0.91, 0.15, 0.02, 0.7])  # Adjust the position if necessary
     plt.tight_layout()
     plt.savefig(f'correlation_matrix{str(filename)}.png', bbox_inches="tight")
     plt.close()
