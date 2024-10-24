@@ -128,7 +128,7 @@ def plot_patterns_from_multiple_tsv(filenames, output, xlabel, ylabel, labels, a
     plt.yticks(fontsize=fontsize)
     plt.xlabel(xlabel, fontsize=fontsize)
     plt.ylabel(ylabel, fontsize=fontsize)
-    plt.legend(prop={'size': fontsize}, ncol=1)
+    plt.legend(prop={'size': fontsize}, ncol=1, linespacing=0.3)
     plt.tight_layout()
     plt.savefig(png_filename, bbox_inches="tight")
     print(f"Figure saved as {png_filename}")
