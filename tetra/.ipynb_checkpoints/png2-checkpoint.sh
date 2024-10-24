@@ -19,7 +19,7 @@ elif [[ ${here} == 'nersc' ]]; then
     # cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/oxide/0_min
     # python ~/bin/tools/tetra/energy.py --save -x "Metal (MxOy)" -y "Total energy (eV/M)" -n m
     # cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/6_Octahedral_RS
-    # python ~/bin/tools/tetra/mendeleev2tsv2.py -p \
+    # python ~/bin/tools/tetra/mendeleev2tsv.py -p \
     # group_id atomic_number atomic_volume  \
     # boiling_point melting_point \
     # mass density dipole_polarizability en_pauling \
@@ -226,7 +226,7 @@ elif [[ ${here} == 'nersc' ]]; then
     ### section5-3
     
     cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/figures/rel5
-    python ~/bin/tools/tetra/mendeleev2tsv2.py -n 5 -p \
+    python ~/bin/tools/tetra/mendeleev2tsv.py -n 5 -p \
     group_id atomic_number atomic_volume  \
     boiling_point melting_point \
     mass density dipole_polarizability en_pauling \
@@ -279,7 +279,7 @@ elif [[ ${here} == 'nersc' ]]; then
     ### section5-4
     
     cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/figures/rel6
-    python ~/bin/tools/tetra/mendeleev2tsv2.py -n 6 -p \
+    python ~/bin/tools/tetra/mendeleev2tsv.py -n 6 -p \
     group_id atomic_number atomic_volume  \
     boiling_point melting_point \
     mass density dipole_polarizability en_pauling \
