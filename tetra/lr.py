@@ -138,7 +138,7 @@ def main():
     covariance_matrix.to_csv(covariance_matrix_filename, sep='\t')
     
     plt.figure(figsize=(6, 5), dpi=300) # Set the figure size as needed
-    ax = sns.heatmap(covariance_matrix, annot=True, fmt=".2f", annot_kws={"size": 4}, cmap='coolwarm')
+    ax = sns.heatmap(covariance_matrix, annot=True, fmt=".2f", annot_kws={"size": 4}, cmap='coolwarm', cbar=False)
     ax.set_xticks(np.arange(M.shape[1]) + 0.5)
     ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=6)
     ax.set_yticks(np.arange(M.shape[1]) + 0.5)
@@ -155,7 +155,7 @@ def main():
     correlation_matrix.to_csv(correlation_matrix_filename, sep='\t')
     
     plt.figure(figsize=(6, 5), dpi=300) # Set the figure size as needed
-    ax = sns.heatmap(correlation_matrix, annot=True, fmt=".2f", annot_kws={"size": 4}, cmap='coolwarm')
+    ax = sns.heatmap(correlation_matrix, annot=True, fmt=".2f", annot_kws={"size": 4}, cmap='coolwarm', cbar=False)
     ax.set_xticks(np.arange(M.shape[1]) + 0.5)
     ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=6)
     ax.set_yticks(np.arange(M.shape[1]) + 0.5)
