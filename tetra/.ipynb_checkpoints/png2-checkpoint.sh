@@ -259,12 +259,12 @@ elif [[ ${here} == 'nersc' ]]; then
     files_B[row]="merged_row.tsv"
     for key in "${!files_B[@]}"; do
         python ~/bin/tools/tetra/concat.py -o $key --X \
-        /pscratch/sd/j/jiuy97/3_V_bulk/nersc/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/nersc/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/nersc/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/nersc/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/nersc/metal/${files_B[$key]} \
-        /pscratch/sd/j/jiuy97/3_V_bulk/nersc/metal/${files_B[$key]}
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
+        /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]}
     done
     for file in ~/bin/tools/tetra/png_rel/lr*.sh; do
         sh $file
