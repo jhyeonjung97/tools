@@ -1,4 +1,4 @@
-python /global/homes/j/jiuy97/bin/verve/lr.py -o Ec_clean_rel \
+python /global/homes/j/jiuy97/bin/tools/tetra/lr.py -o Ec_clean_rel \
 --Y concat_norm_cohesive_rel.tsv \
 -i \
 ICOHP_rel_per_metal \

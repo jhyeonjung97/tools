@@ -1,4 +1,4 @@
-python /global/homes/j/jiuy97/bin/verve/gbr.py -o Ec_rel \
+python /global/homes/j/jiuy97/bin/tools/tetra/gbr.py -o Ec_rel \
 --Y concat_norm_cohesive_rel.tsv \
 -i \
 ICOHP_rel_per_metal \

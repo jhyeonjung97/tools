@@ -1,4 +1,4 @@
-python /global/homes/j/jiuy97/bin/verve/gpr.py -o Ec_redox_rel \
+python /global/homes/j/jiuy97/bin/tools/tetra/gpr.py -o Ec_redox_rel \
 --Y concat_norm_cohesive_rel.tsv \
 -i \
 ICOHP_rel_per_metal \

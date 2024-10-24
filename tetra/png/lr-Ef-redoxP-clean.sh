@@ -1,4 +1,4 @@
-python ~/bin/verve/lr.py -o Ef_clean \
+python ~/bin/tools/tetra/lr.py -o Ef_clean \
 --Y concat_norm_formation.tsv \
 -i \
 ICOHP_per_metal \

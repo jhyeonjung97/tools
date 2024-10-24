@@ -1,4 +1,4 @@
-python ~/bin/verve/gbr-optuna.py -o Ef \
+python ~/bin/tools/tetra/gbr-optuna.py -o Ef \
 --Y concat_norm_formation.tsv \
 -i \
 ICOHP_per_metal \

@@ -1,4 +1,4 @@
-python /global/homes/j/jiuy97/bin/verve/gpr.py -o Ef_clean_rel \
+python /global/homes/j/jiuy97/bin/tools/tetra/gpr.py -o Ef_clean_rel \
 --Y concat_norm_formation_rel.tsv \
 -i \
 ICOHP_rel_per_metal \

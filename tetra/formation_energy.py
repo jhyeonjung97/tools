@@ -24,7 +24,7 @@ elif '7_Pyramidal_LT' in os.getcwd():
 elif '8_Tetrahedral_AQ' in os.getcwd():
     marker = '^'; color = '#e377c2'; coordination = 'AQ'; n = 2
 elif '9_SquarePlanar_AU' in os.getcwd():
-    marker = 'v'; color = '#7f7f7f'; coordination = 'AU'; n = 2
+    marker = 'v'; color = '#7f7f7f'; coordination = 'AU'; n = 1.5
 else:
     marker = 'X'; color = '#bcbd22'; coordination = 'XX'
 

@@ -1,4 +1,4 @@
-python ~/bin/verve/lr.py -o Ec_redox \
+python ~/bin/tools/tetra/lr.py -o Ec_redox \
 --Y concat_norm_cohesive.tsv \
 -i \
 ICOHP_per_metal \

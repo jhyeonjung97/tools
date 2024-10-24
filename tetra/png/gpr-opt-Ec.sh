@@ -1,4 +1,4 @@
-python ~/bin/verve/gpr-optuna.py -o Ec \
+python ~/bin/tools/tetra/gpr-optuna.py -o Ec \
 --Y concat_norm_cohesive.tsv \
 -i \
 ICOHP_per_metal \

@@ -1,4 +1,4 @@
-python ~/bin/verve/nn-hyperopt.py -o Ef \
+python ~/bin/tools/tetra/nn-hyperopt.py -o Ef \
 --Y concat_norm_formation.tsv \
 -i \
 ICOHP_per_metal \

@@ -1,4 +1,4 @@
-python ~/bin/verve/nn-hyperopt.py -o Ec \
+python ~/bin/tools/tetra/nn-hyperopt.py -o Ec \
 --Y concat_norm_cohesive.tsv \
 -i \
 ICOHP_per_metal \

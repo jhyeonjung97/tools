@@ -1,4 +1,4 @@
-python ~/bin/verve/gpr.py -o Ef \
+python ~/bin/tools/tetra/gpr.py -o Ef \
 --Y concat_norm_formation.tsv \
 -i \
 ICOHP_per_metal \
