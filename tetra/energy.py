@@ -483,7 +483,7 @@ def plot_separately(values_dict, dir_names, xlabel, ylabel, save, filenam, marke
         if not values:
             print(f"No values found for pattern: {pattern}")
             continue
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(6, 4), dpi=300)
         # x = []
         # filtered_values = []
         # for i, v in enumerate(values):
@@ -505,7 +505,7 @@ def plot_separately(values_dict, dir_names, xlabel, ylabel, save, filenam, marke
             plt.show()
 
 def plot_merged(values_dict, dir_names, xlabel, ylabel, save, filename, filtered_patterns_order, marker, color):
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(6, 4), dpi=300)
     if len(filtered_patterns_order) == 1:
         colors = [color] * len(filtered_patterns_order)
     else:

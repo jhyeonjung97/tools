@@ -154,8 +154,8 @@ if __name__ == "__main__":
                                                               'SquarePlanar_PD', 'SquarePlanar_NB', 'Octahedral_RS',
                                                               'Pyramidal_LT', 'Tetrahedral_AQ', 'SquarePlanar_AU'])
     parser.add_argument('-r', '--row', type=str, default=None)
-    parser.add_argument('-a', type=float, default=8)
-    parser.add_argument('-b', type=float, default=6)
+    parser.add_argument('-a', type=float, default=6)
+    parser.add_argument('-b', type=float, default=4)
     parser.add_argument('--font', type=float, default=10)
     
     args = parser.parse_args()        
