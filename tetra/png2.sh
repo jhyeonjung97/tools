@@ -189,39 +189,39 @@ elif [[ ${here} == 'nersc' ]]; then
     
     ### section5-2
     
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/figures
-    python ~/bin/tools/tetra/concat.py -o energy --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_energy.tsv
-    python ~/bin/tools/tetra/concat.py -o norm_energy --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_energy.tsv
-    python ~/bin/tools/tetra/concat.py -o norm_formation --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_formation.tsv
-    python ~/bin/tools/tetra/concat.py -o norm_cohesive --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_cohesive.tsv
-    python ~/bin/tools/tetra/concat.py -o ICOHP --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_ICOHP.tsv
-    python ~/bin/tools/tetra/concat.py -o norm_ICOHP --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_ICOHP.tsv
-    python ~/bin/tools/tetra/concat.py -o ICOBI --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_ICOBI.tsv
-    python ~/bin/tools/tetra/concat.py -o norm_ICOBI --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_ICOBI.tsv
-    python ~/bin/tools/tetra/concat.py -o bond --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_bond.tsv
-    python ~/bin/tools/tetra/concat.py -o norm_volume --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_volume.tsv
-    python ~/bin/tools/tetra/concat.py -o chg --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_chg.tsv
-    python ~/bin/tools/tetra/concat.py -o mag --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_mag_M.tsv
-    python ~/bin/tools/tetra/concat.py -o norm_MadelungL --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_Madelung_L.tsv
-    python ~/bin/tools/tetra/concat.py -o GrossPopulationL --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_GP_L_M.tsv
-    python ~/bin/tools/tetra/concat.py -o redoxP --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_redoxP.tsv
-    python ~/bin/tools/tetra/concat.py -o redoxP_clean --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_redoxP_clean.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_bond.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_chg.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_energy.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_GrossPopulationL.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_ICOBI.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_ICOHP.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_mag.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_norm_energy.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_norm_formation.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_norm_cohesive.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_norm_ICOHP.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_norm_ICOBI.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_norm_MadelungL.tsv
-    python ~/bin/tools/tetra/rel2octa.py concat_norm_volume.tsv
-    mv concat*rel.tsv rel5/
-    mv concat*.tsv rel6/
+    # cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/figures
+    # python ~/bin/tools/tetra/concat.py -o energy --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_energy.tsv
+    # python ~/bin/tools/tetra/concat.py -o norm_energy --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_energy.tsv
+    # python ~/bin/tools/tetra/concat.py -o norm_formation --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_formation.tsv
+    # python ~/bin/tools/tetra/concat.py -o norm_cohesive --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_cohesive.tsv
+    # python ~/bin/tools/tetra/concat.py -o ICOHP --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_ICOHP.tsv
+    # python ~/bin/tools/tetra/concat.py -o norm_ICOHP --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_ICOHP.tsv
+    # python ~/bin/tools/tetra/concat.py -o ICOBI --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_ICOBI.tsv
+    # python ~/bin/tools/tetra/concat.py -o norm_ICOBI --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_ICOBI.tsv
+    # python ~/bin/tools/tetra/concat.py -o bond --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_bond.tsv
+    # python ~/bin/tools/tetra/concat.py -o norm_volume --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_volume.tsv
+    # python ~/bin/tools/tetra/concat.py -o chg --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_chg.tsv
+    # python ~/bin/tools/tetra/concat.py -o mag --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_mag_M.tsv
+    # python ~/bin/tools/tetra/concat.py -o norm_MadelungL --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_norm_Madelung_L.tsv
+    # python ~/bin/tools/tetra/concat.py -o GrossPopulationL --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_GP_L_M.tsv
+    # python ~/bin/tools/tetra/concat.py -o redoxP --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_redoxP.tsv
+    # python ~/bin/tools/tetra/concat.py -o redoxP_clean --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_redoxP_clean.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_bond.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_chg.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_energy.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_GrossPopulationL.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_ICOBI.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_ICOHP.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_mag.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_energy.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_formation.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_cohesive.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_ICOHP.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_ICOBI.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_MadelungL.tsv
+    # python ~/bin/tools/tetra/rel2octa.py concat_norm_volume.tsv
+    # mv concat*rel.tsv rel5/
+    # mv concat*.tsv rel6/
 
     ### section5-3
     
