@@ -160,10 +160,10 @@ elif [[ ${here} == 'nersc' ]]; then
     cd /pscratch/sd/j/jiuy97/3_V_bulk/figures
     for row in 3d 4d 5d
     do
-        # python ~/bin/tools/tetra/tsv.py -r ${row} -x "Metal (MO)" -y "Total energy (eV)" \
-        # -o energy_${row} /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/${row}/energy_energy.tsv
-        # python ~/bin/tools/tetra/tsv.py -r ${row} -x "Metal (MO)" -y "Total energy (eV/MO)" \
-        # -o norm_energy_${row} /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/${row}/energy_norm_energy.tsv
+        python ~/bin/tools/tetra/tsv.py -r ${row} -x "Metal (MO)" -y "Total energy (eV)" \
+        -o energy_${row} /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/${row}/energy_energy.tsv
+        python ~/bin/tools/tetra/tsv.py -r ${row} -x "Metal (MO)" -y "Total energy (eV/MO)" \
+        -o norm_energy_${row} /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/${row}/energy_norm_energy.tsv
         python ~/bin/tools/tetra/tsv.py -r ${row} -x "Metal (MO)" -y "Formation energy (eV/MO)" \
         -o norm_formation_${row} /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/${row}/energy_norm_formation.tsv
         python ~/bin/tools/tetra/tsv.py -r ${row} -x "Metal (MO)" -y "Cohesive energy (eV/MO)" \
