@@ -200,6 +200,7 @@ def main():
         tick_label.set_color(color)
         if i in bold_indices:
             tick_label.set_fontproperties(FontProperties(weight='bold'))
+        tick_label.set_fontsize(6)
     cbar = plt.colorbar(ax.collections[0], ax=ax, pad=0.02)
     cbar.ax.tick_params(labelsize=6)
     cbar.outline.set_visible(False)
