@@ -190,7 +190,7 @@ def main():
               '#64B5F6',  # softer light-blue
               '#64B5F6',  # softer light-blue
              ]
-    light_colors_indices = [1, 2, 5, 6, 11, 12, 13, 14, 15, 16, 17, 18, 25, 26, 27, 29, 30]
+    light_colors_indices = [1, 2, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 22, 23, 25, 26, 27, 29, 30]
     bold_indices = [i for i, color in enumerate(colors) if color != 'grey' and i not in light_colors_indices]
     ax.set_xticks(np.arange(M.shape[1]) + 0.5)
     ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=6)
