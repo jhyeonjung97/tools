@@ -195,12 +195,12 @@ def main():
     ax.set_xticks(np.arange(M.shape[1]) + 0.5)
     ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=6)
     ax.set_yticks(np.arange(M.shape[1]) + 0.5)
-    ax.set_yticklabels(M.columns, rotation=0, va='center', fontsize=6)
     for i, (tick_label, color) in enumerate(zip(ax.get_yticklabels(), colors)):
-        tick_label.set_color(color)
         if i in bold_indices:
             tick_label.set_fontproperties(FontProperties(weight='bold'))
+        tick_label.set_color(color)
         tick_label.set_fontsize(6)
+    ax.set_yticklabels(M.columns, rotation=0, va='center')
     cbar = plt.colorbar(ax.collections[0], ax=ax, pad=0.02)
     cbar.ax.tick_params(labelsize=6)
     cbar.outline.set_visible(False)
