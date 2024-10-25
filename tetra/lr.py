@@ -62,7 +62,7 @@ def main():
     L = pd.DataFrame(df_L_combined['value'])
     C = pd.DataFrame(df_C_combined['value'])
     
-    Y.columns = ['Energy']
+    Y.columns = ['Formation Energy']
     R.columns = ['Row']
     L.columns = ['Metal']
     C.columns = ['Coordination']
