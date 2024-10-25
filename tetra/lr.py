@@ -192,20 +192,20 @@ def main():
              ]
     light_colors_indices = [1, 2, 5, 6, 11, 12, 13, 14, 15, 16, 17, 18, 25, 26, 27, 29, 30]
     bold_indices = [i for i, color in enumerate(colors) if color != 'grey' and i not in light_colors_indices]
-    for i, (tick_label, color) in enumerate(zip(ax.get_xticklabels(), colors)):
-        tick_label.set_color(color)
-        if i in bold_indices:
-            tick_label.set_fontproperties(FontProperties(weight='bold'))  # Set bold
+    # Set ytick labels with colors and bold formatting
     for i, (tick_label, color) in enumerate(zip(ax.get_yticklabels(), colors)):
         tick_label.set_color(color)
+        tick_label.set_fontsize(6)  # Set fontsize
         if i in bold_indices:
-            tick_label.set_fontproperties(FontProperties(weight='bold'))  # Set bold
-    ax.set_xticks(np.arange(M.shape[1]) + 0.5)
-    ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=6)
-    ax.set_yticks(np.arange(M.shape[1]) + 0.5)
-    ax.set_yticklabels(M.columns, rotation=0, va='center', fontsize=6)
-    # ax.xaxis.set_ticks_position('top')
-    # ax.xaxis.set_label_position('top')
+            tick_label.set_fontproperties(FontProperties(weight='bold'))
+    # Set xtick labels with colors and bold formatting
+    for i, (tick_label, color) in enumerate(zip(ax.get_xticklabels(), colors)):
+        tick_label.set_color(color)
+        tick_label.set_fontsize(6)  # Set fontsize
+        tick_label.set_rotation(90)  # Set rotation
+        tick_label.set_ha('right')  # Align right
+        if i in bold_indices:
+            tick_label.set_fontproperties(FontProperties(weight='bold'))
     cbar = plt.colorbar(ax.collections[0], ax=ax, pad=0.02)
     cbar.ax.tick_params(labelsize=6)
     cbar.outline.set_visible(False)
