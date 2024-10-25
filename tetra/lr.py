@@ -165,24 +165,24 @@ def main():
               'black',
               '#FFCCCC',  # light-red
               '#FFCCCC',  # light-red
-              '#FFEB3B',  # darker light-yellow
-              '#FFEB3B',  # darker light-yellow
+              '#81C784',  # darker light-yellow
+              '#81C784',  # darker light-yellow
               'black',
               'grey',
-              '#81C784',  # softer light-green
-              '#FFEB3B',  # darker light-yellow
-              '#81C784',  # softer light-green
-              '#FFEB3B',  # darker light-yellow
-              '#FFEB3B',  # darker light-yellow
-              '#FFEB3B',  # darker light-yellow
-              '#FFEB3B',  # darker light-yellow
+              '#FFEB3B',  # softer light-green
+              '#81C784',  # darker light-yellow
+              '#FFEB3B',  # softer light-green
+              '#81C784',  # darker light-yellow
+              '#81C784',  # darker light-yellow
+              '#81C784',  # darker light-yellow
+              '#81C784',  # darker light-yellow
               '#FFCCCC',  # light-red
-              '#FFEB3B',  # darker light-yellow
-              '#FFC107',  # yellow-orange
-              'green',
-              '#FFEB3B',  # darker light-yellow
-              '#FFEB3B',  # darker light-yellow
-              '#FFC107',  # yellow-orange
+              '#81C784',  # darker light-yellow
+              'green',  # yellow-orange
+              '#FFC107',
+              '#81C784',  # darker light-yellow
+              '#81C784',  # darker light-yellow
+              'green',  # yellow-orange
               '#64B5F6',  # softer light-blue
               '#64B5F6',  # softer light-blue
               '#64B5F6',  # softer light-blue
