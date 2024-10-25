@@ -1,4 +1,4 @@
-python ~/bin/tools/tetra/lr.py -o Ef \
+python ~/bin/tools/tetra/lr-small.py -o Ef \
 --Y concat_norm_formation.tsv \
 -i \
 ICOBI_per_metal \
