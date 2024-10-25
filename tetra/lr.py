@@ -157,38 +157,38 @@ def main():
     
     plt.figure(figsize=(6.0, 4.5), dpi=300) # Set the figure size as needed
     ax = sns.heatmap(correlation_matrix, annot=True, fmt=".2f", annot_kws={"size": 4}, cmap='coolwarm', cbar=False)
-colors = ['black', 
-          '#FFCCCC',  # light-red
-          '#FFCCCC',  # light-red
-          'red', 
-          'black',
-          '#FFCCCC',  # light-red
-          '#FFCCCC',  # light-red
-          '#FFEB3B',  # darker light-yellow
-          '#FFEB3B',  # darker light-yellow
-          'black',
-          'grey',
-          '#CCFFCC',  # light-green
-          '#FFEB3B',  # darker light-yellow
-          '#CCFFCC',  # light-green
-          '#FFEB3B',  # darker light-yellow
-          '#FFEB3B',  # darker light-yellow
-          '#FFEB3B',  # darker light-yellow
-          '#FFEB3B',  # darker light-yellow
-          '#FFCCCC',  # light-red
-          '#FFEB3B',  # darker light-yellow
-          '#FFC107',  # yellow-orange
-          'green',
-          '#FFEB3B',  # darker light-yellow
-          '#FFEB3B',  # darker light-yellow
-          '#FFC107',  # yellow-orange
-          '#CCFFFF',  # light-blue
-          '#CCFFFF',  # light-blue
-          '#CCFFFF',  # light-blue
-          'blue',
-          '#CCFFFF',  # light-blue
-          '#CCFFFF',  # light-blue
-         ]
+    colors = ['black', 
+              '#FFCCCC',  # light-red
+              '#FFCCCC',  # light-red
+              'red', 
+              'black',
+              '#FFCCCC',  # light-red
+              '#FFCCCC',  # light-red
+              '#FFEB3B',  # darker light-yellow
+              '#FFEB3B',  # darker light-yellow
+              'black',
+              'grey',
+              '#CCFFCC',  # light-green
+              '#FFEB3B',  # darker light-yellow
+              '#CCFFCC',  # light-green
+              '#FFEB3B',  # darker light-yellow
+              '#FFEB3B',  # darker light-yellow
+              '#FFEB3B',  # darker light-yellow
+              '#FFEB3B',  # darker light-yellow
+              '#FFCCCC',  # light-red
+              '#FFEB3B',  # darker light-yellow
+              '#FFC107',  # yellow-orange
+              'green',
+              '#FFEB3B',  # darker light-yellow
+              '#FFEB3B',  # darker light-yellow
+              '#FFC107',  # yellow-orange
+              '#CCFFFF',  # light-blue
+              '#CCFFFF',  # light-blue
+              '#CCFFFF',  # light-blue
+              'blue',
+              '#CCFFFF',  # light-blue
+              '#CCFFFF',  # light-blue
+             ]
     for tick_label, color in zip(ax.get_xticklabels(), colors):
         tick_label.set_color(color)
     ax.set_xticks(np.arange(M.shape[1]) + 0.5)
