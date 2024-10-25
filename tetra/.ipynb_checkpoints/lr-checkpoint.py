@@ -75,10 +75,10 @@ def main():
     if coord:
         df_combined = df_combined[df_combined['Coordination'] == coord]
     if zero:
-        df_combined = df_combined[df_combined['Energy'] < 0]
+        df_combined = df_combined[df_combined['Formation Energy'] < 0]
         
     X = df_combined.iloc[:, -(numb+1):-1]
-    Y = df_combined['Energy']
+    Y = df_combined['Formation Energy']
     R = df_combined['Row']
     L = df_combined['Metal']
     C = df_combined['Coordination']
@@ -116,7 +116,7 @@ def main():
         for j, coordination in enumerate(['WZ', 'ZB', 'LT', 'TN', 'NB', 'RS']):
             subset = sub[sub['Coordination'] == coordination]
             LL = subset['Metal']
-            YY = subset['Energy']
+            YY = subset['Formation Energy']
             YY_pred = subset['Predicted']
             plt.scatter(YY, YY_pred, alpha=0.3, color=colors[i], marker=markers[j], label=f'{row}_{coordination}')
             for (x, y, label) in zip(YY, YY_pred, LL):
