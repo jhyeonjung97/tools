@@ -195,17 +195,17 @@ def main():
     # Set ytick labels with colors and bold formatting
     for i, (tick_label, color) in enumerate(zip(ax.get_yticklabels(), colors)):
         tick_label.set_color(color)
-        tick_label.set_fontsize(6)  # Set fontsize
         if i in bold_indices:
             tick_label.set_fontproperties(FontProperties(weight='bold'))
+        tick_label.set_fontsize(6)  # Set fontsize
     # Set xtick labels with colors and bold formatting
     for i, (tick_label, color) in enumerate(zip(ax.get_xticklabels(), colors)):
         tick_label.set_color(color)
-        tick_label.set_fontsize(6)  # Set fontsize
         tick_label.set_rotation(90)  # Set rotation
         tick_label.set_ha('right')  # Align right
         if i in bold_indices:
             tick_label.set_fontproperties(FontProperties(weight='bold'))
+        tick_label.set_fontsize(6)  # Set fontsize
     cbar = plt.colorbar(ax.collections[0], ax=ax, pad=0.02)
     cbar.ax.tick_params(labelsize=6)
     cbar.outline.set_visible(False)
