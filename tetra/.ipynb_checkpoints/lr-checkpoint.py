@@ -168,9 +168,9 @@ def main():
               '#FFEB3B',  # darker light-yellow
               'black',
               'grey',
-              '#CCFFCC',  # light-green
+              '#81C784',  # softer light-green
               '#FFEB3B',  # darker light-yellow
-              '#CCFFCC',  # light-green
+              '#81C784',  # softer light-green
               '#FFEB3B',  # darker light-yellow
               '#FFEB3B',  # darker light-yellow
               '#FFEB3B',  # darker light-yellow
@@ -182,12 +182,12 @@ def main():
               '#FFEB3B',  # darker light-yellow
               '#FFEB3B',  # darker light-yellow
               '#FFC107',  # yellow-orange
-              '#CCFFFF',  # light-blue
-              '#CCFFFF',  # light-blue
-              '#CCFFFF',  # light-blue
+              '#64B5F6',  # softer light-blue
+              '#64B5F6',  # softer light-blue
+              '#64B5F6',  # softer light-blue
               'blue',
-              '#CCFFFF',  # light-blue
-              '#CCFFFF',  # light-blue
+              '#64B5F6',  # softer light-blue
+              '#64B5F6',  # softer light-blue
              ]
     for tick_label, color in zip(ax.get_xticklabels(), colors):
         tick_label.set_color(color)
