@@ -612,7 +612,9 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             y = filtered_df.values
             plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), zorder=3)
             for xi, yi in zip(x, y):
-                plt.annotate(f'{xi:.2f}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
+                plt.annotate(f'{xi:.2f}', (float(xi), float(yi)), 
+                             textcoords="offset points", xytext=(0, 5), 
+                             ha='center', color='black', zorder=6)
     if color:
         plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
         plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
