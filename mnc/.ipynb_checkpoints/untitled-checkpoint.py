@@ -1,4 +1,6 @@
 from ase.io import read, write
+import numpy as np
+
 atoms=read('final_with_calculator.json')
 for atom in atoms:
     if atom.symbol not in ['N', 'C', 'O', 'H']:
