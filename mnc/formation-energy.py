@@ -195,6 +195,7 @@ def main():
                             Ef.at[dz, spin] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
+                                positions = atoms.get_positions(wrap=True)
                                 for atom in atoms:
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
                                         df_dz.at[dz, spin] = atom.z - 10.0
@@ -224,13 +225,14 @@ def main():
                             energy_O = None
                             try:
                                 magmoms = atoms.get_magnetic_moments()
+                                positions = atoms.get_positions(wrap=True)
                                 for atom in atoms:
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
                                         df_O_dz.at[dz, spin] = atom.z - 10.0
                                         df_O_mag.at[dz, spin] = magmoms[atom.index]
                                         if atom.index < len(atoms) - 1:
                                             next_atom = atoms[atom.index + 1]
-                                            df_O_bond.at[dz, spin] = np.linalg.norm(atom.position - next_atom.position)
+                                            df_O_bond.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
                             except:
                                 df_O_dz.at[dz, spin] = 0
                                 df_O_mag.at[dz, spin] = 0
@@ -259,13 +261,14 @@ def main():
                             energy_OH = None
                             try:
                                 magmoms = atoms.get_magnetic_moments()
+                                positions = atoms.get_positions(wrap=True)
                                 for atom in atoms:
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
                                         df_OH_dz.at[dz, spin] = atom.z - 10.0
                                         df_OH_mag.at[dz, spin] = magmoms[atom.index]
                                         if atom.index < len(atoms) - 1:
                                             next_atom = atoms[atom.index + 1]
-                                            df_OH_bond.at[dz, spin] = np.linalg.norm(atom.position - next_atom.position)
+                                            df_OH_bond.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
                             except:
                                 df_OH_dz.at[dz, spin] = 0
                                 df_OH_mag.at[dz, spin] = 0
@@ -296,6 +299,7 @@ def main():
                         Ef_relaxed.at[dz_relaxed, spin] = formation_energy
                         try:
                             magmoms = atoms.get_magnetic_moments()
+                            positions = atoms.get_positions(wrap=True)
                             for atom in atoms:
                                 if atom.symbol not in ['N', 'C', 'O', 'H']:
                                     df_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
@@ -324,12 +328,13 @@ def main():
                         energy = None
                         try:
                             magmoms = atoms.get_magnetic_moments()
+                            positions = atoms.get_positions(wrap=True)
                             for atom in atoms:
                                 if atom.symbol not in ['N', 'C', 'O', 'H']:
                                     df_O_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
                                     if atom.index < len(atoms) - 1:
                                         next_atom = atoms[atom.index + 1]
-                                        df_O_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(atom.position - next_atom.position)
+                                        df_O_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
                         except:
                             df_O_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_O_relaxed_mag.at[dz_relaxed, spin] = 0
@@ -356,12 +361,13 @@ def main():
                         energy = None
                         try:
                             magmoms = atoms.get_magnetic_moments()
+                            positions = atoms.get_positions(wrap=True)
                             for atom in atoms:
                                 if atom.symbol not in ['N', 'C', 'O', 'H']:
                                     df_OH_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
                                     if atom.index < len(atoms) - 1:
                                         next_atom = atoms[atom.index + 1]
-                                        df_OH_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(atom.position - next_atom.position)
+                                        df_OH_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
                         except:
                             df_OH_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_OH_relaxed_mag.at[dz_relaxed, spin] = 0
@@ -398,6 +404,7 @@ def main():
                             Ef.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
+                                positions = atoms.get_positions(wrap=True)
                                 for atom in atoms:
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
                                         df_dz.at[dz, f'MS({ms})'] = atom.z - 10.0
@@ -435,6 +442,7 @@ def main():
                             Ef_O.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
+                                positions = atoms.get_positions(wrap=True)
                                 for atom in atoms:
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
                                         df_O_dz.at[dz, f'MS({ms})'] = atom.z - 10.0
@@ -473,6 +481,7 @@ def main():
                             Ef_OH.at[dz, f'MS({ms})'] = formation_energy
                             try:
                                 magmoms = atoms.get_magnetic_moments()
+                                positions = atoms.get_positions(wrap=True)
                                 for atom in atoms:
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
                                         df_OH_dz.at[dz, f'MS({ms})'] = atom.z - 10.0
