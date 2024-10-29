@@ -165,7 +165,7 @@
 #     fi
 # done
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/3_V/most_stable
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/5d/5_Re/most_stable
 do
     cd "$dir" || continue
     pwd
