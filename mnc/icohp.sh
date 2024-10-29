@@ -14,6 +14,7 @@ do
             sed -i -e "s/X/${metal}/g" icohp/lobsterin
             cp ~/bin/tools/mnc/static.sh icohp/submit.sh
             sed -i -e "s/jobname/${metal}${ads}COHP/g" icohp/submit.sh
+            cd $dir
         else
             exit
         fi
