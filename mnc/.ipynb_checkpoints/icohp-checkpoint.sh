@@ -1,12 +1,12 @@
-for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/2_Ti/most_stable
-# for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/most_stable
+# for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/2_Ti/most_stable
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/most_stable
 do
     cd $dir; pwd
     IFS='/' read -r -a path <<< "$dir"
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     for ads in o oh
     do
-        if [[ -f $ads/DONE ]]; then
+        if [[ -f $ads/DONE ]] && [[ ! -d $ads/icohp ]]; then
             cd $ads
             mkdir -p icohp
             cp WAVECAR restart.json icohp/
