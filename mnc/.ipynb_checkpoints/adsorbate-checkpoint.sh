@@ -182,7 +182,7 @@ do
     do
         mkdir -p "$ads"
         cd "$ads" || exit
-        mv ../restart-${ads}.json restart.json
+        mv ../relaxed/restart-${ads}.json restart.json
         cp ~/bin/tools/mnc/submit.sh ./
         sed -i -e "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}MSr" submit.sh
         sbatch submit.sh
