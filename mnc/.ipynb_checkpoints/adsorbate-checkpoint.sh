@@ -165,7 +165,7 @@
 #     fi
 # done
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/most_stable
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/3_V/most_stable
 do
     cd "$dir" || continue
     pwd
@@ -173,26 +173,26 @@ do
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
 
     cd relaxed || continue
-    # python ~/bin/tools/mnc/add-o.py
-    # python ~/bin/tools/mnc/add-oh.py
-    python ~/bin/tools/mnc/add-ooh.py
+    python ~/bin/tools/mnc/add-o.py
+    python ~/bin/tools/mnc/add-oh.py
+    # python ~/bin/tools/mnc/add-ooh.py
     cd "$dir" || continue
     
-    # for ads in o oh ooh
-    # do
-    #     mkdir -p "$ads"
-    #     cd "$ads" || exit
-    #     mv ../restart-${ads}.json restart.json
-    #     cp ~/bin/tools/mnc/submit.sh ./
-    #     sed -i -e "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}MSr" submit.sh
-    #     sbatch submit.sh
-    #     cd "$dir"
-    # done
+    for ads in o oh #ooh
+    do
+        mkdir -p "$ads"
+        cd "$ads" || exit
+        mv ../restart-${ads}.json restart.json
+        cp ~/bin/tools/mnc/submit.sh ./
+        sed -i -e "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}MSr" submit.sh
+        sbatch submit.sh
+        cd "$dir"
+    done
 
-    mkdir -p ooh
-    cd ooh || exit
-    mv ../relaxed/restart-ooh.json restart.json
-    cp ~/bin/tools/mnc/submit.sh ./
-    sed -i -e "/#SBATCH -J/c\#SBATCH -J ooh${metal}MSr" submit.sh
-    sbatch submit.sh
+    # mkdir -p ooh
+    # cd ooh || exit
+    # mv ../relaxed/restart-ooh.json restart.json
+    # cp ~/bin/tools/mnc/submit.sh ./
+    # sed -i -e "/#SBATCH -J/c\#SBATCH -J ooh${metal}MSr" submit.sh
+    # sbatch submit.sh
 done
