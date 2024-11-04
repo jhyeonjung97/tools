@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navigate through specified directories to find and submit jobs based on energy values.
-for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/*; do
+for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/*/; do
     # Check if "most_stable" directory already exists, and skip if it does
     if [[ -d "$dir/most_stable" ]]; then
         echo "most_stable directory already exists in $dir, skipping..."
@@ -9,7 +9,6 @@ for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/*; do
     fi
 
     cd "$dir" || { echo "Failed to change directory to $dir"; continue; }
-    pwd
     IFS='/' read -r -a path <<< "$PWD"
     ads=${path[-1]}
     numb=$(echo "${path[-2]}" | cut -d'_' -f1)
