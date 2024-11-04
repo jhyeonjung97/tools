@@ -14,7 +14,6 @@ for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/*; do
     ads=${path[-1]}
     numb=$(echo "${path[-2]}" | cut -d'_' -f1)
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
-    mkdir -p most_stable
     
     lowest_dir=''
     lowest_energy=0  # Initialize to 0 as requested
@@ -45,6 +44,7 @@ for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/*; do
     done
 
     # Copy files if a valid lowest energy directory was found
+    mkdir -p most_stable
     if [[ -n "$lowest_dir" ]]; then
         echo "Copying files from ${lowest_dir} to most_stable/"
         cp "${lowest_dir}/restart.json" most_stable/ || echo "Failed to copy restart.json"
