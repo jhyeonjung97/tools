@@ -17,23 +17,36 @@ for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/*; do
     mkdir -p most_stable
     
     lowest_dir=''
-    lowest_energy=9999999  # Initialize to a high value
+    lowest_energy=0  # Initialize to 0 as requested
 
-    # Define subdirectories to check
-    sub_dirs=(HS1 HS5 IS1 IS5 LS1 LS5)
-    
-    for sub_dir in "${sub_dirs[@]}"; do
-        if [[ -f "${sub_dir}/DONE" ]]; then
-            energy=$(grep -oP 'ENERGY\s+\K[-+]?[0-9]*\.?[0-9]+' "${sub_dir}/DONE")
-            if [[ $(echo "$energy < $lowest_energy" | bc) -eq 1 ]]; then
-                lowest_energy=$energy
-                lowest_dir=$sub_dir
-            fi
+    # Check if all required subdirectories contain a DONE file
+    all_done=true
+    for sub_dir in ${dir}/*S*/; do
+        if [[ ! -f "${sub_dir}/DONE" ]]; then
+            echo "Skipping ${dir}, ${sub_dir} is missing DONE file."
+            all_done=false
+            break
         fi
     done
     
+    # If any DONE file is missing, skip to the next dir
+    if [[ "$all_done" = false ]]; then
+        continue
+    fi
+
+    # Loop through each subdirectory to find the one with the lowest energy
+    for sub_dir in ${dir}/*S*/; do
+        energy=$(grep -oP 'ENERGY\s+\K[-+]?[0-9]*\.?[0-9]+' "${sub_dir}/DONE")
+        # Proceed only if energy value was successfully extracted
+        if [[ -n "$energy" && $(echo "$energy < $lowest_energy" | bc -l) -eq 1 ]]; then
+            lowest_energy=$energy
+            lowest_dir=$sub_dir
+        fi
+    done
+
+    # Copy files if a valid lowest energy directory was found
     if [[ -n "$lowest_dir" ]]; then
-        echo "Copying files from ${dir}/${lowest_dir} to most_stable/"
+        echo "Copying files from ${lowest_dir} to most_stable/"
         cp "${lowest_dir}/restart.json" most_stable/ || echo "Failed to copy restart.json"
         cp "${lowest_dir}/WAVECAR" most_stable/ || echo "Failed to copy WAVECAR"
         cp ~/bin/tools/mnc/submit.sh most_stable/ || echo "Failed to copy submit.sh"
@@ -45,8 +58,9 @@ for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/*; do
         echo "No valid directory found with lower energy."
     fi
     
+    # Submit the job if submit.sh exists in most_stable
     if [[ -f most_stable/submit.sh ]]; then
-        cd most_stable || exit
+        cd most_stable || { echo "Failed to change directory to most_stable"; continue; }
         sbatch submit.sh || echo "Failed to submit job"
     fi
 done
