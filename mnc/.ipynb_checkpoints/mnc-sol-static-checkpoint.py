@@ -48,6 +48,8 @@ def get_bands(atoms):
         nbands += sum(nbands_per_orbital[orbital[1]] * int(orbital[2:]) for orbital in orbitals)
     return nbands
 
+nbands = get_bands(atoms)
+
 atoms.calc = vasp_calculator.Vasp(
                     encut=500,
                     gga='PE',
