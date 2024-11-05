@@ -149,6 +149,6 @@ for i in range(2): # 0, 1
     plt.xticks(np.arange(len(indice)), indice)
     plt.legend()
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'adsorption_{small_adsorbate}.png'), bbox_inches='tight')
-    print(f"Figure saved as adsorption_{small_adsorbate}.png")
+    plt.savefig(os.path.join(output_dir, f'bond_{small_adsorbate}.png'), bbox_inches='tight')
+    print(f"Figure saved as bond_{small_adsorbate}.png")
     plt.close()
