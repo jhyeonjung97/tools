@@ -30,16 +30,19 @@ dgoh = zpeoh + cvoh - tsoh
 
 # Define base directory, elements, and adsorbates
 root_dir = '/pscratch/sd/j/jiuy97/6_MNC/0_clean'
+output_dir = '/pscratch/sd/j/jiuy97/6_MNC/figures'
+os.makedirs(output_dir, exist_ok=True)  # Ensure the figures directory exists
+
 elements = {
     '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
     '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
     '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
-adsorbates = ['o', 'oh']
+adsorption_energies = {}
 
 # Loop through each element row and calculate adsorption energies
 for row, elems in elements.items():
-    adsorption_energies = {'o': [], 'oh': []}
+    adsorption_energies[row] = {'o': [], 'oh': []}
     for i, elem in enumerate(elems):
         numb = i + 2
         base_dir = os.path.join(root_dir, row, f"{numb}_{elem}", 'most_stable')
@@ -58,31 +61,39 @@ for row, elems in elements.items():
                 o_atoms = read(o_dir)
                 e_o = o_atoms.get_potential_energy()
                 dg_o = (e_o + dgo) - e_clean - go
-                adsorption_energies['o'].append(dg_o)
+                adsorption_energies[row]['o'].append(dg_o)
             else:
-                adsorption_energies['o'].append(None)  # Handle missing data
+                adsorption_energies[row]['o'].append(None)  # Handle missing data
                 
             # Calculate OH adsorption energy if file exists
             if os.path.exists(oh_dir):        
                 oh_atoms = read(oh_dir)
                 e_oh = oh_atoms.get_potential_energy()
                 dg_oh = (e_oh + dgoh) - e_clean - goh
-                adsorption_energies['oh'].append(dg_oh)
+                adsorption_energies[row]['oh'].append(dg_oh)
             else:
-                adsorption_energies['oh'].append(None)  # Handle missing data
+                adsorption_energies[row]['oh'].append(None)  # Handle missing data
 
-    # Plot the adsorption energies for each element row
-    plt.figure(figsize=(10, 6))
-    
-    # Plot O adsorption energies
-    plt.plot(elems, adsorption_energies['o'], marker='o', label=f'O Adsorption ({row})')
-    
-    # Plot OH adsorption energies
-    plt.plot(elems, adsorption_energies['oh'], marker='x', label=f'OH Adsorption ({row})')
-    
-    plt.title(f'Adsorption Energies for {row} Elements')
+    # Save individual plots for each row
+    plt.figure(figsize=(4, 3), dpi=300)
+    plt.plot(elems, adsorption_energies[row]['o'], label=f'O Adsorption ({row})')
+    plt.plot(elems, adsorption_energies[row]['oh'], label=f'OH Adsorption ({row})')
     plt.xlabel('Element')
-    plt.ylabel('Adsorption Energy (eV)')
+    plt.ylabel('Adsorption Energy (dG, eV)')
     plt.legend()
     plt.tight_layout()
-    plt.show()
+    plt.savefig(os.path.join(output_dir, f'adsorption_{row}.png'), bbox_inches='tight')
+    print(f"Figure saved as adsorption_{row}.png")
+
+# Save combined plots for each adsorbate across all rows
+for ads in ['o', 'oh']:
+    plt.figure(figsize=(4, 3), dpi=300)
+    adsorbate = 'O' if ads == 'o' else 'OH'
+    for row in elements.keys():
+        plt.plot(elements[row], adsorption_energies[row][ads], label=f'{adsorbate} Adsorption ({row})')
+    plt.xlabel('Element')
+    plt.ylabel('Adsorption Energy (dG, eV)')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, f'adsorption_{ads}.png'), bbox_inches='tight')
+    print(f"Figure saved as adsorption_{ads}.png")
