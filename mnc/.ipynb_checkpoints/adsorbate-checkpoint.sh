@@ -173,13 +173,12 @@ do
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
 
     cd relaxed || continue
-    python ~/bin/tools/mnc/add-oh-ooh.py
-    python ~/bin/tools/mnc/add-ooh-oh.py
-    python ~/bin/tools/mnc/add-ohooh.py
-    python ~/bin/tools/mnc/add-oohoh.py
+    python ~/bin/tools/mnc/add-o.py
+    python ~/bin/tools/mnc/add-oh.py
+    # python ~/bin/tools/mnc/add-ooh.py
     cd "$dir" || continue
     
-    for ads in oh-ooh ooh-oh ohooh oohoh
+    for ads in o oh #ooh
     do
         mkdir -p "$ads"
         cd "$ads" || exit
