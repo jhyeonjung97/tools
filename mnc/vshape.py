@@ -40,12 +40,14 @@ elements = {
     '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
 adsorption_energies = {}
+bond_length = {}
 color_ranges = [plt.cm.Oranges(np.linspace(0.3, 0.9, 3)),
                 plt.cm.Blues(np.linspace(0.3, 0.9, 3))]
 
 # Loop through each element row and calculate adsorption energies
 for row, elems in elements.items():
     adsorption_energies[row] = {'o': [], 'oh': []}
+    bond_length[row] = {'o': [], 'oh': []}
     for i, elem in enumerate(elems):
         numb = i + 2
         base_dir = os.path.join(root_dir, row, f"{numb}_{elem}", 'most_stable')
@@ -65,8 +67,14 @@ for row, elems in elements.items():
                 e_o = o_atoms.get_potential_energy()
                 dg_o = (e_o + dgo) - e_clean - go
                 adsorption_energies[row]['o'].append(dg_o)
+                for atom in o_atoms:
+                    if atom.symbol == elem:
+                        next_atom = atoms[atom.index + 1]
+                        bond = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
+                        bond_length[row]['o'].append(bond)
             else:
                 adsorption_energies[row]['o'].append(None)  # Handle missing data
+                bond_length[row]['o'].append(None)  # Handle missing data
                 
             # Calculate OH adsorption energy if file exists
             if os.path.exists(oh_dir):        
@@ -74,8 +82,14 @@ for row, elems in elements.items():
                 e_oh = oh_atoms.get_potential_energy()
                 dg_oh = (e_oh + dgoh) - e_clean - goh
                 adsorption_energies[row]['oh'].append(dg_oh)
+                for atom in oh_atoms:
+                    if atom.symbol == elem:
+                        next_atom = atoms[atom.index + 1]
+                        bond = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
+                        bond_length[row]['oh'].append(bond)
             else:
                 adsorption_energies[row]['oh'].append(None)  # Handle missing data
+                bond_length[row]['oh'].append(None)  # Handle missing data
 
     # Save individual plots for each row
     plt.figure(figsize=(6.0, 4.5), dpi=300)
@@ -87,6 +101,18 @@ for row, elems in elements.items():
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, f'adsorption_{row}.png'), bbox_inches='tight')
     print(f"Figure saved as adsorption_{row}.png")
+    plt.close()
+    
+    plt.figure(figsize=(6.0, 4.5), dpi=300)
+    plt.plot(elems, bond_length[row]['o'], marker='o', color='orange', label=f'M-O Bond ({row})')
+    plt.plot(elems, bond_length[row]['oh'], marker='o', color='blue', label=f'M-OH Bond ({row})')
+    plt.xlabel('Element')
+    plt.ylabel('Bond Length (Å)')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, f'bond_{row}.png'), bbox_inches='tight')
+    print(f"Figure saved as bond_{row}.png")
+    plt.close()
 
 # Save combined plots for each adsorbate across all rows
 small_adsorbates = ['o', 'oh']
@@ -94,9 +120,10 @@ large_adsorbates = ['O', 'OH']
 indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(elements['3d'], elements['4d'], elements['5d'])]
 
 for i in range(2): # 0, 1
-    plt.figure(figsize=(6.0, 4.5), dpi=300)
     small_adsorbate = small_adsorbates[i]
     large_adsorbate = large_adsorbates[i]
+    
+    plt.figure(figsize=(6.0, 4.5), dpi=300)
     for j, row in enumerate(elements.keys()):
         plt.plot(range(len(elements[row])), adsorption_energies[row][small_adsorbate], 
                  marker='o', color=color_ranges[i][j],
@@ -108,3 +135,18 @@ for i in range(2): # 0, 1
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, f'adsorption_{small_adsorbate}.png'), bbox_inches='tight')
     print(f"Figure saved as adsorption_{small_adsorbate}.png")
+    plt.close()
+    
+    plt.figure(figsize=(6.0, 4.5), dpi=300)
+    for j, row in enumerate(elements.keys()):
+        plt.plot(range(len(elements[row])), bond_length[row][small_adsorbate], 
+                 marker='o', color=color_ranges[i][j],
+                 label=f'{large_adsorbate} Adsorption ({row})')
+    plt.xlabel('Element')
+    plt.ylabel('Bond Length (Å)')
+    plt.xticks(np.arange(len(indice)), indice)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, f'adsorption_{small_adsorbate}.png'), bbox_inches='tight')
+    print(f"Figure saved as adsorption_{small_adsorbate}.png")
+    plt.close()
