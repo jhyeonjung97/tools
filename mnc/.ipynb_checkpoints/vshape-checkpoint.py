@@ -1,6 +1,7 @@
 import os
 from ase.io import read
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Gas phase energies and vibrational corrections
 h2 = -6.77149190
@@ -39,6 +40,8 @@ elements = {
     '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
 adsorption_energies = {}
+color_ranges = [plt.cm.Oranges(np.linspace(0.3, 0.9, 3)),
+                plt.cm.Blues(np.linspace(0.3, 0.9, 3))]
 
 # Loop through each element row and calculate adsorption energies
 for row, elems in elements.items():
@@ -76,8 +79,8 @@ for row, elems in elements.items():
 
     # Save individual plots for each row
     plt.figure(figsize=(4, 3), dpi=300)
-    plt.plot(elems, adsorption_energies[row]['o'], label=f'O Adsorption ({row})')
-    plt.plot(elems, adsorption_energies[row]['oh'], label=f'OH Adsorption ({row})')
+    plt.plot(elems, adsorption_energies[row]['o'], marker='o', color='orange', label=f'O Adsorption ({row})')
+    plt.plot(elems, adsorption_energies[row]['oh'], marker='o', color='blue', label=f'OH Adsorption ({row})')
     plt.xlabel('Element')
     plt.ylabel('Adsorption Energy (dG, eV)')
     plt.legend()
@@ -86,14 +89,19 @@ for row, elems in elements.items():
     print(f"Figure saved as adsorption_{row}.png")
 
 # Save combined plots for each adsorbate across all rows
-for ads in ['o', 'oh']:
+small_adsorbates = ['o', 'oh']
+large_adsorbates = ['O', 'OH']
+for i in range(2): # 0, 1
     plt.figure(figsize=(4, 3), dpi=300)
-    adsorbate = 'O' if ads == 'o' else 'OH'
-    for row in elements.keys():
-        plt.plot(elements[row], adsorption_energies[row][ads], label=f'{adsorbate} Adsorption ({row})')
+    small_adsorbate = small_adsorbates[i]
+    large_adsorbate = large_adsorbates[i]
+    for j, row in enumerate(elements.keys()):
+        plt.plot(elements[row], adsorption_energies[row][small_adsorbate], 
+                 marker='o', color=color_ranges[i][j],
+                 label=f'{large_adsorbate} Adsorption ({row})')
     plt.xlabel('Element')
     plt.ylabel('Adsorption Energy (dG, eV)')
     plt.legend()
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'adsorption_{ads}.png'), bbox_inches='tight')
-    print(f"Figure saved as adsorption_{ads}.png")
+    plt.savefig(os.path.join(output_dir, f'adsorption_{small_adsorbate}.png'), bbox_inches='tight')
+    print(f"Figure saved as adsorption_{small_adsorbate}.png")
