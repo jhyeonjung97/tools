@@ -52,11 +52,11 @@ for root_dir in root_dirs:
                 print(f"No valid CONTCAR file found in {main_dir}")
                 continue  # Skip to the next iteration if invalid
 
-        vasp_output_file = os.path.join(root_dir, main_dir, f'{numb}{metal}{adsorbate}.vasp')
+        vasp_output_file = os.path.join('/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix', f'{numb}{metal}{adsorbate}.vasp')
         write(vasp_output_file, atoms)
         print(f"Saved as {vasp_output_file}")
 
-        png_file = os.path.join(root_dir, main_dir, f'{numb}{metal}{adsorbate}.png')
+        png_file = os.path.join('/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix', f'{numb}{metal}{adsorbate}.png')
         write(png_file, atoms, rotation='-90x, -90y, 0z', show_unit_cell=0)
 
         print(f"Saved as {png_file}")
