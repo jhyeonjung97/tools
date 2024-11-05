@@ -69,7 +69,7 @@ for row, elems in elements.items():
                 adsorption_energies[row]['o'].append(dg_o)
                 for atom in o_atoms:
                     if atom.symbol == elem:
-                        next_atom = atoms[atom.index + 1]
+                        next_atom = o_atoms[atom.index + 1]
                         bond = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
                         bond_length[row]['o'].append(bond)
             else:
@@ -84,7 +84,7 @@ for row, elems in elements.items():
                 adsorption_energies[row]['oh'].append(dg_oh)
                 for atom in oh_atoms:
                     if atom.symbol == elem:
-                        next_atom = atoms[atom.index + 1]
+                        next_atom = oh_atoms[atom.index + 1]
                         bond = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
                         bond_length[row]['oh'].append(bond)
             else:
