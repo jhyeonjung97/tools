@@ -78,7 +78,7 @@ for row, elems in elements.items():
                 adsorption_energies[row]['oh'].append(None)  # Handle missing data
 
     # Save individual plots for each row
-    plt.figure(figsize=(4, 3), dpi=300)
+    plt.figure(figsize=(6.0, 4.5), dpi=300)
     plt.plot(elems, adsorption_energies[row]['o'], marker='o', color='orange', label=f'O Adsorption ({row})')
     plt.plot(elems, adsorption_energies[row]['oh'], marker='o', color='blue', label=f'OH Adsorption ({row})')
     plt.xlabel('Element')
@@ -94,7 +94,7 @@ large_adsorbates = ['O', 'OH']
 indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(elements['3d'], elements['4d'], elements['5d'])]
 
 for i in range(2): # 0, 1
-    plt.figure(figsize=(4, 3), dpi=300)
+    plt.figure(figsize=(6.0, 4.5), dpi=300)
     small_adsorbate = small_adsorbates[i]
     large_adsorbate = large_adsorbates[i]
     for j, row in enumerate(elements.keys()):
