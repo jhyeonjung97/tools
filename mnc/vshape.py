@@ -91,26 +91,19 @@ for row, elems in elements.items():
 # Save combined plots for each adsorbate across all rows
 small_adsorbates = ['o', 'oh']
 large_adsorbates = ['O', 'OH']
-
-# Concatenate element labels across 3d, 4d, and 5d rows
-all_elements = elements['3d'] + elements['4d'] + elements['5d']
-indice = [f'{e}' for e in all_elements]  # Vertical stacking with line breaks if needed
+indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(elements['3d'], elements['4d'], elements['5d'])]
 
 for i in range(2): # 0, 1
-    plt.figure(figsize=(8, 6), dpi=300)
+    plt.figure(figsize=(4, 3), dpi=300)
     small_adsorbate = small_adsorbates[i]
     large_adsorbate = large_adsorbates[i]
-    start_idx = 0
     for j, row in enumerate(elements.keys()):
-        indices = range(start_idx, start_idx + len(elements[row]))
-        plt.plot(indices, adsorption_energies[row][small_adsorbate], 
+        plt.plot(range(len(elements[row])), adsorption_energies[row][small_adsorbate], 
                  marker='o', color=color_ranges[i][j],
                  label=f'{large_adsorbate} Adsorption ({row})')
-        start_idx += len(elements[row])
-
-    plt.xticks(np.arange(len(indice)), indice, rotation=90)  # Stack all elements as x-ticks vertically
     plt.xlabel('Element')
     plt.ylabel('Adsorption Energy (dG, eV)')
+    plt.xticks(np.arange(len(indice)), indice)
     plt.legend()
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, f'adsorption_{small_adsorbate}.png'), bbox_inches='tight')
