@@ -4,7 +4,10 @@ import re
 from ase.io import read, write
 
 # Define root directories and subdirectory lists
-root_dirs = glob.glob("/pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/")
+# root_dirs = glob.glob("/pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/")
+root_dirs = ["/pscratch/sd/j/jiuy97/6_MNC/pourbaix/1_Fe/",
+             "/pscratch/sd/j/jiuy97/6_MNC/pourbaix/2_Co/",
+             "/pscratch/sd/j/jiuy97/6_MNC/pourbaix/3_Mo/"]
 main_dirs = ["clean", "h", "o", "oh", "oh-o", "oho", "oh-oh", "ohoh", "o-oh", "ooh"]
 sub_dirs = ["HS1", "HS5", "IS1", "IS5", "LS1", "LS5"]
 
