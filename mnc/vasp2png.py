@@ -49,12 +49,12 @@ for root_dir in root_dirs:
             if min_e0_dir is not None:
                 atoms = read(os.path.join(root_dir, main_dir, min_e0_dir, 'CONTCAR'))
             else:
-                print(f"No valid CONTcar file found in {main_dir}")
+                print(f"No valid CONTCAR file found in {main_dir}")
                 continue  # Skip to the next iteration if invalid
 
         vasp_output_file = os.path.join(root_dir, main_dir, f'{numb}{metal}{adsorbate}.vasp')
         write(vasp_output_file, atoms)
-        print(f"Saved as {vasp_output_file}.")
+        print(f"Saved as {vasp_output_file}")
 
         png_file = os.path.join(root_dir, main_dir, f'{numb}{metal}{adsorbate}.png')
         write(png_file, atoms, rotation='-90x, -90y, 0z', show_unit_cell=0)
