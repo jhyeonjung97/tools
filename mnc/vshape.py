@@ -67,6 +67,7 @@ for row, elems in elements.items():
                 e_o = o_atoms.get_potential_energy()
                 dg_o = (e_o + dgo) - e_clean - go
                 adsorption_energies[row]['o'].append(dg_o)
+                positions = o_atoms.get_positions(wrap=True)
                 for atom in o_atoms:
                     if atom.symbol == elem:
                         next_atom = o_atoms[atom.index + 1]
@@ -82,6 +83,7 @@ for row, elems in elements.items():
                 e_oh = oh_atoms.get_potential_energy()
                 dg_oh = (e_oh + dgoh) - e_clean - goh
                 adsorption_energies[row]['oh'].append(dg_oh)
+                positions = oh_atoms.get_positions(wrap=True)
                 for atom in oh_atoms:
                     if atom.symbol == elem:
                         next_atom = oh_atoms[atom.index + 1]
