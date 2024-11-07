@@ -34,7 +34,7 @@ dgoh = zpeoh + cvoh - tsoh
 root_dir = '/pscratch/sd/j/jiuy97/6_MNC/0_clean'
 output_dir = '/pscratch/sd/j/jiuy97/6_MNC/figures'
 os.makedirs(output_dir, exist_ok=True)  # Ensure the figures directory exists
-pattern = re.compile(r"-ICOHP\s+([\d.]+)\s+([\d.]+)")
+pattern = re.compile(r"\s+(\d+)\s+([A-Za-z]+)\s+(\d+)\s+'O'\s+(\d+)\s+[\w\(\)\-]+\s+([\d.]+)\s+([\d.]+)")
 
 elements = {
     # '3d(LS)': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
@@ -90,8 +90,8 @@ for row, elems in elements.items():
                     print(matches)
                     for match in matches:
                         print(match)
-                        icohp[row][ads].append(float(match[0]))
-                        distance[row][ads].append(float(match[1]))
+                        icohp[row][ads].append(float(match[6]))
+                        distance[row][ads].append(float(match[7]))
                 else:
                     icohp[row][ads].append(np.nan)  # Handle missing data
                     distance[row][ads].append(np.nan)  # Handle missing data
