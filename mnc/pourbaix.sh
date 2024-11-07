@@ -12,7 +12,7 @@ small_spins=("ls" "is" "hs")
 # specific_metals=("Fe" "Co" "Mo" "Ru" "Pd" "W" "Pt")
 specific_metals=("Fe")
 # adsorbates=("clean" "h" "o-o" "o-oh" "o" "oh-o" "oh-oh" "oh" "oho" "ohoh" "oo" "ooh" "ooh-oh" "oh-ooh" "oohoh" "ohooh")
-adsorbates=("ooh-o" "o-ooh" "ooho" "oooh")
+adsorbates=("ohooh" "oohoh" "ooh-o" "o-ooh" "ooho" "oooh")
 ordered_rows=("3d" "4d" "5d")
 
 # Loop through rows in defined order
@@ -48,6 +48,8 @@ for row in "${ordered_rows[@]}"; do
                             # for file in ~/bin/tools/mnc/add*.py; do
                             #     python "$file"
                             # done
+                            python ~/bin/tools/mnc/add-ohooh.py
+                            python ~/bin/tools/mnc/add-oohoh.py
                             python ~/bin/tools/mnc/add-o-ooh.py
                             python ~/bin/tools/mnc/add-ooh-o.py
                             python ~/bin/tools/mnc/add-oooh.py
