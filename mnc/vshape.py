@@ -35,7 +35,8 @@ output_dir = '/pscratch/sd/j/jiuy97/6_MNC/figures'
 os.makedirs(output_dir, exist_ok=True)  # Ensure the figures directory exists
 
 elements = {
-    '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
+    '3d(LS)': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
+    '3d(HS)': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
     '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
     '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
@@ -50,7 +51,15 @@ for row, elems in elements.items():
     bond_length[row] = {'o': [], 'oh': []}
     for i, elem in enumerate(elems):
         numb = i + 2
-        base_dir = os.path.join(root_dir, row, f"{numb}_{elem}", 'most_stable')
+
+        if row == '3d(LS)':
+            base_dir = os.path.join(root_dir, '3d', f"{numb}_{elem}", '1_LS')
+        elif row == '3d(LS)':
+            base_dir = os.path.join(root_dir, '3d', f"{numb}_{elem}", '2_HS')
+            if not os.path.exists(base_dir):
+                base_dir = os.path.join(root_dir, '3d', f"{numb}_{elem}", '3_HS')
+        else
+            base_dir = os.path.join(root_dir, row, f"{numb}_{elem}", 'most_stable')
 
         o_dir = os.path.join(base_dir, 'o', 'final_with_calculator.json')
         oh_dir = os.path.join(base_dir, 'oh', 'final_with_calculator.json')
