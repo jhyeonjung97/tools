@@ -165,7 +165,7 @@
 #     fi
 # done
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/*_*
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/*_*S
 do
     cd "$dir" || continue
     pwd
@@ -185,9 +185,18 @@ do
         mkdir -p "$ads"
         cd "$ads" || exit
         mv ../relaxed/restart-${ads}.json restart.json
+        ase convert restart.json POSCAR
+        ase convert POSCAR start.traj
+        rm restart.json
+        
         cp ~/bin/tools/mnc/submit.sh ./
         sed -i -e "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}${spin}r" submit.sh
-        sbatch submit.sh
+        if [[ $spin == 'LS' ]]; then
+            sed -i -e "s/mnc-sol.py/mnc-sol-ls.py/" submit.sh
+        elif [[ $spin == 'HS' ]]; then
+            sed -i -e "s/mnc-sol.py/mnc-sol-hs.py/" submit.sh
+        fi
+        # sbatch submit.sh
         cd "$dir"
     done
 
