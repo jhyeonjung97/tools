@@ -149,21 +149,20 @@ for row, elems in elements.items():
     plt.figure(figsize=(6.0, 4.5), dpi=300)
     plt.scatter(distance[row]['o'], icohp[row]['o'], color='orange', label=f'*O ({row})')
     plt.scatter(distance[row]['oh'], icohp[row]['oh'], color='dodgerblue', label=f'*OH ({row})')
-    
-    # Combine distances and icohps and sort them by distance
     distances = distance[row]['o'] + distance[row]['oh']
     icohps = icohp[row]['o'] + icohp[row]['oh']
-    
-    # Sort the combined lists by distances
     sorted_indices = np.argsort(distances)
     distances_sorted = np.array(distances)[sorted_indices]
     icohps_sorted = np.array(icohps)[sorted_indices]
-    
-    # Fit the trendline on the sorted data
     z = np.polyfit(distances_sorted, icohps_sorted, 1)
     p = np.poly1d(z)
+    y_pred = p(distances_sorted)
+    ss_res = np.sum((icohps_sorted - y_pred) ** 2)
+    ss_tot = np.sum((icohps_sorted - np.mean(icohps_sorted)) ** 2)
+    r2 = 1 - (ss_res / ss_tot)
     plt.plot(distances_sorted, p(distances_sorted), color='black', linestyle="--")
-    
+    equation_text = f"y = {z[0]:.2f}x + {z[1]:.2f}\n$R^2$ = {r2:.2f}"
+    plt.text(1.7, 5, equation_text, fontsize=10, color='black', ha='left', va='center')
     for xi, yi, elem in zip(distance[row]['o'], icohp[row]['o'], elems):
         plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='orange')
     for xi, yi, elem in zip(distance[row]['oh'], icohp[row]['oh'], elems):
