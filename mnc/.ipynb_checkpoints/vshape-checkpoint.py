@@ -73,9 +73,11 @@ for row, elems in elements.items():
 
             for ads in ['o', 'oh']:
                 json_path = os.path.join(base_dir, ads, 'final_with_calculator.json')
+                print(json_path)
                 if os.path.exists(json_path):        
                     atoms = read(json_path)
                     e_ads = atoms.get_potential_energy()
+                    print(e_ads)
                     if ads == 'o':
                         dg_ads = (e_ads + dgo) - e_clean - go
                     elif ads == 'oh':
@@ -83,6 +85,7 @@ for row, elems in elements.items():
                     adsorption_energies[row][ads].append(dg_ads)
                 else:
                     adsorption_energies[row][ads].append(np.nan)
+                print(adsorption_energies)
                     
                 icohp_path = os.path.join(base_dir, ads, 'icohp/icohp.txt')
                 if os.path.exists(icohp_path):        
