@@ -87,7 +87,9 @@ for row, elems in elements.items():
                 icohp_path = os.path.join(base_dir, ads, 'icohp/icohp.txt')
                 if os.path.exists(icohp_path):        
                     matches = pattern.findall(icohp_path)
+                    print(matches)
                     for match in matches:
+                        print(match)
                         icohp[row][ads].append(float(match[0]))
                         distance[row][ads].append(float(match[1]))
                 else:
