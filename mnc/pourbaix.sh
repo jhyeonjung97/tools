@@ -57,7 +57,9 @@ for row in "${ordered_rows[@]}"; do
                     # Create pourbaix directories
                     for adsorbate in "${adsorbates[@]}"; do
                         adsorbate_dir="${pourbaix}/${adsorbate}/${spin}${dz}"
-                        [ -d "$adsorbate_dir" ] || mkdir "$adsorbate_dir"
+                        if [[ -d "$adsorbate_dir" ]]
+                            continue
+                        mkdir -p "$adsorbate_dir"
                         echo "$adsorbate_dir"
                         cd "$adsorbate_dir" || continue
 
