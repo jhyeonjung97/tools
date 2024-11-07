@@ -12,7 +12,7 @@ small_spins=("ls" "is" "hs")
 specific_metals=("Fe" "Co" "Mo" "Ru" "Pd" "W" "Pt")
 # adsorbates=("clean" "h" "o" "oh" "oh-o" "oho" "oh-oh" "ohoh" "oh-ooh" "ohooh" "o-o" "oo" "o-oh" "ooh" "ooh-o" "ooho" "ooh-oh" "oohoh" "o-ooh" "oooh")
 adsorbates=("ooh-ooh")
-adsorbates1=("oh-o" "oh-oh" "oh-ooh" "o-o" "o-oh" "ooh-oh" "oh-ooh" "ooh-o" "o-ooh")
+adsorbates1=("oh-o" "oh-oh" "oh-ooh" "o-o" "o-oh" "ooh-oh" "oh-ooh" "ooh-o" "o-ooh" "ooh-ooh")
 adsorbates5=("oho" "ohoh" "ohooh" "ooho" "oohoh" "oooh")
 ordered_rows=("3d" "4d" "5d")
 

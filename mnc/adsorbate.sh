@@ -165,13 +165,15 @@
 #     fi
 # done
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/5d/5_Re/most_stable
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/*_*
 do
     cd "$dir" || continue
     pwd
     IFS='/' read -r -a path <<< "$dir"
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
-
+    spin=$(echo "${path[-1]}" | cut -d'_' -f2)
+    [[ $spin == 'IS' ]] && continue
+    
     cd relaxed || continue
     python ~/bin/tools/mnc/add-o.py
     python ~/bin/tools/mnc/add-oh.py
@@ -184,7 +186,7 @@ do
         cd "$ads" || exit
         mv ../relaxed/restart-${ads}.json restart.json
         cp ~/bin/tools/mnc/submit.sh ./
-        sed -i -e "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}MSr" submit.sh
+        sed -i -e "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}${spin}r" submit.sh
         sbatch submit.sh
         cd "$dir"
     done
