@@ -96,6 +96,7 @@ for row, elems in elements.items():
 
     # Save individual plots for each row
     plt.figure(figsize=(6.0, 4.5), dpi=300)
+    print(adsorption_energies)
     plt.plot(elems, adsorption_energies[row]['o'], marker='o', color='orange', label=f'O Adsorption ({row})')
     plt.plot(elems, adsorption_energies[row]['oh'], marker='o', color='blue', label=f'OH Adsorption ({row})')
     plt.xlabel('Element')
