@@ -16,7 +16,6 @@ adsorbates=("o-o" "oo")
 ordered_rows=("3d" "4d" "5d")
 
 # Loop through rows in defined order
-# index=1
 index=0
 for row in "${ordered_rows[@]}"; do
     metals=${rows[$row]}
