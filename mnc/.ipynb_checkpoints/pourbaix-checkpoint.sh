@@ -9,13 +9,15 @@ rows=(
 
 spins=("LS" "IS" "HS")
 small_spins=("ls" "is" "hs")
-specific_metals=("Fe" "Co" "Mo" "Ru" "Pd" "W" "Pt")
-# adsorbates=("clean" "h" "o-o" "o-oh" "o" "oh-o" "oh-oh" "oh" "oho" "ohoh" "oo" "ooh")
-adsorbates=("ooh-oh" "oh-ooh" "oohoh" "ohooh")
+# specific_metals=("Fe" "Co" "Mo" "Ru" "Pd" "W" "Pt")
+specific_metals=("Fe")
+# adsorbates=("clean" "h" "o-o" "o-oh" "o" "oh-o" "oh-oh" "oh" "oho" "ohoh" "oo" "ooh" "ooh-oh" "oh-ooh" "oohoh" "ohooh")
+adsorbates=("ooh-o" "o-ooh" "ooho" "oooh")
 ordered_rows=("3d" "4d" "5d")
 
 # Loop through rows in defined order
-index=0
+index=1
+# index=0
 for row in "${ordered_rows[@]}"; do
     metals=${rows[$row]}
     metal_index=2  # Reset index for each row
@@ -23,7 +25,7 @@ for row in "${ordered_rows[@]}"; do
     for metal in $metals; do
         # Check if the metal is in specific_metals
         if [[ " ${specific_metals[@]} " =~ " ${metal} " ]]; then
-            ((index++))
+            # ((index++))
 
             for s in $(seq 0 2); do
                 spin=${spins[$s]}
@@ -46,10 +48,10 @@ for row in "${ordered_rows[@]}"; do
                             # for file in ~/bin/tools/mnc/add*.py; do
                             #     python "$file"
                             # done
-                            python ~/bin/tools/mnc/add-oh-ooh.py
-                            python ~/bin/tools/mnc/add-ooh-oh.py
-                            python ~/bin/tools/mnc/add-ohooh.py
-                            python ~/bin/tools/mnc/add-oohoh.py
+                            python ~/bin/tools/mnc/add-o-ooh.py
+                            python ~/bin/tools/mnc/add-ooh-o.py
+                            python ~/bin/tools/mnc/add-oooh.py
+                            python ~/bin/tools/mnc/add-ooho.py
                         else
                             echo "Target directory does not exist: $target_dir"
                             continue
