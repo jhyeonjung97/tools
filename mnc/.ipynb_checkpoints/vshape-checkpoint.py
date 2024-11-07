@@ -58,7 +58,7 @@ for row, elems in elements.items():
             base_dir = os.path.join(root_dir, '3d', f"{numb}_{elem}", '2_HS')
             if not os.path.exists(base_dir):
                 base_dir = os.path.join(root_dir, '3d', f"{numb}_{elem}", '3_HS')
-        else
+        else:
             base_dir = os.path.join(root_dir, row, f"{numb}_{elem}", 'most_stable')
 
         o_dir = os.path.join(base_dir, 'o', 'final_with_calculator.json')
