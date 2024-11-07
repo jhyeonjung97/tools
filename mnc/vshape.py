@@ -132,10 +132,10 @@ for row, elems in elements.items():
     plt.close()
 
     plt.figure(figsize=(6.0, 4.5), dpi=300)
-    plt.scatter(distance[row]['o'], icohp[row]['o'], color='orange', label=f'*O ({row})')
+    plt.plot(distance[row]['o'], icohp[row]['o'], marker='o', color='orange', label=f'*O ({row})')
+    plt.plot(distance[row]['oh'], icohp[row]['oh'], marker='o', color='dodgerblue', label=f'*OH ({row})')
     for xi, yi, elem in zip(distance[row]['o'], icohp[row]['o'], elems):
         plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='orange')
-    plt.scatter(distance[row]['oh'], icohp[row]['oh'], color='dodgerblue', label=f'*OH ({row})')
     for xi, yi, elem in zip(distance[row]['oh'], icohp[row]['oh'], elems):
         plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='dodgerblue')
     plt.xlabel('Bond Length (Å)')
@@ -144,6 +144,26 @@ for row, elems in elements.items():
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, f'icohp_vs_bond_{row}.png'), bbox_inches='tight')
     print(f"Figure saved as icohp_vs_bond_{row}.png")
+    plt.close()
+
+    plt.figure(figsize=(6.0, 4.5), dpi=300)
+    plt.scatter(distance[row]['o'], icohp[row]['o'], color='orange', label=f'*O ({row})')
+    plt.scatter(distance[row]['oh'], icohp[row]['oh'], color='dodgerblue', label=f'*OH ({row})')
+    distances = distance[row]['o']+distance[row]['oh']
+    icohps = icohp[row]['o']+icohp[row]['oh']
+    z = np.polyfit(distances, icohps, 1)
+    p = np.poly1d(z)
+    plt.plot(distances, p(distances), color='black', linestyle="--")
+    for xi, yi, elem in zip(distance[row]['o'], icohp[row]['o'], elems):
+        plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='orange')
+    for xi, yi, elem in zip(distance[row]['oh'], icohp[row]['oh'], elems):
+        plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='dodgerblue')
+    plt.xlabel('Bond Length (Å)')
+    plt.ylabel('-ICOHP (eV)')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, f'icohp_vs_bond_scatter_{row}.png'), bbox_inches='tight')
+    print(f"Figure saved as icohp_vs_bond_scatter_{row}.png")
     plt.close()
     
 # Save combined plots for each adsorbate across all rows
@@ -199,11 +219,9 @@ for i in range(2): # 0, 1
 
     plt.figure(figsize=(6.0, 4.5), dpi=300)
     for j, row in enumerate(elements.keys()):
-        plt.scatter(range(len(elements[row])), distance[row][adsorbate], 
-                 color=color_ranges[i][j], label=f'*{adsorbate_symbol} ({row})')
-        for xi, yi, elem in zip(range(len(elements[row])), distance[row][adsorbate], elements[row]):
-            plt.annotate(f'{elem}', (float(xi), float(yi)), 
-                         textcoords="offset points", xytext=(0, 5), ha='center', color=color_ranges[i][j])
+        plt.plot(range(len(elements[row])), distance[row][adsorbate], 
+                 marker='o', color=color_ranges[i][j], 
+                 label=f'*{adsorbate_symbol} ({row})')
     plt.xlabel('Bond Length (Å)')
     plt.ylabel('-ICOHP (eV)')
     plt.xticks(np.arange(len(indice)), indice)
