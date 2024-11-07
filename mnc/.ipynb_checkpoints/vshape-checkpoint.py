@@ -162,7 +162,7 @@ for row, elems in elements.items():
     r2 = 1 - (ss_res / ss_tot)
     plt.plot(distances_sorted, p(distances_sorted), color='black', linestyle="--")
     equation_text = f"y = {z[0]:.2f}x + {z[1]:.2f}\n$R^2$ = {r2:.2f}"
-    plt.text(0.05, 0.95, equation_text, fontsize=10, color='black', 
+    plt.text(0.05, 0.05, equation_text, fontsize=10, color='black', 
              ha='left', va='top', transform=plt.gca().transAxes)
     for xi, yi, elem in zip(distance[row]['o'], icohp[row]['o'], elems):
         plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='orange')
