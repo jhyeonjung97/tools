@@ -67,6 +67,7 @@ for row, elems in elements.items():
             base_dir = os.path.join(root_dir, row, f"{numb}_{elem}", 'most_stable')
 
         relaxed_dir = os.path.join(base_dir, 'relaxed', 'final_with_calculator.json')
+        print(relaxed_dir)
         if os.path.exists(relaxed_dir):
             relaxed_atoms = read(relaxed_dir)
             e_clean = relaxed_atoms.get_potential_energy()
