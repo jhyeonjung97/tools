@@ -196,7 +196,7 @@ do
         elif [[ $spin == 'HS' ]]; then
             sed -i -e "s/mnc-sol.py/mnc-sol-hs.py/" submit.sh
         fi
-        # sbatch submit.sh
+        sbatch submit.sh
         cd "$dir"
     done
 
