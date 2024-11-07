@@ -11,8 +11,8 @@ spins=("LS" "IS" "HS")
 small_spins=("ls" "is" "hs")
 # specific_metals=("Fe" "Co" "Mo" "Ru" "Pd" "W" "Pt")
 specific_metals=("Fe")
-# adsorbates=("clean" "h" "o-o" "o-oh" "o" "oh-o" "oh-oh" "oh" "oho" "ohoh" "oo" "ooh" "ooh-oh" "oh-ooh" "oohoh" "ohooh")
-adsorbates=("ohooh" "oohoh" "ooh-o" "o-ooh" "ooho" "oooh")
+# adsorbates=("clean" "h" "o-o" o-oh" "o" "oh-o" "oh-oh" "oh" "oho" "ohoh" "oo" "ooh" "ooh-oh" "oh-ooh" "oohoh" "ohooh" "ooh-o" "o-ooh" "ooho" "oooh")
+adsorbates=("o-o" "oo")
 ordered_rows=("3d" "4d" "5d")
 
 # Loop through rows in defined order
@@ -48,12 +48,8 @@ for row in "${ordered_rows[@]}"; do
                             # for file in ~/bin/tools/mnc/add*.py; do
                             #     python "$file"
                             # done
-                            python ~/bin/tools/mnc/add-ohooh.py
-                            python ~/bin/tools/mnc/add-oohoh.py
-                            python ~/bin/tools/mnc/add-o-ooh.py
-                            python ~/bin/tools/mnc/add-ooh-o.py
-                            python ~/bin/tools/mnc/add-oooh.py
-                            python ~/bin/tools/mnc/add-ooho.py
+                            python ~/bin/tools/mnc/add-o-o.py
+                            python ~/bin/tools/mnc/add-oo.py
                         else
                             echo "Target directory does not exist: $target_dir"
                             continue
