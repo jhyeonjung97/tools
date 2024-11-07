@@ -11,6 +11,9 @@ spins=("LS" "IS" "HS")
 small_spins=("ls" "is" "hs")
 specific_metals=("Fe" "Co" "Mo" "Ru" "Pd" "W" "Pt")
 adsorbates=("clean" "h" "o" "oh" "oh-o" "oho" "oh-oh" "ohoh" "oh-ooh" "ohooh" "o-o" "oo" "o-oh" "ooh" "ooh-o" "ooho" "ooh-oh" "oohoh" "o-ooh" "oooh")
+# adsorbates_=("clean" "h" "o" "oh" "oo" "ooh")
+adsorbates1=("oh-o" "oh-oh" "oh-ooh" "o-o" "o-oh" "ooh-oh" "oh-ooh" "ooh-o" "o-ooh")
+adsorbates5=("oho" "ohoh" "ohooh" "ooho" "oohoh" "oooh")
 ordered_rows=("3d" "4d" "5d")
 
 # Loop through rows in defined order
@@ -56,6 +59,12 @@ for row in "${ordered_rows[@]}"; do
                     
                     # Create pourbaix directories
                     for adsorbate in "${adsorbates[@]}"; do
+                        if [[ $dz == '1' ]] && [[ " ${adsorbates5[@]} " =~ " ${adsorbate} " ]]; then
+                            continue
+                        elif [[ $dz == '5' ]] && [[ " ${adsorbates1[@]} " =~ " ${adsorbate} " ]]; then
+                            continue
+                        fi
+                    
                         adsorbate_dir="${pourbaix}/${adsorbate}/${spin}${dz}"
                         if [[ -d "$adsorbate_dir" ]]; then
                             continue
