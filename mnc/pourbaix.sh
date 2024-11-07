@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e  # Stop execution on error
 
 declare -A rows
 rows=(
