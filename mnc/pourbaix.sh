@@ -47,8 +47,6 @@ for row in "${ordered_rows[@]}"; do
                             # for file in ~/bin/tools/mnc/add*.py; do
                             #     python "$file"
                             # done
-                            python ~/bin/tools/mnc/add-ooh-oh.py
-                            python ~/bin/tools/mnc/add-oh-ooh.py
                             python ~/bin/tools/mnc/add-oohoh.py
                             python ~/bin/tools/mnc/add-ohooh.py
                             python ~/bin/tools/mnc/add-ooh-o.py
