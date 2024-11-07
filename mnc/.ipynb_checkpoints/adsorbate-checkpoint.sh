@@ -185,8 +185,8 @@ do
         mkdir -p "$ads"
         cd "$ads" || exit
         mv ../relaxed/restart-${ads}.json restart.json
-        ase convert restart.json POSCAR
-        ase convert POSCAR start.traj
+        ase convert -f restart.json POSCAR
+        ase convert -f POSCAR start.traj
         rm restart.json
         
         cp ~/bin/tools/mnc/submit.sh ./
