@@ -16,8 +16,8 @@ adsorbates=("ohooh" "oohoh" "ooh-o" "o-ooh" "ooho" "oooh")
 ordered_rows=("3d" "4d" "5d")
 
 # Loop through rows in defined order
-index=1
-# index=0
+# index=1
+index=0
 for row in "${ordered_rows[@]}"; do
     metals=${rows[$row]}
     metal_index=2  # Reset index for each row
@@ -25,7 +25,7 @@ for row in "${ordered_rows[@]}"; do
     for metal in $metals; do
         # Check if the metal is in specific_metals
         if [[ " ${specific_metals[@]} " =~ " ${metal} " ]]; then
-            # ((index++))
+            ((index++))
 
             for s in $(seq 0 2); do
                 spin=${spins[$s]}
