@@ -100,7 +100,7 @@ for row, elems in elements.items():
     # Save individual plots for each row
     plt.figure(figsize=(6.0, 4.5), dpi=300)
     plt.plot(elems, adsorption_energies[row]['o'], marker='o', color='orange', label=f'O Adsorption ({row})')
-    plt.plot(elems, adsorption_energies[row]['oh'], marker='o', color='blue', label=f'OH Adsorption ({row})')
+    plt.plot(elems, adsorption_energies[row]['oh'], marker='o', color='dodgerblue', label=f'OH Adsorption ({row})')
     plt.xlabel('Element')
     plt.ylabel('Adsorption Energy (dG, eV)')
     plt.legend()
@@ -111,7 +111,7 @@ for row, elems in elements.items():
     
     plt.figure(figsize=(6.0, 4.5), dpi=300)
     plt.plot(elems, distance[row]['o'], marker='o', color='orange', label=f'M-O Bond ({row})')
-    plt.plot(elems, distance[row]['oh'], marker='o', color='blue', label=f'M-OH Bond ({row})')
+    plt.plot(elems, distance[row]['oh'], marker='o', color='dodgerblue', label=f'M-OH Bond ({row})')
     plt.xlabel('Element')
     plt.ylabel('Bond Length (Å)')
     plt.legend()
@@ -122,7 +122,7 @@ for row, elems in elements.items():
     
     plt.figure(figsize=(6.0, 4.5), dpi=300)
     plt.plot(elems, icohp[row]['o'], marker='o', color='orange', label=f'*O ({row})')
-    plt.plot(elems, icohp[row]['oh'], marker='o', color='blue', label=f'*OH ({row})')
+    plt.plot(elems, icohp[row]['oh'], marker='o', color='dodgerblue', label=f'*OH ({row})')
     plt.xlabel('Element')
     plt.ylabel('-ICOHP (eV)')
     plt.legend()
@@ -135,9 +135,9 @@ for row, elems in elements.items():
     plt.scatter(distance[row]['o'], icohp[row]['o'], color='orange', label=f'*O ({row})')
     for xi, yi, elem in zip(distance[row]['o'], icohp[row]['o'], elems):
         plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='orange')
-    plt.scatter(distance[row]['oh'], icohp[row]['oh'], color='blue', label=f'*OH ({row})')
+    plt.scatter(distance[row]['oh'], icohp[row]['oh'], color='dodgerblue', label=f'*OH ({row})')
     for xi, yi, elem in zip(distance[row]['oh'], icohp[row]['oh'], elems):
-        plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='blue')
+        plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='dodgerblue')
     plt.xlabel('Bond Length (Å)')
     plt.ylabel('-ICOHP (eV)')
     plt.legend()
