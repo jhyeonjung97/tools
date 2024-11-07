@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e  # Stop execution on error
 
 declare -A rows
 rows=(
@@ -10,9 +11,7 @@ rows=(
 spins=("LS" "IS" "HS")
 small_spins=("ls" "is" "hs")
 specific_metals=("Fe" "Co" "Mo" "Ru" "Pd" "W" "Pt")
-# specific_metals=("Fe" "Co" "Mo")
-# adsorbates=("clean" "h" "o-o" o-oh" "o" "oh-o" "oh-oh" "oh" "oho" "ohoh" "oo" "ooh" "ooh-oh" "oh-ooh" "oohoh" "ohooh" "ooh-o" "o-ooh" "ooho" "oooh")
-adsorbates=("oohoh" "ohooh" "ooh-o" "o-ooh" "ooho" "oooh" "o-o" "oo")
+adsorbates=("clean" "h" "o" "oh" "oh-o" "oho" "oh-oh" "ohoh" "oh-ooh" "ohooh" "o-o" "oo" "o-oh" "ooh" "ooh-o" "ooho" "ooh-oh" "oohoh" "o-ooh" "oooh")
 ordered_rows=("3d" "4d" "5d")
 
 # Loop through rows in defined order
@@ -43,32 +42,24 @@ for row in "${ordered_rows[@]}"; do
                         if [ -d "$target_dir" ]; then
                             cd "$target_dir" || continue
 
-                            # # Execute add*.py scripts
-                            # for file in ~/bin/tools/mnc/add*.py; do
-                            #     python "$file"
-                            # done
-                            python ~/bin/tools/mnc/add-oohoh.py
-                            python ~/bin/tools/mnc/add-ohooh.py
-                            python ~/bin/tools/mnc/add-ooh-o.py
-                            python ~/bin/tools/mnc/add-o-ooh.py
-                            python ~/bin/tools/mnc/add-ooho.py
-                            python ~/bin/tools/mnc/add-oooh.py
-                            python ~/bin/tools/mnc/add-o-o.py
-                            python ~/bin/tools/mnc/add-oo.py
+                            # Execute add*.py scripts
+                            for file in ~/bin/tools/mnc/add*.py; do
+                                python "$file"
+                            done
                         else
                             echo "Target directory does not exist: $target_dir"
                             continue
                         fi
                     else
-                        echo "Processing: $target_dir"
-                        spin='IS'
+                        echo "Target directory not found for spin: $spin"
+                        continue
                     fi
                     
                     # Create pourbaix directories
                     for adsorbate in "${adsorbates[@]}"; do
                         adsorbate_dir="${pourbaix}/${adsorbate}/${spin}${dz}"
+                        [ -d "$adsorbate_dir" ] || mkdir "$adsorbate_dir"
                         echo "$adsorbate_dir"
-                        mkdir -p "$adsorbate_dir"
                         cd "$adsorbate_dir" || continue
 
                         if [[ "$adsorbate" == "clean" ]]; then
