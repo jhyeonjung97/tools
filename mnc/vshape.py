@@ -176,7 +176,7 @@ for row, elems in elements.items():
     dual_scatter_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
                         y1=icohp[row]['o'], y2=icohp[row]['oh'], 
                         label1=f'*O ({row})', label2=f'*OH ({row})', 
-                        xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_scatter_{row}.png'):
+                        xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_scatter_{row}.png')
 
 def single_plot_by_ads(Y, label, ylabel, pngname):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
