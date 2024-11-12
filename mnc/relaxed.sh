@@ -50,7 +50,7 @@ do
     fi
     if [[ -d relaxed ]]; then
         cd relaxed
-        if [[ ! -s DONE ]] && [[ ! -n $(grep "${ads}${metal}${spin}r" ~/mystat.txt) ]]; then
+        if [[ ! -s DONE ]] && [[ ! -n $(grep " ${metal}${spin}r" ~/mystat.txt) ]]; then
             pwd; sbatch submit.sh
         fi
     fi
@@ -95,6 +95,8 @@ do
                 sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' relaxed/submit.sh
             elif [[ $spin == 'HS' ]]; then
                 sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' relaxed/submit.sh
+            elif [[ $spin == 'stable' ]]; then
+                spin='MS'
             fi
             sed -i "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}${spin}r" relaxed/submit.sh
         fi
