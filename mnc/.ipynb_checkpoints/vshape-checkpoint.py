@@ -50,6 +50,69 @@ distance = {}
 color_ranges = [plt.cm.Oranges(np.linspace(0.3, 0.9, 3)),
                 plt.cm.Blues(np.linspace(0.3, 0.9, 3))]
 
+adsorbates = ['o', 'oh']
+adsorbate_symbols = ['O', 'OH']
+indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(elements['3d'], elements['4d'], elements['5d'])]
+
+def single_plot_by_row(elems, x1, x2, label1, label2, ylabel, pngname):
+    plt.figure(figsize=(6.0, 4.5), dpi=300)
+    plt.plot(elems, x1, marker='o', color='orange', label=label1)
+    plt.plot(elems, x2, marker='o', color='dodgerblue', label=label2)
+    plt.xlabel('Element')
+    plt.ylabel(ylabel)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, pngname), bbox_inches='tight')
+    print(f"Figure saved as {pngname}")
+    plt.close()
+    
+def dual_plot_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, pngname):
+    plt.figure(figsize=(6.0, 4.5), dpi=300)
+    plt.plot(x1, y1, marker='o', color='orange', label=label1)
+    plt.plot(x2, y2, marker='o', color='dodgerblue', label=label2)
+    for xi, yi, elem in zip(x1, y1, elems):
+        plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='orange')
+    for xi, yi, elem in zip(x2, y2, elems):
+        plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='dodgerblue')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, pngname), bbox_inches='tight')
+    print(f"Figure saved as {pngname}")
+    plt.close()
+
+def dual_scatter_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, pngname):
+    plt.figure(figsize=(6.0, 4.5), dpi=300)
+    plt.scatter(x1, y1, color='orange', label=label1)
+    plt.scatter(x2, y2, color='dodgerblue', label=label2)
+    x = x1 + x2
+    y = y1 + y2
+    sorted_indices = np.argsort(x)
+    x_sorted = np.array(x)[sorted_indices]
+    y_sorted = np.array(y)[sorted_indices]
+    z = np.polyfit(x_sorted, y_sorted, 1)
+    p = np.poly1d(z)
+    y_pred = p(x_sorted)
+    ss_res = np.sum((y_sorted - y_pred) ** 2)
+    ss_tot = np.sum((y_sorted - np.mean(y_sorted)) ** 2)
+    r2 = 1 - (ss_res / ss_tot)
+    plt.plot(x_sorted, p(x_sorted), color='black', linestyle="--")
+    equation_text = f"y = {z[0]:.2f}x + {z[1]:.2f}\n$R^2$ = {r2:.2f}"
+    plt.text(0.05, 0.15, equation_text, fontsize=10, color='black', 
+             ha='left', va='top', transform=plt.gca().transAxes)
+    for xi, yi, elem in zip(x1, y1, elems):
+        plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='orange')
+    for xi, yi, elem in zip(x2, y2, elems):
+        plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='dodgerblue')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, pngname), bbox_inches='tight')
+    print(f"Figure saved as {pngname}")
+    plt.close()
+
 # Loop through each element row and calculate adsorption energies
 for row, elems in elements.items():
     adsorption_energies[row] = {'o': [], 'oh': []}
@@ -96,147 +159,63 @@ for row, elems in elements.items():
                 else:
                     icohp[row][ads].append(np.nan)  # Handle missing data
                     distance[row][ads].append(np.nan)  # Handle missing data
+                    
+    single_plot_by_row(elems, x1=adsorption_energies[row]['o'], x2=adsorption_energies[row]['oh'], 
+                       label1=f'O Adsorption ({row})', label2=f'O Adsorption ({row})', 
+                       ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_{row}.png')
+    single_plot_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
+                       label1=f'M-O Bond ({row})', label2=f'M-OH Bond ({row})', 
+                       ylabel='Bond Length (Å)', pngname=f'bond_{row}.png')
+    single_plot_by_row(elems, x1=icohp[row]['o'], x2=icohp[row]['oh'], 
+                       label1=f'*O ({row})', label2=f'*OH ({row})', 
+                       ylabel='-ICOHP (eV)', pngname=f'icohp_{row}.png')
+    dual_plot_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
+                     y1=icohp[row]['o'], y2=icohp[row]['oh'], 
+                     label1=f'*O ({row})', label2=f'*OH ({row})', 
+                     xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{row}.png')
+    dual_scatter_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
+                        y1=icohp[row]['o'], y2=icohp[row]['oh'], 
+                        label1=f'*O ({row})', label2=f'*OH ({row})', 
+                        xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_scatter_{row}.png'):
 
-    # Save individual plots for each row
+def single_plot_by_ads(Y, label, ylabel, pngname):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
-    plt.plot(elems, adsorption_energies[row]['o'], marker='o', color='orange', label=f'O Adsorption ({row})')
-    plt.plot(elems, adsorption_energies[row]['oh'], marker='o', color='dodgerblue', label=f'OH Adsorption ({row})')
+    for j, row in enumerate(elements.keys()):
+        plt.plot(range(len(elements[row])), Y[row][adsorbate], 
+                 marker='o', color=color_ranges[i][j], label=label)
     plt.xlabel('Element')
-    plt.ylabel('Adsorption Energy (dG, eV)')
+    plt.ylabel(ylabel)
+    plt.xticks(np.arange(len(indice)), indice)
     plt.legend()
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'adsorption_{row}.png'), bbox_inches='tight')
-    print(f"Figure saved as adsorption_{row}.png")
+    plt.savefig(os.path.join(output_dir, pngname), bbox_inches='tight')
+    print(f"Figure saved as {pngname}")
     plt.close()
     
+def dual_plot_by_ads(X, Y, label, xlabel, ylabel, pngname):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
-    plt.plot(elems, distance[row]['o'], marker='o', color='orange', label=f'M-O Bond ({row})')
-    plt.plot(elems, distance[row]['oh'], marker='o', color='dodgerblue', label=f'M-OH Bond ({row})')
-    plt.xlabel('Element')
-    plt.ylabel('Bond Length (Å)')
+    for j, row in enumerate(elements.keys()):
+        plt.plot(X[row][adsorbate], Y[row][adsorbate], 
+                 marker='o', color=color_ranges[i][j], label=label)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.xticks(np.arange(len(indice)), indice)
     plt.legend()
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'bond_{row}.png'), bbox_inches='tight')
-    print(f"Figure saved as bond_{row}.png")
-    plt.close()
-    
-    plt.figure(figsize=(6.0, 4.5), dpi=300)
-    plt.plot(elems, icohp[row]['o'], marker='o', color='orange', label=f'*O ({row})')
-    plt.plot(elems, icohp[row]['oh'], marker='o', color='dodgerblue', label=f'*OH ({row})')
-    plt.xlabel('Element')
-    plt.ylabel('-ICOHP (eV)')
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'icohp_{row}.png'), bbox_inches='tight')
-    print(f"Figure saved as icohp_{row}.png")
-    plt.close()
-
-    plt.figure(figsize=(6.0, 4.5), dpi=300)
-    plt.plot(distance[row]['o'], icohp[row]['o'], marker='o', color='orange', label=f'*O ({row})')
-    plt.plot(distance[row]['oh'], icohp[row]['oh'], marker='o', color='dodgerblue', label=f'*OH ({row})')
-    for xi, yi, elem in zip(distance[row]['o'], icohp[row]['o'], elems):
-        plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='orange')
-    for xi, yi, elem in zip(distance[row]['oh'], icohp[row]['oh'], elems):
-        plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='dodgerblue')
-    plt.xlabel('Bond Length (Å)')
-    plt.ylabel('-ICOHP (eV)')
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'icohp_vs_bond_{row}.png'), bbox_inches='tight')
-    print(f"Figure saved as icohp_vs_bond_{row}.png")
-    plt.close()
-
-    plt.figure(figsize=(6.0, 4.5), dpi=300)
-    plt.scatter(distance[row]['o'], icohp[row]['o'], color='orange', label=f'*O ({row})')
-    plt.scatter(distance[row]['oh'], icohp[row]['oh'], color='dodgerblue', label=f'*OH ({row})')
-    distances = distance[row]['o'] + distance[row]['oh']
-    icohps = icohp[row]['o'] + icohp[row]['oh']
-    sorted_indices = np.argsort(distances)
-    distances_sorted = np.array(distances)[sorted_indices]
-    icohps_sorted = np.array(icohps)[sorted_indices]
-    z = np.polyfit(distances_sorted, icohps_sorted, 1)
-    p = np.poly1d(z)
-    y_pred = p(distances_sorted)
-    ss_res = np.sum((icohps_sorted - y_pred) ** 2)
-    ss_tot = np.sum((icohps_sorted - np.mean(icohps_sorted)) ** 2)
-    r2 = 1 - (ss_res / ss_tot)
-    plt.plot(distances_sorted, p(distances_sorted), color='black', linestyle="--")
-    equation_text = f"y = {z[0]:.2f}x + {z[1]:.2f}\n$R^2$ = {r2:.2f}"
-    plt.text(0.05, 0.15, equation_text, fontsize=10, color='black', 
-             ha='left', va='top', transform=plt.gca().transAxes)
-    for xi, yi, elem in zip(distance[row]['o'], icohp[row]['o'], elems):
-        plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='orange')
-    for xi, yi, elem in zip(distance[row]['oh'], icohp[row]['oh'], elems):
-        plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='dodgerblue')
-    plt.xlabel('Bond Length (Å)')
-    plt.ylabel('-ICOHP (eV)')
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'icohp_vs_bond_scatter_{row}.png'), bbox_inches='tight')
-    print(f"Figure saved as icohp_vs_bond_scatter_{row}.png")
+    plt.savefig(os.path.join(output_dir, pngname), bbox_inches='tight')
+    print(f"Figure saved as {pngname}")
     plt.close()
     
 # Save combined plots for each adsorbate across all rows
-adsorbates = ['o', 'oh']
-adsorbate_symbols = ['O', 'OH']
-indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(elements['3d'], elements['4d'], elements['5d'])]
-
 for i in range(2): # 0, 1
     adsorbate = adsorbates[i]
     adsorbate_symbol = adsorbate_symbols[i]
     
-    plt.figure(figsize=(6.0, 4.5), dpi=300)
-    for j, row in enumerate(elements.keys()):
-        plt.plot(range(len(elements[row])), adsorption_energies[row][adsorbate], 
-                 marker='o', color=color_ranges[i][j],
-                 label=f'{adsorbate_symbol} Adsorption ({row})')
-    plt.xlabel('Element')
-    plt.ylabel('Adsorption Energy (dG, eV)')
-    plt.xticks(np.arange(len(indice)), indice)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'adsorption_{adsorbate}.png'), bbox_inches='tight')
-    print(f"Figure saved as adsorption_{adsorbate}.png")
-    plt.close()
-    
-    plt.figure(figsize=(6.0, 4.5), dpi=300)
-    for j, row in enumerate(elements.keys()):
-        plt.plot(range(len(elements[row])), distance[row][adsorbate], 
-                 marker='o', color=color_ranges[i][j],
-                 label=f'{adsorbate_symbol} Adsorption ({row})')
-    plt.xlabel('Element')
-    plt.ylabel('Bond Length (Å)')
-    plt.xticks(np.arange(len(indice)), indice)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'bond_{adsorbate}.png'), bbox_inches='tight')
-    print(f"Figure saved as bond_{adsorbate}.png")
-    plt.close()
-
-    plt.figure(figsize=(6.0, 4.5), dpi=300)
-    for j, row in enumerate(elements.keys()):
-        plt.plot(range(len(elements[row])), icohp[row][adsorbate], 
-                 marker='o', color=color_ranges[i][j],
-                 label=f'*{adsorbate_symbol} ({row})')
-    plt.xlabel('Element')
-    plt.ylabel('-ICOHP (eV)')
-    plt.xticks(np.arange(len(indice)), indice)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'icohp_{adsorbate}.png'), bbox_inches='tight')
-    print(f"Figure saved as icohp_{adsorbate}.png")
-    plt.close()
-
-    plt.figure(figsize=(6.0, 4.5), dpi=300)
-    for j, row in enumerate(elements.keys()):
-        plt.plot(range(len(elements[row])), distance[row][adsorbate], 
-                 marker='o', color=color_ranges[i][j], 
-                 label=f'*{adsorbate_symbol} ({row})')
-    plt.xlabel('Bond Length (Å)')
-    plt.ylabel('-ICOHP (eV)')
-    plt.xticks(np.arange(len(indice)), indice)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'icohp_vs_bond_{adsorbate}.png'), bbox_inches='tight')
-    print(f"Figure saved as icohp_vs_bond_{adsorbate}.png")
-    plt.close()
+    single_plot_by_ads(Y=adsorption_energies, label=f'{adsorbate_symbol} Adsorption ({row})', 
+                       ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_{adsorbate}.png')
+    single_plot_by_ads(Y=distance, label=f'M-{adsorbate_symbol} Bond ({row})', 
+                       ylabel='Bond Length (Å)', pngname=f'bond_{adsorbate}.png')
+    single_plot_by_ads(Y=icohp, label=f'*{adsorbate_symbol} ({row})', 
+                       ylabel='-ICOHP (eV)', pngname=f'icohp_{adsorbate}.png')
+    dual_plot_by_ads(X=distance, Y=icohp, label=f'*{adsorbate_symbol} ({row})', 
+                     xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
