@@ -204,6 +204,9 @@ do
         
         cd $ooh_dir; pwd
         cp $dir/restart-o-oh.json ./restart.json
+        ase convert -f restart.json POSCAR
+        ase convert -f POSCAR start.traj
+        rm POSCAR restart.json
         cp ~/bin/tools/mnc/submit.sh ./
         sed -i -e "/#SBATCH -J/c\#SBATCH -J OOH${metal}${ooh_spin}${dz}" submit.sh
         if [[ $ooh_spin == 'LS' ]]; then
