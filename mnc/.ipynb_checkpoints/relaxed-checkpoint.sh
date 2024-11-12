@@ -54,7 +54,7 @@ do
     fi
 done
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/*_O*/*_*/*_*S/
+for dir in /pscratch/sd/j/jiuy97/6_MNC/*_O*/*_*/*_*/
 do
     cd $dir; # pwd
     IFS='/' read -r -a path <<< $PWD
