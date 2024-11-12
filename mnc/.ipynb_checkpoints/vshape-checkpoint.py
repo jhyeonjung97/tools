@@ -38,8 +38,8 @@ pattern = re.compile(r"\s+([\d.]+)\s+([\d.]+)")
 # pattern = re.compile(r"\s+(\d+)\s+([A-Za-z]+)\s+(\d+)\s+'O'\s+(\d+)\s+[\w\(\)\-]+\s+([\d.]+)\s+([\d.]+)")
 
 elements = {
-    '3d_LS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
-    '3d_HS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
+    # '3d_LS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
+    # '3d_HS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
     '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
     '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
     '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
@@ -86,42 +86,25 @@ def dual_scatter_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, p
     plt.figure(figsize=(6.0, 4.5), dpi=300)
     plt.scatter(x1, y1, color='orange', label=label1)
     plt.scatter(x2, y2, color='dodgerblue', label=label2)
-    
-    # Combine x and y data and filter out any non-finite values
-    x = np.array(x1 + x2)
-    y = np.array(y1 + y2)
-    finite_indices = np.isfinite(x) & np.isfinite(y)
-    x_sorted = x[finite_indices]
-    y_sorted = y[finite_indices]
-    
-    # Check if there are enough points to perform polyfit
-    if len(x_sorted) > 1:
-        try:
-            # Perform polynomial fit and calculate R-squared
-            z = np.polyfit(x_sorted, y_sorted, 1)
-            p = np.poly1d(z)
-            y_pred = p(x_sorted)
-            ss_res = np.sum((y_sorted - y_pred) ** 2)
-            ss_tot = np.sum((y_sorted - np.mean(y_sorted)) ** 2)
-            r2 = 1 - (ss_res / ss_tot)
-            plt.plot(x_sorted, p(x_sorted), color='black', linestyle="--")
-            
-            # Display fit equation and R-squared value on the plot
-            equation_text = f"y = {z[0]:.2f}x + {z[1]:.2f}\n$R^2$ = {r2:.2f}"
-            plt.text(0.05, 0.15, equation_text, fontsize=10, color='black', 
-                     ha='left', va='top', transform=plt.gca().transAxes)
-        except np.linalg.LinAlgError:
-            print("SVD did not converge for the current data due to conditioning issues.")
-    else:
-        print("Not enough valid data points to perform linear fit.")
-    
-    # Annotate points
+    x = x1 + x2
+    y = y1 + y2
+    sorted_indices = np.argsort(x)
+    x_sorted = np.array(x)[sorted_indices]
+    y_sorted = np.array(y)[sorted_indices]
+    z = np.polyfit(x_sorted, y_sorted, 1)
+    p = np.poly1d(z)
+    y_pred = p(x_sorted)
+    ss_res = np.sum((y_sorted - y_pred) ** 2)
+    ss_tot = np.sum((y_sorted - np.mean(y_sorted)) ** 2)
+    r2 = 1 - (ss_res / ss_tot)
+    plt.plot(x_sorted, p(x_sorted), color='black', linestyle="--")
+    equation_text = f"y = {z[0]:.2f}x + {z[1]:.2f}\n$R^2$ = {r2:.2f}"
+    plt.text(0.05, 0.15, equation_text, fontsize=10, color='black', 
+             ha='left', va='top', transform=plt.gca().transAxes)
     for xi, yi, elem in zip(x1, y1, elems):
         plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='orange')
     for xi, yi, elem in zip(x2, y2, elems):
         plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='dodgerblue')
-    
-    # Set labels and save the figure
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.legend()
@@ -129,7 +112,6 @@ def dual_scatter_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, p
     plt.savefig(os.path.join(output_dir, pngname), bbox_inches='tight')
     print(f"Figure saved as {pngname}")
     plt.close()
-
 
 # Loop through each element row and calculate adsorption energies
 for row, elems in elements.items():
