@@ -113,7 +113,7 @@
 #     fi
 # done
 
-for ooh_dir in /pscratch/sd/j/jiuy97/6_MNC/3_OOH/*_*/*_*S/*_
+for ooh_dir in /pscratch/sd/j/jiuy97/6_MNC/3_OOH/2_Fe/*_*S/*_
 do
     IFS='/' read -r -a path <<< $ooh_dir
     path1=${path[-1]}
