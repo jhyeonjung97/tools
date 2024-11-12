@@ -172,7 +172,7 @@ do
     IFS='/' read -r -a path <<< "$dir"
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     spin=$(echo "${path[-1]}" | cut -d'_' -f2)
-    [[ $spin == 'IS' ]] && continue
+    [[ ! $spin == 'IS' ]] && continue
     
     cd relaxed || continue
     python ~/bin/tools/mnc/add-o.py
@@ -193,6 +193,8 @@ do
         sed -i -e "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}${spin}r" submit.sh
         if [[ $spin == 'LS' ]]; then
             sed -i -e "s/mnc-sol.py/mnc-sol-ls.py/" submit.sh
+        elif [[ $spin == 'IS' ]]; then
+            sed -i -e "s/mnc-sol.py/mnc-sol-is.py/" submit.sh
         elif [[ $spin == 'HS' ]]; then
             sed -i -e "s/mnc-sol.py/mnc-sol-hs.py/" submit.sh
         fi
