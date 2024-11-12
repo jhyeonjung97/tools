@@ -38,8 +38,8 @@ pattern = re.compile(r"\s+([\d.]+)\s+([\d.]+)")
 # pattern = re.compile(r"\s+(\d+)\s+([A-Za-z]+)\s+(\d+)\s+'O'\s+(\d+)\s+[\w\(\)\-]+\s+([\d.]+)\s+([\d.]+)")
 
 elements = {
-    '3d(LS)': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
-    '3d(HS)': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
+    '3d_LS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
+    '3d_HS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
     '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
     '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
     '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
@@ -58,9 +58,9 @@ for row, elems in elements.items():
     for i, elem in enumerate(elems):
         numb = i + 2
 
-        if row == '3d(LS)':
+        if row == '3d_LS':
             base_dir = os.path.join(root_dir, '3d', f"{numb}_{elem}", '1_LS')
-        elif row == '3d(HS)':
+        elif row == '3d_HS':
             base_dir = os.path.join(root_dir, '3d', f"{numb}_{elem}", '2_HS')
             if not os.path.exists(base_dir):
                 base_dir = os.path.join(root_dir, '3d', f"{numb}_{elem}", '3_HS')
