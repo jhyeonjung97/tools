@@ -42,6 +42,8 @@ do
                 sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' relaxed/submit.sh
             elif [[ $spin == 'HS' ]]; then
                 sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' relaxed/submit.sh
+            elif [[ $spin == 'stable' ]]; then
+                spin='MS'
             fi
             sed -i "/#SBATCH -J/c\#SBATCH -J ${metal}${spin}r" relaxed/submit.sh
         fi
