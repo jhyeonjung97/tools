@@ -8,7 +8,10 @@ from ase.io import read, write
 root_dirs = ["/pscratch/sd/j/jiuy97/6_MNC/pourbaix/1_Fe/",
              "/pscratch/sd/j/jiuy97/6_MNC/pourbaix/2_Co/",
              "/pscratch/sd/j/jiuy97/6_MNC/pourbaix/3_Mo/"]
-main_dirs = ["clean", "h", "o", "oh", "oh-o", "oho", "oh-oh", "ohoh", "oh-ooh", "ohooh", "o-o", "oo", "o-oh", "ooh", "ooh-oh", "oohoh"]
+main_dirs = ["clean", "h", "oh", "o", 
+             "ohoh", "oh-oh", "ohooh", "oohoh", "oh-ooh", "ooh-oh",
+             "ooh", "oho", "oh-o", "o-oh", "oo", "o-o",
+             "oooh", "ooho", "o-ooh", "ooh-o", "oohooh", "ooh-ooh"]
 sub_dirs = ["HS1", "HS5", "IS1", "IS5", "LS1", "LS5"]
 
 # Set the regular expression pattern to find energy values
