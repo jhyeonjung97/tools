@@ -136,7 +136,15 @@ for row, elems in elements.items():
             e_clean = relaxed_atoms.get_potential_energy()
 
             for ads in ['o', 'oh']:
-                json_path = os.path.join(base_dir, ads, 'final_with_calculator.json')
+                if row == '3d_HS' and elem == 'Ti' and ads == 'o':
+                    json_path = '/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/2_Ti/1_LS/o/final_with_calculator.json'
+                elif row == '3d_HS' and elem == 'Ti' and ads == 'oh':
+                    json_path = '/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/2_Ti/1_LS/oh/final_with_calculator.json'
+                elif row == '3d_HS' and elem == 'V' and ads == 'o':
+                    json_path = '/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/3_V/1_LS/o/final_with_calculator.json'
+                else:
+                    json_path = os.path.join(base_dir, ads, 'final_with_calculator.json')
+                    
                 if os.path.exists(json_path):        
                     atoms = read(json_path)
                     e_ads = atoms.get_potential_energy()
