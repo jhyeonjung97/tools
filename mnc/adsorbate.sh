@@ -3,6 +3,7 @@ do
     cd $dir; pwd
     # python ~/bin/tools/mnc/add-o.py
     # python ~/bin/tools/mnc/add-oh.py
+    python ~/bin/get_restart3
     python ~/bin/tools/mnc/add-oh-oh.py
     # python ~/bin/tools/mnc/add-co.py
     # python ~/bin/tools/mnc/add-h.py
