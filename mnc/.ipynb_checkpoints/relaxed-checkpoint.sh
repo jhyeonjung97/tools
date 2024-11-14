@@ -63,6 +63,9 @@ do
     ads=$(echo "${path[-3]}" | cut -d'_' -f2)
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     spin=$(echo "${path[-1]}" | cut -d'_' -f2)
+    if [[ $spin == 'stable' ]]; then
+        spin='MS'
+    fi
     all_done=true
     for sub_dir in ./*_/
     do
@@ -95,8 +98,6 @@ do
                 sed -i 's/mnc-sol.py/mnc-sol-is-nupdown.py/' relaxed/submit.sh
             elif [[ $spin == 'HS' ]]; then
                 sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' relaxed/submit.sh
-            elif [[ $spin == 'stable' ]]; then
-                spin='MS'
             fi
             sed -i "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}${spin}r" relaxed/submit.sh
         fi
