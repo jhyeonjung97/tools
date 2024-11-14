@@ -222,7 +222,7 @@
 
 for oh_oh_dir in /pscratch/sd/j/jiuy97/6_MNC/5_OH_OH/*_*/*_*S/*_
 do
-    IFS='/' read -r -a path <<< $ooh_dir
+    IFS='/' read -r -a path <<< $oh_oh_dir
     path1=${path[-1]}
     path2=${path[-2]}
     path3=${path[-3]}
