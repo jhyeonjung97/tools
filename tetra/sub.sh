@@ -12,7 +12,7 @@ do
     coord=$(echo $path3 | cut -d'_' -f3)
 
     if [[ $row == fm ]]; then
-        sed -i -e 's/afm.py/fm.py/' submit.sh
+        sed -i -e 's/afm.py/fm.py/' $dir/submit.sh
     fi
-    sed -i -e "s/jobname/${coord}${row}${numb}/" submit.sh
+    sed -i -e "s/jobname/${coord}${row}${numb}/" $dir/submit.sh
 done
