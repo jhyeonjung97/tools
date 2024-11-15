@@ -10,7 +10,7 @@ def cell_shape(atoms, coord, output_filename):
     if coord == 'WZ':
         new_cell = [a, a, a * (2 * (6**0.5) / 3), 90, 90, 120]
     elif coord == 'ZB':
-        new_cell = [a, a, a, 90, 90, 90]
+        new_cell = [a, a, a, 33.56, 33.56, 33.56]
     elif coord == 'TN':
         new_cell = [a, a * (3.42 / 4.68), a * (5.13 / 4.68), 90, 99.54, 90]
     elif coord == 'PD':
@@ -18,7 +18,7 @@ def cell_shape(atoms, coord, output_filename):
     elif coord == 'NB':
         new_cell = [a, a, a, 60, 60, 60]
     elif coord == 'RS':
-        new_cell = [a, a, a, 90, 90, 90]
+        new_cell = [a, a, a, 33.56, 33.56, 33.56]
     elif coord == 'LT':
         new_cell = [a, a, a * (2**0.5), 90, 90, 90]
     elif coord == 'AQ':
