@@ -11,7 +11,11 @@ do
 
     new_dir="/pscratch/sd/j/jiuy97/3_V_bulk/isif8/${path3}/${path2}/${numb}_${metal}"
     if [[ $tag == 'z' ]] || [[ $tag == 'x' ]] || [[ $tag == 's' ]]; then
-        cp $dir/opt/start.traj $new_dir
+        if [[ -s $dir/opt/start.traj ]]; then
+            cp $dir/opt/start.traj $new_dir
+        else
+            cp $dir/opt/CONTCAR $new_dir
+        fi
     else
         cp $dir/opt/restart.json $new_dir
     fi
