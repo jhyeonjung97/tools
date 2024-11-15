@@ -13,6 +13,7 @@ do
     if [[ $tag == 'z' ]] || [[ $tag == 'x' ]] || [[ $tag == 's' ]]; then
         continue
     else
-        cp $dir/opt/final_with_calculator.json $new_dir
+        cp $dir/opt/restart.json $new_dir
+        rm final_with_calculator.json
     fi
 done
