@@ -14,7 +14,7 @@ def cell_shape(atoms, coord, output_filename):
     elif coord == 'TN':
         new_cell = [a, a * (3.42 / 4.68), a * (5.13 / 4.68), 90, 99.54, 90]
     elif coord == 'PD':
-        new_cell = [a, a, a * (2 * (6**0.5) / 3), 90, 90, 90]
+        new_cell = [a, a, a * (3**0.5), 90, 90, 90]
     elif coord == 'NB':
         new_cell = [a, a, a, 60, 60, 60]
     elif coord == 'RS':
@@ -28,9 +28,9 @@ def cell_shape(atoms, coord, output_filename):
     else:
         raise ValueError(f"Unknown coordination type: {coord}")
 
-    # Set the cell with lengths and angles directly
+    fractional_positions = atoms.get_scaled_positions()
     atoms.set_cell(new_cell)
-    # Write to the specified output file
+    atoms.set_scaled_positions(fractional_positions)
     write(output_filename, atoms)
 
 # Iterate through directories matching the pattern
