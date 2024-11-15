@@ -14,6 +14,6 @@ do
         continue
     else
         cp $dir/opt/restart.json $new_dir
-        rm final_with_calculator.json
+        rm $new_dir/final_with_calculator.json
     fi
 done
