@@ -3,7 +3,7 @@ import glob
 from ase.io import read, write
 
 # Define the base directory pattern
-base_path = "/pscratch/sd/j/jiuy97/3_V_bulk/isif8/*_*_*/fm/*_*/"
+base_path = "/pscratch/sd/j/jiuy97/3_V_bulk/isif8/*_*_*/*/*_*/"
 
 def cell_shape(atoms, coord, output_filename):
     a = atoms.cell.lengths()[0]  # Base lattice parameter
