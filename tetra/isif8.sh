@@ -8,7 +8,7 @@ do
     tag=$(echo $path1 | cut -d'_' -f1 | cut -c3)
     metal=$(echo $path1 | cut -d'_' -f2)
     coord=$(echo $path3 | cut -d'_' -f3)
-    echo $numb $metal    
-    # new_dir="/pscratch/sd/j/jiuy97/3_V_bulk/isif8/${path3}/${path2}/${numb}_${metal}"
-    # ls $new_dir    
+
+    new_dir="/pscratch/sd/j/jiuy97/3_V_bulk/isif8/${path3}/${path2}/${numb}_${metal}"
+    ls $new_dir    
 done
