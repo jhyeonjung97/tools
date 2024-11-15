@@ -14,7 +14,8 @@ do
         if [[ -s $dir/opt/start.traj ]]; then
             cp $dir/opt/start.traj $new_dir
         else
-            cp $dir/opt/CONTCAR $new_dir
+            cp $dir/opt/POSCAR $new_dir
+            rm $new_dir/opt/CONTCAR
         fi
     else
         cp $dir/opt/restart.json $new_dir
