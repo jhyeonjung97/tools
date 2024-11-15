@@ -28,10 +28,10 @@ def cell_shape(atoms, coord, output_filename):
     elif coord == 'LT':
         new_lengths = [a, a, a * (2**0.5)]
         new_angles = [90, 90, 90]
-    elif coord == 'MC':
+    elif coord == 'AQ':
         new_lengths = [a, a * (5.49 / 5.90), a * (4.75 / 5.90)]
         new_angles = [90, 90, 90]
-    elif coord == 'NL':
+    elif coord == 'AU':
         new_lengths = [a, a, a * (3**0.5)]
         new_angles = [90, 90, 120]
     else:
