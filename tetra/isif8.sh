@@ -10,5 +10,9 @@ do
     coord=$(echo $path3 | cut -d'_' -f3)
 
     new_dir="/pscratch/sd/j/jiuy97/3_V_bulk/isif8/${path3}/${path2}/${numb}_${metal}"
-    ls $new_dir    
+    if [ $tag == 'z' ] || [ $tag == 'x' ] || [ $tag == 's' ]; then
+        continue
+    else
+        cp $dir/opt/final_with_calculator.json $new_dir
+    fi
 done
