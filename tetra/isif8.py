@@ -6,39 +6,30 @@ from ase.io import read, write
 base_path = "/pscratch/sd/j/jiuy97/3_V_bulk/isif8/*_*_*/*d/*_*/"
 
 def cell_shape(atoms, coord, output_filename):
-    a = atoms.cell.lengths()[0]
+    a = atoms.cell.lengths()[0]  # Base lattice parameter
     if coord == 'WZ':
-        new_lengths = [a, a, a * (2 * (6**0.5) / 3)]
-        new_angles = [90, 90, 120]
+        new_cell = [a, a, a * (2 * (6**0.5) / 3), 90, 90, 120]
     elif coord == 'ZB':
-        new_lengths = [a, a, a]
-        new_angles = [90, 90, 90]
+        new_cell = [a, a, a, 90, 90, 90]
     elif coord == 'TN':
-        new_lengths = [a, a * (3.42 / 4.68), a * (5.13 / 4.68)]
-        new_angles = [90, 99.54, 90]
+        new_cell = [a, a * (3.42 / 4.68), a * (5.13 / 4.68), 90, 99.54, 90]
     elif coord == 'PD':
-        new_lengths = [a, a, a * (2 * (6**0.5) / 3)]
-        new_angles = [90, 90, 90]
+        new_cell = [a, a, a * (2 * (6**0.5) / 3), 90, 90, 90]
     elif coord == 'NB':
-        new_lengths = [a, a, a]
-        new_angles = [60, 60, 60]
+        new_cell = [a, a, a, 60, 60, 60]
     elif coord == 'RS':
-        new_lengths = [a, a, a]
-        new_angles = [90, 90, 90]
+        new_cell = [a, a, a, 90, 90, 90]
     elif coord == 'LT':
-        new_lengths = [a, a, a * (2**0.5)]
-        new_angles = [90, 90, 90]
+        new_cell = [a, a, a * (2**0.5), 90, 90, 90]
     elif coord == 'AQ':
-        new_lengths = [a, a * (5.49 / 5.90), a * (4.75 / 5.90)]
-        new_angles = [90, 90, 90]
+        new_cell = [a, a * (5.49 / 5.90), a * (4.75 / 5.90), 90, 90, 90]
     elif coord == 'AU':
-        new_lengths = [a, a, a * (3**0.5)]
-        new_angles = [90, 90, 120]
+        new_cell = [a, a, a * (3**0.5), 90, 90, 120]
     else:
         raise ValueError(f"Unknown coordination type: {coord}")
 
-    # Set the new cell
-    atoms.set_cell([new_lengths, new_angles])
+    # Set the cell with lengths and angles directly
+    atoms.set_cell(new_cell)
     # Write to the specified output file
     write(output_filename, atoms)
 
