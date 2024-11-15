@@ -65,5 +65,3 @@ for dir_path in glob.glob(base_path):
     atoms = read(filename)
     output_filename = f"updated_{filename}"  # Save with a new name
     cell_shape(atoms, coord, output_filename)
-
-    print(f"Processed {filename} in {dir_path} and saved to {output_filename}")
