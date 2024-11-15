@@ -1,4 +1,4 @@
-for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*d/*_*
+for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*d/*_*/
 do
     IFS='/' read -r -a path <<< $dir
     path1=${path[-1]}
