@@ -1,4 +1,4 @@
-for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*d/*_*/
+for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/fm/*_*/
 do
     IFS='/' read -r -a path <<< $dir
     path1=${path[-1]}
@@ -8,7 +8,6 @@ do
     tag=$(echo $path1 | cut -d'_' -f1 | cut -c3)
     metal=$(echo $path1 | cut -d'_' -f2)
     coord=$(echo $path3 | cut -d'_' -f3)
-
     new_dir="/pscratch/sd/j/jiuy97/3_V_bulk/isif8/${path3}/${path2}/${numb}_${metal}"
     if [[ $tag == 'z' ]] || [[ $tag == 'x' ]] || [[ $tag == 's' ]]; then
         if [[ -s $dir/opt/start.traj ]]; then
@@ -19,6 +18,4 @@ do
     else
         cp $dir/opt/restart.json $dir/opt/WAVECAR $new_dir
     fi
-
-
 done
