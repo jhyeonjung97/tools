@@ -61,6 +61,7 @@ nbands = get_bands(atoms)
 kpoints = extract_kpoints('./opt/KPOINTS')
 
 atoms.calc = vasp_calculator.Vasp(
+                    istart=2,
                     encut=600,
                     xc='PBE',
                     gga='PE',
@@ -80,7 +81,7 @@ atoms.calc = vasp_calculator.Vasp(
                     ediffg=-0.02,
                     ediff=1e-6,
                     prec='Normal',
-                    nsw=0,
+                    nsw=200,
                     lvtot=False,
                     nbands=nbands,
                     ispin=2,

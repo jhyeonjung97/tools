@@ -12,7 +12,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk3_afm'
+name = 'opt_bulk8_afm'
 
 effective_length = 25
 
@@ -26,12 +26,12 @@ spin_states_plus_2 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
 
 ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
-            'Cr':{'L':2, 'U':3.5,  'J':0.0},
+            'Cr':{'L':2, 'U':3.50,  'J':0.0},
             'Mn':{'L':2, 'U':3.75, 'J':0.0},
-            'Fe':{'L':2, 'U':4.3,  'J':0.0},
+            'Fe':{'L':2, 'U':4.30,  'J':0.0},
             'Co':{'L':2, 'U':3.32, 'J':0.0},
             'Ni':{'L':2, 'U':6.45, 'J':0.0},
-            'Cu':{'L':2, 'U':3.0,  'J':0.0}
+            'Cu':{'L':2, 'U':9.00,  'J':0.0}
             }
 
 if path.exists('restart.json'):
@@ -54,17 +54,7 @@ for atom in atoms:
     else:
         ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
-def get_kpoints(atoms, effective_length=effective_length, bulk=False):
-    """
-    Return a tuple of k-points derived from the unit cell.
-    
-    Parameters
-    ----------
-    atoms : object
-    effective_length : k-point*unit-cell-parameter
-    bulk : Whether it is a bulk system.
-    """
-    l = effective_length
+def get_kpoints(atoms, l=effective_length, bulk=True):
     cell = atoms.get_cell()
     nkx = int(round(l/np.linalg.norm(cell[0]),0))
     nky = int(round(l/np.linalg.norm(cell[1]),0))

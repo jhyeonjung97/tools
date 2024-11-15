@@ -26,12 +26,12 @@ spin_states_plus_2 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
 
 ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
-            'Cr':{'L':2, 'U':3.5,  'J':0.0},
+            'Cr':{'L':2, 'U':3.50,  'J':0.0},
             'Mn':{'L':2, 'U':3.75, 'J':0.0},
-            'Fe':{'L':2, 'U':4.3,  'J':0.0},
+            'Fe':{'L':2, 'U':4.30,  'J':0.0},
             'Co':{'L':2, 'U':3.32, 'J':0.0},
             'Ni':{'L':2, 'U':6.45, 'J':0.0},
-            'Cu':{'L':2, 'U':3.0,  'J':0.0}
+            'Cu':{'L':2, 'U':9.00,  'J':0.0}
             }
 
 if path.exists('restart.json'):
@@ -85,11 +85,11 @@ atoms.calc = vasp_calculator.Vasp(
                     npar=1,
                     gamma=True,
                     ismear=0,
-                    inimix=0,
-                    amix=0.05,
-                    bmix=0.0001,
-                    amix_mag=0.05,
-                    bmix_mag=0.0001,
+                    ##inimix=0,
+                    #amix=0.05,
+                    #bmix=0.0001,
+                    #amix_mag=0.05,
+                    #bmix_mag=0.0001,
                     nelm=300,
                     sigma=0.05,
                     algo='Normal',
