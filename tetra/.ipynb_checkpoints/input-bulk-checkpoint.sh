@@ -45,7 +45,8 @@ dir_now=$PWD
 # sed -i -e "s/$2/XX/" POSCAR
 coord=$(basename $PWD | rev | cut -c1-2 | rev)
 # sed -i -e "s/XX/$coord/" submit.sh
-sh ~/bin/verve/spread.sh -rr POSCAR # submit.sh
+sh ~/bin/verve/spread.sh -rr POSCAR
+# sh ~/bin/verve/spread.sh -rr submit.sh
 
 for dir in */*_*/; do
     cd $dir

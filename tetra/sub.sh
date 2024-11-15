@@ -1,19 +1,18 @@
 #!/bin/bash
 
-metals=('2_Ti' '3_V' '4_Cr' '5_Mn' '6_Fe' '7_Co' '8_Ni' '9_Cu')
-spins=('1_LS' '2_IS' '2_HS' '3_HS')
-dzs=('1_' '2_' '3_' '4_' '5_' '6_')
+for dir in /pscratch/sd/j/jiuy97/3_V_bulk/isif8/*_*_*/*/*_*/
+do
+    IFS='/' read -r -a path <<< $dir
+    path1=${path[-1]}
+    path2=${path[-2]}
+    path3=${path[-3]}
+    numb=$(echo $path1 | cut -d'_' -f1)
+    metal=$(echo $path1 | cut -d'_' -f2)
+    row=$path2
+    coord=$(echo $path3 | cut -d'_' -f3)
 
-for metal in ${metals[@]}; do
-    for spin in ${spins[@]}; do
-        for dz in ${dzs[@]}; do
-            path="/scratch/x2755a09/3_MNC/3d/$metal/$spin/$dz"
-            if [ -d $path ]; then
-                cd $path
-                echo $PWD
-                # if [ -
-                # qsub submit.sh
-            fi
-        done
-    done
+    if [[ $row == fm ]]; then
+        sed -i -e 's/afm.py/fm.py/' submit.sh
+    fi
+    sed -i -e "s/jobname/${coord}${row}${numb}/" submit.sh
 done
