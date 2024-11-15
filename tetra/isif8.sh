@@ -15,7 +15,7 @@ do
             cp $dir/opt/start.traj $new_dir
         else
             cp $dir/opt/POSCAR $new_dir
-            rm $new_dir/opt/CONTCAR
+            rm $new_dir/CONTCAR
         fi
     else
         cp $dir/opt/restart.json $new_dir
