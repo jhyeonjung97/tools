@@ -24,7 +24,7 @@ def cell_shape(atoms, coord, output_filename):
     elif coord == 'AQ':
         new_cell = [a, a * (5.49 / 5.90), a * (4.75 / 5.90), 90, 90, 90]
     elif coord == 'AU':
-        new_cell = [a, a, a * (3**0.5), 90, 90, 120]
+        new_cell = [a, a, a * (), 90, 90, 120]
     else:
         raise ValueError(f"Unknown coordination type: {coord}")
 
