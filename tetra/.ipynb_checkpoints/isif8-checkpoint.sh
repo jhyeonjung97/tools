@@ -15,9 +15,23 @@ do
             cp $dir/opt/start.traj $new_dir
         else
             cp $dir/opt/POSCAR $new_dir
-            rm $new_dir/CONTCAR
         fi
     else
-        cp $dir/opt/restart.json $new_dir
+        cp $dir/opt/restart.json $dir/opt/WAVECAR $new_dir
+    fi
+
+    cd $new_dir
+    if [[ $coord == 'WZ' ]]; then
+        
+    elif [[ $coord == 'ZB' ]]; then
+    elif [[ $coord == 'TN' ]]; then
+    elif [[ $coord == 'PD' ]]; then
+    elif [[ $coord == 'NB' ]]; then
+    elif [[ $coord == 'RS' ]]; then
+    elif [[ $coord == 'LT' ]]; then
+    elif [[ $coord == 'MC' ]]; then
+    elif [[ $coord == 'NL' ]]; then
+    else
+        echo 'error'
     fi
 done
