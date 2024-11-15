@@ -47,7 +47,7 @@ coord=$(basename $PWD | rev | cut -c1-2 | rev)
 # sed -i -e "s/XX/$coord/" submit.sh
 # sh ~/bin/verve/spread.sh -rr POSCAR submit.sh
 
-for dir in *d/*_*/; do
+for dir in */*_*/; do
     cd $dir
     metal=$(basename $PWD | cut -d'_' -f2)
     sed -i -e "s/XX/$metal/" POSCAR
