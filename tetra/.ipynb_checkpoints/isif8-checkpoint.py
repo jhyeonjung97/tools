@@ -28,7 +28,7 @@ def cell_shape(atoms, coord, output_filename):
     else:
         raise ValueError(f"Unknown coordination type: {coord}")
 
-    fractional_positions = atoms.get_scaled_positions()
+    fractional_positions = atoms.get_scaled_positions(wrap=True)
     atoms.set_cell(new_cell)
     atoms.set_scaled_positions(fractional_positions)
     write(output_filename, atoms)
