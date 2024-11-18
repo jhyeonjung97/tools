@@ -110,11 +110,11 @@ def main():
             energies[adsorbate]['spin'] = energies[adsorbate]['spin'].apply(
                 lambda x: f'MS({x})' if x in ['LS', 'IS', 'HS'] else x)
 
-        print(energies)
         gibbs_energies['G_'] = energies['clean']['energy']
         gibbs_energies['G_OH'] = energies['OH']['energy'] + OH_corr
         gibbs_energies['G_O'] = energies['O']['energy'] + O_corr
         gibbs_energies['G_OOH'] = energies['OOH']['energy'] + OOH_corr
+        print(gibbs_energies)
         
         G_ = min(gibbs_energies['G_'])
         G_OH = min(gibbs_energies['G_OH'])
