@@ -11,7 +11,7 @@ for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/*/; do
     if [[ -d "$dir/most_stable" ]]; then
         echo "most_stable directory already exists in $dir, skipping..."
         continue
-    elif [[ $ads == 'mh' ]] || [[ $ads == 'nh' ]] || [[ $ads == 'x' ]]; then
+    elif [[ $ads == 'x' ]]; then
         continue
     fi
 
