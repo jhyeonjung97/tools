@@ -281,7 +281,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
     if gibbs_energies.isna().all().all():
         print("Dataframe contains only NaN values, skipping plot.")
         return
-    png_filename = f'{row}_{group}{metal}_{rxn}.png'
+    png_filename = f'/pscratch/sd/j/jiuy97/6_MNC/figures/{row}_{group}{metal}_{rxn}.png'
     marker_size = 0.03
     fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
     plt.xlabel('dz (Å)', fontsize='large')
