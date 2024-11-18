@@ -119,7 +119,7 @@ def main():
         G_ = min(gibbs_energies['G_'])
         G_OH = min(gibbs_energies['G_OH'])
         G_O = min(gibbs_energies['G_O'])
-        G_O = min(gibbs_energies['G_OOH'])
+        G_OOH = min(gibbs_energies['G_OOH'])
         
         gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
         gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
