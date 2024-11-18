@@ -93,12 +93,20 @@ def main():
                         scaling_dz = ms_data.stack().idxmin()[0]
                     else:
                         non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
-                        scaling_min = non_ms_data.min().min()
-                        scaling_dz = non_ms_data.stack().idxmin()[0]
+                        if not non_ms_data.stack().empty:
+                            scaling_min = non_ms_data.min().min()
+                            scaling_dz = non_ms_data.stack().idxmin()[0]
+                        else:
+                            scaling_min = np.nan
+                            scaling_dz = np.nan
                 else:
                     non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
-                    scaling_min = non_ms_data.min().min()
-                    scaling_dz = non_ms_data.stack().idxmin()[0]
+                    if not non_ms_data.stack().empty:
+                        scaling_min = non_ms_data.min().min()
+                        scaling_dz = non_ms_data.stack().idxmin()[0]
+                    else:
+                        scaling_min = np.nan
+                        scaling_dz = np.nan
     
                 tag = '' if adsorbate == 'clean' else adsorbate
                 scaling_relationship.at[metal, f'G_{tag}'] = scaling_min
