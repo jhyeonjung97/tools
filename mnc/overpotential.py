@@ -73,7 +73,7 @@ def main():
 
         for adsorbate in adsorbates:
             tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
-            if os.path.exist(tsv_path):
+            if os.path.exists(tsv_path):
                 energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
                 relaxed_energies[adsorbate] = energies[adsorbate].iloc[7:].copy()
     
