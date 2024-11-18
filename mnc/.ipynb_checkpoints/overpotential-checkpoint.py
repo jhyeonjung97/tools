@@ -193,14 +193,13 @@ def main():
         scaling_relationship[['OER', 'ORR', 'dGmax', 'dGmin']] = None
     scaling_relationship['dGmin'] = scaling_relationship['dGmin'].apply(lambda x: replacement_map.get(x, x))
     
-    scaling_relationship.to_csv('dG_OH', 'dG_O', 'OH', 'O', 'scaling_relationship.tsv', sep='\t', float_format='%.2f')
-    scaling_relationship.to_csv('dG_OH', 'dG_OOH', 'OH', 'OOH', 'scaling_relationship.tsv', sep='\t', float_format='%.2f')
+    scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
     volcano(scaling_relationship, rxn='OER', rds='dGmax', descriptor='dG2', xlabel='O-OH (dG2)', 
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     volcano(scaling_relationship, rxn='ORR', rds='dGmin', descriptor='dG1', xlabel='OH (dG1)', 
             xmin=-3.0, xmax=2.0, ymin=-4.0, ymax=1.0)
-    
-    scaling(scaling_relationship, metals)
+    scaling('dG_OH', 'dG_O', 'OH', 'O', scaling_relationship, metals)
+    scaling('dG_OH', 'dG_OOH', 'OH', 'OOH', scaling_relationship, metals)
 
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
     x = scaling_relationship[descriptor]
