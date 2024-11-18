@@ -73,7 +73,6 @@ def main():
 
         for adsorbate in adsorbates:
             tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
-            # if os.path.exists(tsv_path):
             energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
             relaxed_energies[adsorbate] = energies[adsorbate].iloc[7:].copy()
 
@@ -118,10 +117,6 @@ def main():
                 lambda row: row.idxmin(skipna=True) if row.notna().any() else None, axis=1)
             energies[adsorbate]['spin'] = energies[adsorbate]['spin'].apply(
                 lambda x: f'MS({x})' if x in ['LS', 'IS', 'HS'] else x)
-            # else:
-            #     energies[adsorbate] = pd.DataFrame(index=[0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2])
-            #     energies[adsorbate]['energy'] = np.nan
-            #     energies[adsorbate]['spin'] = np.nan
 
         gibbs_energies['G_'] = energies['clean']['energy']
         gibbs_energies['G_OH'] = energies['OH']['energy'] + OH_corr
