@@ -9,7 +9,7 @@ for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/*/; do
 
     # Check if "most_stable" directory already exists, and skip if it does
     if [[ -d "$dir/most_stable" ]]; then
-        echo "most_stable directory already exists in $dir, skipping..."
+        # echo "most_stable directory already exists in $dir, skipping..."
         continue
     elif [[ $ads == 'x' ]]; then
         continue
