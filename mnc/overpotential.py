@@ -109,7 +109,8 @@ def main():
                 lambda row: row.idxmin(skipna=True) if row.notna().any() else None, axis=1)
             energies[adsorbate]['spin'] = energies[adsorbate]['spin'].apply(
                 lambda x: f'MS({x})' if x in ['LS', 'IS', 'HS'] else x)
-            
+
+        print(energies)
         gibbs_energies['G_'] = energies['clean']['energy']
         gibbs_energies['G_OH'] = energies['OH']['energy'] + OH_corr
         gibbs_energies['G_O'] = energies['O']['energy'] + O_corr
