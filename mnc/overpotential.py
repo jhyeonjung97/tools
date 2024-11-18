@@ -114,7 +114,6 @@ def main():
         gibbs_energies['G_OH'] = energies['OH']['energy'] + OH_corr
         gibbs_energies['G_O'] = energies['O']['energy'] + O_corr
         gibbs_energies['G_OOH'] = energies['OOH']['energy'] + OOH_corr
-        print(gibbs_energies)
         
         G_ = min(gibbs_energies['G_'])
         G_OH = min(gibbs_energies['G_OH'])
@@ -124,7 +123,6 @@ def main():
         gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
         gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
         gibbs_energies['dG_OOH'] = gibbs_energies['G_OOH'] - gibbs_energies['G_'] - oxygen_G - hydroxide_G
-        print(gibbs_energies)
         # gibbs_energies['dG_OOH'] = gibbs_energies['dG_OH'] + 3.2
 
         dG_OH = G_OH - G_ - hydroxide_G
@@ -136,7 +134,6 @@ def main():
         gibbs_energies['dG2'] = gibbs_energies['dG_O'] - gibbs_energies['dG_OH']
         gibbs_energies['dG3'] = gibbs_energies['dG_OOH'] - gibbs_energies['dG_O']
         gibbs_energies['dG4'] = 4.92 - gibbs_energies['dG_OOH']
-        print(gibbs_energies)
 
         dG1 = dG_OH
         dG2 = dG_O - dG_OH
@@ -151,10 +148,8 @@ def main():
         else:
             gibbs_energies[['OER', 'ORR', 'dGmax', 'dGmin']] = None
         gibbs_energies['dGmin'] = gibbs_energies['dGmin'].apply(lambda x: replacement_map.get(x, x))
-        print(gibbs_energies)
 
         gibbs_energies = gibbs_energies.set_index(energies['clean'].index)
-        print(gibbs_energies)
 
         OER = max(dG1, dG2, dG3, dG4) - 1.23
         ORR = 1.23 - min(dG1, dG2, dG3, dG4)
@@ -165,8 +160,8 @@ def main():
             spin_cross_over.loc[index, 'O'] = energies['O']['spin'].loc[index]
             spin_cross_over.loc[index, 'OOH'] = energies['OOH']['spin'].loc[index]
         
-        gibbs_energies.to_csv(f'{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
-        spin_cross_over.to_csv(f'{row}_{group}{metal}_spin.tsv', sep='\t')
+        gibbs_energies.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
+        spin_cross_over.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/{row}_{group}{metal}_spin.tsv', sep='\t')
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
@@ -198,7 +193,7 @@ def main():
         scaling_relationship[['OER', 'ORR', 'dGmax', 'dGmin']] = None
     scaling_relationship['dGmin'] = scaling_relationship['dGmin'].apply(lambda x: replacement_map.get(x, x))
     
-    scaling_relationship.to_csv('scaling_relationship.tsv', sep='\t', float_format='%.2f')
+    scaling_relationship.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship.tsv', sep='\t', float_format='%.2f')
     volcano(scaling_relationship, rxn='OER', rds='dGmax', descriptor='dG2', xlabel='O-OH (dG2)', 
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     volcano(scaling_relationship, rxn='ORR', rds='dGmin', descriptor='dG1', xlabel='OH (dG1)', 
