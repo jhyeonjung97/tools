@@ -108,7 +108,7 @@ do
                     cp ${lowest_dir}restart.json most_stable/${dz}_/
                     cp ${lowest_dir}WAVECAR most_stable/${dz}_/
                     cp ~/bin/tools/mnc/submit.sh most_stable/${dz}_/
-                    sed -i -e "/#SBATCH -t/c\#SBATCH -t 00:30:00" most_stable/${dz}_/submit.sh
+                    sed -i -e "/#SBATCH -t/c\#SBATCH -t 02:00:00" most_stable/${dz}_/submit.sh
                     sed -i -e "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}MS${dz}" most_stable/${dz}_/submit.sh
                 fi
             else
