@@ -2,18 +2,20 @@
 
 # Navigate through specified directories to find and submit jobs based on energy values.
 for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/*/; do
+    IFS='/' read -r -a path <<< "$dir"
+    ads=${path[-1]}
+    numb=$(echo "${path[-2]}" | cut -d'_' -f1)
+    metal=$(echo "${path[-2]}" | cut -d'_' -f2)
+
     # Check if "most_stable" directory already exists, and skip if it does
     if [[ -d "$dir/most_stable" ]]; then
         echo "most_stable directory already exists in $dir, skipping..."
         continue
+    elif [[ $ads == 'mh' ]] || [[ $ads == 'nh' ]]; then
+        continue
     fi
 
     cd "$dir" || { echo "Failed to change directory to $dir"; continue; }
-    IFS='/' read -r -a path <<< "$PWD"
-    ads=${path[-1]}
-    numb=$(echo "${path[-2]}" | cut -d'_' -f1)
-    metal=$(echo "${path[-2]}" | cut -d'_' -f2)
-    
     lowest_dir=''
     lowest_energy=0  # Initialize to 0 as requested
 
