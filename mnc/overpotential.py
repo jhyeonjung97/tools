@@ -136,7 +136,7 @@ def main():
         
         gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
         gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
-        if gibbs_energies['G_OOH']:
+        if not gibbs_energies['G_OOH'].empty:
             gibbs_energies['dG_OOH'] = gibbs_energies['G_OOH'] - gibbs_energies['G_'] - oxygen_G - hydroxide_G
         else:
             gibbs_energies['dG_OOH'] = gibbs_energies['dG_OH'] + 3.2
@@ -194,7 +194,7 @@ def main():
 
     scaling_relationship['dG_OH'] = scaling_relationship['G_OH'] - scaling_relationship['G_'] - hydroxide_G
     scaling_relationship['dG_O'] = scaling_relationship['G_O'] - scaling_relationship['G_'] - oxygen_G
-    if scaling_relationship['G_OOH']:
+    if not scaling_relationship['G_OOH'].empty:
         scaling_relationship['dG_OOH'] = scaling_relationship['G_OOH'] - scaling_relationship['G_'] - oxygen_G - hydroxide_G
     else:
         scaling_relationship['dG_OOH'] = scaling_relationship['dG_OH'] + 3.2
