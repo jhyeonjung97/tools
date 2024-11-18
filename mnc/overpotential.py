@@ -12,17 +12,16 @@ inches_per_pt = 1.0 / 72.27
 golden_mean = (np.sqrt(5) - 1.0) / 2.0
 fig_width = fig_width_pt * inches_per_pt
 fig_height = fig_width * golden_mean
-print(fig_width, fig_height)
 
 # Constants for Gibbs energy calculations
 OERs = ['H2O->*OH', '*OH->*O', '*O->*OOH', '*OOH->O2']
 ORRs = ['O2->*OOH', '*OOH->*O', '*O->*OH', '*OH->H2O']
-rows = ['3d', '3d', '3d', '3d', '4d', '5d']
-groups = ['5', '6', '7', '8', '4', '4']
-metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
+rows = ['3d', '3d', '3d', '3d'] # , '4d', '5d']
+groups = ['5', '6', '7', '8'] # , '4', '4']
+metals = ['Mn', 'Fe', 'Co', 'Ni'] # , 'Mo', 'W']
 adsorbates = ['clean', 'O', 'OH', 'OOH']
 # colors = ['#FFC3BD', '#A8E6A1', '#FFD92F', '#A0C8F8']
-colors = ['blue', 'green', 'orange', 'red', 'purple', 'grey']
+colors = ['blue', 'green', 'orange', 'red'] # , 'purple', 'grey']
 ms_colors = {'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
 replacement_map = {'dG1': 'dG4', 'dG2': 'dG3', 'dG3': 'dG2', 'dG4': 'dG1'}
 
