@@ -51,7 +51,7 @@ for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/*/; do
         cp ~/bin/tools/mnc/submit.sh most_stable/ || echo "Failed to copy submit.sh"
         
         # Modify submit.sh with the appropriate job name and time limit
-        sed -i -e "/#SBATCH -t/c\#SBATCH -t 00:30:00" most_stable/submit.sh
+        sed -i -e "/#SBATCH -t/c\#SBATCH -t 02:00:00" most_stable/submit.sh
         sed -i -e "/#SBATCH -J/c\#SBATCH -J ${numb}${metal}MS${ads}" most_stable/submit.sh
     else
         echo "No valid directory found with lower energy."
