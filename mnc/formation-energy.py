@@ -118,7 +118,18 @@ def main():
             df_OH_relaxed_dz = pd.DataFrame()
             df_OH_relaxed_mag = pd.DataFrame()
             df_OH_relaxed_bond = pd.DataFrame()
-
+            
+            df_OOH = pd.DataFrame()
+            Ef_OOH = pd.DataFrame()
+            df_OOH_dz = pd.DataFrame()
+            df_OOH_mag = pd.DataFrame()
+            df_OOH_bond = pd.DataFrame()
+            df_OOH_relaxed = pd.DataFrame()
+            Ef_OOH_relaxed = pd.DataFrame()
+            df_OOH_relaxed_dz = pd.DataFrame()
+            df_OOH_relaxed_mag = pd.DataFrame()
+            df_OOH_relaxed_bond = pd.DataFrame()
+            
             tsv_filename = f'{row_key}_{m+2}{metal}_clean.tsv'
             png_filename = f'{row_key}_{m+2}{metal}_clean.png'
             tsv_Ef_filename = f'{row_key}_{m+2}{metal}_clean_Ef.tsv'
@@ -152,6 +163,17 @@ def main():
             tsv_OH_bond_filename = f'{row_key}_{m+2}{metal}_OH_bond.tsv'
             png_OH_bond_filename = f'{row_key}_{m+2}{metal}_OH_bond.png'
             
+            tsv_OOH_filename = f'{row_key}_{m+2}{metal}_OOH.tsv'
+            png_OOH_filename = f'{row_key}_{m+2}{metal}_OOH.png'
+            tsv_OOH_Ef_filename = f'{row_key}_{m+2}{metal}_OOH_Ef.tsv'
+            png_OOH_Ef_filename = f'{row_key}_{m+2}{metal}_OOH_Ef.png'
+            tsv_OOH_dz_filename = f'{row_key}_{m+2}{metal}_OOH_dz.tsv'
+            png_OOH_dz_filename = f'{row_key}_{m+2}{metal}_OOH_dz.png'
+            tsv_OOH_mag_filename = f'{row_key}_{m+2}{metal}_OOH_mag.tsv'
+            png_OOH_mag_filename = f'{row_key}_{m+2}{metal}_OOH_mag.png'
+            tsv_OOH_bond_filename = f'{row_key}_{m+2}{metal}_OOH_bond.tsv'
+            png_OOH_bond_filename = f'{row_key}_{m+2}{metal}_OOH_bond.png'
+            
             # df_dict = {
             #     "default": ["df", "Ef", "dz", "df_mag", "df_relaxed", "df_relaxed_mag"],
             #     "O": ["df_O", "Ef_O", "dz_O", "df_O_mag", "df_O_relaxed", "df_O_relaxed_mag"],
@@ -174,10 +196,13 @@ def main():
                 matching_O_paths = glob.glob(path_O_pattern)
                 path_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/2_OH/*_{metal}/*_{spin}'
                 matching_OH_paths = glob.glob(path_OH_pattern)
+                path_OOH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/3_OOH/*_{metal}/*_{spin}'
+                matching_OOH_paths = glob.glob(path_OOH_pattern)
                 
                 path = None
                 path_O = None
                 path_OH = None
+                path_OOH = None
                 
                 for i, dz in enumerate(dzs):
                     for path in matching_paths:
@@ -279,7 +304,43 @@ def main():
                             df_OH_dz.at[dz, spin] = np.nan
                             df_OH_mag.at[dz, spin] = np.nan
                             df_OH_bond.at[dz, spin] = np.nan
-
+                            
+                    for path_OOH in matching_OOH_paths:
+                        atoms_path = os.path.join(path_OOH, f'{i}_', 'final_with_calculator.json')
+                        if os.path.exists(atoms_path): # and energy:
+                            atoms = read(atoms_path)
+                            energy_OOH = atoms.get_total_energy()
+                            df_OOH.at[dz, spin] = energy_OOH
+                            formation_energy = (energy_OOH
+                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - metal_df.at[metal, 'energy']
+                                                + elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - hydroxide_G - oxygen_G
+                                                )
+                            Ef_OOH.at[dz, spin] = formation_energy
+                            energy_OOH = None
+                            try:
+                                magmoms = atoms.get_magnetic_moments()
+                                positions = atoms.get_positions(wrap=True)
+                                for atom in atoms:
+                                    if atom.symbol not in ['N', 'C', 'O', 'H']:
+                                        df_OOH_dz.at[dz, spin] = atom.z - 10.0
+                                        df_OOH_mag.at[dz, spin] = magmoms[atom.index]
+                                        if atom.index < len(atoms) - 1:
+                                            next_atom = atoms[atom.index + 1]
+                                            df_OOH_bond.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
+                            except:
+                                df_OOH_dz.at[dz, spin] = 0
+                                df_OOH_mag.at[dz, spin] = 0
+                                df_OOH_bond.at[dz, spin] = 0
+                        else:
+                            Ef_OOH.at[dz, spin] = np.nan
+                            df_OOH.at[dz, spin] = np.nan
+                            df_OOH_dz.at[dz, spin] = np.nan
+                            df_OOH_mag.at[dz, spin] = np.nan
+                            df_OOH_bond.at[dz, spin] = np.nan
+                            
                 if path:
                     relaxed_path = os.path.join(path, 'relaxed', 'final_with_calculator.json')
                     if os.path.exists(relaxed_path):
@@ -372,13 +433,48 @@ def main():
                             df_OH_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_OH_relaxed_mag.at[dz_relaxed, spin] = 0
                             df_OH_relaxed_bond.at[dz_relaxed, spin] = 0
-            
+                            
+                if path_OOH:
+                    relaxed_OOH_path = os.path.join(path_OOH, 'relaxed', 'final_with_calculator.json')
+                    if os.path.exists(relaxed_OOH_path): # and energy:
+                        atoms = read(relaxed_OOH_path)
+                        zN = mean([atom.z for atom in atoms if atom.symbol == 'N'])
+                        zM = mean([atom.z for atom in atoms if atom.symbol not in ['N', 'C', 'O', 'H']])
+                        dz_relaxed = abs(zN - zM)
+                        df_OOH_relaxed_dz.at[dz_relaxed, spin] = dz_relaxed
+                        energy_OOH = atoms.get_total_energy()
+                        df_OOH_relaxed.at[dz_relaxed, spin] = energy_OOH
+                        formation_energy = (energy_OOH
+                                            - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                            - metal_df.at[metal, 'energy']
+                                            + elements_data[metal]['electrode_potential']
+                                            + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                            - hydroxide_G - oxygen_G
+                                           )
+                        Ef_OOH_relaxed.at[dz_relaxed, spin] = formation_energy
+                        energy = None
+                        try:
+                            magmoms = atoms.get_magnetic_moments()
+                            positions = atoms.get_positions(wrap=True)
+                            for atom in atoms:
+                                if atom.symbol not in ['N', 'C', 'O', 'H']:
+                                    df_OOH_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
+                                    if atom.index < len(atoms) - 1:
+                                        next_atom = atoms[atom.index + 1]
+                                        df_OOH_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
+                        except:
+                            df_OOH_relaxed_dz.at[dz_relaxed, spin] = 0
+                            df_OOH_relaxed_mag.at[dz_relaxed, spin] = 0
+                            df_OOH_relaxed_bond.at[dz_relaxed, spin] = 0
+                            
             path_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/0_clean/{row_key}/*_{metal}'
             matching_paths = glob.glob(path_pattern)
             path_O_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/1_O/*_{metal}'
             matching_O_paths = glob.glob(path_O_pattern)
             path_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/2_OH/*_{metal}'
             matching_OH_paths = glob.glob(path_OH_pattern)
+            path_OOH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/3_OOH/*_{metal}'
+            matching_OOH_paths = glob.glob(path_OOH_pattern)
 
             for path in matching_paths:
                 spin_tsv = os.path.join(path, 'lowest.tsv')
@@ -494,6 +590,45 @@ def main():
                             Ef_OH.at[dz, f'MS({ms})'] = np.nan
                             df_OH_dz.at[dz, f'MS({ms})'] = np.nan
                             df_OH_mag.at[dz, f'MS({ms})'] = np.nan
+                            
+            for path_OOH in matching_OOH_paths:
+                spin_tsv = os.path.join(path_OOH, 'lowest.tsv')
+                if os.path.exists(spin_tsv):
+                    spin_df = pd.read_csv(spin_tsv, sep='\t')
+                    spin_df.set_index('dz', inplace=True)
+                    for i, dz in enumerate(dzs):
+                        if len(spin_df) > 0:
+                            ms = spin_df.loc[dz, 'spin_state']
+                        else:
+                            continue
+                        atoms_path = os.path.join(path_OOH, 'most_stable', f'{i}_', 'final_with_calculator.json')
+                        if os.path.exists(atoms_path):
+                            atoms = read(atoms_path)
+                            energy_OOH = atoms.get_total_energy()
+                            df_OOH.at[dz, f'MS({ms})'] = energy_OOH
+                            formation_energy = (energy_OOH
+                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - metal_df.at[metal, 'energy']
+                                                + elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - hydroxide_G - oxygen_G
+                                               )
+                            Ef_OOH.at[dz, f'MS({ms})'] = formation_energy
+                            try:
+                                magmoms = atoms.get_magnetic_moments()
+                                positions = atoms.get_positions(wrap=True)
+                                for atom in atoms:
+                                    if atom.symbol not in ['N', 'C', 'O', 'H']:
+                                        df_OOH_dz.at[dz, f'MS({ms})'] = atom.z - 10.0
+                                        df_OOH_mag.at[dz, f'MS({ms})'] = magmoms[atom.index]
+                            except:
+                                df_OOH_dz.at[dz, f'MS({ms})'] = atom.z - 10.0
+                                df_OOH_mag.at[dz, f'MS({ms})'] = 0
+                        else:
+                            df_OOH.at[dz, f'MS({ms})'] = np.nan
+                            Ef_OOH.at[dz, f'MS({ms})'] = np.nan
+                            df_OOH_dz.at[dz, f'MS({ms})'] = np.nan
+                            df_OOH_mag.at[dz, f'MS({ms})'] = np.nan
                             
             # relative(df, df_rel)
             # relative(df_relaxed, df_relaxed_rel)
