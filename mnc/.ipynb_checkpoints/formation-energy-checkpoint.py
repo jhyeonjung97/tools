@@ -691,6 +691,26 @@ def main():
                          ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.3, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_OH_bond_filename)
                 
+            if path_OOH: 
+                combining(df=df_OOH, df_relaxed=df_OOH_relaxed, tsv_filename=tsv_OOH_filename)
+                combining(df=Ef_OOH, df_relaxed=Ef_OOH_relaxed, tsv_filename=tsv_OOH_Ef_filename)
+                combining(df=df_OOH_dz, df_relaxed=df_OOH_relaxed_dz, tsv_filename=tsv_OOH_dz_filename)
+                combining(df=df_OOH_mag, df_relaxed=df_OOH_relaxed_mag, tsv_filename=tsv_OOH_mag_filename)
+                combining(df=df_OOH_bond, df_relaxed=df_OOH_relaxed_bond, tsv_filename=tsv_OOH_bond_filename)
+                
+                plotting(df=df_OOH, df_relaxed=df_OOH_relaxed, dzs=dzs, spins=spins, 
+                         ylabel='Energy (eV)', png_filename=png_OOH_filename)
+                plotting(df=Ef_OOH, df_relaxed=Ef_OOH_relaxed, dzs=dzs, spins=spins, 
+                         ylabel='Formation energy (eV)', png_filename=png_OOH_Ef_filename)
+                plotting(df=df_OOH_dz, df_relaxed=df_OOH_relaxed_dz, dzs=dzs, spins=spins, 
+                         ylabel='dz (Å)', png_filename=png_OOH_dz_filename)
+                plotting(df=df_OOH_mag, df_relaxed=df_OOH_relaxed_mag, dzs=dzs, spins=spins, 
+                         ymin=-0.5, ymax=5.5, yticks=np.arange(6),
+                         ylabel='Magnetic Moments', png_filename=png_OOH_mag_filename)
+                plotting(df=df_OOH_bond, df_relaxed=df_OOH_relaxed_bond, dzs=dzs, spins=spins, 
+                         ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.3, 0.1),
+                         ylabel='Bond Length (Å)', png_filename=png_OOH_bond_filename)
+                
 def relative(df, df_rel):
     if 'HS' in Ef.columns and 'LS' in Ef.columns:
         df_rel['HS-LS'] = df['HS'] - df['LS']
