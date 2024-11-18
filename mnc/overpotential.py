@@ -249,8 +249,8 @@ def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals):
     plt.xlim(-2.5, 1.5)
     plt.ylim(-4.5, 4.5)
     plt.tight_layout()
-    plt.savefig('/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship.png')
-    print("Figure saved as scaling_relationship.png")
+    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship_{ads1}_{ads2}.png')
+    print(f"Figure saved as scaling_relationship_{ads1}_{ads2}.png")
     plt.close()
 
 # def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals):
