@@ -16,9 +16,9 @@ fig_height = fig_width * golden_mean
 # Constants for Gibbs energy calculations
 OERs = ['H2O->*OH', '*OH->*O', '*O->*OOH', '*OOH->O2']
 ORRs = ['O2->*OOH', '*OOH->*O', '*O->*OH', '*OH->H2O']
-rows = ['3d', '3d', '3d', '3d'] # , '4d', '5d']
-groups = ['5', '6', '7', '8'] # , '4', '4']
-metals = ['Mn', 'Fe', 'Co', 'Ni'] # , 'Mo', 'W']
+rows = ['3d', '3d', '3d', '3d', '4d', '5d']
+groups = ['5', '6', '7', '8' , '4', '4']
+metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
 adsorbates = ['clean', 'O', 'OH', 'OOH']
 # colors = ['#FFC3BD', '#A8E6A1', '#FFD92F', '#A0C8F8']
 colors = ['blue', 'green', 'orange', 'red'] # , 'purple', 'grey']
@@ -73,42 +73,48 @@ def main():
 
         for adsorbate in adsorbates:
             tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
-            energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
-            relaxed_energies[adsorbate] = energies[adsorbate].iloc[7:].copy()
-
-            for column in relaxed_energies[adsorbate].columns:
-                if relaxed_energies[adsorbate][column].isna().all() and not energies[adsorbate][column].isna().all():
-                    relaxed_min = energies[adsorbate][column].dropna().min()
-                    relaxed_dz = energies[adsorbate][column].dropna().idxmin()
-                    relaxed_energies[adsorbate].at[relaxed_dz, column] = relaxed_min
-                    
-            ms_columns = [col for col in relaxed_energies[adsorbate].columns if 'MS' in col]
-            non_ms_columns = [col for col in relaxed_energies[adsorbate].columns if 'MS' not in col]
-
-            if ms_columns:
-                ms_data = relaxed_energies[adsorbate][ms_columns]
-                if not ms_data.dropna(how='all').empty:
-                    scaling_min = ms_data.min().min()
-                    scaling_dz = ms_data.stack().idxmin()[0]
+            if os.path.exist(tsv_path):
+                energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
+                relaxed_energies[adsorbate] = energies[adsorbate].iloc[7:].copy()
+    
+                for column in relaxed_energies[adsorbate].columns:
+                    if relaxed_energies[adsorbate][column].isna().all() and not energies[adsorbate][column].isna().all():
+                        relaxed_min = energies[adsorbate][column].dropna().min()
+                        relaxed_dz = energies[adsorbate][column].dropna().idxmin()
+                        relaxed_energies[adsorbate].at[relaxed_dz, column] = relaxed_min
+                        
+                ms_columns = [col for col in relaxed_energies[adsorbate].columns if 'MS' in col]
+                non_ms_columns = [col for col in relaxed_energies[adsorbate].columns if 'MS' not in col]
+    
+                if ms_columns:
+                    ms_data = relaxed_energies[adsorbate][ms_columns]
+                    if not ms_data.dropna(how='all').empty:
+                        scaling_min = ms_data.min().min()
+                        scaling_dz = ms_data.stack().idxmin()[0]
+                    else:
+                        non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
+                        scaling_min = non_ms_data.min().min()
+                        scaling_dz = non_ms_data.stack().idxmin()[0]
                 else:
                     non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
                     scaling_min = non_ms_data.min().min()
                     scaling_dz = non_ms_data.stack().idxmin()[0]
+    
+                tag = '' if adsorbate == 'clean' else adsorbate
+                scaling_relationship.at[metal, f'G_{tag}'] = scaling_min
+                scaling_relationship.at[metal, f'dz_{tag}'] = scaling_dz
+    
+                energies[adsorbate] = energies[adsorbate].head(7)
+                energies[adsorbate]['energy'] = energies[adsorbate].min(axis=1, skipna=True)
+                energies[adsorbate]['spin'] = energies[adsorbate].apply(
+                    lambda row: row.idxmin(skipna=True) if row.notna().any() else None, axis=1)
+                energies[adsorbate]['spin'] = energies[adsorbate]['spin'].apply(
+                    lambda x: f'MS({x})' if x in ['LS', 'IS', 'HS'] else x)
             else:
-                non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
-                scaling_min = non_ms_data.min().min()
-                scaling_dz = non_ms_data.stack().idxmin()[0]
+                energies[adsorbate] = pd.DataFrame(index=[0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2])
+                energies[adsorbate]['energy'] = np.nan
+                energies[adsorbate]['spin'] = np.nan
 
-            tag = '' if adsorbate == 'clean' else adsorbate
-            scaling_relationship.at[metal, f'G_{tag}'] = scaling_min
-            scaling_relationship.at[metal, f'dz_{tag}'] = scaling_dz
-
-            energies[adsorbate] = energies[adsorbate].head(7)
-            energies[adsorbate]['energy'] = energies[adsorbate].min(axis=1, skipna=True)
-            energies[adsorbate]['spin'] = energies[adsorbate].apply(
-                lambda row: row.idxmin(skipna=True) if row.notna().any() else None, axis=1)
-            energies[adsorbate]['spin'] = energies[adsorbate]['spin'].apply(
-                lambda x: f'MS({x})' if x in ['LS', 'IS', 'HS'] else x)
 
         gibbs_energies['G_'] = energies['clean']['energy']
         gibbs_energies['G_OH'] = energies['OH']['energy'] + OH_corr
