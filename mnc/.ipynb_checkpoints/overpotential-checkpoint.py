@@ -124,6 +124,7 @@ def main():
         gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
         gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
         gibbs_energies['dG_OOH'] = gibbs_energies['G_OOH'] - gibbs_energies['G_'] - oxygen_G - hydroxide_G
+        print(gibbs_energies)
         # gibbs_energies['dG_OOH'] = gibbs_energies['dG_OH'] + 3.2
 
         dG_OH = G_OH - G_ - hydroxide_G
@@ -135,7 +136,8 @@ def main():
         gibbs_energies['dG2'] = gibbs_energies['dG_O'] - gibbs_energies['dG_OH']
         gibbs_energies['dG3'] = gibbs_energies['dG_OOH'] - gibbs_energies['dG_O']
         gibbs_energies['dG4'] = 4.92 - gibbs_energies['dG_OOH']
-        
+        print(gibbs_energies)
+
         dG1 = dG_OH
         dG2 = dG_O - dG_OH
         dG3 = dG_OOH - dG_O
@@ -149,8 +151,10 @@ def main():
         else:
             gibbs_energies[['OER', 'ORR', 'dGmax', 'dGmin']] = None
         gibbs_energies['dGmin'] = gibbs_energies['dGmin'].apply(lambda x: replacement_map.get(x, x))
-        
+        print(gibbs_energies)
+
         gibbs_energies = gibbs_energies.set_index(energies['clean'].index)
+        print(gibbs_energies)
 
         OER = max(dG1, dG2, dG3, dG4) - 1.23
         ORR = 1.23 - min(dG1, dG2, dG3, dG4)
