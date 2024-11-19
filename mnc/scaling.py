@@ -18,6 +18,7 @@ rows = {
     '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
 adsorbates = ['clean', 'oh', 'o', 'ooh']
+df = pd.DataFrame()
 
 def main():
     for row_key, metals in rows.items():
