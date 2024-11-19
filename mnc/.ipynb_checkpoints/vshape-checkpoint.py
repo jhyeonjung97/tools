@@ -52,7 +52,7 @@ color_ranges = [plt.cm.Oranges(np.linspace(0.3, 0.9, 3)),
 
 adsorbates = ['o', 'oh']
 adsorbate_symbols = ['O', 'OH']
-indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(elements['3d'], elements['4d'], elements['5d'])]
+indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(elements['3d_LS'], elements['4d'], elements['5d'])]
 
 def single_plot_by_row(elems, x1, x2, label1, label2, ylabel, pngname):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
