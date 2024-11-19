@@ -179,7 +179,11 @@ for row, elems in elements.items():
                 else:
                     icohp[row][ads].append(np.nan)  # Handle missing data
                     distance[row][ads].append(np.nan)  # Handle missing data
-                    
+
+    print(adsorption_energies)
+    print(distance)
+    print(icohp)
+    
     single_plot_by_row(elems, x1=adsorption_energies[row]['o'], x2=adsorption_energies[row]['oh'], 
                        label1=f'O Adsorption ({row})', label2=f'O Adsorption ({row})', 
                        ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_{row}.png')
