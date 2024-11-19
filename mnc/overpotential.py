@@ -198,10 +198,14 @@ def main():
     scaling_relationship['dG3'] = scaling_relationship['dG_OOH'] - scaling_relationship['dG_O']
     scaling_relationship['dG4'] = 4.92 - scaling_relationship['dG_OOH']
     
-    scaling_relationship['OER'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].max(axis=1) - 1.23
-    scaling_relationship['ORR'] = 1.23 - scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].min(axis=1)
-    scaling_relationship['dGmax'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmax(axis=1)
-    scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
+    scaling_relationship['OER'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].apply(
+        lambda row: row.max() - 1.23 if row.notna().all() else np.nan, axis=1)
+    scaling_relationship['ORR'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].apply(
+        lambda row: 1.23 - row.min() if row.notna().all() else np.nan, axis=1)
+    scaling_relationship['dGmax'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].apply(
+        lambda row: row.idxmax() if row.notna().all() else np.nan, axis=1)
+    scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].apply(
+        lambda row: row.idxmin() if row.notna().all() else np.nan, axis=1)
 
     # if scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].notna().all().all():
     #     scaling_relationship['OER'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].max(axis=1) - 1.23
