@@ -254,6 +254,13 @@ for i in range(2): # 0, 1
     # dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
     # dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
 
-adsorption_energies.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/adsorption_energies.tsv', sep='\t')
-distance.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/distance.tsv', sep='\t')
-icohp.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/icohp.tsv', sep='\t')
+data = {
+    "E_OH": adsorption_energies['oh'],
+    "E_O": adsorption_energies['o'],
+    "l_OH": distance['oh'],
+    "l_O": distance['o'],
+    "-ICOHP_OH": icohp['oh'],
+    "-ICOHP_O": icohp['o'],
+}
+df = pd.DataFrame(data)
+df.to_csv("/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/icohp.tsv", sep="\t")
