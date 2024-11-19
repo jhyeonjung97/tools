@@ -256,7 +256,7 @@ for i in range(2): # 0, 1
     # dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
 
 
-def data_to_tsv(data_dict, ads):
+def data_to_tsv(data_dict, ads, filename):
     data = {
         "3d_LS": data_dict['3d_LS'][ads],
         "3d_HS": data_dict['3d_HS'][ads],
@@ -264,12 +264,12 @@ def data_to_tsv(data_dict, ads):
         "5d": data_dict['5d'][ads]
     }
     df = pd.DataFrame(data)
-    df.to_csv(f"{data_dict}_{ads}.tsv", sep="\t", float_format="%.2f")
-    print(f"DataFrame saved as {data_dict}_{ads}.tsv with two decimal places")
+    df.to_csv(f"{filename}_{ads}.tsv", sep="\t", float_format="%.2f")
+    print(f"DataFrame saved as {filename}_{ads}.tsv with two decimal places")
 
-data_to_tsv(adsorption_energies, 'o')
-data_to_tsv(adsorption_energies, 'oh')
-data_to_tsv(distance, 'o')
-data_to_tsv(distance, 'oh')
-data_to_tsv(icohp, 'o')
-data_to_tsv(icohp, 'oh')
+data_to_tsv(adsorption_energies, 'o', "adsorption_energies")
+data_to_tsv(adsorption_energies, 'oh', "adsorption_energies")
+data_to_tsv(distance, 'o', "distance")
+data_to_tsv(distance, 'oh', "distance")
+data_to_tsv(icohp, 'o', "icohp")
+data_to_tsv(icohp, 'oh', "icohp")
