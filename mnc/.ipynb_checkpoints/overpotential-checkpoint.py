@@ -63,6 +63,12 @@ root = '/pscratch/sd/j/jiuy97/6_MNC/figures'
 relaxed_energies = {}
 scaling_relationship = pd.DataFrame()
 
+def calculate_dG_OOH(row, oxygen_G, hydroxide_G):
+    if pd.notna(row['G_OOH']):
+        return row['G_OOH'] - row['G_'] - oxygen_G - hydroxide_G
+    else:
+        return row['dG_OH'] + 3.2
+                
 def main():
     for m, metal in enumerate(metals):
         row = rows[m]
@@ -129,11 +135,10 @@ def main():
         G_OOH = min(gibbs_energies['G_OOH'])
         
         gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
-        gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G
-        if not gibbs_energies['G_OOH'].empty:
-            gibbs_energies['dG_OOH'] = gibbs_energies['G_OOH'] - gibbs_energies['G_'] - oxygen_G - hydroxide_G
-        else:
-            gibbs_energies['dG_OOH'] = gibbs_energies['dG_OH'] + 3.2
+        gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G 
+        gibbs_energies['dG_OOH'] = gibbs_energies.apply(
+            calculate_dG_OOH, axis=1, oxygen_G=oxygen_G, hydroxide_G=hydroxide_G
+        )
 
         dG_OH = G_OH - G_ - hydroxide_G
         dG_O = G_O - G_ - oxygen_G
@@ -152,15 +157,15 @@ def main():
         dG3 = dG_OOH - dG_O
         dG4 = 4.92 - dG_OOH
         
-        if gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].notna().all().all():
-            gibbs_energies['OER'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].max(axis=1) - 1.23
-            gibbs_energies['ORR'] = 1.23 - gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].min(axis=1)
-            gibbs_energies['dGmax'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].idxmax(axis=1)
-            gibbs_energies['dGmin'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
-        else:
-            gibbs_energies[['OER', 'ORR', 'dGmax', 'dGmin']] = None
-        gibbs_energies['dGmin'] = gibbs_energies['dGmin'].apply(lambda x: replacement_map.get(x, x))
-
+        gibbs_energies['OER'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].apply(
+            lambda row: row.max() - 1.23 if row.notna().all() else np.nan, axis=1)
+        gibbs_energies['ORR'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].apply(
+            lambda row: 1.23 - row.min() if row.notna().all() else np.nan, axis=1)
+        gibbs_energies['dGmax'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].apply(
+            lambda row: row.idxmax() if row.notna().all() else np.nan, axis=1)
+        gibbs_energies['dGmin'] = gibbs_energies[['dG1', 'dG2', 'dG3', 'dG4']].apply(
+            lambda row: row.idxmin() if row.notna().all() else np.nan, axis=1)
+        
         gibbs_energies = gibbs_energies.set_index(energies['clean'].index)
 
         OER = max(dG1, dG2, dG3, dG4) - 1.23
@@ -259,9 +264,6 @@ def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals):
     xx = np.linspace(min(scaling_relationship[dG1]), max(scaling_relationship[dG1]), 100)
     x = scaling_relationship[dG1]
     y = scaling_relationship[dG2]
-    mask = np.isfinite(x) & np.isfinite(y)
-    x = x[mask]
-    y = y[mask]
     plt.figure(figsize=(4.7, fig_height), dpi=300)
     plt.scatter(x, y, c=colors, s=20)
     for xi, yi, metal in zip(x, y, metals):
