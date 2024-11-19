@@ -32,7 +32,7 @@ dgoh = zpeoh + cvoh - tsoh
 
 # Define base directory, elements, and adsorbates
 root_dir = '/pscratch/sd/j/jiuy97/6_MNC/0_clean'
-output_dir = '/pscratch/sd/j/jiuy97/6_MNC/figures'
+output_dir = '/pscratch/sd/j/jiuy97/6_MNC/figures/icohp'
 os.makedirs(output_dir, exist_ok=True)  # Ensure the figures directory exists
 pattern = re.compile(r"\s+([\d.]+)\s+([\d.]+)")
 # pattern = re.compile(r"\s+(\d+)\s+([A-Za-z]+)\s+(\d+)\s+'O'\s+(\d+)\s+[\w\(\)\-]+\s+([\d.]+)\s+([\d.]+)")
@@ -193,11 +193,27 @@ for row, elems in elements.items():
                      y1=icohp[row]['o'], y2=icohp[row]['oh'], 
                      label1=f'*O ({row})', label2=f'*OH ({row})', 
                      xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{row}.png')
+    # dual_plot_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
+    #                  y1=icohp[row]['o'], y2=icohp[row]['oh'], 
+    #                  label1=f'*O ({row})', label2=f'*OH ({row})', 
+    #                  xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{row}.png')
+    # dual_plot_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
+    #                  y1=icohp[row]['o'], y2=icohp[row]['oh'], 
+    #                  label1=f'*O ({row})', label2=f'*OH ({row})', 
+    #                  xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{row}.png')
     dual_scatter_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
                         y1=icohp[row]['o'], y2=icohp[row]['oh'], 
                         label1=f'*O ({row})', label2=f'*OH ({row})', 
                         xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_scatter_{row}.png')
-
+    # dual_scatter_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
+    #                     y1=icohp[row]['o'], y2=icohp[row]['oh'], 
+    #                     label1=f'*O ({row})', label2=f'*OH ({row})', 
+    #                     xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_scatter_{row}.png')
+    # dual_scatter_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
+    #                     y1=icohp[row]['o'], y2=icohp[row]['oh'], 
+    #                     label1=f'*O ({row})', label2=f'*OH ({row})', 
+    #                     xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_scatter_{row}.png')
+    
 def single_plot_by_ads(Y, ylabel, pngname):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
     for j, row in enumerate(elements.keys()):
@@ -215,8 +231,7 @@ def single_plot_by_ads(Y, ylabel, pngname):
 def dual_plot_by_ads(X, Y, xlabel, ylabel, pngname):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
     for j, row in enumerate(elements.keys()):
-        plt.plot(X[row][adsorbate], Y[row][adsorbate], 
-                 marker='o', color=color_ranges[i][j], label=row)
+        plt.plot(len(X[row][adsorbate]), Y[row][adsorbate], marker='o', color=color_ranges[i][j], label=row)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.xticks(np.arange(len(indice)), indice)
@@ -235,3 +250,5 @@ for i in range(2): # 0, 1
     single_plot_by_ads(Y=distance, ylabel=f'M-{adsorbate_symbol} Bond Length (Å)', pngname=f'bond_{adsorbate}.png')
     single_plot_by_ads(Y=icohp, ylabel=f'*{adsorbate_symbol} -ICOHP (eV)', pngname=f'icohp_{adsorbate}.png')
     dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
+    # dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
+    # dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
