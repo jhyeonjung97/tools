@@ -32,15 +32,14 @@ def main():
                 if os.path.exists(path_DONE) and os.path.exists(path_json):
                     atoms = read(path_json)
                     energy = atoms.get_total_energy()
-                    df.at[metal, {ads}] = energy
+                    df.at[metal, ads] = energy
                 else:
-                    df.at[metal, {ads}] = np.nan
+                    df.at[metal, ads] = np.nan
 
     df['G_'] = df['clean']
     df['G_OH'] = df['OH'] + OH_corr
     df['G_O'] = df['O'] + O_corr
     df['G_OOH'] = df['OOH'] + OOH_corr
-
                     
 if __name__ == '__main__':
     
