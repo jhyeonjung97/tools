@@ -216,7 +216,7 @@ def main():
             xmin=-3.0, xmax=2.0, ymin=-4.0, ymax=1.0)
     
     scaling(x=scaling_relationship['dG_OH'], y=scaling_relationship['dG_O'], 
-            'OH', 'O', scaling_relationship, metals, xmin=-2.5, xmax=1.5, ymin=-4.5, ymax=4.5)
+            ads1='OH', ads2='O', scaling_relationship=scaling_relationship, metals=metals, xmin=-2.5, xmax=1.5, ymin=-4.5, ymax=4.5)
     scaling(x=scaling_relationship['dG_OH'], y=scaling_relationship['dG_OOH'], 
             'OH', 'OOH', scaling_relationship, metals, xmin=0.0, xmax=1.5, ymin=2.5, ymax=4.5)
 
