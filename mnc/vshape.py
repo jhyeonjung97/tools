@@ -255,10 +255,26 @@ for i in range(2): # 0, 1
     # dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
     # dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
 
-df1 = pd.DataFrame(adsorption_energies)
-df2 = pd.DataFrame(distance)
-df3 = pd.DataFrame(icohp)
+combined_list = (
+    adsorption_energies['3d_LS']['o'] +
+    adsorption_energies['3d_HS']['o'] +
+    adsorption_energies['4d']['o'] +
+    adsorption_energies['5d']['o']
+)
 
-df1.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/adsorption_energies.tsv', sep='\t')
-df2.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/distance.tsv', sep='\t')
-df3.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/icohp.tsv', sep='\t')
+# DataFrame 생성
+df1 = pd.DataFrame(combined_list, columns=["Adsorption Energy"])
+
+# DataFrame 확인
+print(df1)
+
+# TSV 파일로 저장
+df1.to_csv("adsorption_energies.tsv", sep="\t", index=False)
+print("DataFrame saved as adsorption_energies.tsv")
+
+# df2 = pd.DataFrame(distance)
+# df3 = pd.DataFrame(icohp)
+
+# df1.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/adsorption_energies.tsv', sep='\t')
+# df2.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/distance.tsv', sep='\t')
+# df3.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/icohp.tsv', sep='\t')
