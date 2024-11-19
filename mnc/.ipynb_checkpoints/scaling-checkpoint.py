@@ -63,20 +63,21 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     plt.figure(figsize=(4, 3), dpi=300)
     plt.scatter(x, y, c=c, s=20)
     for xi, yi, metal in zip(x, y, df.index):
-        plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
+        plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", 
+                     xytext=(0, 5), ha='center', color='black', fontsize=6)
     coeffs = np.polyfit(x, y, 1)
     line = np.poly1d(coeffs)
     plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
-    plt.text(0.8, 0.1 if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
+    plt.text(0.5, 0.1 if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
     plt.xlabel(fr'$\Delta$G$_{{\sf {ads1}}}$ (eV)', fontsize='large')
     plt.ylabel(fr'$\Delta$G$_{{\sf {ads2}}}$ (eV)', fontsize='large')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     legend_elements = [
-        Line2D([0], [0], marker='o', color='blue', label='3d', markersize=5),
-        Line2D([0], [0], marker='o', color='green', label='4d', markersize=5),
-        Line2D([0], [0], marker='o', color='red', label='5d', markersize=5)
+        Line2D([0], [0], marker='o', color='w', label='3d', markerfacecolor='blue', markersize=10),
+        Line2D([0], [0], marker='o', color='w', label='4d', markerfacecolor='green', markersize=10),
+        Line2D([0], [0], marker='o', color='w', label='5d', markerfacecolor='red', markersize=10)
     ]
     plt.legend(handles=legend_elements, loc='upper left')
     # plt.xlim(xmin, xmax)
