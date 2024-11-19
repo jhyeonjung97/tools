@@ -21,7 +21,7 @@ groups = ['5', '6', '7', '8' , '4', '4']
 metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
 adsorbates = ['clean', 'O', 'OH', 'OOH']
 # colors = ['#FFC3BD', '#A8E6A1', '#FFD92F', '#A0C8F8']
-colors = ['blue', 'green', 'orange', 'red'] # , 'purple', 'grey']
+colors = ['blue', 'green', 'orange', 'red' , 'purple', 'grey']
 ms_colors = {'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
 replacement_map = {'dG1': 'dG4', 'dG2': 'dG3', 'dG3': 'dG2', 'dG4': 'dG1'}
 
