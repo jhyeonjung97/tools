@@ -258,7 +258,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     filepath = f'/pscratch/sd/j/jiuy97/6_MNC/figures/volcano_{rxn}.png'
     plt.savefig(filepath)
     print(f"Figure saved as {filepath}")
-    plt.close(
+    plt.close()
     
 def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals):
     xx = np.linspace(min(scaling_relationship[dG1]), max(scaling_relationship[dG1]), 100)
