@@ -17,6 +17,7 @@ rows = {
     '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
     '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
+colors = {'3d': 'blue', '4d': 'green', '5d': 'red'}
 dirs = ['relaxed', 'oh', 'o', 'ooh']
 adsorbates = ['clean', 'OH', 'O', 'OOH']
 df = pd.DataFrame()
@@ -26,6 +27,8 @@ def main():
         for m, metal in enumerate(metals):
             for d, dir in enumerate(dirs):
                 ads = adsorbates[d]
+                df.at[metal, 'row'] = row_key
+                df.at[metal, 'color'] = colors[row_key]
                 path = f'/pscratch/sd/j/jiuy97/6_MNC/0_clean/{row_key}/{m+2}_{metal}/most_stable/{dir}'
                 path_DONE = os.path.join(path, 'DONE')
                 path_json = os.path.join(path, 'final_with_calculator.json')
@@ -45,20 +48,21 @@ def main():
     df['dG_O'] = df['G_O'] - df['G_'] - oxygen_G 
     df['dG_OOH'] = df['G_OOH'] - df['G_'] - oxygen_G - hydroxide_G
 
-    df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship_full.tsv', sep='\t', float_format='%.2f')
-
     scaling('dG_OH', 'dG_O', 'OH', 'O', df)
             # xmin=-2.5, xmax=1.5, ymin=-4.5, ymax=4.5, txtx=0.1, txty=0.8)
     scaling('dG_OH', 'dG_OOH', 'OH', 'OOH', df)
             # xmin=0.0, xmax=1.5, ymin=3.5, ymax=4.5, txtx=0.1, txty=0.2)
-    
+
+    df = df.drop(columns='color')
+    df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship_full.tsv', sep='\t', float_format='%.2f')
+
 def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
-    x, y = df[dG1], df[dG2]
+    x, y, c = df[dG1], df[dG2], df['color']
     mask = np.isfinite(x) & np.isfinite(y)
-    x, y = x[mask], y[mask]
+    x, y, c = x[mask], y[mask], c[mask]
     xx = np.linspace(min(x), max(x), 100)
     plt.figure(figsize=(4, 3), dpi=300)
-    plt.scatter(x, y)
+    plt.scatter(x, y, color=c)
     for xi, yi, metal in zip(x, y, df.index):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
     coeffs = np.polyfit(x, y, 1)
