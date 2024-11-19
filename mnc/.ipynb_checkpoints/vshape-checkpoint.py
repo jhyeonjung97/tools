@@ -255,33 +255,21 @@ for i in range(2): # 0, 1
     # dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
     # dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
 
-# 데이터 정리: '3d_LS', '3d_HS', '4d', '5d' 리스트 추출
-data = {
-    "3d_LS": adsorption_energies['3d_LS']['o'],
-    "3d_HS": adsorption_energies['3d_HS']['o'],
-    "4d": adsorption_energies['4d']['o'],
-    "5d": adsorption_energies['5d']['o']
-}
 
-# 각 리스트의 길이를 맞추기 위해 NaN으로 채움
-max_len = max(len(data[key]) for key in data)  # 가장 긴 리스트의 길이 찾기
-for key in data:
-    if len(data[key]) < max_len:
-        data[key] += [np.nan] * (max_len - len(data[key]))  # NaN으로 채우기
+def data_to_tsv(list, ads):
+    data = {
+        "3d_LS": list['3d_LS'][ads],
+        "3d_HS": list['3d_HS'][ads],
+        "4d": list['4d'][ads],
+        "5d": list['5d'][ads]
+    }
+    df = pd.DataFrame(data)
+    df.to_csv(f"{list}_{ads}.tsv", sep="\t", float_format="%.2f")
+    print(f"DataFrame saved as {list}_{ads}.tsv with two decimal places")
 
-# DataFrame 생성
-df1 = pd.DataFrame(data)
-
-# DataFrame 확인
-print(df1)
-
-# TSV 파일로 저장
-df1.to_csv("adsorption_energies_by_column.tsv", sep="\t", index=False)
-print("DataFrame saved as adsorption_energies_by_column.tsv")
-
-# df2 = pd.DataFrame(distance)
-# df3 = pd.DataFrame(icohp)
-
-# df1.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/adsorption_energies.tsv', sep='\t')
-# df2.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/distance.tsv', sep='\t')
-# df3.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/icohp.tsv', sep='\t')
+data_to_tsv(adsorption_energies, 'o')
+data_to_tsv(adsorption_energies, 'oh')
+data_to_tsv(distance, 'o')
+data_to_tsv(distance, 'oh')
+data_to_tsv(icohp, 'o')
+data_to_tsv(icohp, 'oh')
