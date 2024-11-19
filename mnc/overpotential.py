@@ -260,8 +260,6 @@ def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals):
     x = scaling_relationship[dG1]
     y = scaling_relationship[dG2]
     mask = np.isfinite(x) & np.isfinite(y)
-    for i in range(4):
-        mask &= np.isfinite(y_vals[i])
     x = x[mask]
     y = y[mask]
     plt.figure(figsize=(4.7, fig_height), dpi=300)
