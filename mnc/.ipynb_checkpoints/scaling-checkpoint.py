@@ -22,7 +22,6 @@ adsorbates = ['clean', 'OH', 'O', 'OOH']
 
 def main():
     df = pd.DataFrame()
-
     for row_key, metals in rows.items():
         for m, metal in enumerate(metals):
             for d, dir in enumerate(dirs):
@@ -57,12 +56,12 @@ def main():
     df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship_full.tsv', sep='\t', float_format='%.2f')
 
 def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
-    x, y, c = df[dG1], df[dG2], df['color']
+    x, y = df[dG1], df[dG2]
     mask = np.isfinite(x) & np.isfinite(y)
-    x, y, c = x[mask], y[mask], c[mask]
+    x, y, c = x[mask], y[mask], df['color'][mask]
     xx = np.linspace(min(x), max(x), 100)
     plt.figure(figsize=(4, 3), dpi=300)
-    plt.scatter(x, y, c=c)
+    plt.scatter(x, y, c=c, s=20)
     for xi, yi, metal in zip(x, y, df.index):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
     coeffs = np.polyfit(x, y, 1)
@@ -74,6 +73,12 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     plt.ylabel(fr'$\Delta$G$_{{\sf {ads2}}}$ (eV)', fontsize='large')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+    legend_elements = [
+        Line2D([0], [0], marker='o', color='w', label='3d', markerfacecolor='blue', markersize=10),
+        Line2D([0], [0], marker='o', color='w', label='4d', markerfacecolor='green', markersize=10),
+        Line2D([0], [0], marker='o', color='w', label='5d', markerfacecolor='red', markersize=10)
+    ]
+    plt.legend(handles=legend_elements, loc='upper left')
     # plt.xlim(xmin, xmax)
     # plt.ylim(ymin, ymax)
     plt.tight_layout()
