@@ -216,9 +216,9 @@ def main():
             xmin=-3.0, xmax=2.0, ymin=-4.0, ymax=1.0)
     
     scaling(scaling_relationship['dG_OH'], scaling_relationship['dG_O'], 'OH', 'O', 
-        scaling_relationship, metals, xmin=-2.5, xmax=1.5, ymin=-4.5, ymax=4.5)
+        scaling_relationship, metals, xmin=-2.5, xmax=1.5, ymin=-4.5, ymax=4.5, txtx=0.1, txty,0.8)
     scaling(scaling_relationship['dG_OH'], scaling_relationship['dG_OOH'], 'OH', 'OOH', 
-            scaling_relationship, metals, xmin=0.0, xmax=1.5, ymin=2.5, ymax=4.5)
+            scaling_relationship, metals, xmin=0.0, xmax=1.5, ymin=3.5, ymax=4.5, txtx=0.1, txty,0.2)
 
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
     x = scaling_relationship[descriptor]
@@ -252,7 +252,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     print(f"Figure saved as {filepath}")
     plt.close()
     
-def scaling(x, y, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ymax):
+def scaling(x, y, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ymax, txtx, txty):
     xx = np.linspace(min(x), max(x), 100)
     plt.figure(figsize=(4.7, fig_height), dpi=300)
     plt.scatter(x, y, c=colors[:len(x)], s=20)
@@ -262,7 +262,7 @@ def scaling(x, y, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ym
     line = np.poly1d(coeffs)
     plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
-    plt.text(0.1, 0.8 if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
+    plt.text(txtx, txty if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
     plt.xlabel(fr'$\Delta$G$_{{\sf {ads1}}}$ (eV)', fontsize='large')
     plt.ylabel(fr'$\Delta$G$_{{\sf {ads2}}}$ (eV)', fontsize='large')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
