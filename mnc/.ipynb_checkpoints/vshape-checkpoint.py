@@ -307,11 +307,11 @@ for i in range(2): # 0, 1
     dual_plot_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', 
                      pngname=f'bond_vs_adsorption_{adsorbate}.png')
     dual_scatter_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', 
-                     pngname=f'icohp_vs_bond_{adsorbate}.png')
+                     pngname=f'icohp_vs_bond_scatter_{adsorbate}.png')
     dual_scatter_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', 
-                     pngname=f'adsorption_vs_icohp_{adsorbate}.png')
+                     pngname=f'adsorption_vs_icohp_scatter_{adsorbate}.png')
     dual_scatter_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', 
-                     pngname=f'bond_vs_adsorption_{adsorbate}.png')
+                     pngname=f'bond_vs_adsorption_scatter_{adsorbate}.png')
 
 def data_to_tsv(data_dict, ads, filename):
     data = {
