@@ -101,7 +101,7 @@ def dual_scatter_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, p
     r2_1 = 1 - (ss_res1 / ss_tot1)
     plt.plot(x1_valid, p1(x1_valid), color='orange', linestyle="--")
     equation_text1 = f"y = {z1[0]:.2f}x + {z1[1]:.2f}\n$R^2$ = {r2_1:.2f}"
-    plt.text(0.75, 0.85, equation_text1, fontsize=10, color='orange', 
+    plt.text(0.72, 0.82, equation_text1, fontsize=10, color='orange', 
              ha='left', va='top', transform=plt.gca().transAxes)
     valid_mask2 = np.isfinite(x2) & np.isfinite(y2)
     x2_valid, y2_valid = x2[valid_mask2], y2[valid_mask2]
@@ -113,7 +113,7 @@ def dual_scatter_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, p
     r2_2 = 1 - (ss_res2 / ss_tot2)
     plt.plot(x2_valid, p2(x2_valid), color='dodgerblue', linestyle="--")
     equation_text2 = f"y = {z2[0]:.2f}x + {z2[1]:.2f}\n$R^2$ = {r2_2:.2f}"
-    plt.text(0.75, 0.75, equation_text2, fontsize=10, color='dodgerblue', 
+    plt.text(0.72, 0.72, equation_text2, fontsize=10, color='dodgerblue', 
              ha='left', va='top', transform=plt.gca().transAxes)
     for xi, yi, elem in zip(x1_valid, y1_valid, elems):
         plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='orange')
@@ -219,14 +219,14 @@ for row, elems in elements.items():
                         y1=icohp[row]['o'], y2=icohp[row]['oh'], 
                         label1=f'*O ({row})', label2=f'*OH ({row})', 
                         xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_scatter_{row}.png')
-    dual_scatter_by_row(elems, x1=icohp[row]['o'], x2=icohp[row]['oh'], 
-                        y1=adsorption_energies[row]['o'], y2=adsorption_energies[row]['oh'], 
-                        label1=f'*O ({row})', label2=f'*OH ({row})', 
-                        xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_vs_icohp_scatter_{row}.png')
-    dual_scatter_by_row(elems, x1=adsorption_energies[row]['o'], x2=adsorption_energies[row]['oh'], 
-                        y1=distance[row]['o'], y2=distance[row]['oh'], 
-                        label1=f'*O ({row})', label2=f'*OH ({row})', 
-                        xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', pngname=f'bond_vs_adsorption_scatter_{row}.png')
+    # dual_scatter_by_row(elems, x1=icohp[row]['o'], x2=icohp[row]['oh'], 
+    #                     y1=adsorption_energies[row]['o'], y2=adsorption_energies[row]['oh'], 
+    #                     label1=f'*O ({row})', label2=f'*OH ({row})', 
+    #                     xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_vs_icohp_scatter_{row}.png')
+    # dual_scatter_by_row(elems, x1=adsorption_energies[row]['o'], x2=adsorption_energies[row]['oh'], 
+    #                     y1=distance[row]['o'], y2=distance[row]['oh'], 
+    #                     label1=f'*O ({row})', label2=f'*OH ({row})', 
+    #                     xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', pngname=f'bond_vs_adsorption_scatter_{row}.png')
     
 def single_plot_by_ads(Y, ylabel, pngname):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
@@ -256,8 +256,8 @@ def dual_plot_by_ads(X, Y, xlabel, ylabel, pngname):
     
 def dual_scatter_by_ads(X, Y, xlabel, ylabel, pngname):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
-    eq_x=[0.05, 0.05, 0.50, 0.50]
-    eq_y=[0.15, 0.25, 0.85, 0.95]
+    eq_x=[0.05, 0.05, 0.55, 0.55]
+    eq_y=[0.12, 0.22, 0.85, 0.95]
     for j, row in enumerate(elements.keys()):
         xx = np.array(X[row][adsorbate])
         yy = np.array(Y[row][adsorbate])
@@ -298,10 +298,10 @@ for i in range(2): # 0, 1
     #                  pngname=f'bond_vs_adsorption_{adsorbate}.png')
     dual_scatter_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', 
                      pngname=f'icohp_vs_bond_scatter_{adsorbate}.png')
-    dual_scatter_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', 
-                     pngname=f'adsorption_vs_icohp_scatter_{adsorbate}.png')
-    dual_scatter_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', 
-                     pngname=f'bond_vs_adsorption_scatter_{adsorbate}.png')
+    # dual_scatter_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', 
+    #                  pngname=f'adsorption_vs_icohp_scatter_{adsorbate}.png')
+    # dual_scatter_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', 
+    #                  pngname=f'bond_vs_adsorption_scatter_{adsorbate}.png')
 
 def data_to_tsv(data_dict, ads, filename):
     data = {
