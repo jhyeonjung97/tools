@@ -136,9 +136,8 @@ def dual_scatter_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, p
     plt.tight_layout()
     
     # Save plot
-    save_path = os.path.join(output_dir, pngname)
-    plt.savefig(save_path, bbox_inches='tight')
-    print(f"Figure saved as {save_path}")
+    plt.savefig(os.path.join(output_dir, pngname), bbox_inches='tight')
+    print(f"Figure saved as {pngname}")
     plt.close()
 
 # Loop through each element row and calculate adsorption energies
@@ -302,7 +301,7 @@ for i in range(2): # 0, 1
     single_plot_by_ads(Y=distance, ylabel=f'M-{adsorbate_symbol} Bond Length (Å)', pngname=f'bond_{adsorbate}.png')
     single_plot_by_ads(Y=icohp, ylabel=f'-ICOHP (M-{adsorbate_symbol}, eV)', pngname=f'icohp_{adsorbate}.png')
     dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', 
-                     ngname=f'icohp_vs_bond_{adsorbate}.png')
+                     pngname=f'icohp_vs_bond_{adsorbate}.png')
     dual_plot_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', 
                      pngname=f'adsorption_vs_icohp_{adsorbate}.png')
     dual_plot_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', 
