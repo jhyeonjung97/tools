@@ -198,14 +198,19 @@ def main():
     scaling_relationship['dG3'] = scaling_relationship['dG_OOH'] - scaling_relationship['dG_O']
     scaling_relationship['dG4'] = 4.92 - scaling_relationship['dG_OOH']
     
-    if scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].notna().all().all():
-        scaling_relationship['OER'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].max(axis=1) - 1.23
-        scaling_relationship['ORR'] = 1.23 - scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].min(axis=1)
-        scaling_relationship['dGmax'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmax(axis=1)
-        scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
-    else:
-        scaling_relationship[['OER', 'ORR', 'dGmax', 'dGmin']] = None
-    scaling_relationship['dGmin'] = scaling_relationship['dGmin'].apply(lambda x: replacement_map.get(x, x))
+    scaling_relationship['OER'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].max(axis=1) - 1.23
+    scaling_relationship['ORR'] = 1.23 - scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].min(axis=1)
+    scaling_relationship['dGmax'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmax(axis=1)
+    scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
+
+    # if scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].notna().all().all():
+    #     scaling_relationship['OER'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].max(axis=1) - 1.23
+    #     scaling_relationship['ORR'] = 1.23 - scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].min(axis=1)
+    #     scaling_relationship['dGmax'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmax(axis=1)
+    #     scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
+    # else:
+    #     scaling_relationship[['OER', 'ORR', 'dGmax', 'dGmin']] = None
+    # scaling_relationship['dGmin'] = scaling_relationship['dGmin'].apply(lambda x: replacement_map.get(x, x))
     
     scaling_relationship.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship.tsv', sep='\t', float_format='%.2f')
     volcano(scaling_relationship, rxn='OER', rds='dGmax', descriptor='dG2', xlabel='O-OH (dG2)', 
