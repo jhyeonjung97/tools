@@ -62,7 +62,7 @@ OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 root = '/pscratch/sd/j/jiuy97/6_MNC/figures'
 relaxed_energies = {}
 scaling_relationship = pd.DataFrame()
-a, b = 0.21, 3.86
+a, b = 0.21060347, 3.86476175
 
 def calculate_dG_OOH(row):
     if pd.notna(row['G_OOH']):
@@ -176,15 +176,15 @@ def main():
             spin_cross_over.loc[index, 'O'] = energies['O']['spin'].loc[index]
             spin_cross_over.loc[index, 'OOH'] = energies['OOH']['spin'].loc[index]
         
-        gibbs_energies.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
-        spin_cross_over.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/{row}_{group}{metal}_spin.tsv', sep='\t')
-        print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
+        # gibbs_energies.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
+        # spin_cross_over.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/{row}_{group}{metal}_spin.tsv', sep='\t')
+        # print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
-        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn='OER', rds='dGmax', overpotential=OER, ymin=0.2, ymax=1.4)
-        plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
-                 rxn='ORR', rds='dGmin', overpotential=ORR, ymin=0.2, ymax=1.4)
-        print(f"Figures saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
+        # plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+        #          rxn='OER', rds='dGmax', overpotential=OER, ymin=0.2, ymax=1.4)
+        # plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
+        #          rxn='ORR', rds='dGmin', overpotential=ORR, ymin=0.2, ymax=1.4)
+        # print(f"Figures saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
     
     scaling_relationship['G_OH'] = scaling_relationship['G_OH'] + OH_corr
     scaling_relationship['G_O'] = scaling_relationship['G_O'] + O_corr
@@ -214,9 +214,11 @@ def main():
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     volcano(scaling_relationship, rxn='ORR', rds='dGmin', descriptor='dG1', xlabel='OH (dG1)', 
             xmin=-3.0, xmax=2.0, ymin=-4.0, ymax=1.0)
-
-    scaling('dG_OH', 'dG_O', 'OH', 'O', scaling_relationship, metals, xmin=-2.5, xmax=1.5, ymin=-4.5, ymax=4.5)
-    scaling('dG_OH', 'dG_OOH', 'OH', 'OOH', scaling_relationship, metals, xmin=-2.5, xmax=1.5, ymin=-4.5, ymax=4.5)
+    
+    scaling(x=scaling_relationship['dG_OH'], y=scaling_relationship['dG_O'], 
+            'OH', 'O', scaling_relationship, metals, xmin=-2.5, xmax=1.5, ymin=-4.5, ymax=4.5)
+    scaling(x=scaling_relationship['dG_OH'], y=scaling_relationship['dG_OOH'], 
+            'OH', 'OOH', scaling_relationship, metals, xmin=0.0, xmax=1.5, ymin=2.5, ymax=4.5)
 
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
     x = scaling_relationship[descriptor]
@@ -250,10 +252,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     print(f"Figure saved as {filepath}")
     plt.close()
     
-def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ymax):
-    x = scaling_relationship[dG1]
-    y = scaling_relationship[dG2]
-    print('a, b = ', np.polyfit(x[:4], y[:4], 1))
+def scaling(x, y, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ymax):
     xx = np.linspace(min(x), max(x), 100)
     plt.figure(figsize=(4.7, fig_height), dpi=300)
     plt.scatter(x, y, c=colors[:len(x)], s=20)
