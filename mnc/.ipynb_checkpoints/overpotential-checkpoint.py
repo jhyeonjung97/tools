@@ -227,7 +227,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     else:
         raise ValueError(f"Unsupported reaction type: {rxn}")
     mask = np.isfinite(x) & np.isfinite(y)
-    for i in range(6):
+    for i in range(4):
         mask &= np.isfinite(y_vals[i])
     x = x[mask]
     y = y[mask]
@@ -239,7 +239,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         raise ValueError("Not enough valid data points for fitting.")
     xx = np.linspace(xmin, xmax, 100)
     plt.figure(figsize=(4, 3), dpi=300)
-    for i in range(6):
+    for i in range(4):
         if len(x) < 2 or np.all(x == x[0]) or np.all(y_vals[i] == y_vals[i][0]):
             print(f"Skipping trendline for dG{i+1} due to insufficient or degenerate data.")
             continue  # Skip degenerate data
