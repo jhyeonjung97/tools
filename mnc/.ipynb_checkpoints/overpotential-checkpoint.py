@@ -206,40 +206,69 @@ def main():
         lambda row: row.idxmax() if row.notna().all() else np.nan, axis=1)
     scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].apply(
         lambda row: row.idxmin() if row.notna().all() else np.nan, axis=1)
-
-    # if scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].notna().all().all():
-    #     scaling_relationship['OER'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].max(axis=1) - 1.23
-    #     scaling_relationship['ORR'] = 1.23 - scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].min(axis=1)
-    #     scaling_relationship['dGmax'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmax(axis=1)
-    #     scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].idxmin(axis=1)
-    # else:
-    #     scaling_relationship[['OER', 'ORR', 'dGmax', 'dGmin']] = None
-    # scaling_relationship['dGmin'] = scaling_relationship['dGmin'].apply(lambda x: replacement_map.get(x, x))
     
     scaling_relationship.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship.tsv', sep='\t', float_format='%.2f')
+    
     volcano(scaling_relationship, rxn='OER', rds='dGmax', descriptor='dG2', xlabel='O-OH (dG2)', 
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     volcano(scaling_relationship, rxn='ORR', rds='dGmin', descriptor='dG1', xlabel='OH (dG1)', 
             xmin=-3.0, xmax=2.0, ymin=-4.0, ymax=1.0)
+    
     scaling('dG_OH', 'dG_O', 'OH', 'O', scaling_relationship, metals)
     scaling('dG_OH', 'dG_OOH', 'OH', 'OOH', scaling_relationship, metals)
 
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
+    # Extract x (descriptor) and y (activity)
     x = scaling_relationship[descriptor]
     y = -scaling_relationship[rxn]
+
+    # Prepare y_vals based on reaction type
     if rxn == 'OER':
         y_vals = [-(scaling_relationship[f'dG{i+1}'] - 1.23) for i in range(4)]
     elif rxn == 'ORR':
         y_vals = [-(1.23 - scaling_relationship[f'dG{i+1}']) for i in range(4)]
+    else:
+        raise ValueError(f"Unsupported reaction type: {rxn}")
+
+    # Remove rows with NaN or infinite values
+    mask = np.isfinite(x) & np.isfinite(y)
+    for i in range(4):
+        mask &= np.isfinite(y_vals[i])
+    x = x[mask]
+    y = y[mask]
+    y_vals = [y_val[mask] for y_val in y_vals]
+
+    # Check if data is sufficient
+    if len(x) < 2:
+        raise ValueError("Not enough valid data points for fitting.")
+
+    # Define plot
     xx = np.linspace(xmin, xmax, 100)
     plt.figure(figsize=(4, 3), dpi=300)
+
+    # Colors for trend lines
+    colors = ['blue', 'green', 'red', 'orange']
+
+    # Plot each dG trendline
     for i in range(4):
-        coeffs = np.polyfit(x, y_vals[i], 1)  # Fit a linear trend
+        if len(x) < 2 or np.all(x == x[0]) or np.all(y_vals[i] == y_vals[i][0]):
+            print(f"Skipping trendline for dG{i+1} due to insufficient or degenerate data.")
+            continue  # Skip degenerate data
+
+        # Fit linear trend
+        coeffs = np.polyfit(x, y_vals[i], 1)
         trendline = np.poly1d(coeffs)
         plt.plot(xx, trendline(xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
-    plt.scatter(x, -scaling_relationship[rxn], color='black', s=20, zorder=3)  # Activity vs. Descriptor
-    for xi, yi, metal in zip(x, -scaling_relationship[rxn], metals):
+
+    # Scatter plot for activity vs. descriptor
+    plt.scatter(x, y, color='black', s=20, zorder=3, label='Activity')
+    
+    # Annotate metals
+    metals = scaling_relationship['metal']  # Adjust column name as per your data
+    for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
+
+    # Formatting
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.xlim(xmin, xmax)
@@ -248,9 +277,13 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.ylabel(f'{rxn} activity (-η, eV)', fontsize='large')
     plt.legend(labelspacing=0.3)
     plt.tight_layout()
-    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/volcano_{rxn}.png')
-    print(f"Figure saved as volcano_{rxn}.png")
+
+    # Save figure
+    filepath = f'/pscratch/sd/j/jiuy97/6_MNC/figures/volcano_{rxn}.png'
+    plt.savefig(filepath)
+    print(f"Figure saved as {filepath}")
     plt.close()
+
     
 def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals):
     xx = np.linspace(min(scaling_relationship[dG1]), max(scaling_relationship[dG1]), 100)
