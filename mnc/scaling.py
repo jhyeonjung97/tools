@@ -75,9 +75,9 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     legend_elements = [
-        Line2D([0], [0], marker='o', color='w', label='3d', markerfacecolor='blue', markersize=5),
-        Line2D([0], [0], marker='o', color='w', label='4d', markerfacecolor='green', markersize=5),
-        Line2D([0], [0], marker='o', color='w', label='5d', markerfacecolor='red', markersize=5)
+        Line2D([0], [0], marker='o', color='w', label='3d', markerfacecolor='blue', markersize=7),
+        Line2D([0], [0], marker='o', color='w', label='4d', markerfacecolor='green', markersize=7),
+        Line2D([0], [0], marker='o', color='w', label='5d', markerfacecolor='red', markersize=7)
     ]
     plt.legend(handles=legend_elements, loc='upper left')
     # plt.xlim(xmin, xmax)
