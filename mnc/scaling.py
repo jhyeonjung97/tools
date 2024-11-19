@@ -1,24 +1,15 @@
-for dir in import os
+import os
 import re
-import glob
-import numpy as np
-import pandas as pd
-from matplotlib import rc
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FormatStrFormatter
-from ase.io import read, write
-
-
-import matplotlib.pyplot as plt
-from ase.io import read
 from statistics import mean
 import glob
-import os
+import numpy as np
 import pandas as pd
 from scipy.interpolate import make_interp_spline
-import numpy as np
-from matplotlib.lines import Line2D
+import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
+from matplotlib.lines import Line2D
+from ase.io import read, write
+from matplotlib import rc
 
 # Define the rows and spins
 rows = {
