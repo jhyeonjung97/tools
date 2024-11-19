@@ -217,7 +217,7 @@ def main():
     
     scaling(scaling_relationship['dG_OH'], scaling_relationship['dG_O'], 'OH', 'O', 
         scaling_relationship, metals, xmin=-2.5, xmax=1.5, ymin=-4.5, ymax=4.5, txtx=0.1, txty=0.8)
-    scaling(scaling_relationship['dG_OH'], scaling_relationship['dG_OOH'], 'OH', 'OOH', 
+    scaling(scaling_relationship['dG_OH'][:4], scaling_relationship['dG_OOH'][:4], 'OH', 'OOH', 
             scaling_relationship, metals, xmin=0.0, xmax=1.5, ymin=3.5, ymax=4.5, txtx=0.1, txty=0.2)
 
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
