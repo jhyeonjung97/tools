@@ -62,13 +62,14 @@ OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 root = '/pscratch/sd/j/jiuy97/6_MNC/figures'
 relaxed_energies = {}
 scaling_relationship = pd.DataFrame()
+a, b = 0.21, 3.86
 
-def calculate_dG_OOH(row, oxygen_G, hydroxide_G):
+def calculate_dG_OOH(row):
     if pd.notna(row['G_OOH']):
         return row['G_OOH'] - row['G_'] - oxygen_G - hydroxide_G
     else:
-        return row['dG_OH'] + 3.2
-                
+        return a * row['dG_OH'] + b
+        
 def main():
     for m, metal in enumerate(metals):
         row = rows[m]
@@ -136,16 +137,14 @@ def main():
         
         gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
         gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G 
-        gibbs_energies['dG_OOH'] = gibbs_energies.apply(
-            calculate_dG_OOH, axis=1, oxygen_G=oxygen_G, hydroxide_G=hydroxide_G
-        )
+        gibbs_energies['dG_OOH'] = gibbs_energies.apply(calculate_dG_OOH, axis=1)
 
         dG_OH = G_OH - G_ - hydroxide_G
         dG_O = G_O - G_ - oxygen_G
         if G_OOH:
             dG_OOH = G_OOH - G_ - oxygen_G - hydroxide_G
         else:
-            dG_OOH = dG_OH + 3.2
+            dG_OOH = a * dG_OH + b
         
         gibbs_energies['dG1'] = gibbs_energies['dG_OH']
         gibbs_energies['dG2'] = gibbs_energies['dG_O'] - gibbs_energies['dG_OH']
@@ -193,10 +192,7 @@ def main():
 
     scaling_relationship['dG_OH'] = scaling_relationship['G_OH'] - scaling_relationship['G_'] - hydroxide_G
     scaling_relationship['dG_O'] = scaling_relationship['G_O'] - scaling_relationship['G_'] - oxygen_G
-    if not scaling_relationship['G_OOH'].empty:
-        scaling_relationship['dG_OOH'] = scaling_relationship['G_OOH'] - scaling_relationship['G_'] - oxygen_G - hydroxide_G
-    else:
-        scaling_relationship['dG_OOH'] = scaling_relationship['dG_OH'] + 3.2
+    scaling_relationship['dG_OOH'] = scaling_relationship.apply(calculate_dG_OOH, axis=1)
 
     scaling_relationship['dG1'] = scaling_relationship['dG_OH']
     scaling_relationship['dG2'] = scaling_relationship['dG_O'] - scaling_relationship['dG_OH']
@@ -231,12 +227,6 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
         y_vals = [-(1.23 - scaling_relationship[f'dG{i+1}']) for i in range(4)]
     else:
         raise ValueError(f"Unsupported reaction type: {rxn}")
-    mask = np.isfinite(x) & np.isfinite(y)
-    for i in range(4):
-        mask &= np.isfinite(y_vals[i])
-    x = x[mask]
-    y = y[mask]
-    y_vals = [y_val[mask] for y_val in y_vals]
     xx = np.linspace(xmin, xmax, 100)
     plt.figure(figsize=(4, 3), dpi=300)
     for i in range(4):
@@ -261,12 +251,10 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.close()
     
 def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ymax):
-    xx = np.linspace(min(scaling_relationship[dG1]), max(scaling_relationship[dG1]), 100)
     x = scaling_relationship[dG1]
     y = scaling_relationship[dG2]
-    mask = np.isfinite(x) & np.isfinite(y)
-    x = x[mask]
-    y = y[mask]
+    print('a, b = ', np.polyfit(x[:4], y[:4], 1))
+    xx = np.linspace(min(x), max(x), 100)
     plt.figure(figsize=(4.7, fig_height), dpi=300)
     plt.scatter(x, y, c=colors[:len(x)], s=20)
     for xi, yi, metal in zip(x, y, metals):
