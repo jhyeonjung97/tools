@@ -11,15 +11,16 @@ from matplotlib.lines import Line2D
 from ase.io import read, write
 from matplotlib import rc
 
+rows = {
+    '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
+    '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
+    '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
+}
+colors = {'3d': 'blue', '4d': 'green', '5d': 'red'}
+dirs = ['relaxed', 'oh', 'o', 'ooh']
+adsorbates = ['clean', 'OH', 'O', 'OOH']
+
 def main():
-    rows = {
-        '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
-        '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
-        '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
-    }
-    colors = {'3d': 'blue', '4d': 'green', '5d': 'red'}
-    dirs = ['relaxed', 'oh', 'o', 'ooh']
-    adsorbates = ['clean', 'OH', 'O', 'OOH']
     df = pd.DataFrame()
 
     for row_key, metals in rows.items():
