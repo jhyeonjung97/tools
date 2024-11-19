@@ -6,6 +6,8 @@ from matplotlib.ticker import FormatStrFormatter
 from scipy.interpolate import make_interp_spline
 from matplotlib.patches import Wedge, Rectangle
 
+a, b = 0.90, 3.07
+
 # Figure and font settings
 fig_width_pt = 1.8 * 246.0
 inches_per_pt = 1.0 / 72.27
@@ -62,7 +64,6 @@ OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 root = '/pscratch/sd/j/jiuy97/6_MNC/figures'
 relaxed_energies = {}
 scaling_relationship = pd.DataFrame()
-a, b = 0.21060347, 3.86476175
 
 def calculate_dG_OOH(row):
     if pd.notna(row['G_OOH']):

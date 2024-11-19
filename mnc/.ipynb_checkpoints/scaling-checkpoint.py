@@ -64,7 +64,7 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     plt.scatter(x, y, c=c, s=20)
     for xi, yi, metal in zip(x, y, df.index):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", 
-                     xytext=(0, 5), ha='center', color='black', fontsize=6)
+                     xytext=(0, 5), ha='center', color='black', fontsize=8)
     coeffs = np.polyfit(x, y, 1)
     line = np.poly1d(coeffs)
     plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black')
@@ -75,9 +75,9 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     legend_elements = [
-        Line2D([0], [0], marker='o', color='w', label='3d', markerfacecolor='blue', markersize=10),
-        Line2D([0], [0], marker='o', color='w', label='4d', markerfacecolor='green', markersize=10),
-        Line2D([0], [0], marker='o', color='w', label='5d', markerfacecolor='red', markersize=10)
+        Line2D([0], [0], marker='o', color='w', label='3d', markerfacecolor='blue', markersize=5),
+        Line2D([0], [0], marker='o', color='w', label='4d', markerfacecolor='green', markersize=5),
+        Line2D([0], [0], marker='o', color='w', label='5d', markerfacecolor='red', markersize=5)
     ]
     plt.legend(handles=legend_elements, loc='upper left')
     # plt.xlim(xmin, xmax)
