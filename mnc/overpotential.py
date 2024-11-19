@@ -232,6 +232,9 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     x = x[mask]
     y = y[mask]
     y_vals = [y_val[mask] for y_val in y_vals]
+    print(x)
+    print(y)
+    print(y[mask])
     if len(x) < 2:
         raise ValueError("Not enough valid data points for fitting.")
     xx = np.linspace(xmin, xmax, 100)
