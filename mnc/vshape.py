@@ -38,9 +38,9 @@ pattern = re.compile(r"\s+([\d.]+)\s+([\d.]+)")
 # pattern = re.compile(r"\s+(\d+)\s+([A-Za-z]+)\s+(\d+)\s+'O'\s+(\d+)\s+[\w\(\)\-]+\s+([\d.]+)\s+([\d.]+)")
 
 elements = {
-    '3d_LS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
-    '3d_HS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
-    # '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
+    '3d_LS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni'],
+    '3d_HS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni'],
+    # '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni'],
     '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
     '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
