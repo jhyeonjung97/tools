@@ -260,7 +260,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     print(f"Figure saved as {filepath}")
     plt.close()
     
-def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals):
+def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ymax):
     xx = np.linspace(min(scaling_relationship[dG1]), max(scaling_relationship[dG1]), 100)
     x = scaling_relationship[dG1]
     y = scaling_relationship[dG2]
