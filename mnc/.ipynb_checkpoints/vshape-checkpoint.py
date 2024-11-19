@@ -91,13 +91,16 @@ def dual_scatter_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, p
     sorted_indices = np.argsort(x)
     x_sorted = np.array(x)[sorted_indices]
     y_sorted = np.array(y)[sorted_indices]
-    z = np.polyfit(x_sorted, y_sorted, 1)
+    valid_mask = np.isfinite(x_sorted) & np.isfinite(y_sorted)
+    x_valid = x_sorted[valid_mask]
+    y_valid = y_sorted[valid_mask]
+    z = np.polyfit(x_valid, y_valid, 1)
     p = np.poly1d(z)
-    y_pred = p(x_sorted)
-    ss_res = np.sum((y_sorted - y_pred) ** 2)
-    ss_tot = np.sum((y_sorted - np.mean(y_sorted)) ** 2)
+    y_pred = p(x_valid)
+    ss_res = np.sum((y_valid - y_pred) ** 2)
+    ss_tot = np.sum((y_valid - np.mean(y_valid)) ** 2)
     r2 = 1 - (ss_res / ss_tot)
-    plt.plot(x_sorted, p(x_sorted), color='black', linestyle="--")
+    plt.plot(x_valid, p(x_valid), color='black', linestyle="--")
     equation_text = f"y = {z[0]:.2f}x + {z[1]:.2f}\n$R^2$ = {r2:.2f}"
     plt.text(0.05, 0.15, equation_text, fontsize=10, color='black', 
              ha='left', va='top', transform=plt.gca().transAxes)
