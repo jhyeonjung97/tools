@@ -254,7 +254,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     
 def scaling(x, y, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ymax, txtx, txty):
     xx = np.linspace(min(x), max(x), 100)
-    plt.figure(figsize=(4.7, fig_height), dpi=300)
+    plt.figure(figsize=(4, 3), dpi=300)
     plt.scatter(x, y, c=colors[:len(x)], s=20)
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
