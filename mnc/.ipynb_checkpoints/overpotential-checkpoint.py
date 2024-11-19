@@ -139,6 +139,8 @@ def main():
         gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G 
         gibbs_energies['dG_OOH'] = gibbs_energies.apply(calculate_dG_OOH, axis=1)
 
+        print(gibbs_energies['dG_OOH'])
+
         dG_OH = G_OH - G_ - hydroxide_G
         dG_O = G_O - G_ - oxygen_G
         if G_OOH:
