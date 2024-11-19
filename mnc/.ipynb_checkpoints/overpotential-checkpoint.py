@@ -218,9 +218,9 @@ def main():
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
     volcano(scaling_relationship, rxn='ORR', rds='dGmin', descriptor='dG1', xlabel='OH (dG1)', 
             xmin=-3.0, xmax=2.0, ymin=-4.0, ymax=1.0)
-    
-    scaling('dG_OH', 'dG_O', 'OH', 'O', scaling_relationship, metals)
-    scaling('dG_OH', 'dG_OOH', 'OH', 'OOH', scaling_relationship, metals)
+
+    scaling('dG_OH', 'dG_O', 'OH', 'O', scaling_relationship, metals, xmin=-2.5, xmax=1.5, ymin=-4.5, ymax=4.5)
+    scaling('dG_OH', 'dG_OOH', 'OH', 'OOH', scaling_relationship, metals, xmin=-2.5, xmax=1.5, ymin=-4.5, ymax=4.5)
 
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
     x = scaling_relationship[descriptor]
@@ -280,8 +280,8 @@ def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals):
     plt.ylabel(fr'$\Delta$G$_{{\sf {ads2}}}$ (eV)', fontsize='large')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-    plt.xlim(-2.5, 1.5)
-    plt.ylim(-4.5, 4.5)
+    plt.xlim(xmin, xmax)
+    plt.ylim(ymin, ymax)
     plt.tight_layout()
     plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship_{ads1}_{ads2}.png')
     print(f"Figure saved as scaling_relationship_{ads1}_{ads2}.png")
