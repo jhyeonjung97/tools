@@ -231,7 +231,7 @@ def single_plot_by_ads(Y, ylabel, pngname):
 def dual_plot_by_ads(X, Y, xlabel, ylabel, pngname):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
     for j, row in enumerate(elements.keys()):
-        plt.plot(len(X[row][adsorbate]), Y[row][adsorbate], marker='o', color=color_ranges[i][j], label=row)
+        plt.plot(np.arange(len(indice)), Y[row][adsorbate], marker='o', color=color_ranges[i][j], label=row)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.xticks(np.arange(len(indice)), indice)
