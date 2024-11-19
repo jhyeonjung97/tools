@@ -256,8 +256,8 @@ def dual_plot_by_ads(X, Y, xlabel, ylabel, pngname):
     
 def dual_scatter_by_ads(X, Y, xlabel, ylabel, pngname):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
-    eq_x=[0.50, 0.50, 0.30, 0.10]
-    eq_y=[0.85, 0.75, 0.50, 0.20]
+    eq_x=[0.10, 0.30, 0.50, 0.50]
+    eq_y=[0.20, 0.50, 0.75, 0.85]
     for j, row in enumerate(elements.keys()):
         xx = np.array(X[row][adsorbate])
         yy = np.array(Y[row][adsorbate])
