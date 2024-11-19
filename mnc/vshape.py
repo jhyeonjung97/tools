@@ -85,7 +85,9 @@ def dual_plot_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, pngn
 
 def dual_scatter_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, pngname, output_dir="."):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
-    
+
+    print(x1, y1)
+    print(x2, y2)
     # Scatter plots
     plt.scatter(x1, y1, color='orange', label=label1)
     plt.scatter(x2, y2, color='dodgerblue', label=label2)
