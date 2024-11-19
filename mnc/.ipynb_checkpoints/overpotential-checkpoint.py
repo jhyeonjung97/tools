@@ -218,57 +218,35 @@ def main():
     scaling('dG_OH', 'dG_OOH', 'OH', 'OOH', scaling_relationship, metals)
 
 def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin, ymax):
-    # Extract x (descriptor) and y (activity)
     x = scaling_relationship[descriptor]
     y = -scaling_relationship[rxn]
-
-    # Prepare y_vals based on reaction type
     if rxn == 'OER':
         y_vals = [-(scaling_relationship[f'dG{i+1}'] - 1.23) for i in range(4)]
     elif rxn == 'ORR':
         y_vals = [-(1.23 - scaling_relationship[f'dG{i+1}']) for i in range(4)]
     else:
         raise ValueError(f"Unsupported reaction type: {rxn}")
-
-    # Remove rows with NaN or infinite values
     mask = np.isfinite(x) & np.isfinite(y)
-    for i in range(4):
+    for i in range(6):
         mask &= np.isfinite(y_vals[i])
     x = x[mask]
     y = y[mask]
     y_vals = [y_val[mask] for y_val in y_vals]
-
-    # Check if data is sufficient
     if len(x) < 2:
         raise ValueError("Not enough valid data points for fitting.")
-
-    # Define plot
     xx = np.linspace(xmin, xmax, 100)
     plt.figure(figsize=(4, 3), dpi=300)
-
-    # Colors for trend lines
-    colors = ['blue', 'green', 'red', 'orange']
-
-    # Plot each dG trendline
-    for i in range(4):
+    for i in range(6):
         if len(x) < 2 or np.all(x == x[0]) or np.all(y_vals[i] == y_vals[i][0]):
             print(f"Skipping trendline for dG{i+1} due to insufficient or degenerate data.")
             continue  # Skip degenerate data
-
-        # Fit linear trend
         coeffs = np.polyfit(x, y_vals[i], 1)
         trendline = np.poly1d(coeffs)
         plt.plot(xx, trendline(xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
-
-    # Scatter plot for activity vs. descriptor
     plt.scatter(x, y, color='black', s=20, zorder=3, label='Activity')
-    
-    # Annotate metals
     metals = scaling_relationship.index
     for xi, yi, metal in zip(x, y, metals):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
-
-    # Formatting
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.xlim(xmin, xmax)
@@ -277,13 +255,10 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.ylabel(f'{rxn} activity (-η, eV)', fontsize='large')
     plt.legend(labelspacing=0.3)
     plt.tight_layout()
-
-    # Save figure
     filepath = f'/pscratch/sd/j/jiuy97/6_MNC/figures/volcano_{rxn}.png'
     plt.savefig(filepath)
     print(f"Figure saved as {filepath}")
-    plt.close()
-
+    plt.close(
     
 def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals):
     xx = np.linspace(min(scaling_relationship[dG1]), max(scaling_relationship[dG1]), 100)
