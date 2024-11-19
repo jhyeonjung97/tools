@@ -264,6 +264,9 @@ def scaling(dG1, dG2, ads1, ads2, scaling_relationship, metals):
     xx = np.linspace(min(scaling_relationship[dG1]), max(scaling_relationship[dG1]), 100)
     x = scaling_relationship[dG1]
     y = scaling_relationship[dG2]
+    mask = np.isfinite(x) & np.isfinite(y)
+    x = x[mask]
+    y = y[mask]
     plt.figure(figsize=(4.7, fig_height), dpi=300)
     plt.scatter(x, y, c=colors, s=20)
     for xi, yi, metal in zip(x, y, metals):
