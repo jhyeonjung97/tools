@@ -257,8 +257,8 @@ for i in range(2): # 0, 1
     single_plot_by_ads(Y=distance, ylabel=f'M-{adsorbate_symbol} Bond Length (Å)', pngname=f'bond_{adsorbate}.png')
     single_plot_by_ads(Y=icohp, ylabel=f'M-{adsorbate_symbol} -ICOHP (eV)', pngname=f'icohp_{adsorbate}.png')
     dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
-    dual_plot_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', pngname=f'bond_vs_adsorption_{adsorbate}.png')
-    dual_plot_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', pngname=f'adsorption_vs_icohp_{adsorbate}.png')
+    dual_plot_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_vs_icohp_{adsorbate}.png')
+    dual_plot_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', pngname=f'bond_vs_adsorption_{adsorbate}.png')
 
 def data_to_tsv(data_dict, ads, filename):
     data = {
