@@ -83,38 +83,57 @@ def dual_plot_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, pngn
     print(f"Figure saved as {pngname}")
     plt.close()
 
-def dual_scatter_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, pngname):
+def dual_scatter_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, pngname, output_dir="."):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
+    
+    # Scatter plots
     plt.scatter(x1, y1, color='orange', label=label1)
     plt.scatter(x2, y2, color='dodgerblue', label=label2)
-    x = x1 + x2
-    y = y1 + y2
-    sorted_indices = np.argsort(x)
-    x_sorted = np.array(x)[sorted_indices]
-    y_sorted = np.array(y)[sorted_indices]
-    valid_mask = np.isfinite(x_sorted) & np.isfinite(y_sorted)
-    x_valid = x_sorted[valid_mask]
-    y_valid = y_sorted[valid_mask]
-    z = np.polyfit(x_valid, y_valid, 1)
-    p = np.poly1d(z)
-    y_pred = p(x_sorted)
-    ss_res = np.sum((y_sorted - y_pred) ** 2)
-    ss_tot = np.sum((y_sorted - np.mean(y_sorted)) ** 2)
-    r2 = 1 - (ss_res / ss_tot)
-    plt.plot(x_sorted, p(x_sorted), color='black', linestyle="--")
-    equation_text = f"y = {z[0]:.2f}x + {z[1]:.2f}\n$R^2$ = {r2:.2f}"
-    plt.text(0.05, 0.15, equation_text, fontsize=10, color='black', 
+    
+    # Regression and R^2 calculation for the first dataset
+    valid_mask1 = np.isfinite(x1) & np.isfinite(y1)
+    x1_valid, y1_valid = x1[valid_mask1], y1[valid_mask1]
+    z1 = np.polyfit(x1_valid, y1_valid, 1)
+    p1 = np.poly1d(z1)
+    y1_pred = p1(x1_valid)
+    ss_res1 = np.sum((y1_valid - y1_pred) ** 2)
+    ss_tot1 = np.sum((y1_valid - np.mean(y1_valid)) ** 2)
+    r2_1 = 1 - (ss_res1 / ss_tot1)
+    plt.plot(x1_valid, p1(x1_valid), color='orange', linestyle="--")
+    equation_text1 = f"y = {z1[0]:.2f}x + {z1[1]:.2f}\n$R^2$ = {r2_1:.2f}"
+    plt.text(0.05, 0.85, equation_text1, fontsize=10, color='orange', 
              ha='left', va='top', transform=plt.gca().transAxes)
-    for xi, yi, elem in zip(x1, y1, elems):
+    
+    # Regression and R^2 calculation for the second dataset
+    valid_mask2 = np.isfinite(x2) & np.isfinite(y2)
+    x2_valid, y2_valid = x2[valid_mask2], y2[valid_mask2]
+    z2 = np.polyfit(x2_valid, y2_valid, 1)
+    p2 = np.poly1d(z2)
+    y2_pred = p2(x2_valid)
+    ss_res2 = np.sum((y2_valid - y2_pred) ** 2)
+    ss_tot2 = np.sum((y2_valid - np.mean(y2_valid)) ** 2)
+    r2_2 = 1 - (ss_res2 / ss_tot2)
+    plt.plot(x2_valid, p2(x2_valid), color='dodgerblue', linestyle="--")
+    equation_text2 = f"y = {z2[0]:.2f}x + {z2[1]:.2f}\n$R^2$ = {r2_2:.2f}"
+    plt.text(0.05, 0.75, equation_text2, fontsize=10, color='dodgerblue', 
+             ha='left', va='top', transform=plt.gca().transAxes)
+    
+    # Annotations
+    for xi, yi, elem in zip(x1_valid, y1_valid, elems):
         plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='orange')
-    for xi, yi, elem in zip(x2, y2, elems):
+    for xi, yi, elem in zip(x2_valid, y2_valid, elems):
         plt.annotate(f'{elem}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='dodgerblue')
+    
+    # Labels and legend
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.legend()
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, pngname), bbox_inches='tight')
-    print(f"Figure saved as {pngname}")
+    
+    # Save plot
+    save_path = os.path.join(output_dir, pngname)
+    plt.savefig(save_path, bbox_inches='tight')
+    print(f"Figure saved as {save_path}")
     plt.close()
 
 # Loop through each element row and calculate adsorption energies
@@ -196,12 +215,10 @@ for row, elems in elements.items():
                      y1=icohp[row]['o'], y2=icohp[row]['oh'], 
                      label1=f'*O ({row})', label2=f'*OH ({row})', 
                      xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{row}.png')
-    
     dual_plot_by_row(elems, x1=icohp[row]['o'], x2=icohp[row]['oh'], 
                      y1=adsorption_energies[row]['o'], y2=adsorption_energies[row]['oh'], 
                      label1=f'*O ({row})', label2=f'*OH ({row})', 
                      xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_vs_icohp_{row}.png')
-    
     dual_plot_by_row(elems, x1=adsorption_energies[row]['o'], x2=adsorption_energies[row]['oh'], 
                      y1=distance[row]['o'], y2=distance[row]['oh'], 
                      label1=f'*O ({row})', label2=f'*OH ({row})', 
@@ -211,12 +228,10 @@ for row, elems in elements.items():
                         y1=icohp[row]['o'], y2=icohp[row]['oh'], 
                         label1=f'*O ({row})', label2=f'*OH ({row})', 
                         xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_scatter_{row}.png')
-    
     dual_scatter_by_row(elems, x1=icohp[row]['o'], x2=icohp[row]['oh'], 
                         y1=adsorption_energies[row]['o'], y2=adsorption_energies[row]['oh'], 
                         label1=f'*O ({row})', label2=f'*OH ({row})', 
                         xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_vs_icohp_scatter_{row}.png')
-    
     dual_scatter_by_row(elems, x1=adsorption_energies[row]['o'], x2=adsorption_energies[row]['oh'], 
                         y1=distance[row]['o'], y2=distance[row]['oh'], 
                         label1=f'*O ({row})', label2=f'*OH ({row})', 
@@ -248,6 +263,31 @@ def dual_plot_by_ads(X, Y, xlabel, ylabel, pngname):
     print(f"Figure saved as {pngname}")
     plt.close()
     
+def dual_scatter_by_ads(X, Y, xlabel, ylabel, pngname):
+    plt.figure(figsize=(6.0, 4.5), dpi=300)
+    for j, row in enumerate(elements.keys()):
+        xx, yy = X[row][adsorbate], Y[row][adsorbate]
+        plt.scatter(xx, yy, color=color_ranges[i][j], label=row)
+        valid_mask = np.isfinite(xx) & np.isfinite(yy)
+        x_valid, y_valid = xx[valid_mask], yy[valid_mask]
+        z = np.polyfit(x_valid, y_valid, 1)
+        p = np.poly1d(z)
+        y_pred = p1(x_valid)
+        ss_res = np.sum((y_valid - y_pred) ** 2)
+        ss_tot = np.sum((y_valid - np.mean(y_valid)) ** 2)
+        r2 = 1 - (ss_res / ss_tot)
+        plt.plot(x_valid, p(x_valid), color=color_ranges[i][j], linestyle="--")
+        equation_text = f"y = {z[0]:.2f}x + {z[1]:.2f}\n$R^2$ = {r2:.2f}"
+        plt.text(0.05, 0.85, equation_text, fontsize=10, color=color_ranges[i][j],
+                 ha='left', va='top', transform=plt.gca().transAxes)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, pngname), bbox_inches='tight')
+    print(f"Figure saved as {pngname}")
+    plt.close()
+    
 # Save combined plots for each adsorbate across all rows
 for i in range(2): # 0, 1
     adsorbate = adsorbates[i]
@@ -255,10 +295,19 @@ for i in range(2): # 0, 1
     
     single_plot_by_ads(Y=adsorption_energies, ylabel=f'{adsorbate_symbol} Adsorption Energy (dG, eV)', pngname=f'adsorption_{adsorbate}.png')
     single_plot_by_ads(Y=distance, ylabel=f'M-{adsorbate_symbol} Bond Length (Å)', pngname=f'bond_{adsorbate}.png')
-    single_plot_by_ads(Y=icohp, ylabel=f'M-{adsorbate_symbol} -ICOHP (eV)', pngname=f'icohp_{adsorbate}.png')
-    dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
-    dual_plot_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_vs_icohp_{adsorbate}.png')
-    dual_plot_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', pngname=f'bond_vs_adsorption_{adsorbate}.png')
+    single_plot_by_ads(Y=icohp, ylabel=f'-ICOHP (M-{adsorbate_symbol}, eV)', pngname=f'icohp_{adsorbate}.png')
+    dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', 
+                     ngname=f'icohp_vs_bond_{adsorbate}.png')
+    dual_plot_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', 
+                     pngname=f'adsorption_vs_icohp_{adsorbate}.png')
+    dual_plot_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', 
+                     pngname=f'bond_vs_adsorption_{adsorbate}.png')
+    dual_scatter_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', 
+                     ngname=f'icohp_vs_bond_{adsorbate}.png')
+    dual_scatter_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', 
+                     pngname=f'adsorption_vs_icohp_{adsorbate}.png')
+    dual_scatter_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', 
+                     pngname=f'bond_vs_adsorption_{adsorbate}.png')
 
 def data_to_tsv(data_dict, ads, filename):
     data = {
