@@ -11,18 +11,17 @@ from matplotlib.lines import Line2D
 from ase.io import read, write
 from matplotlib import rc
 
-# Define the rows and spins
-rows = {
-    '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
-    '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
-    '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
-}
-colors = {'3d': 'blue', '4d': 'green', '5d': 'red'}
-dirs = ['relaxed', 'oh', 'o', 'ooh']
-adsorbates = ['clean', 'OH', 'O', 'OOH']
-df = pd.DataFrame()
-
 def main():
+    rows = {
+        '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
+        '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
+        '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
+    }
+    colors = {'3d': 'blue', '4d': 'green', '5d': 'red'}
+    dirs = ['relaxed', 'oh', 'o', 'ooh']
+    adsorbates = ['clean', 'OH', 'O', 'OOH']
+    df = pd.DataFrame()
+
     for row_key, metals in rows.items():
         for m, metal in enumerate(metals):
             for d, dir in enumerate(dirs):
@@ -62,7 +61,7 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     x, y, c = x[mask], y[mask], c[mask]
     xx = np.linspace(min(x), max(x), 100)
     plt.figure(figsize=(4, 3), dpi=300)
-    plt.scatter(x, y, color=c)
+    plt.scatter(x, y, c=c)
     for xi, yi, metal in zip(x, y, df.index):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
     coeffs = np.polyfit(x, y, 1)
