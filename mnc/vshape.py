@@ -183,7 +183,7 @@ for row, elems in elements.items():
                     distance[row][ads].append(np.nan)  # Handle missing data
     
     single_plot_by_row(elems, x1=adsorption_energies[row]['o'], x2=adsorption_energies[row]['oh'], 
-                       label1=f'O Adsorption ({row})', label2=f'O Adsorption ({row})', 
+                       label1=f'O Adsorption ({row})', label2=f'OH Adsorption ({row})', 
                        ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_{row}.png')
     single_plot_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
                        label1=f'M-O Bond ({row})', label2=f'M-OH Bond ({row})', 
