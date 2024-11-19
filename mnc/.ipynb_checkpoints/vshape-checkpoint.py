@@ -307,7 +307,7 @@ for i in range(2): # 0, 1
     dual_plot_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', 
                      pngname=f'bond_vs_adsorption_{adsorbate}.png')
     dual_scatter_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', 
-                     ngname=f'icohp_vs_bond_{adsorbate}.png')
+                     pngname=f'icohp_vs_bond_{adsorbate}.png')
     dual_scatter_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', 
                      pngname=f'adsorption_vs_icohp_{adsorbate}.png')
     dual_scatter_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', 
