@@ -38,9 +38,9 @@ pattern = re.compile(r"\s+([\d.]+)\s+([\d.]+)")
 # pattern = re.compile(r"\s+(\d+)\s+([A-Za-z]+)\s+(\d+)\s+'O'\s+(\d+)\s+[\w\(\)\-]+\s+([\d.]+)\s+([\d.]+)")
 
 elements = {
-    # '3d_LS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
-    # '3d_HS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
-    '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
+    '3d_LS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
+    '3d_HS': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
+    # '3d': ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu'],
     '4d': ['Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd'],
     '5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']
 }
@@ -156,7 +156,16 @@ for row, elems in elements.items():
                 else:
                     adsorption_energies[row][ads].append(np.nan)
                     
-                icohp_path = os.path.join(base_dir, ads, 'icohp/icohp.txt')
+                if row == '3d_HS' and elem == 'Ti' and ads == 'o':
+                    icohp_path = '/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/2_Ti/1_LS/o/icohp/icohp.txt'
+                elif row == '3d_HS' and elem == 'Ti' and ads == 'oh':
+                    icohp_path = '/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/2_Ti/1_LS/oh/icohp/icohp.txt'
+                elif row == '3d_HS' and elem == 'V' and ads == 'o':
+                    icohp_path = '/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/3_V/1_LS/o/icohp/icohp.txt'
+                elif row == '3d_HS' and elem == 'V' and ads == 'oh':
+                    icohp_path = '/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/3_V/1_LS/oh/icohp/icohp.txt'
+                else:
+                    icohp_path = os.path.join(base_dir, ads, 'icohp/icohp.txt')
                 if os.path.exists(icohp_path):        
                     with open(icohp_path, 'r') as file:
                         content = file.read()
