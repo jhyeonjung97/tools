@@ -47,8 +47,8 @@ elements = {
 adsorption_energies = {}
 icohp = {}
 distance = {}
-color_ranges = [plt.cm.Oranges(np.linspace(0.3, 0.9, 3)),
-                plt.cm.Blues(np.linspace(0.3, 0.9, 3))]
+color_ranges = [plt.cm.Oranges(np.linspace(0.3, 0.9, 4)),
+                plt.cm.Blues(np.linspace(0.3, 0.9, 4))]
 
 adsorbates = ['o', 'oh']
 adsorbate_symbols = ['O', 'OH']
