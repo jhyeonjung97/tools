@@ -264,7 +264,7 @@ def dual_scatter_by_ads(X, Y, xlabel, ylabel, pngname):
         x_valid, y_valid = xx[valid_mask], yy[valid_mask]
         z = np.polyfit(x_valid, y_valid, 1)
         p = np.poly1d(z)
-        y_pred = p1(x_valid)
+        y_pred = p(x_valid)
         ss_res = np.sum((y_valid - y_pred) ** 2)
         ss_tot = np.sum((y_valid - np.mean(y_valid)) ** 2)
         r2 = 1 - (ss_res / ss_tot)
