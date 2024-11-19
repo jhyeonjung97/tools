@@ -3,6 +3,7 @@ import re
 from ase.io import read
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 # Gas phase energies and vibrational corrections
 h2 = -6.77149190
