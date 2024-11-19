@@ -169,6 +169,7 @@ for row, elems in elements.items():
                     icohp_path = '/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/3_V/1_LS/oh/icohp/icohp.txt'
                 else:
                     icohp_path = os.path.join(base_dir, ads, 'icohp/icohp.txt')
+                    
                 if os.path.exists(icohp_path):        
                     with open(icohp_path, 'r') as file:
                         content = file.read()
@@ -252,3 +253,7 @@ for i in range(2): # 0, 1
     dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
     # dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
     # dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{adsorbate}.png')
+
+adsorption_energies.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/adsorption_energies.tsv', sep='\t')
+distance.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/distance.tsv', sep='\t')
+icohp.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/icohp.tsv', sep='\t')
