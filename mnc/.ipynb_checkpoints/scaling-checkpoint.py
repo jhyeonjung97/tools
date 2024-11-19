@@ -40,7 +40,37 @@ def main():
     df['G_OH'] = df['OH'] + OH_corr
     df['G_O'] = df['O'] + O_corr
     df['G_OOH'] = df['OOH'] + OOH_corr
-                    
+    
+    df['dG_OH'] = df['G_OH'] - df['G_'] - hydroxide_G
+    df['dG_O'] = df['G_O'] - df['G_'] - oxygen_G 
+    df['dG_OOH'] = df['G_OOH'] - df['G_'] - oxygen_G - hydroxide_G
+
+    df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship_full.tsv', sep='\t', float_format='%.2f')
+
+    
+    
+def scaling(x, y, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ymax, txtx, txty):
+    xx = np.linspace(min(x), max(x), 100)
+    plt.figure(figsize=(4, 3), dpi=300)
+    plt.scatter(x, y, c=colors[:len(x)], s=20)
+    for xi, yi, metal in zip(x, y, metals):
+        plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
+    coeffs = np.polyfit(x, y, 1)
+    line = np.poly1d(coeffs)
+    plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black')
+    equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
+    plt.text(txtx, txty if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
+    plt.xlabel(fr'$\Delta$G$_{{\sf {ads1}}}$ (eV)', fontsize='large')
+    plt.ylabel(fr'$\Delta$G$_{{\sf {ads2}}}$ (eV)', fontsize='large')
+    plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
+    plt.xlim(xmin, xmax)
+    plt.ylim(ymin, ymax)
+    plt.tight_layout()
+    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship_{ads1}_{ads2}.png')
+    print(f"Figure saved as scaling_relationship_{ads1}_{ads2}.png")
+    plt.close()
+    
 if __name__ == '__main__':
     
     # Water and hydrogen properties
