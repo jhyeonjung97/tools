@@ -232,17 +232,10 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     x = x[mask]
     y = y[mask]
     y_vals = [y_val[mask] for y_val in y_vals]
-    print(x)
-    print(y)
-    print(y[mask])
-    if len(x) < 2:
-        raise ValueError("Not enough valid data points for fitting.")
+    print(y_vals)
     xx = np.linspace(xmin, xmax, 100)
     plt.figure(figsize=(4, 3), dpi=300)
     for i in range(4):
-        if len(x) < 2 or np.all(x == x[0]) or np.all(y_vals[i] == y_vals[i][0]):
-            print(f"Skipping trendline for dG{i+1} due to insufficient or degenerate data.")
-            continue  # Skip degenerate data
         coeffs = np.polyfit(x, y_vals[i], 1)
         trendline = np.poly1d(coeffs)
         plt.plot(xx, trendline(xx), label=f'dG{i+1} (trend)', linestyle='-', color=colors[i])
