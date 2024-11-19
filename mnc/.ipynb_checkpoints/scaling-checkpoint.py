@@ -47,28 +47,34 @@ def main():
 
     df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship_full.tsv', sep='\t', float_format='%.2f')
 
+    scaling('dG_OH', 'dG_O', 'OH', 'O', df, metals)
+            # xmin=-2.5, xmax=1.5, ymin=-4.5, ymax=4.5, txtx=0.1, txty=0.8)
+    scaling('dG_OH', 'dG_OOH', 'OH', 'OOH', df, metals)
+            # xmin=0.0, xmax=1.5, ymin=3.5, ymax=4.5, txtx=0.1, txty=0.2)
     
-    
-def scaling(x, y, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ymax, txtx, txty):
+def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
+    x, y = df[dG1], df[dG2]
+    mask = np.isfinite(x) & np.isfinite(y)
+    x, y = x[mask], y[mask]
     xx = np.linspace(min(x), max(x), 100)
     plt.figure(figsize=(4, 3), dpi=300)
-    plt.scatter(x, y, c=colors[:len(x)], s=20)
-    for xi, yi, metal in zip(x, y, metals):
+    plt.scatter(x, y)
+    for xi, yi, metal in zip(x, y, df.index):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", xytext=(0, 5), ha='center', color='black')
     coeffs = np.polyfit(x, y, 1)
     line = np.poly1d(coeffs)
     plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
-    plt.text(txtx, txty if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
+    plt.text(0.1, 0.1 if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
     plt.xlabel(fr'$\Delta$G$_{{\sf {ads1}}}$ (eV)', fontsize='large')
     plt.ylabel(fr'$\Delta$G$_{{\sf {ads2}}}$ (eV)', fontsize='large')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
-    plt.xlim(xmin, xmax)
-    plt.ylim(ymin, ymax)
+    # plt.xlim(xmin, xmax)
+    # plt.ylim(ymin, ymax)
     plt.tight_layout()
-    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship_{ads1}_{ads2}.png')
-    print(f"Figure saved as scaling_relationship_{ads1}_{ads2}.png")
+    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship_full_{ads1}_{ads2}.png')
+    print(f"Figure saved as scaling_relationship_full_{ads1}_{ads2}.png")
     plt.close()
     
 if __name__ == '__main__':
