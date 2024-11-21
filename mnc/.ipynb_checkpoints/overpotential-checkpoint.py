@@ -80,12 +80,15 @@ def main():
         spin_cross_over = pd.DataFrame()
 
         for adsorbate in adsorbates:
+            if adsorbate not in relaxed_energies:
+                relaxed_energies[adsorbate] = pd.DataFrame()
+            relaxed_energies[adsorbate].at[relaxed_dz, column] = np.nan
+            
             tag = '' if adsorbate == 'clean' else adsorbate
             tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
             if os.path.exists(tsv_path):
                 energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
             else:
-                relaxed_energies[adsorbate].at[relaxed_dz, column] = np.nan
                 scaling_relationship.at[metal, f'G_{tag}'] = np.nan
                 scaling_relationship.at[metal, f'dz_{tag}'] = np.nan
                 continue
