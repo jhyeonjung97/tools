@@ -84,7 +84,7 @@ def main():
             if not os.path.exists(tsv_path):
                 print(f"File not found: {tsv_path}")
                 # Initialize as an empty DataFrame for missing adsorbates
-                energies[adsorbate] = pd.DataFrame({'energy': [np.nan]})
+                energies[adsorbate] = pd.DataFrame({'energy': [np.nan]}, {'spin': [np.nan]})
                 relaxed_energies[adsorbate] = pd.DataFrame()  
                 scaling_relationship.at[metal, f'G_{adsorbate if adsorbate != "clean" else ""}'] = np.nan
                 scaling_relationship.at[metal, f'dz_{adsorbate if adsorbate != "clean" else ""}'] = np.nan
