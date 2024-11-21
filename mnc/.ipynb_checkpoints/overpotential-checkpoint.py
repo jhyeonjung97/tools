@@ -248,7 +248,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.ylabel(f'{rxn} activity (-η, eV)', fontsize='large')
     plt.legend(labelspacing=0.3)
     plt.tight_layout()
-    filepath = f'/pscratch/sd/j/jiuy97/6_MNC/figures/volcano_{rxn}.png'
+    filepath = f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relation/volcano_{rxn}.png'
     plt.savefig(filepath)
     print(f"Figure saved as {filepath}")
     plt.close()
@@ -271,7 +271,7 @@ def scaling(x, y, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ym
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
     plt.tight_layout()
-    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship_{ads1}_{ads2}.png')
+    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relation/scaling_relationship_{ads1}_{ads2}.png')
     print(f"Figure saved as scaling_relationship_{ads1}_{ads2}.png")
     plt.close()
         
