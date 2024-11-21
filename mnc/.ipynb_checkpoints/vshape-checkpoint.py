@@ -34,7 +34,6 @@ dgoh = zpeoh + cvoh - tsoh
 # Define base directory, elements, and adsorbates
 root_dir = '/pscratch/sd/j/jiuy97/6_MNC/0_clean'
 output_dir = '/pscratch/sd/j/jiuy97/6_MNC/figures/icohp'
-os.makedirs(output_dir, exist_ok=True)  # Ensure the figures directory exists
 pattern = re.compile(r"\s+([\d.]+)\s+([\d.]+)")
 # pattern = re.compile(r"\s+(\d+)\s+([A-Za-z]+)\s+(\d+)\s+'O'\s+(\d+)\s+[\w\(\)\-]+\s+([\d.]+)\s+([\d.]+)")
 
@@ -83,7 +82,7 @@ def dual_plot_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, pngn
     print(f"Figure saved as {pngname}")
     plt.close()
 
-def dual_scatter_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, pngname, output_dir="."):
+def dual_scatter_by_row(elems, x1, x2, y1, y2, label1, label2, xlabel, ylabel, pngname):
     plt.figure(figsize=(6.0, 4.5), dpi=300)
     x1 = np.array(x1)
     x2 = np.array(x2)
