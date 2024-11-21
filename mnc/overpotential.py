@@ -61,7 +61,7 @@ OOH_ZPE = 0.471
 OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 
 # Set the root directory for data files
-root = '/pscratch/sd/j/jiuy97/6_MNC/figures'
+root = '/pscratch/sd/j/jiuy97/6_MNC/figures/formation_energy'
 relaxed_energies = {}
 scaling_relationship = pd.DataFrame()
 
