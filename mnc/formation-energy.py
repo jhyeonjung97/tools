@@ -49,7 +49,7 @@ for i in range(9):
     # path = f"/pscratch/sd/j/jiuy97/6_MNC/empty/2_/final_with_calculator.json"
     atoms = read(path)
     vacancy[i] = atoms.get_total_energy()
-save_path = '/pscratch/sd/j/jiuy97/6_MNC/figures'
+save_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/formation_energy'
 
 # spins = {'LS': '#ffe2cc', 'IS': '#cceaff', 'HS': '#e8dff2'}
 spins = {'LS': '#ffd199', 'IS': '#a8d9f9', 'HS': '#d5c8e4'}
