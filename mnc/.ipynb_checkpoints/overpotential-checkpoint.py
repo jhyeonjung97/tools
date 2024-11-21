@@ -83,7 +83,6 @@ def main():
             tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
             if not os.path.exists(tsv_path):
                 print(f"File not found: {tsv_path}")
-                
                 # Initialize as an empty DataFrame for missing adsorbates
                 energies[adsorbate] = pd.DataFrame({'energy': [np.nan]}, {'spin': [np.nan]})
                 relaxed_energies[adsorbate] = pd.DataFrame()  
