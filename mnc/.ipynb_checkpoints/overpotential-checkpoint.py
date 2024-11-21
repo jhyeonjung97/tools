@@ -80,19 +80,15 @@ def main():
         spin_cross_over = pd.DataFrame()
 
         for adsorbate in adsorbates:
-            if adsorbate not in relaxed_energies:
-                relaxed_energies[adsorbate] = pd.DataFrame()
-            relaxed_energies[adsorbate].at[relaxed_dz, column] = np.nan
-            
-            tag = '' if adsorbate == 'clean' else adsorbate
             tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
-            if os.path.exists(tsv_path):
-                energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
-            else:
-                scaling_relationship.at[metal, f'G_{tag}'] = np.nan
-                scaling_relationship.at[metal, f'dz_{tag}'] = np.nan
+            if not os.path.exists(tsv_path):
+                print(f"File not found: {tsv_path}")
+                # Initialize as an empty DataFrame for missing adsorbates
+                relaxed_energies[adsorbate] = pd.DataFrame()  
+                scaling_relationship.at[metal, f'G_{adsorbate if adsorbate != "clean" else ""}'] = np.nan
+                scaling_relationship.at[metal, f'dz_{adsorbate if adsorbate != "clean" else ""}'] = np.nan
                 continue
-                
+            energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
             relaxed_energies[adsorbate] = energies[adsorbate].iloc[7:].copy()
 
             for column in relaxed_energies[adsorbate].columns:
@@ -126,6 +122,7 @@ def main():
                     scaling_min = np.nan
                     scaling_dz = np.nan
 
+            tag = '' if adsorbate == 'clean' else adsorbate
             scaling_relationship.at[metal, f'G_{tag}'] = scaling_min
             scaling_relationship.at[metal, f'dz_{tag}'] = scaling_dz
 
@@ -258,7 +255,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.ylabel(f'{rxn} activity (-η, eV)', fontsize='large')
     plt.legend(labelspacing=0.3)
     plt.tight_layout()
-    filepath = f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relation/volcano_{rxn}.png'
+    filepath = f'/pscratch/sd/j/jiuy97/6_MNC/figures/volcano_{rxn}.png'
     plt.savefig(filepath)
     print(f"Figure saved as {filepath}")
     plt.close()
@@ -281,7 +278,7 @@ def scaling(x, y, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ym
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
     plt.tight_layout()
-    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relation/scaling_relationship_{ads1}_{ads2}.png')
+    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/scaling_relationship_{ads1}_{ads2}.png')
     print(f"Figure saved as scaling_relationship_{ads1}_{ads2}.png")
     plt.close()
         
