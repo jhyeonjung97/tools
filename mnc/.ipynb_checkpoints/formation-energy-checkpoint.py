@@ -49,7 +49,8 @@ for i in range(9):
     # path = f"/pscratch/sd/j/jiuy97/6_MNC/empty/2_/final_with_calculator.json"
     atoms = read(path)
     vacancy[i] = atoms.get_total_energy()
-    
+save_path = '/pscratch/sd/j/jiuy97/6_MNC/figures'
+
 # spins = {'LS': '#ffe2cc', 'IS': '#cceaff', 'HS': '#e8dff2'}
 spins = {'LS': '#ffd199', 'IS': '#a8d9f9', 'HS': '#d5c8e4'}
 min_spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
@@ -793,7 +794,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
     # plt.legend(labelspacing=0.3)
     plt.tight_layout()
-    plt.savefig(png_filename, bbox_inches="tight")
+    plt.savefig(os.path.join(save_path, png_filename), bbox_inches="tight")
     print(f"Figure saved as {png_filename}")
     plt.close()
 
@@ -825,6 +826,6 @@ if __name__ == '__main__':
     ax.legend(handles=custom_legend, ncol=3)
     ax.axis('off')
     png_filename = "custom_legend_markers_only.png"  # Update with your file path
-    plt.savefig(png_filename, bbox_inches="tight")
+    plt.savefig(os.path.join(save_path, png_filename), bbox_inches="tight")
     print(f"Figure saved as {png_filename}")
     plt.close()
