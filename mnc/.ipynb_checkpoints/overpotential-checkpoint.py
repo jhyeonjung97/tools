@@ -177,8 +177,8 @@ def main():
             spin_cross_over.loc[index, 'O'] = energies['O']['spin'].loc[index]
             spin_cross_over.loc[index, 'OOH'] = energies['OOH']['spin'].loc[index]
         
-        gibbs_energies.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
-        spin_cross_over.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_spin.tsv', sep='\t')
+        gibbs_energies.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
+        spin_cross_over.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{row}_{group}{metal}_spin.tsv', sep='\t')
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
@@ -209,7 +209,7 @@ def main():
     scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].apply(
         lambda row: row.idxmin() if row.notna().all() else np.nan, axis=1)
     
-    scaling_relationship.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.tsv', sep='\t', float_format='%.2f')
+    scaling_relationship.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/scaling_relationship.tsv', sep='\t', float_format='%.2f')
     
     volcano(scaling_relationship, rxn='OER', rds='dGmax', descriptor='dG2', xlabel='O-OH (dG2)', 
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
@@ -248,7 +248,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.ylabel(f'{rxn} activity (-η, eV)', fontsize='large')
     plt.legend(labelspacing=0.3)
     plt.tight_layout()
-    filepath = f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/volcano_{rxn}.png'
+    filepath = f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/volcano_{rxn}.png'
     plt.savefig(filepath)
     print(f"Figure saved as volcano_{rxn}.png")
     plt.close()
@@ -271,7 +271,7 @@ def scaling(x, y, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ym
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
     plt.tight_layout()
-    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship_{ads1}_{ads2}.png')
+    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/scaling_relationship_{ads1}_{ads2}.png')
     print(f"Figure saved as scaling_relationship_{ads1}_{ads2}.png")
     plt.close()
         
@@ -279,7 +279,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
     if gibbs_energies.isna().all().all():
         print("Dataframe contains only NaN values, skipping plot.")
         return
-    png_filename = f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_{rxn}.png'
+    png_filename = f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{row}_{group}{metal}_{rxn}.png'
     marker_size = 0.03
     fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
     plt.xlabel('dz (Å)', fontsize='large')
