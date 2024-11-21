@@ -81,14 +81,6 @@ def main():
 
         for adsorbate in adsorbates:
             tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
-            if not os.path.exists(tsv_path):
-                print(f"File not found: {tsv_path}")
-                # Initialize as an empty DataFrame for missing adsorbates
-                energies[adsorbate] = pd.DataFrame({'energy': [np.nan]}, {'spin': [np.nan]})
-                relaxed_energies[adsorbate] = pd.DataFrame()  
-                scaling_relationship.at[metal, f'G_{adsorbate if adsorbate != "clean" else ""}'] = np.nan
-                scaling_relationship.at[metal, f'dz_{adsorbate if adsorbate != "clean" else ""}'] = np.nan
-                continue
             energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
             relaxed_energies[adsorbate] = energies[adsorbate].iloc[7:].copy()
 
@@ -258,7 +250,7 @@ def volcano(scaling_relationship, rxn, rds, descriptor, xlabel, xmin, xmax, ymin
     plt.tight_layout()
     filepath = f'/pscratch/sd/j/jiuy97/6_MNC/figures/overpotential/volcano_{rxn}.png'
     plt.savefig(filepath)
-    print(f"Figure saved as {filepath}")
+    print(f"Figure saved as volcano_{rxn}.png")
     plt.close()
     
 def scaling(x, y, ads1, ads2, scaling_relationship, metals, xmin, xmax, ymin, ymax, txtx, txty):
