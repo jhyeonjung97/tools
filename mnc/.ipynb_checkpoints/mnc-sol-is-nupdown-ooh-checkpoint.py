@@ -63,7 +63,35 @@ elif path.exists('start.traj'):
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
 
-spin_states = spin_states_plus_3
+count_c = len([atom for atom in atoms if atom.symbol == 'C']) - 26
+count_n = len([atom for atom in atoms if atom.symbol == 'N'])
+count_o = len([atom for atom in atoms if atom.symbol == 'O'])
+count_h = len([atom for atom in atoms if atom.symbol == 'H'])
+oxi = count_n / 2 + count_o * 2 - count_h
+
+if count_o == 4 and count_h == 2:
+    oxi -= 4
+else:
+    oxi -= 2
+
+if count_c == 1 or oxi == 2:
+    spin_states = spin_states_plus_2
+elif oxi == 1:
+    spin_states = spin_states_plus_1
+elif oxi == 3:
+    spin_states = spin_states_plus_3
+elif oxi == 4:
+    spin_states = spin_states_plus_4
+elif oxi == 5:
+    spin_states = spin_states_plus_5
+elif oxi == 6:
+    spin_states = spin_states_plus_6
+elif oxi == 7:
+    spin_states = spin_states_plus_7
+elif oxi == 8:
+    spin_states = spin_states_plus_8
+else:
+    spin_states = spin_states_plus_2
     
 for atom in atoms:
     if atom.symbol in spin_states:

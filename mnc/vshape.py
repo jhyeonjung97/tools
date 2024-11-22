@@ -175,7 +175,7 @@ for row, elems in elements.items():
                     icohp_path = '/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/2_Ti/1_LS/oh/icohp/icohp.txt'
                 elif row == '3d_HS' and elem == 'V' and ads == 'o':
                     icohp_path = '/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/3_V/1_LS/o/icohp/icohp.txt'
-                elif row == '3d_HS' and elem == 'V' and ads == 'oh':
+                elif row == '3d_HS' and elem == 'V' and ads == 'oh': # in progress
                     icohp_path = '/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/3_V/1_LS/oh/icohp/icohp.txt'
                 else:
                     icohp_path = os.path.join(base_dir, ads, 'icohp/icohp.txt')
