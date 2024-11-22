@@ -9,9 +9,10 @@ rows=(
 
 spins=("LS" "IS" "HS")
 small_spins=("ls" "is" "hs")
-specific_metals=("Fe" "Co" "Mo" "Ru" "Pd" "W" "Pt")
+# specific_metals=("Fe" "Co" "Mo" "Ru" "Pd" "W" "Pt")
+specific_metals=("Fe")
 # adsorbates=("clean" "h" "o" "oh" "oh-o" "oho" "oh-oh" "ohoh" "oh-ooh" "ohooh" "o-o" "oo" "o-oh" "ooh" "ooh-o" "ooho" "ooh-oh" "oohoh" "o-ooh" "oooh" "ooh-ooh")
-adsorbates=("mh" "nh")
+adsorbates=("ooh")
 adsorbates1=("oh-o" "oh-oh" "oh-ooh" "o-o" "o-oh" "ooh-oh" "oh-ooh" "ooh-o" "o-ooh" "ooh-ooh")
 adsorbates5=("oho" "ohoh" "ohooh" "ooho" "oohoh" "oooh")
 ordered_rows=("3d" "4d" "5d")
@@ -48,7 +49,7 @@ for row in "${ordered_rows[@]}"; do
                             # for file in ~/bin/tools/mnc/add*.py; do
                             #     python "$file"
                             # done
-                            python ~/bin/tools/mnc/add-mh.py
+                            python ~/bin/tools/mnc/add-ooh.py
                             python ~/bin/tools/mnc/add-nh.py
                         else
                             echo "Target directory does not exist: $target_dir"
