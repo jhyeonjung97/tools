@@ -151,7 +151,7 @@ do
             dir=/pscratch/sd/j/jiuy97/6_MNC/0_clean/$path4/$path3/1_LS/$path1
         fi
 
-        if [[ $metal == 'Fe' ]] && [[ $ooh_spin == 'HS' ]]; then
+        if [[ $metal == 'Mo' || $metal == 'W' ]]; then
             cd $ooh_dir; pwd
             cp $dir/restart-ooh.json ./restart.json
             cp ~/bin/tools/mnc/submit.sh ./
