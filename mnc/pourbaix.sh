@@ -62,10 +62,19 @@ for row in "${ordered_rows[@]}"; do
                     
                     # Create pourbaix directories
                     for adsorbate in "${adsorbates[@]}"; do
-                        if [[ $dz == '1' ]] && [[ " ${adsorbates5[@]} " == " ${adsorbate} " ]]; then
-                            continue
-                        elif [[ $dz == '5' ]] && [[ " ${adsorbates1[@]} " == " ${adsorbate} " ]]; then
-                            continue
+
+                        if [[ $dz == '1' ]]; then
+                            for item in ${adsorbates5[@]}; do
+                                if [[ $item == $adsorbate ]]; then
+                                    continue
+                                fi
+                            done
+                        elif [[ $dz == '5' ]]; then
+                            for item in ${adsorbates1[@]}; do
+                                if [[ $item == $adsorbate ]]; then
+                                    continue
+                                fi
+                            done
                         fi
                     
                         adsorbate_dir="${pourbaix}/${adsorbate}/${spin}${dz}"
