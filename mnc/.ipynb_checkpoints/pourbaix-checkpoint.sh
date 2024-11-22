@@ -95,7 +95,8 @@ for row in "${ordered_rows[@]}"; do
                         
                         cp ~/bin/tools/mnc/submit.sh .
                         sed -i -e "s/jobname/${index}${metal}${spin}${adsorbate}${dz}/" submit.sh
-                        sed -i -e "s/mnc-sol/mnc-sol-${small_spin}-nupdown/" submit.sh
+                        sed -i -e "s/mnc-sol/mnc-sol-${small_spin}-nupdown-ooh/" submit.sh
+                        sbatch submit.sh
                     done
                 done
             done
