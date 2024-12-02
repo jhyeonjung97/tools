@@ -431,9 +431,9 @@ def main():
                                         position_O1 = positions[atom.index]
                                     elif atom.symbol == 'O':
                                         position_O2 = positions[atom.index]
+                                print(position_M, position_O1, position_O2)
                                 df_O_OH_bond1.at[dz, spin] = np.linalg.norm(position_M - position_O1)
                                 df_O_OH_bond2.at[dz, spin] = np.linalg.norm(position_M - position_O2)
-                                print(df_O_OH_bond1, df_O_OH_bond2)
                                 position_O1 = None
                             except:
                                 df_O_OH_dz.at[dz, spin] = 0
