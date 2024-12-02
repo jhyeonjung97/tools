@@ -423,8 +423,11 @@ def main():
                                         df_O_OH_dz.at[dz, spin] = atom.z - 10.0
                                         df_O_OH_mag.at[dz, spin] = magmoms[atom.index]
                                         if atom.index < len(atoms) - 1:
-                                            next_atom = atoms[atom.index + 1]
-                                            df_O_OH_bond1.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
+                                            next_atom1 = atoms[atom.index + 1]
+                                            next_atom2 = atoms[atom.index + 2]
+                                            next_atom3 = atoms[atom.index + 3]
+                                            print(next_atom1.symbol, next_atom2.symbol, next_atom3.symbol)
+                                            df_O_OH_bond1.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom1.index])
                                             df_O_OH_bond2.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index + 1])
                             except:
                                 df_O_OH_dz.at[dz, spin] = 0
@@ -464,7 +467,6 @@ def main():
                                         if atom.index < len(atoms) - 1:
                                             next_atom1 = atoms[atom.index + 1]
                                             next_atom2 = atoms[atom.index + 2]
-                                            print(next_atom1.symbol, next_atom2.symbol)
                                             df_OH_OH_bond1.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom1.index])
                                             df_OH_OH_bond2.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom2.index])
                             except:
