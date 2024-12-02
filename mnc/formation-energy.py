@@ -1042,10 +1042,10 @@ def main():
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moments', png_filename=png_O_OH_mag_filename)
                 plotting(df=df_O_OH_bond1, df_relaxed=df_O_OH_relaxed_bond1, dzs=dzs, spins=spins, 
-                         ymin=1.6, ymax=2.1, yticks = np.arange(1.6, 2.2, 0.1),
+                         ymin=1.6, ymax=2.0, yticks = np.arange(1.6, 2.2, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_O_OH_bond1_filename)
                 plotting(df=df_O_OH_bond2, df_relaxed=df_O_OH_relaxed_bond2, dzs=dzs, spins=spins, 
-                         ymin=1.9, ymax=2.4, yticks = np.arange(1.9, 2.5, 0.1),
+                         ymin=1.9, ymax=2.3, yticks = np.arange(1.9, 2.5, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_O_OH_bond2_filename)
                 
             if path_OH_OH: 
