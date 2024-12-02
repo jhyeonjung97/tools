@@ -428,14 +428,10 @@ def main():
                                         df_O_OH_dz.at[dz, spin] = atom.z - 10.0
                                         df_O_OH_mag.at[dz, spin] = magmoms[atom.index]
                                         position_M = positions[atom.index]
-                                        print(position_M)
                                     elif atom.symbol == 'O' and position_O1 is None:
                                         position_O1 = positions[atom.index]
-                                        print(position_O1)
                                     elif atom.symbol == 'O':
                                         position_O2 = positions[atom.index]
-                                        print(position_O2)
-                                print(position_M, position_O1, position_O2)
                                 df_O_OH_bond1.at[dz, spin] = np.linalg.norm(position_M - position_O1)
                                 df_O_OH_bond2.at[dz, spin] = np.linalg.norm(position_M - position_O2)
                                 position_O1 = None
