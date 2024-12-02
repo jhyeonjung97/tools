@@ -463,6 +463,8 @@ def main():
                                         df_OH_OH_mag.at[dz, spin] = magmoms[atom.index]
                                         if atom.index < len(atoms) - 1:
                                             next_atom = atoms[atom.index + 1]
+                                            print(atom.index, next_atom.index)
+                                            print(atom.symbol, next_atom.symbol)
                                             df_OH_OH_bond1.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
                                             df_OH_OH_bond2.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index + 1])
                             except:
@@ -1021,7 +1023,7 @@ def main():
                          ymin=1.4, ymax=1.9, yticks = np.arange(1.4, 2.0, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_O_OH_bond1_filename)
                 plotting(df=df_O_OH_bond2, df_relaxed=df_O_OH_relaxed_bond2, dzs=dzs, spins=spins, 
-                         ymin=1.8, ymax=2.3, yticks = np.arange(1.8, 2.4, 0.1),
+                         ymin=1.9, ymax=2.4, yticks = np.arange(1.9, 2.5, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_O_OH_bond2_filename)
                 
             if path_OH_OH: 
@@ -1042,10 +1044,10 @@ def main():
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moments', png_filename=png_OH_OH_mag_filename)
                 plotting(df=df_OH_OH_bond1, df_relaxed=df_OH_OH_relaxed_bond1, dzs=dzs, spins=spins, 
-                         ymin=1.4, ymax=1.9, yticks = np.arange(1.4, 2.0, 0.1),
+                         ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.3, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_OH_OH_bond1_filename)
                 plotting(df=df_OH_OH_bond2, df_relaxed=df_OH_OH_relaxed_bond2, dzs=dzs, spins=spins, 
-                         ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.3, 0.1),
+                         ymin=1.7, ymax=2.6, yticks = np.arange(1.7, 2.3, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_OH_OH_bond2_filename)
                 
 def relative(df, df_rel):
