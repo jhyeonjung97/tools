@@ -80,6 +80,7 @@ nitrogen2_G = nitrogen2_E - nitrogen2_TS + nitrogen2_ZPE
 nitrogen_G = nitrogen2_G / 2
 
 carbon_E = -9.3573635
+position_O1 = None
 
 metal_path = '/pscratch/sd/j/jiuy97/6_MNC/gas/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
@@ -314,9 +315,10 @@ def main():
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
                                         df_O_dz.at[dz, spin] = atom.z - 10.0
                                         df_O_mag.at[dz, spin] = magmoms[atom.index]
-                                        if atom.index < len(atoms) - 1:
-                                            next_atom = atoms[atom.index + 1]
-                                            df_O_bond.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
+                                        position_M = positions[atom.index]
+                                    elif atom.symbol == 'O':
+                                        position_O = position[atom.index]
+                                df_O_bond.at[dz, spin] = np.linalg.norm(positions_M - positions_O)
                             except:
                                 df_O_dz.at[dz, spin] = 0
                                 df_O_mag.at[dz, spin] = 0
@@ -350,9 +352,10 @@ def main():
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
                                         df_OH_dz.at[dz, spin] = atom.z - 10.0
                                         df_OH_mag.at[dz, spin] = magmoms[atom.index]
-                                        if atom.index < len(atoms) - 1:
-                                            next_atom = atoms[atom.index + 1]
-                                            df_OH_bond.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
+                                        position_M = positions[atom.index]
+                                    elif atom.symbol == 'O':
+                                        position_O = position[atom.index]
+                                df_OH_bond.at[dz, spin] = np.linalg.norm(positions_M - positions_O)
                             except:
                                 df_OH_dz.at[dz, spin] = 0
                                 df_OH_mag.at[dz, spin] = 0
@@ -386,9 +389,10 @@ def main():
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
                                         df_OOH_dz.at[dz, spin] = atom.z - 10.0
                                         df_OOH_mag.at[dz, spin] = magmoms[atom.index]
-                                        if atom.index < len(atoms) - 1:
-                                            next_atom = atoms[atom.index + 1]
-                                            df_OOH_bond.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
+                                        position_M = positions[atom.index]
+                                    elif atom.symbol == 'O':
+                                        position_O = position[atom.index]
+                                df_OOH_bond.at[dz, spin] = np.linalg.norm(positions_M - positions_O)
                             except:
                                 df_OOH_dz.at[dz, spin] = 0
                                 df_OOH_mag.at[dz, spin] = 0
@@ -422,12 +426,14 @@ def main():
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
                                         df_O_OH_dz.at[dz, spin] = atom.z - 10.0
                                         df_O_OH_mag.at[dz, spin] = magmoms[atom.index]
-                                        if atom.index < len(atoms) - 1:
-                                            next_atom1 = atoms[atom.index + 1]
-                                            next_atom2 = atoms[atom.index + 2]
-                                            print(next_atom1.symbol, next_atom2.symbol)
-                                            df_O_OH_bond1.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom1.index])
-                                            df_O_OH_bond2.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom2.index])
+                                        position_M = positions[atom.index]
+                                    elif atom.symbol == 'O' and position_O1 is None:
+                                        position_O1 = position[atom.index]
+                                    elif atom.symbol == 'O':
+                                        position_O2 = position[atom.index]
+                                df_O_OH_bond1.at[dz, spin] = np.linalg.norm(positions_M - positions_O1)
+                                df_O_OH_bond2.at[dz, spin] = np.linalg.norm(positions_M - positions_O2)
+                                position_O1 = None
                             except:
                                 df_O_OH_dz.at[dz, spin] = 0
                                 df_O_OH_mag.at[dz, spin] = 0
@@ -463,12 +469,14 @@ def main():
                                     if atom.symbol not in ['N', 'C', 'O', 'H']:
                                         df_OH_OH_dz.at[dz, spin] = atom.z - 10.0
                                         df_OH_OH_mag.at[dz, spin] = magmoms[atom.index]
-                                        if atom.index < len(atoms) - 1:
-                                            next_atom1 = atoms[atom.index + 1]
-                                            next_atom2 = atoms[atom.index + 2]
-                                            print(next_atom1.symbol, next_atom2.symbol)
-                                            df_OH_OH_bond1.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom1.index])
-                                            df_OH_OH_bond2.at[dz, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom2.index])
+                                        position_M = positions[atom.index]
+                                    elif atom.symbol == 'O' and position_O1 is None:
+                                        position_O1 = position[atom.index]
+                                    elif atom.symbol == 'O':
+                                        position_O2 = position[atom.index]
+                                df_OH_OH_bond1.at[dz, spin] = np.linalg.norm(positions_M - positions_O1)
+                                df_OH_OH_bond2.at[dz, spin] = np.linalg.norm(positions_M - positions_O2)
+                                position_O1 = None
                             except:
                                 df_OH_OH_dz.at[dz, spin] = 0
                                 df_OH_OH_mag.at[dz, spin] = 0
@@ -534,9 +542,10 @@ def main():
                             for atom in atoms:
                                 if atom.symbol not in ['N', 'C', 'O', 'H']:
                                     df_O_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
-                                    if atom.index < len(atoms) - 1:
-                                        next_atom = atoms[atom.index + 1]
-                                        df_O_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
+                                    position_M = positions[atom.index]
+                                elif atom.symbol == 'O':
+                                    position_O = position[atom.index]
+                            df_O_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(positions_M - positions_O)
                         except:
                             df_O_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_O_relaxed_mag.at[dz_relaxed, spin] = 0
@@ -567,9 +576,10 @@ def main():
                             for atom in atoms:
                                 if atom.symbol not in ['N', 'C', 'O', 'H']:
                                     df_OH_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
-                                    if atom.index < len(atoms) - 1:
-                                        next_atom = atoms[atom.index + 1]
-                                        df_OH_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
+                                    position_M = positions[atom.index]
+                                elif atom.symbol == 'O':
+                                    position_O = position[atom.index]
+                            df_OH_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(positions_M - positions_O)
                         except:
                             df_OH_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_OH_relaxed_mag.at[dz_relaxed, spin] = 0
@@ -600,9 +610,10 @@ def main():
                             for atom in atoms:
                                 if atom.symbol not in ['N', 'C', 'O', 'H']:
                                     df_OOH_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
-                                    if atom.index < len(atoms) - 1:
-                                        next_atom = atoms[atom.index + 1]
-                                        df_OOH_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom.index])
+                                    position_M = positions[atom.index]
+                                elif atom.symbol == 'O':
+                                    position_O = position[atom.index]
+                            df_OOH_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(positions_M - positions_O)
                         except:
                             df_OOH_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_OOH_relaxed_mag.at[dz_relaxed, spin] = 0
@@ -633,12 +644,14 @@ def main():
                             for atom in atoms:
                                 if atom.symbol not in ['N', 'C', 'O', 'H']:
                                     df_O_OH_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
-                                    if atom.index < len(atoms) - 1:
-                                        next_atom1 = atoms[atom.index + 1]
-                                        next_atom2 = atoms[atom.index + 2]
-                                        print(next_atom1.symbol, next_atom2.symbol)
-                                        df_O_OH_relaxed_bond1.at[dz_relaxed, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom1.index])
-                                        df_O_OH_relaxed_bond2.at[dz_relaxed, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom2.index])
+                                    position_M = positions[atom.index]
+                                elif atom.symbol == 'O' and position_O1 == None:
+                                    position_O1 = position[atom.index]
+                                elif atom.symbol == 'O':
+                                    position_O2 = position[atom.index]
+                            df_O_OH_relaxed_bond1.at[dz_relaxed, spin] = np.linalg.norm(positions_M - positions_O1)
+                            df_O_OH_relaxed_bond2.at[dz_relaxed, spin] = np.linalg.norm(positions_M - positions_O2)
+                            position_O1 = None
                         except:
                             df_O_OH_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_O_OH_relaxed_mag.at[dz_relaxed, spin] = 0
@@ -670,12 +683,14 @@ def main():
                             for atom in atoms:
                                 if atom.symbol not in ['N', 'C', 'O', 'H']:
                                     df_OH_OH_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
-                                    if atom.index < len(atoms) - 1:
-                                        next_atom1 = atoms[atom.index + 1]
-                                        next_atom2 = atoms[atom.index + 2]
-                                        print(next_atom1.symbol, next_atom2.symbol)
-                                        df_OH_OH_relaxed_bond1.at[dz_relaxed, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom1.index])
-                                        df_OH_OH_relaxed_bond2.at[dz_relaxed, spin] = np.linalg.norm(positions[atom.index] - positions[next_atom2.index])
+                                    position_M = positions[atom.index]
+                                elif atom.symbol == 'O' and position_O1 == None:
+                                    position_O1 = position[atom.index]
+                                elif atom.symbol == 'O':
+                                    position_O2 = position[atom.index]
+                            df_OH_OH_relaxed_bond1.at[dz_relaxed, spin] = np.linalg.norm(positions_M - positions_O1)
+                            df_OH_OH_relaxed_bond2.at[dz_relaxed, spin] = np.linalg.norm(positions_M - positions_O2)
+                            position_O1 = None
                         except:
                             df_OH_OH_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_OH_OH_relaxed_mag.at[dz_relaxed, spin] = 0
