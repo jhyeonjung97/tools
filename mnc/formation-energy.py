@@ -427,6 +427,7 @@ def main():
                                         df_O_OH_dz.at[dz, spin] = atom.z - 10.0
                                         df_O_OH_mag.at[dz, spin] = magmoms[atom.index]
                                         position_M = positions[atom.index]
+                                        print(position_M)
                                     elif atom.symbol == 'O' and position_O1 is None:
                                         position_O1 = positions[atom.index]
                                     elif atom.symbol == 'O':
