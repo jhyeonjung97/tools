@@ -80,7 +80,6 @@ nitrogen2_G = nitrogen2_E - nitrogen2_TS + nitrogen2_ZPE
 nitrogen_G = nitrogen2_G / 2
 
 carbon_E = -9.3573635
-position_O1 = None
 
 metal_path = '/pscratch/sd/j/jiuy97/6_MNC/gas/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
@@ -227,7 +226,9 @@ def main():
             tsv_OH_OH_bond2_filename = f'{row_key}_{m+2}{metal}_OH_OH_bond2.tsv'
             png_OH_OH_bond1_filename = f'{row_key}_{m+2}{metal}_OH_OH_bond1.png'
             png_OH_OH_bond2_filename = f'{row_key}_{m+2}{metal}_OH_OH_bond2.png'
-            
+
+            position_O1 = None
+
             # df_dict = {
             #     "default": ["df", "Ef", "dz", "df_mag", "df_relaxed", "df_relaxed_mag"],
             #     "O": ["df_O", "Ef_O", "dz_O", "df_O_mag", "df_O_relaxed", "df_O_relaxed_mag"],
