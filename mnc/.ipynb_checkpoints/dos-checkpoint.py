@@ -61,7 +61,7 @@ for i, orbital in enumerate(orbitals):
         axes[i].xaxis.set_visible(False)  # Hide y-axis for other subplots
 
     # Add legend
-    axes[i].legend(loc="upper left", fontsize=9)
+    axes[i].legend(loc="upper left", fontsize=10)
 
 # Set shared x-axis labels
 axes[-1].set_xlabel("Energy (eV)", fontsize=10)
