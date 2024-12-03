@@ -62,9 +62,9 @@ for i, orbital in enumerate(orbitals):
 axes[-1].set_ylabel("DOS (arb. units)", fontsize=12)
 axes[-1].set_xlabel("Energy (eV)", fontsize=12)
 
-# Remove y-grid
-for ax in axes:
-    ax.grid(axis='y', visible=False)
+# # Remove y-grid
+# for ax in axes:
+#     ax.grid(axis='y', visible=False)
 
 # Set x-axis range
 plt.xlim(args.xrange)
