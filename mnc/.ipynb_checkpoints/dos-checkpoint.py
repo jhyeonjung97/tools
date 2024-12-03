@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 import argparse
 
 # Parse command-line arguments
-parser = argparse.ArgumentParser(description="Plot projected DOS for orbitals with unified y-axis.")
+parser = argparse.ArgumentParser(description="Plot projected DOS for orbitals with unified y-axis in a single frame.")
 parser.add_argument("--file", type=str, required=True, help="Path to the input DOS data file.")
-parser.add_argument("--xrange", type=float, nargs=2, metavar=('XMIN', 'XMAX'), default=(-10, 10),
-                    help="Energy range for the x-axis (default: -10 to 10).")
+parser.add_argument("--xrange", type=float, nargs=2, metavar=('XMIN', 'XMAX'), default=(-8, 6),
+                    help="Energy range for the x-axis (default: -8 to 6).")
 args = parser.parse_args()
 
 # Define column names
@@ -35,8 +35,8 @@ for orbital in orbitals:
 # Scale the limit symmetrically
 ylimit = max(abs(y_min), abs(y_max)) * 1.2
 
-# Create subplots
-fig, axes = plt.subplots(len(orbitals), 1, figsize=(8, len(orbitals) * 2.5), sharex=True)
+# Create a single figure with stacked plots
+fig, axes = plt.subplots(len(orbitals), 1, figsize=(8, len(orbitals) * 2), sharex=True, sharey=True)
 
 for i, orbital in enumerate(orbitals):
     orbital_up = data[f"{orbital}(up)"]
@@ -55,12 +55,11 @@ for i, orbital in enumerate(orbitals):
     # Set y-axis limits symmetrically
     axes[i].set_ylim(-ylimit, +ylimit)
 
-    axes[i].legend()
-    axes[i].set_ylabel("DOS (arb. units)")
-    axes[i].grid(alpha=0.3)
+    axes[i].legend(loc="upper right", fontsize=8)
+    axes[i].set_ylabel("DOS (arb. units)", fontsize=10)
 
 # Set shared x-axis labels
-axes[-1].set_xlabel("Energy (eV)")
+axes[-1].set_xlabel("Energy (eV)", fontsize=12)
 plt.xlim(args.xrange)
 
 # Adjust layout
