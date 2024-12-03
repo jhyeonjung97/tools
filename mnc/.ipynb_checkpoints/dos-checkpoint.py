@@ -47,8 +47,8 @@ for i, orbital in enumerate(orbitals):
     # Plot on the respective subplot
     axes[i].plot(energy, orbital_up, label=f"{orbital} (up)", color=colors[i], linestyle='-', linewidth=1.5)
     axes[i].plot(energy, orbital_down, label=None, color=colors[i], linestyle='-', linewidth=1.5)
-    axes[i].fill_between(energy, 0, orbital_up, alpha=0.3)
-    axes[i].fill_between(energy, 0, orbital_down, alpha=0.3)
+    axes[i].fill_between(energy, 0, orbital_up, color=colors[i], alpha=0.3)
+    axes[i].fill_between(energy, 0, orbital_down, color=colors[i], alpha=0.3)
     
     # Add horizontal and vertical dashed lines
     axes[i].axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontal line at y=0
