@@ -54,24 +54,14 @@ for i, orbital in enumerate(orbitals):
     
     # Set y-axis limits symmetrically
     axes[i].set_ylim(-ylimit, +ylimit)
-
-    # For the specific subplot (i == 2), show only the y-title
-    if i == 2:
-        axes[i].set_ylabel('DOS (arb. units)', fontsize=12)  # Customizable y-title
-        axes[i].tick_params(axis='y', which='both', left=False, right=False, labelleft=False)  # Hide ticks
-        axes[i].grid(False)  # Remove grid
-    else:
-        axes[i].yaxis.set_visible(False)  # Hide y-axis for other subplots
+    axes[i].yaxis.set_visible(False)  # Hide y-axis for other subplots
+    axes[i].xaxis.set_visible(False)  # Hide y-axis for other subplots
 
     # Add legend
     axes[i].legend(loc="upper left", fontsize=8)
 
 # Set shared x-axis labels
 axes[-1].set_xlabel("Energy (eV)", fontsize=12)
-
-# Remove grid completely for all subplots
-for ax in axes:
-    ax.grid(False)
 
 # Set x-axis range
 plt.xlim(args.xrange)
