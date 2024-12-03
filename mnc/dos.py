@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 import argparse
 
 # Parse command-line arguments
-parser = argparse.ArgumentParser(description="Plot projected DOS for orbitals with unified y-axis and no y-grid.")
+parser = argparse.ArgumentParser(description="Plot projected DOS for orbitals with unified y-axis and customizable y-title.")
 parser.add_argument("--file", type=str, required=True, help="Path to the input DOS data file.")
 parser.add_argument("--xrange", type=float, nargs=2, metavar=('XMIN', 'XMAX'), default=(-8, 6),
                     help="Energy range for the x-axis (default: -8 to 6).")
+parser.add_argument("--ytitle", type=str, default="DOS (arb. units)", help="Custom y-axis title.")
 args = parser.parse_args()
 
 # Define column names
@@ -55,23 +56,21 @@ for i, orbital in enumerate(orbitals):
     # Set y-axis limits symmetrically
     axes[i].set_ylim(-ylimit, +ylimit)
 
-    # Show y-axis ticks and labels only for the first subplot
+    # Show y-axis ticks and labels only for the third subplot
     if i == 2:
-        axes[i].set_ylabel("DOS (arb. units)", fontsize=12)
+        axes[i].set_ylabel(args.ytitle, fontsize=12)  # Customizable y-title
     else:
         axes[i].yaxis.set_visible(False)  # Hide y-axis for other subplots
-
-    if i == 4:
-        axes[i].set_xlabel("Energy (eV)", fontsize=12)
-    else:
-        axes[i].xaxis.set_visible(False)  # Hide y-axis for other subplots
 
     # Add legend
     axes[i].legend(loc="upper left", fontsize=8)
 
-# Completely remove grid for all subplots
+# Set shared x-axis labels
+axes[-1].set_xlabel("Energy (eV)", fontsize=12)
+
+# Remove grid completely
 for ax in axes:
-    ax.grid(False)  # Disable both x and y grid for all subplots
+    ax.grid(False)
 
 # Set x-axis range
 plt.xlim(args.xrange)
