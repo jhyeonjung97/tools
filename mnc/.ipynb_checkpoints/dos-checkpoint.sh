@@ -10,9 +10,11 @@ do
     if [[ $spin == 'stable' ]]; then
         spin='MS'
     fi
-    sed -i 's/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/0.0/g' vasprun.xml
-    cp /pscratch/sd/j/jiuy97/6_MNC/scripts/sumo.sh .
-    sed -i -e "s/XX/$metal/g" sumo.sh
-    sh sumo.sh
-    python ~/bin/tools/mnc/dos.py --file sumo_${metal}_dos.dat --output pdos_${row}_${m}${metal}_${spin}${dz}.png
+    if [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/pdos/pdos_${row}_${m}${metal}_${spin}${dz}.png" ]]; then
+        sed -i 's/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/0.0/g' vasprun.xml
+        cp /pscratch/sd/j/jiuy97/6_MNC/scripts/sumo.sh .
+        sed -i -e "s/XX/$metal/g" sumo.sh
+        sh sumo.sh
+        python ~/bin/tools/mnc/dos.py --file sumo_${metal}_dos.dat --output pdos_${row}_${m}${metal}_${spin}${dz}.png
+    fi
 done
