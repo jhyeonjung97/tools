@@ -7,6 +7,7 @@ do
     spin=$(echo "${path[-2]}" | cut -d'_' -f2)
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
     if [[ $metal == 'Ti' ]] && [[ $spin == 'HS' ]] && [[ $dz == '2' ]]; then
+        sed -i 's/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/0.0/g' vasprun.xml
         cp /pscratch/sd/j/jiuy97/6_MNC/scripts/sumo.sh .
         sed -i -e "s/XX/$metal/g" sumo.sh
         sh sumo.sh
