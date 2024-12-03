@@ -11,9 +11,13 @@ parser.add_argument("--output", type=str, default=None, help="Output file name t
 args = parser.parse_args()
 
 # Define column names
+# columns = [
+#     "energy", "dxy(up)", "dxy(down)", "dyz(up)", "dyz(down)",
+#     "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dx2(up)", "dx2(down)"
+# ]
 columns = [
-    "energy", "dxy(up)", "dxy(down)", "dyz(up)", "dyz(down)",
-    "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dx2(up)", "dx2(down)"
+    "energy", "dyz(up)", "dyz(down)", "dx2(up)", "dx2 (down)",
+    "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dxy(up)", "dxy(down)"
 ]
 colors = ['blue', 'orange', 'green', 'red', 'purple']
 
@@ -24,8 +28,8 @@ data = pd.read_csv(args.file, delim_whitespace=True, comment='#', names=columns)
 energy = data["energy"]
 
 # Define orbitals to plot
-orbitals = ["dxy", "dyz", "dz2", "dxz", "dx2"]
-# orbitals = ["dyz", "dx2", "dz2", "dxz", "dxy"]
+# orbitals = ["dxy", "dyz", "dz2", "dxz", "dx2"]
+orbitals = ["dyz", "dx2", "dz2", "dxz", "dxy"]
 
 # Find global y-axis range
 y_min = float("inf")
@@ -42,9 +46,8 @@ ylimit = max(abs(y_min), abs(y_max)) * 1.2
 fig, axes = plt.subplots(len(orbitals), 1, figsize=(4, len(orbitals) * 1.5), sharex=True,
                          gridspec_kw={"hspace": 0})  # No vertical space between subplots
 
-new_orbitals = [orbitals[1], orbitals[4], orbitals[2], orbitals[3], orbitals[0]]
                 
-for i, orbital in enumerate(new_orbitals):
+for i, orbital in enumerate(orbitals):
     orbital_up = data[f"{orbital}(up)"]
     orbital_down = data[f"{orbital}(down)"]
 
