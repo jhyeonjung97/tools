@@ -36,7 +36,7 @@ for orbital in orbitals:
 ylimit = max(abs(y_min), abs(y_max)) * 1.2
 
 # Create a single figure with stacked plots
-fig, axes = plt.subplots(len(orbitals), 1, figsize=(8, len(orbitals) * 2), sharex=True)
+fig, axes = plt.subplots(len(orbitals), 1, figsize=(4, len(orbitals) * 2), sharex=True)
 
 for i, orbital in enumerate(orbitals):
     orbital_up = data[f"{orbital}(up)"]
