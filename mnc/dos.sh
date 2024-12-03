@@ -1,4 +1,4 @@
-for dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*_*/*_*/*_
+for dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*_*/*_HS/*_
 do
     cd $dir
     IFS='/' read -r -a path <<< $dir
@@ -10,7 +10,7 @@ do
     if [[ $spin == 'stable' ]]; then
         spin='MS'
     fi
-    if [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/pdos/pdos_${ads}_${m}${metal}_${spin}${dz}.png" ]]; then
+    if [[ $dz == 0 || $dz == 6 ]] && [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/pdos/pdos_${ads}_${m}${metal}_${spin}${dz}.png" ]]; then
         sed -i 's/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/0.0/g' vasprun.xml
         cp /pscratch/sd/j/jiuy97/6_MNC/scripts/sumo.sh .
         sed -i -e "s/XX/$metal/g" sumo.sh
