@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import argparse
 
 # Parse command-line arguments
-parser = argparse.ArgumentParser(description="Plot projected DOS for orbitals with unified y-axis in a single frame.")
+parser = argparse.ArgumentParser(description="Plot projected DOS for orbitals with unified y-axis and no y-grid.")
 parser.add_argument("--file", type=str, required=True, help="Path to the input DOS data file.")
 parser.add_argument("--xrange", type=float, nargs=2, metavar=('XMIN', 'XMAX'), default=(-8, 6),
                     help="Energy range for the x-axis (default: -8 to 6).")
@@ -36,7 +36,7 @@ for orbital in orbitals:
 ylimit = max(abs(y_min), abs(y_max)) * 1.2
 
 # Create a single figure with stacked plots
-fig, axes = plt.subplots(len(orbitals), 1, figsize=(8, len(orbitals) * 2), sharex=True, sharey=True)
+fig, axes = plt.subplots(len(orbitals), 1, figsize=(8, len(orbitals) * 2), sharex=True)
 
 for i, orbital in enumerate(orbitals):
     orbital_up = data[f"{orbital}(up)"]
@@ -55,11 +55,23 @@ for i, orbital in enumerate(orbitals):
     # Set y-axis limits symmetrically
     axes[i].set_ylim(-ylimit, +ylimit)
 
+    # Show y-axis ticks and labels only for the first subplot
+    if i == 0:
+        axes[i].set_ylabel("DOS (arb. units)", fontsize=10)
+    else:
+        axes[i].yaxis.set_visible(False)  # Hide y-axis for other subplots
+
+    # Add legend
     axes[i].legend(loc="upper right", fontsize=8)
-    axes[i].set_ylabel("DOS (arb. units)", fontsize=10)
 
 # Set shared x-axis labels
 axes[-1].set_xlabel("Energy (eV)", fontsize=12)
+
+# Remove y-grid
+for ax in axes:
+    ax.grid(axis='y', visible=False)
+
+# Set x-axis range
 plt.xlim(args.xrange)
 
 # Adjust layout
