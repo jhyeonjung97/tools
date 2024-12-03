@@ -46,7 +46,7 @@ for i, orbital in enumerate(orbitals):
     orbital_down = data[f"{orbital}(down)"]
 
     # Plot on the respective subplot
-    axes[i].plot(energy, orbital_up, label=f"{orbital} (up)", color=colors[i], linestyle='-', linewidth=1.5)
+    axes[i].plot(energy, orbital_up, label=f"{orbital}", color=colors[i], linestyle='-', linewidth=1.5)
     axes[i].plot(energy, orbital_down, label=None, color=colors[i], linestyle='-', linewidth=1.5)
     axes[i].fill_between(energy, 0, orbital_up, color=colors[i], alpha=0.3)
     axes[i].fill_between(energy, 0, orbital_down, color=colors[i], alpha=0.3)
