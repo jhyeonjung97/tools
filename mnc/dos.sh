@@ -1,4 +1,4 @@
-for dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*_*/*_HS/*_
+for dir in /pscratch/sd/j/jiuy97/6_MNC/2_OH/*_*/*_HS/*_
 do
     cd $dir
     IFS='/' read -r -a path <<< $dir
