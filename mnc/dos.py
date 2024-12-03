@@ -55,7 +55,8 @@ for i, orbital in enumerate(orbitals):
     # Set y-axis limits symmetrically
     axes[i].set_ylim(-ylimit, +ylimit)
     axes[i].yaxis.set_visible(False)  # Hide y-axis for other subplots
-    axes[i].xaxis.set_visible(False)  # Hide y-axis for other subplots
+    if i != 4:
+        axes[i].xaxis.set_visible(False)  # Hide y-axis for other subplots
 
     # Add legend
     axes[i].legend(loc="upper left", fontsize=8)
