@@ -16,8 +16,8 @@ args = parser.parse_args()
 #     "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dx2(up)", "dx2(down)"
 # ]
 columns = [
-    "energy", "dyz(up)", "dyz(down)", "dx2(up)", "dx2(down)",
-    "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dxy(up)", "dxy(down)"
+    "energy", "dx2(up)", "dx2(down)", "dxy(up)", "dxy(down)",
+    "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dyz(up)", "dyz(down)"
 ]
 colors = ['blue', 'orange', 'green', 'red', 'purple']
 
