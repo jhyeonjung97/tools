@@ -69,9 +69,9 @@ for i, orbital in enumerate(orbitals):
     # Add legend
     axes[i].legend(loc="upper left", fontsize=8)
 
-# Remove y-grid
+# Completely remove grid for all subplots
 for ax in axes:
-    ax.grid(axis='y', visible=False)
+    ax.grid(False)  # Disable both x and y grid for all subplots
 
 # Set x-axis range
 plt.xlim(args.xrange)
