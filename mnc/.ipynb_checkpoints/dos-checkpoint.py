@@ -5,7 +5,6 @@ import argparse
 
 def gaussian_smearing(x, y, sigma, num_points=1000):
     """Apply Gaussian smearing to DOS."""
-    # Create a fine grid for the smeared DOS
     x_grid = np.linspace(x.min(), x.max(), num_points)
     smeared_y = np.zeros_like(x_grid)
     for xi, yi in zip(x, y):
@@ -17,6 +16,8 @@ def gaussian_smearing(x, y, sigma, num_points=1000):
 parser = argparse.ArgumentParser(description="Plot projected DOS with Gaussian smearing.")
 parser.add_argument("--file", type=str, required=True, help="Path to the input DOS data file.")
 parser.add_argument("--gaussian", type=float, default=0.0, help="Gaussian smearing value in eV (default: 0, no smearing).")
+parser.add_argument("--xrange", type=float, nargs=2, metavar=('XMIN', 'XMAX'),
+                    help="Energy range for the x-axis (e.g., --xrange -5 5).")
 args = parser.parse_args()
 
 # Define column names
@@ -52,6 +53,10 @@ plt.title("Projected DOS for dxy Orbital (Gaussian Smearing)")
 plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
 plt.legend()
 plt.grid(alpha=0.3)
+
+# Set x-axis range if specified
+if args.xrange:
+    plt.xlim(args.xrange)
 
 # Display the plot
 plt.tight_layout()
