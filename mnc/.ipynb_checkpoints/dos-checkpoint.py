@@ -14,6 +14,7 @@ columns = [
     "energy", "dxy(up)", "dxy(down)", "dyz(up)", "dyz(down)",
     "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dx2(up)", "dx2(down)"
 ]
+colors = ['blue', 'orange', 'green', 'red', 'purple']
 
 # Read the DOS data
 data = pd.read_csv(args.file, delim_whitespace=True, comment='#', names=columns)
@@ -44,8 +45,8 @@ for i, orbital in enumerate(orbitals):
     orbital_down = data[f"{orbital}(down)"]
 
     # Plot on the respective subplot
-    axes[i].plot(energy, orbital_up, label=f"{orbital} (up)", linestyle='-', linewidth=1.5)
-    axes[i].plot(energy, orbital_down, label=f"{orbital} (down)", linestyle='--', linewidth=1.5)
+    axes[i].plot(energy, orbital_up, label=f"{orbital} (up)" color=colors[i], linestyle='-', linewidth=1.5)
+    axes[i].plot(energy, orbital_down, label=None, color=colors[i], linestyle='-', linewidth=1.5)
     axes[i].fill_between(energy, 0, orbital_up, alpha=0.3)
     axes[i].fill_between(energy, 0, orbital_down, alpha=0.3)
     
@@ -60,7 +61,7 @@ for i, orbital in enumerate(orbitals):
         axes[i].xaxis.set_visible(False)  # Hide y-axis for other subplots
 
     # Add legend
-    axes[i].legend(loc="upper left", fontsize=10)
+    axes[i].legend(loc="upper left", fontsize=9)
 
 # Set shared x-axis labels
 axes[-1].set_xlabel("Energy (eV)", fontsize=10)
