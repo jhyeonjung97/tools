@@ -1,8 +1,8 @@
-for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/*d/*_*/*_*/*_
+for dir in /pscratch/sd/j/jiuy97/6_MNC/1_O/*_*/*_*/*_
 do
     cd $dir
     IFS='/' read -r -a path <<< $dir
-    row=${path[-4]}
+    ads=$(echo "${path[-4]}" | cut -d'_' -f2)
     m=$(echo "${path[-3]}" | cut -d'_' -f1)
     metal=$(echo "${path[-3]}" | cut -d'_' -f2)
     spin=$(echo "${path[-2]}" | cut -d'_' -f2)
@@ -10,7 +10,7 @@ do
     if [[ $spin == 'stable' ]]; then
         spin='MS'
     fi
-    if [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/pdos/pdos_${row}_${m}${metal}_${spin}${dz}.png" ]]; then
+    if [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/pdos/pdos_${ads}_${row}_${m}${metal}_${spin}${dz}.png" ]]; then
         sed -i 's/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/0.0/g' vasprun.xml
         cp /pscratch/sd/j/jiuy97/6_MNC/scripts/sumo.sh .
         sed -i -e "s/XX/$metal/g" sumo.sh
