@@ -13,7 +13,7 @@ do
     if [[ $dz == 'relaxed' ]]; then
         dz='r'
     fi
-    if [[ -s DONE ]] && [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/pdos/pdos_${row}_${m}${metal}_${spin}${dz}.png" ]]; then
+    if [[ -s DONE ]] && [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/dos/pdos_${row}_${m}${metal}_${spin}${dz}.png" ]]; then
         sed -i 's/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/0.0/g' vasprun.xml
         cp /pscratch/sd/j/jiuy97/6_MNC/scripts/sumo.sh .
         sed -i -e "s/XX/$metal/g" sumo.sh
@@ -37,7 +37,7 @@ do
     if [[ $dz == 'relaxed' ]]; then
         dz='r'
     fi
-    if [[ -s DONE ]] && [ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/pdos/pdos_${ads}_${m}${metal}_${spin}${dz}.png" ]]; then
+    if [[ -s DONE ]] && [ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/dos/pdos_${ads}_${m}${metal}_${spin}${dz}.png" ]]; then
         sed -i 's/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/0.0/g' vasprun.xml
         cp /pscratch/sd/j/jiuy97/6_MNC/scripts/sumo.sh .
         sed -i -e "s/XX/$metal/g" sumo.sh

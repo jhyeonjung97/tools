@@ -72,7 +72,7 @@ plt.xlim(args.xrange)
 
 # Adjust layout
 if args.output:
-    plt.savefig(f"/pscratch/sd/j/jiuy97/6_MNC/figures/pdos/{args.output}", dpi=300, bbox_inches='tight')  # Save with high resolution
+    plt.savefig(f"/pscratch/sd/j/jiuy97/6_MNC/figures/dos/{args.output}", dpi=300, bbox_inches='tight')  # Save with high resolution
     print(f"Plot saved as {args.output}")
 else:
     plt.show()
