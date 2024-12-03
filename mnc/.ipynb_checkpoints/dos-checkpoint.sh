@@ -13,10 +13,12 @@ do
     if [[ $dz == 'relaxed' ]]; then
         dz='r'
     fi
-    if [[ -s DONE ]] && [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/dos/pdos_${row}_${m}${metal}_${spin}${dz}.png" ]]; then
+    if [[ ! -s sumo.sh ]]; then
         sed -i 's/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/0.0/g' vasprun.xml
         cp /pscratch/sd/j/jiuy97/6_MNC/scripts/sumo.sh .
         sed -i -e "s/XX/$metal/g" sumo.sh
+    fi
+    if [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/dos/pdos_${row}_${m}${metal}_${spin}${dz}.png" ]]; then
         sh sumo.sh
         python ~/bin/tools/mnc/dos.py --file sumo_${metal}_dos.dat --output pdos_${row}_${m}${metal}_${spin}${dz}.png
     fi
@@ -37,10 +39,12 @@ do
     if [[ $dz == 'relaxed' ]]; then
         dz='r'
     fi
-    if [[ -s DONE ]] && [ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/dos/pdos_${ads}_${m}${metal}_${spin}${dz}.png" ]]; then
+    if [[ ! -s sumo.sh ]]; then
         sed -i 's/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/0.0/g' vasprun.xml
         cp /pscratch/sd/j/jiuy97/6_MNC/scripts/sumo.sh .
         sed -i -e "s/XX/$metal/g" sumo.sh
+    fi
+    if [[ -s DONE ]] && [ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/dos/pdos_${ads}_${m}${metal}_${spin}${dz}.png" ]]; then
         sh sumo.sh
         python ~/bin/tools/mnc/dos.py --file sumo_${metal}_dos.dat --output pdos_${ads}_${m}${metal}_${spin}${dz}.png
     fi
