@@ -29,7 +29,7 @@ energy = data["energy"]
 
 # Define orbitals to plot
 # orbitals = ["dxy", "dyz", "dz2", "dxz", "dx2"]
-orbitals = ["dyz", "dx2", "dz2", "dxz", "dxy"]
+orbitals = ["dx2", "dxy", "dz2", "dxz", "dyz"]
 
 # Find global y-axis range
 y_min = float("inf")
