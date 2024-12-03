@@ -7,7 +7,7 @@ do
     metal=$(echo "${path[-3]}" | cut -d'_' -f2)
     spin=$(echo "${path[-2]}" | cut -d'_' -f2)
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
-    if [[ ($metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni') && ($spin == 'HS' || $spin == 'LS') && ($dz == 0 || $dz == 5) ]]; then
+    if [[ ($metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni') && ($spin == 'IS' || $spin == 'LS') && ($dz == 0 || $dz == 5) ]]; then
         if [[ $spin == 'stable' ]]; then
             spin='MS'
         fi
