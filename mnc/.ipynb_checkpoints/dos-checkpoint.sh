@@ -51,7 +51,7 @@ do
     if [[ ! -s sumo_${metal}_dos.dat ]]; then
         sh sumo.sh
     fi
-    if [[ -s DONE ]] && [ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/dos/pdos_${ads}_${m}${metal}_${spin}${dz}.png" ]]; then
+    if [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/dos/pdos_${ads}_${m}${metal}_${spin}${dz}.png" ]]; then
         python ~/bin/tools/mnc/dos.py --file sumo_${metal}_dos.dat --output pdos_${ads}_${m}${metal}_${spin}${dz}.png
     fi
 done
