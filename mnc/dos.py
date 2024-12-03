@@ -55,16 +55,23 @@ for i, orbital in enumerate(orbitals):
     # Set y-axis limits symmetrically
     axes[i].set_ylim(-ylimit, +ylimit)
 
+    # Show y-axis ticks and labels only for the first subplot
+    if i == 2:
+        axes[i].set_ylabel("DOS (arb. units)", fontsize=12)
+    else:
+        axes[i].yaxis.set_visible(False)  # Hide y-axis for other subplots
+
+    if i == 4:
+        axes[i].set_xlabel("Energy (eV)", fontsize=12)
+    else:
+        axes[i].xaxis.set_visible(False)  # Hide y-axis for other subplots
+
     # Add legend
     axes[i].legend(loc="upper left", fontsize=8)
 
-# Set shared x-axis labels
-axes[-1].set_ylabel("DOS (arb. units)", fontsize=12)
-axes[-1].set_xlabel("Energy (eV)", fontsize=12)
-
-# # Remove y-grid
-# for ax in axes:
-#     ax.grid(axis='y', visible=False)
+# Remove y-grid
+for ax in axes:
+    ax.grid(axis='y', visible=False)
 
 # Set x-axis range
 plt.xlim(args.xrange)
