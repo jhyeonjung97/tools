@@ -54,10 +54,9 @@ for i, orbital in enumerate(orbitals):
     
     # Set y-axis limits symmetrically
     axes[i].set_ylim(-ylimit, +ylimit)
-    axes[i].yaxis.set_visible(False)  # Hide y-axis for other subplots
 
     # Add legend
-    axes[i].legend(loc="upper right", fontsize=8)
+    axes[i].legend(loc="upper left", fontsize=8)
 
 # Set shared x-axis labels
 axes[-1].set_ylabel("DOS (arb. units)", fontsize=12)
