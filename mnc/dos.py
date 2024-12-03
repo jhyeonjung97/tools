@@ -25,6 +25,7 @@ energy = data["energy"]
 
 # Define orbitals to plot
 orbitals = ["dxy", "dyz", "dz2", "dxz", "dx2"]
+# orbitals = ["dyz", "dx2", "dz2", "dxz", "dxy"]
 
 # Find global y-axis range
 y_min = float("inf")
@@ -41,7 +42,9 @@ ylimit = max(abs(y_min), abs(y_max)) * 1.2
 fig, axes = plt.subplots(len(orbitals), 1, figsize=(4, len(orbitals) * 1.5), sharex=True,
                          gridspec_kw={"hspace": 0})  # No vertical space between subplots
 
-for i, orbital in enumerate(orbitals):
+new_orbitals = [orbitals[1], orbitals[4], orbitals[2], orbitals[3], orbitals[0]]
+                
+for i, orbital in enumerate(new_orbitals):
     orbital_up = data[f"{orbital}(up)"]
     orbital_down = data[f"{orbital}(down)"]
 
