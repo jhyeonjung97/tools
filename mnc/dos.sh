@@ -3,6 +3,7 @@ do
     cd $dir
     IFS='/' read -r -a path <<< $dir
     row=${path[-4]}
+    i=$(echo "${path[-3]}" | cut -d'_' -f1)
     metal=$(echo "${path[-3]}" | cut -d'_' -f2)
     spin=$(echo "${path[-2]}" | cut -d'_' -f2)
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
@@ -11,6 +12,6 @@ do
         cp /pscratch/sd/j/jiuy97/6_MNC/scripts/sumo.sh .
         sed -i -e "s/XX/$metal/g" sumo.sh
         sh sumo.sh
-        python ~/bin/tools/mnc/dos.py --file sumo_${metal}_dos.dat --output pdos_${metal}${spin}${dz}.png
+        python ~/bin/tools/mnc/dos.py --file sumo_${metal}_dos.dat --output pdos_${row}_${i}${metal}_${spin}${dz}.png
     fi
 done
