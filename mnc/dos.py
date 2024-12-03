@@ -7,7 +7,6 @@ parser = argparse.ArgumentParser(description="Plot projected DOS for orbitals wi
 parser.add_argument("--file", type=str, required=True, help="Path to the input DOS data file.")
 parser.add_argument("--xrange", type=float, nargs=2, metavar=('XMIN', 'XMAX'), default=(-8, 6),
                     help="Energy range for the x-axis (default: -8 to 6).")
-parser.add_argument("--ytitle", type=str, default="DOS (arb. units)", help="Custom y-axis title.")
 args = parser.parse_args()
 
 # Define column names
@@ -56,9 +55,11 @@ for i, orbital in enumerate(orbitals):
     # Set y-axis limits symmetrically
     axes[i].set_ylim(-ylimit, +ylimit)
 
-    # Show y-axis ticks and labels only for the third subplot
+    # For the specific subplot (i == 2), show only the y-title
     if i == 2:
-        axes[i].set_ylabel(args.ytitle, fontsize=12)  # Customizable y-title
+        axes[i].set_ylabel('DOS (arb. units)', fontsize=12)  # Customizable y-title
+        axes[i].tick_params(axis='y', which='both', left=False, right=False, labelleft=False)  # Hide ticks
+        axes[i].grid(False)  # Remove grid
     else:
         axes[i].yaxis.set_visible(False)  # Hide y-axis for other subplots
 
@@ -68,7 +69,7 @@ for i, orbital in enumerate(orbitals):
 # Set shared x-axis labels
 axes[-1].set_xlabel("Energy (eV)", fontsize=12)
 
-# Remove grid completely
+# Remove grid completely for all subplots
 for ax in axes:
     ax.grid(False)
 
