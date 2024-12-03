@@ -32,6 +32,9 @@ for orbital in orbitals:
     y_min = min(y_min, data[f"{orbital}(up)"].min(), data[f"{orbital}(down)"].min())
     y_max = max(y_max, data[f"{orbital}(up)"].max(), data[f"{orbital}(down)"].max())
 
+# Scale the limit symmetrically
+ylimit = max(abs(y_min), abs(y_max)) * 1.2
+
 # Create subplots
 fig, axes = plt.subplots(len(orbitals), 1, figsize=(8, len(orbitals) * 2.5), sharex=True)
 
@@ -49,8 +52,8 @@ for i, orbital in enumerate(orbitals):
     axes[i].axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontal line at y=0
     axes[i].axvline(0, color='black', linewidth=0.8, linestyle='--')  # Vertical line at x=0
     
-    # Set y-axis limits
-    axes[i].set_ylim(y_min, y_max)
+    # Set y-axis limits symmetrically
+    axes[i].set_ylim(-ylimit, +ylimit)
 
     axes[i].legend()
     axes[i].set_ylabel("DOS (arb. units)")
