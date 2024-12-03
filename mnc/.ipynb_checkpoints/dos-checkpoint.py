@@ -11,10 +11,8 @@ args = parser.parse_args()
 
 # Define column names
 columns = [
-    "energy", "s(up)", "s(down)", "p(up)", "p(down)",
-    "dxy(up)", "dxy(down)", "dyz(up)", "dyz(down)",
-    "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)",
-    "dx2(up)", "dx2(down)"
+    "energy", "dxy(up)", "dxy(down)", "dyz(up)", "dyz(down)",
+    "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dx2(up)", "dx2(down)"
 ]
 
 # Read the DOS data
