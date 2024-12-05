@@ -11,14 +11,14 @@ parser.add_argument("--output", type=str, default=None, help="Output file name t
 args = parser.parse_args()
 
 # Define column names
-# columns = [
-#     "energy", "dxy(up)", "dxy(down)", "dyz(up)", "dyz(down)",
-#     "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dx2(up)", "dx2(down)"
-# ]
 columns = [
-    "energy", "dx2(up)", "dx2(down)", "dxy(up)", "dxy(down)",
-    "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dyz(up)", "dyz(down)"
+    "energy", "dxy(up)", "dxy(down)", "dyz(up)", "dyz(down)",
+    "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dx2(up)", "dx2(down)"
 ]
+# columns = [
+#     "energy", "dx2(up)", "dx2(down)", "dxy(up)", "dxy(down)",
+#     "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dyz(up)", "dyz(down)"
+# ]
 colors = ['blue', 'orange', 'green', 'red', 'purple']
 
 # Read the DOS data
