@@ -284,15 +284,15 @@ for i in range(2): # 0, 1
     adsorbate = adsorbates[i]
     adsorbate_symbol = adsorbate_symbols[i]
     
-    # single_plot_by_ads(Y=adsorption_energies, ylabel=f'{adsorbate_symbol} Adsorption Energy (dG, eV)', pngname=f'adsorption_{adsorbate}.png')
-    # single_plot_by_ads(Y=distance, ylabel=f'M-{adsorbate_symbol} Bond Length (Å)', pngname=f'bond_{adsorbate}.png')
-    # single_plot_by_ads(Y=icohp, ylabel=f'-ICOHP (M-{adsorbate_symbol}, eV)', pngname=f'icohp_{adsorbate}.png')
-    # dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', 
-    #                  pngname=f'icohp_vs_bond_{adsorbate}.png')
-    # dual_plot_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', 
-    #                  pngname=f'adsorption_vs_icohp_{adsorbate}.png')
-    # dual_plot_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', 
-    #                  pngname=f'bond_vs_adsorption_{adsorbate}.png')
+    single_plot_by_ads(Y=adsorption_energies, ylabel=f'{adsorbate_symbol} Adsorption Energy (dG, eV)', pngname=f'adsorption_{adsorbate}.png')
+    single_plot_by_ads(Y=distance, ylabel=f'M-{adsorbate_symbol} Bond Length (Å)', pngname=f'bond_{adsorbate}.png')
+    single_plot_by_ads(Y=icohp, ylabel=f'-ICOHP (M-{adsorbate_symbol}, eV)', pngname=f'icohp_{adsorbate}.png')
+    dual_plot_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', 
+                     pngname=f'icohp_vs_bond_{adsorbate}.png')
+    dual_plot_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', 
+                     pngname=f'adsorption_vs_icohp_{adsorbate}.png')
+    dual_plot_by_ads(X=adsorption_energies, Y=distance, xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', 
+                     pngname=f'bond_vs_adsorption_{adsorbate}.png')
     dual_scatter_by_ads(X=distance, Y=icohp, xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', 
                      pngname=f'icohp_vs_bond_scatter_{adsorbate}.png')
     dual_scatter_by_ads(X=icohp, Y=adsorption_energies, xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', 
@@ -311,9 +311,9 @@ def data_to_tsv(data_dict, ads, filename):
     df.to_csv(f"/pscratch/sd/j/jiuy97/6_MNC/figures/icohp/{filename}_{ads}.tsv", sep="\t", float_format="%.2f")
     print(f"DataFrame saved as {filename}_{ads}.tsv")
 
-# data_to_tsv(adsorption_energies, 'o', "adsorption_energies")
-# data_to_tsv(adsorption_energies, 'oh', "adsorption_energies")
-# data_to_tsv(distance, 'o', "distance")
-# data_to_tsv(distance, 'oh', "distance")
-# data_to_tsv(icohp, 'o', "icohp")
-# data_to_tsv(icohp, 'oh', "icohp")
+data_to_tsv(adsorption_energies, 'o', "adsorption_energies")
+data_to_tsv(adsorption_energies, 'oh', "adsorption_energies")
+data_to_tsv(distance, 'o', "distance")
+data_to_tsv(distance, 'oh', "distance")
+data_to_tsv(icohp, 'o', "icohp")
+data_to_tsv(icohp, 'oh', "icohp")
