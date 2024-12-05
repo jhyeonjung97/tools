@@ -189,28 +189,28 @@ for row, elems in elements.items():
                     icohp[row][ads].append(np.nan)  # Handle missing data
                     distance[row][ads].append(np.nan)  # Handle missing data
     
-    # single_plot_by_row(elems, x1=adsorption_energies[row]['o'], x2=adsorption_energies[row]['oh'], 
-    #                    label1=f'O Adsorption ({row})', label2=f'OH Adsorption ({row})', 
-    #                    ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_{row}.png')
-    # single_plot_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
-    #                    label1=f'M-O Bond ({row})', label2=f'M-OH Bond ({row})', 
-    #                    ylabel='Bond Length (Å)', pngname=f'bond_{row}.png')
-    # single_plot_by_row(elems, x1=icohp[row]['o'], x2=icohp[row]['oh'], 
-    #                    label1=f'*O ({row})', label2=f'*OH ({row})', 
-    #                    ylabel='-ICOHP (eV)', pngname=f'icohp_{row}.png')
+    single_plot_by_row(elems, x1=adsorption_energies[row]['o'], x2=adsorption_energies[row]['oh'], 
+                       label1=f'O Adsorption ({row})', label2=f'OH Adsorption ({row})', 
+                       ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_{row}.png')
+    single_plot_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
+                       label1=f'M-O Bond ({row})', label2=f'M-OH Bond ({row})', 
+                       ylabel='Bond Length (Å)', pngname=f'bond_{row}.png')
+    single_plot_by_row(elems, x1=icohp[row]['o'], x2=icohp[row]['oh'], 
+                       label1=f'*O ({row})', label2=f'*OH ({row})', 
+                       ylabel='-ICOHP (eV)', pngname=f'icohp_{row}.png')
     
-    # dual_plot_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
-    #                  y1=icohp[row]['o'], y2=icohp[row]['oh'], 
-    #                  label1=f'*O ({row})', label2=f'*OH ({row})', 
-    #                  xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{row}.png')
-    # dual_plot_by_row(elems, x1=icohp[row]['o'], x2=icohp[row]['oh'], 
-    #                  y1=adsorption_energies[row]['o'], y2=adsorption_energies[row]['oh'], 
-    #                  label1=f'*O ({row})', label2=f'*OH ({row})', 
-    #                  xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_vs_icohp_{row}.png')
-    # dual_plot_by_row(elems, x1=adsorption_energies[row]['o'], x2=adsorption_energies[row]['oh'], 
-    #                  y1=distance[row]['o'], y2=distance[row]['oh'], 
-    #                  label1=f'*O ({row})', label2=f'*OH ({row})', 
-    #                  xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', pngname=f'bond_vs_adsorption_{row}.png')
+    dual_plot_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
+                     y1=icohp[row]['o'], y2=icohp[row]['oh'], 
+                     label1=f'*O ({row})', label2=f'*OH ({row})', 
+                     xlabel='Bond Length (Å)', ylabel='-ICOHP (eV)', pngname=f'icohp_vs_bond_{row}.png')
+    dual_plot_by_row(elems, x1=icohp[row]['o'], x2=icohp[row]['oh'], 
+                     y1=adsorption_energies[row]['o'], y2=adsorption_energies[row]['oh'], 
+                     label1=f'*O ({row})', label2=f'*OH ({row})', 
+                     xlabel='-ICOHP (eV)', ylabel='Adsorption Energy (dG, eV)', pngname=f'adsorption_vs_icohp_{row}.png')
+    dual_plot_by_row(elems, x1=adsorption_energies[row]['o'], x2=adsorption_energies[row]['oh'], 
+                     y1=distance[row]['o'], y2=distance[row]['oh'], 
+                     label1=f'*O ({row})', label2=f'*OH ({row})', 
+                     xlabel='Adsorption Energy (dG, eV)', ylabel='Bond Length (Å)', pngname=f'bond_vs_adsorption_{row}.png')
     
     dual_scatter_by_row(elems, x1=distance[row]['o'], x2=distance[row]['oh'], 
                         y1=icohp[row]['o'], y2=icohp[row]['oh'], 
