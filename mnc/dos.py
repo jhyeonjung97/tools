@@ -28,8 +28,8 @@ data = pd.read_csv(args.file, delim_whitespace=True, comment='#', names=columns)
 energy = data["energy"]
 
 # Define orbitals to plot
-# orbitals = ["dxy", "dyz", "dz2", "dxz", "dx2"]
-orbitals = ["dx2", "dxy", "dz2", "dxz", "dyz"]
+orbitals = ["dxy", "dyz", "dz2", "dxz", "dx2"]
+# orbitals = ["dx2", "dxy", "dz2", "dxz", "dyz"]
 
 # Find global y-axis range
 y_min = float("inf")
