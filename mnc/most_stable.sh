@@ -64,6 +64,11 @@ for dir in /pscratch/sd/j/jiuy97/6_MNC/*_O*/*_*/
 do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
+
+    if [[ ${path[-2]} == '4_O_OH' || ${path[-2]} == '5_OH_OH' ]]; then
+        continue
+    fi
+    
     ads=$(echo "${path[-2]}" | cut -d'_' -f2)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     echo -e "dz\tspin_state" > lowest.tsv
