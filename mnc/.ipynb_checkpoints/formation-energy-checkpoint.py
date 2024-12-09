@@ -391,9 +391,12 @@ def main():
                                         df_OOH_dz.at[dz, spin] = atom.z - 10.0
                                         df_OOH_mag.at[dz, spin] = magmoms[atom.index]
                                         position_M = positions[atom.index]
+                                    elif atom.symbol == 'O' and position_O1 is None:
+                                        position_O1 = positions[atom.index]
                                     elif atom.symbol == 'O':
-                                        position_O = positions[atom.index]
-                                df_OOH_bond.at[dz, spin] = np.linalg.norm(position_M - position_O)
+                                        position_O2 = positions[atom.index]
+                                df_OOH_bond.at[dz, spin] = min(np.linalg.norm(position_M - position_O1), np.linalg.norm(position_M - position_O2))
+                                position_O1 = None
                             except:
                                 df_OOH_dz.at[dz, spin] = 0
                                 df_OOH_mag.at[dz, spin] = 0
@@ -612,9 +615,12 @@ def main():
                                 if atom.symbol not in ['N', 'C', 'O', 'H']:
                                     df_OOH_relaxed_mag.at[dz_relaxed, spin] = magmoms[atom.index]
                                     position_M = positions[atom.index]
+                                elif atom.symbol == 'O' and position_O1 is None:
+                                    position_O1 = positions[atom.index]
                                 elif atom.symbol == 'O':
-                                    position_O = positions[atom.index]
-                            df_OOH_relaxed_bond.at[dz_relaxed, spin] = np.linalg.norm(position_M - position_O)
+                                    position_O2 = positions[atom.index]                        
+                            df_OOH_relaxed_bond.at[dz_relaxed, spin] = min(np.linalg.norm(position_M - position_O1), np.linalg.norm(position_M - position_O2))
+                            position_O1 = None
                         except:
                             df_OOH_relaxed_dz.at[dz_relaxed, spin] = 0
                             df_OOH_relaxed_mag.at[dz_relaxed, spin] = 0
