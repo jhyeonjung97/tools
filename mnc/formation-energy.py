@@ -1168,6 +1168,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         ms_columns = [col for col in df.columns if 'MS' in col]
         if ms_columns:
             df['MS'] = df[ms_columns].bfill(axis=1).iloc[:, 0]
+            
         plt.figure(figsize=(4, 3), dpi=300)
         for column in df.columns:
             filtered_df = df[column].dropna()
@@ -1217,6 +1218,47 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         plt.tight_layout()
         plt.savefig(os.path.join(save_path, f"smooth_{png_filename}"), bbox_inches="tight")
         print(f"Figure saved as smooth_{png_filename}")
+        plt.close()
+
+        plt.figure(figsize=(4, 3), dpi=300)
+        for column in df.columns:
+            filtered_df = df[column].dropna()
+            if not filtered_df.empty:
+                x = filtered_df.index
+                y = filtered_df.values
+                if column == 'MS':
+                    spl = make_interp_spline(x, y, k=3)
+                    y_smooth = spl(x_new)
+                elif 'MS' in column:
+                    plt.scatter(x, y, marker='x', color=ms_spins.get(column, 'black'), zorder=5)
+                else:
+                    df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
+        for column in df_relaxed.columns:
+            filtered_df = df_relaxed[column].dropna()
+            if not filtered_df.empty:
+                x = filtered_df.index
+                y = filtered_df.values
+                plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), zorder=3)
+                for xi, yi in zip(x, y):
+                    plt.annotate(f'{xi:.2f}', (float(xi), float(yi)), 
+                                 textcoords="offset points", xytext=(0, 5), 
+                                 ha='center', color='black', zorder=6)
+        if color:
+            plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
+            plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
+        plt.xticks(dzs)
+        plt.xlabel('dz (Å)', fontsize='large')
+        plt.ylabel(ylabel, fontsize='large')
+        if ymin and ymax:
+            plt.ylim(ymin, ymax)
+        if yticks is not None:
+            plt.yticks(yticks)
+        plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
+        plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
+        # plt.legend(labelspacing=0.3)
+        plt.tight_layout()
+        plt.savefig(os.path.join(save_path, f"empty_{png_filename}"), bbox_inches="tight")
+        print(f"Figure saved as empty_{png_filename}")
         plt.close()
     
 if __name__ == '__main__':
