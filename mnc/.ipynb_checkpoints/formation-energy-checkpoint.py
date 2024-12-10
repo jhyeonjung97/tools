@@ -1119,6 +1119,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                 df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
     min_values = df_smooth_y.min(axis=1).to_numpy()
     min_columns = df_smooth_y.idxmin(axis=1).to_numpy()
+    print(min_values, min_columns)
     if len(min_columns) == 0:
         print("min_columns is empty, skipping plot.")
         return
