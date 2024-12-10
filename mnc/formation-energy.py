@@ -1132,7 +1132,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         for i in range(1, len(min_columns)):
             if min_columns[i] != current_column:
                 x_segments.append(np.linspace(x_new[start_idx], x_new[i], i - start_idx))
-                plt.plot(x_segment, min_values[start_idx:i], color=min_spins.get(current_column, 'black'), zorder=4)
+                # plt.plot(x_segment, min_values[start_idx:i], color=min_spins.get(current_column, 'black'), zorder=4)
                 start_idx = i
                 current_column = min_columns[i]
         x_segments.append(np.linspace(x_new[start_idx], x_new[-1], len(x_new) - start_idx))
