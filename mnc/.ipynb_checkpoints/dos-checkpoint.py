@@ -35,10 +35,28 @@ orbitals = ["dx2", "dxy", "dz2", "dxz", "dyz"]
 y_min = float("inf")
 y_max = float("-inf")
 
+# Function to calculate d-band center
+def calculate_d_band_center(energy, dos_up, dos_down):
+    dos_total = dos_up + dos_down
+    numerator = np.trapz(energy * dos_total, energy)
+    denominator = np.trapz(dos_total, energy)
+    return numerator / denominator
+
+# Calculate d-band centers
+d_band_centers = {}
+
 for orbital in orbitals:
+    dos_up = data[f"{orbital}(up)"]
+    dos_down = data[f"{orbital}(down)"]
+    d_band_centers[orbital] = calculate_d_band_center(energy, dos_up, dos_down)
     y_min = min(y_min, data[f"{orbital}(up)"].min(), data[f"{orbital}(down)"].min())
     y_max = max(y_max, data[f"{orbital}(up)"].max(), data[f"{orbital}(down)"].max())
 
+# Print d-band centers
+print("d-Band Centers:")
+for orbital, center in d_band_centers.items():
+    print(f"{orbital}: {center:.4f} eV")
+    
 # Scale the limit symmetrically
 ylimit = max(abs(y_min), abs(y_max)) * 1.2
 
