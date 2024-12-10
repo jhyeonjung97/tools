@@ -38,7 +38,7 @@ y_max = float("-inf")
 
 # Function to calculate d-band center
 def calculate_d_band_center(energy, dos_up, dos_down):
-    dos_total = dos_up + dos_down
+    dos_total = dos_up - dos_down
     numerator = np.trapz(energy * dos_total, energy)
     denominator = np.trapz(dos_total, energy)
     return numerator / denominator
