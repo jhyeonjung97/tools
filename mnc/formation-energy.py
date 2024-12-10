@@ -1175,10 +1175,11 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                 x = filtered_df.index
                 y = filtered_df.values
                 if column == 'MS':
-                    plt.scatter(x, y, marker='x', color=ms_spins.get(column, 'black'), zorder=5)
                     spl = make_interp_spline(x, y, k=3)
                     y_smooth = spl(x_new)
-                elif 'MS' not in column:
+                elif 'MS' in column:
+                    plt.scatter(x, y, marker='x', color=ms_spins.get(column, 'black'), zorder=5)
+                else:
                     df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
         start_idx = 0
         current_column = min_columns[0]
