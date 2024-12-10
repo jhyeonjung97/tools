@@ -1165,10 +1165,9 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     plt.close()
 
     if 'eV' in ylabel and not df[columns_in_df].isna().any().any():
-        if 'MS' not in df.columns:
-            df['MS'] = df['MS(LS)'].combine_first(df['MS(HS)'])
-            if 'MS(IS)' in df.columns:
-                df['MS'] = df['MS'].combine_first(df['MS(IS)'])
+        ms_columns = [col for col in df.columns if 'MS' in col]
+        if ms_columns:
+            df['MS'] = df[ms_columns].bfill(axis=1).iloc[:, 0]
         plt.figure(figsize=(4, 3), dpi=300)
         for column in df.columns:
             filtered_df = df[column].dropna()
