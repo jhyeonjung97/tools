@@ -1108,7 +1108,6 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         return    
     plt.figure(figsize=(4, 3), dpi=300)
     df_smooth_y = pd.DataFrame()
-    x_segments = []
     for column in df.columns:
         filtered_df = df[column].dropna()
         if not filtered_df.empty:
@@ -1131,13 +1130,12 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         current_column = min_columns[0]
         for i in range(1, len(min_columns)):
             if min_columns[i] != current_column:
-                x_segments.append(np.linspace(x_new[start_idx], x_new[i], i - start_idx))
-                # plt.plot(x_segment, min_values[start_idx:i], color=min_spins.get(current_column, 'black'), zorder=4)
+                x_segment = np.linspace(x_new[start_idx], x_new[i], i - start_idx)
+                plt.plot(x_segment, min_values[start_idx:i], color=min_spins.get(current_column, 'black'), zorder=4)
                 start_idx = i
                 current_column = min_columns[i]
-        x_segments.append(np.linspace(x_new[start_idx], x_new[-1], len(x_new) - start_idx))
-        print(x_segments)
-        # plt.plot(x_segment, min_values[start_idx:], color=min_spins.get(current_column, 'black'), zorder=4)
+        x_segment = np.linspace(x_new[start_idx], x_new[-1], len(x_new) - start_idx)
+        plt.plot(x_segment, min_values[start_idx:], color=min_spins.get(current_column, 'black'), zorder=4)
     for column in df_relaxed.columns:
         filtered_df = df_relaxed[column].dropna()
         if not filtered_df.empty:
@@ -1166,6 +1164,57 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
     print(f"Figure saved as {png_filename}")
     plt.close()
 
+    if 'eV' in ylabel and not df[columns_in_df].isna().any().any():
+        plt.figure(figsize=(4, 3), dpi=300)
+        for column in df.columns:
+            filtered_df = df[column].dropna()
+            if not filtered_df.empty:
+                x = filtered_df.index
+                y = filtered_df.values
+                if 'MS' in column:
+                    plt.scatter(x, y, marker='x', color=ms_spins.get(column, 'black'), zorder=5)
+                    spl = make_interp_spline(x, y, k=3)
+                    y_smooth = spl(x_new)
+                else:
+                    df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
+        start_idx = 0
+        current_column = min_columns[0]
+        for i in range(1, len(min_columns)):
+            if min_columns[i] != current_column:
+                x_segment = np.linspace(x_new[start_idx], x_new[i], i - start_idx)
+                plt.plot(x_segment, y_smooth[start_idx:i], color=min_spins.get(current_column, 'black'), zorder=4)
+                start_idx = i
+                current_column = min_columns[i]
+        x_segment = np.linspace(x_new[start_idx], x_new[-1], len(x_new) - start_idx)
+        plt.plot(x_segment, y_smooth[start_idx:], color=min_spins.get(current_column, 'black'), zorder=4)
+        for column in df_relaxed.columns:
+            filtered_df = df_relaxed[column].dropna()
+            if not filtered_df.empty:
+                x = filtered_df.index
+                y = filtered_df.values
+                plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), zorder=3)
+                for xi, yi in zip(x, y):
+                    plt.annotate(f'{xi:.2f}', (float(xi), float(yi)), 
+                                 textcoords="offset points", xytext=(0, 5), 
+                                 ha='center', color='black', zorder=6)
+        if color:
+            plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
+            plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
+        plt.xticks(dzs)
+        plt.xlabel('dz (Å)', fontsize='large')
+        plt.ylabel(ylabel, fontsize='large')
+        if ymin and ymax:
+            plt.ylim(ymin, ymax)
+        if yticks is not None:
+            plt.yticks(yticks)
+        plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
+        plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
+        # plt.legend(labelspacing=0.3)
+        plt.tight_layout()
+        plt.savefig(os.path.join(save_path, f"smooth_{png_filename}"), bbox_inches="tight")
+        print(f"Figure saved as smooth_{png_filename}")
+        plt.close()
+    
 if __name__ == '__main__':
     main()
     custom_legend = [
