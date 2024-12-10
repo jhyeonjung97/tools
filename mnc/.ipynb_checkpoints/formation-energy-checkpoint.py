@@ -1089,7 +1089,7 @@ def combining(df, df_relaxed, tsv_filename):
 
 def plot_smooth_line(x, y, color):
     try:
-        x_new = np.linspace(min(x), max(x), 300)
+        x_new = np.linspace(min(x), max(x), (max(x)-min(x))*300)
         if len(x) > 3:
             spl = make_interp_spline(x, y, k=3)  # Smoothing spline
         else:
@@ -1108,6 +1108,8 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         return    
     plt.figure(figsize=(4, 3), dpi=300)
     df_smooth_y = pd.DataFrame()
+    start_points = {}
+    end_points = {}
     for column in df.columns:
         filtered_df = df[column].dropna()
         if not filtered_df.empty:
@@ -1118,23 +1120,27 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             else:
                 df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
     min_values = df_smooth_y.min(axis=1).to_numpy()
-    min_columns = df_smooth_y.idxmin(axis=1).to_numpy()
-    print(min_values, min_columns)
+    min_columns = df_smooth_y.idxmin(axis=1).to_numpy()      
     if len(min_columns) == 0:
         print("min_columns is empty, skipping plot.")
         return
     columns_to_check = ['LS', 'IS', 'HS']
     columns_in_df = list(set(columns_to_check).intersection(df.columns))
     if 'eV' in ylabel and not df[columns_in_df].isna().any().any():
-        x_new = np.linspace(0.0, 1.2, 300)
+        x_new = np.linspace(0.0, 1.2, 360)
         start_idx = 0
         current_column = min_columns[0]
         for i in range(1, len(min_columns)):
             if min_columns[i] != current_column:
+                start_indice += x_new[start_idx]
+                end_indice += x_new[i]
                 x_segment = np.linspace(x_new[start_idx], x_new[i], i - start_idx)
                 plt.plot(x_segment, min_values[start_idx:i], color=min_spins.get(current_column, 'black'), zorder=4)
                 start_idx = i
                 current_column = min_columns[i]
+        start_points += x_new[start_idx]
+        end_points += x_new[-1]
+        print(start_points, end_points)
         x_segment = np.linspace(x_new[start_idx], x_new[-1], len(x_new) - start_idx)
         plt.plot(x_segment, min_values[start_idx:], color=min_spins.get(current_column, 'black'), zorder=4)
     for column in df_relaxed.columns:
