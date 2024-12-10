@@ -49,12 +49,12 @@ d_band_centers = {}
 for orbital in orbitals:
     dos_up = data[f"{orbital}(up)"]
     dos_down = data[f"{orbital}(down)"]
-    d_band_centers[orbital] = round(calculate_d_band_center(energy, dos_up, dos_down), 4)
+    d_band_centers[orbital] = f"{calculate_d_band_center(energy, dos_up, dos_down):.4f}"
     y_min = min(y_min, data[f"{orbital}(up)"].min(), data[f"{orbital}(down)"].min())
     y_max = max(y_max, data[f"{orbital}(up)"].max(), data[f"{orbital}(down)"].max())
 
 # Save d-band centers to TSV
-d_band_centers_df = pd.DataFrame(list(d_band_centers.items()), columns=["Orbital", "d_band_center"])
+d_band_centers_df = pd.DataFrame(list(d_band_centers.items()), columns=["orbital", "d-band center"])
 d_band_centers_df.to_csv(f"/pscratch/sd/j/jiuy97/6_MNC/figures/dos/{args.output}.tsv", sep="\t", index=False)
 print(f"d-Band centers saved to {args.output}.tsv")
     
