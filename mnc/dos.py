@@ -58,46 +58,46 @@ d_band_centers_df = pd.DataFrame(list(d_band_centers.items()), columns=["Orbital
 d_band_centers_df.to_csv(f"/pscratch/sd/j/jiuy97/6_MNC/figures/dos/{args.output}.tsv", sep="\t", index=False)
 print(f"d-Band centers saved to {args.output}.tsv")
     
-# Scale the limit symmetrically
-ylimit = max(abs(y_min), abs(y_max)) * 1.2
+# # Scale the limit symmetrically
+# ylimit = max(abs(y_min), abs(y_max)) * 1.2
 
-# Create a single figure with stacked plots, no space between subplots
-fig, axes = plt.subplots(len(orbitals), 1, figsize=(4, len(orbitals) * 1.5), sharex=True,
-                         gridspec_kw={"hspace": 0})  # No vertical space between subplots
+# # Create a single figure with stacked plots, no space between subplots
+# fig, axes = plt.subplots(len(orbitals), 1, figsize=(4, len(orbitals) * 1.5), sharex=True,
+#                          gridspec_kw={"hspace": 0})  # No vertical space between subplots
 
                 
-for i, orbital in enumerate(orbitals):
-    orbital_up = data[f"{orbital}(up)"]
-    orbital_down = data[f"{orbital}(down)"]
+# for i, orbital in enumerate(orbitals):
+#     orbital_up = data[f"{orbital}(up)"]
+#     orbital_down = data[f"{orbital}(down)"]
 
-    # Plot on the respective subplot
-    axes[i].plot(energy, orbital_up, label=f"{orbital}", color=colors[i], linestyle='-', linewidth=1.5)
-    axes[i].plot(energy, orbital_down, label=None, color=colors[i], linestyle='-', linewidth=1.5)
-    axes[i].fill_between(energy, 0, orbital_up, color=colors[i], alpha=0.3)
-    axes[i].fill_between(energy, 0, orbital_down, color=colors[i], alpha=0.3)
+#     # Plot on the respective subplot
+#     axes[i].plot(energy, orbital_up, label=f"{orbital}", color=colors[i], linestyle='-', linewidth=1.5)
+#     axes[i].plot(energy, orbital_down, label=None, color=colors[i], linestyle='-', linewidth=1.5)
+#     axes[i].fill_between(energy, 0, orbital_up, color=colors[i], alpha=0.3)
+#     axes[i].fill_between(energy, 0, orbital_down, color=colors[i], alpha=0.3)
     
-    # Add horizontal and vertical dashed lines
-    axes[i].axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontal line at y=0
-    axes[i].axvline(0, color='black', linewidth=0.8, linestyle='--')  # Vertical line at x=0
+#     # Add horizontal and vertical dashed lines
+#     axes[i].axhline(0, color='black', linewidth=0.8, linestyle='--')  # Horizontal line at y=0
+#     axes[i].axvline(0, color='black', linewidth=0.8, linestyle='--')  # Vertical line at x=0
     
-    # Set y-axis limits symmetrically
-    axes[i].set_ylim(-ylimit, +ylimit)
-    axes[i].yaxis.set_visible(False)  # Hide y-axis for other subplots
-    if i != 4:
-        axes[i].xaxis.set_visible(False)  # Hide y-axis for other subplots
+#     # Set y-axis limits symmetrically
+#     axes[i].set_ylim(-ylimit, +ylimit)
+#     axes[i].yaxis.set_visible(False)  # Hide y-axis for other subplots
+#     if i != 4:
+#         axes[i].xaxis.set_visible(False)  # Hide y-axis for other subplots
 
-    # Add legend
-    axes[i].legend(loc="upper left", fontsize=10)
+#     # Add legend
+#     axes[i].legend(loc="upper left", fontsize=10)
 
-# Set shared x-axis labels
-axes[-1].set_xlabel("Energy (eV)", fontsize=10)
+# # Set shared x-axis labels
+# axes[-1].set_xlabel("Energy (eV)", fontsize=10)
 
-# Set x-axis range
-plt.xlim(args.xrange)
+# # Set x-axis range
+# plt.xlim(args.xrange)
 
-# Adjust layout
-if args.output:
-    plt.savefig(f"/pscratch/sd/j/jiuy97/6_MNC/figures/dos/{args.output}.png", dpi=300, bbox_inches='tight')  # Save with high resolution
-    print(f"Plot saved as {args.output}.png")
-else:
-    plt.show()
+# # Adjust layout
+# if args.output:
+#     plt.savefig(f"/pscratch/sd/j/jiuy97/6_MNC/figures/dos/{args.output}.png", dpi=300, bbox_inches='tight')  # Save with high resolution
+#     print(f"Plot saved as {args.output}.png")
+# else:
+#     plt.show()
