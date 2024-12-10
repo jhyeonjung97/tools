@@ -46,7 +46,7 @@ def main():
             if os.path.exists(path_DONE) and os.path.exists(path_json):
                 atoms = read(path_json)
                 energy = atoms.get_total_energy()
-                if df.loc[metal, ads] < energy:
+                if df.loc[metal, ads] > energy:
                     df.at[metal, ads] = energy
                 
     df['G_'] = df['clean']
