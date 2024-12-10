@@ -1089,7 +1089,8 @@ def combining(df, df_relaxed, tsv_filename):
 
 def plot_smooth_line(x, y, color):
     try:
-        x_new = np.linspace(min(x), max(x), (max(x)-min(x))*300)
+        print((max(x)-min(x))*300)
+        x_new = np.linspace(min(x), max(x), 360)
         if len(x) > 3:
             spl = make_interp_spline(x, y, k=3)  # Smoothing spline
         else:
