@@ -49,7 +49,7 @@ d_band_centers = {}
 for orbital in orbitals:
     dos_up = data[f"{orbital}(up)"]
     dos_down = data[f"{orbital}(down)"]
-    d_band_centers[orbital] = calculate_d_band_center(energy, dos_up, dos_down)
+    d_band_centers[orbital] = round(calculate_d_band_center(energy, dos_up, dos_down), 4)
     y_min = min(y_min, data[f"{orbital}(up)"].min(), data[f"{orbital}(down)"].min())
     y_max = max(y_max, data[f"{orbital}(up)"].max(), data[f"{orbital}(down)"].max())
 
