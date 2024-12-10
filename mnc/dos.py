@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(description="Plot projected DOS for orbitals wi
 parser.add_argument("--file", type=str, required=True, help="Path to the input DOS data file.")
 parser.add_argument("--xrange", type=float, nargs=2, metavar=('XMIN', 'XMAX'), default=(-8, 6),
                     help="Energy range for the x-axis (default: -8 to 6).")
-parser.add_argument("--output", type=str, default=None, help="Output file name to save the plot (e.g., 'output.png').")
+parser.add_argument("--output", type=str, default=None, help="Output file name to save the plot.")
 args = parser.parse_args()
 
 # Define column names
@@ -53,10 +53,10 @@ for orbital in orbitals:
     y_min = min(y_min, data[f"{orbital}(up)"].min(), data[f"{orbital}(down)"].min())
     y_max = max(y_max, data[f"{orbital}(up)"].max(), data[f"{orbital}(down)"].max())
 
-# Print d-band centers
-print("d-Band Centers:")
-for orbital, center in d_band_centers.items():
-    print(f"{orbital}: {center:.4f} eV")
+# Save d-band centers to TSV
+d_band_centers_df = pd.DataFrame(list(d_band_centers.items()), columns=["Orbital", "d_band_center"])
+d_band_centers_df.to_csv(f"/pscratch/sd/j/jiuy97/6_MNC/figures/dos/{args.output}.tsv", sep="\t", index=False)
+print(f"d-Band centers saved to {args.output}.tsv")
     
 # Scale the limit symmetrically
 ylimit = max(abs(y_min), abs(y_max)) * 1.2
@@ -97,7 +97,7 @@ plt.xlim(args.xrange)
 
 # Adjust layout
 if args.output:
-    plt.savefig(f"/pscratch/sd/j/jiuy97/6_MNC/figures/dos/{args.output}", dpi=300, bbox_inches='tight')  # Save with high resolution
-    print(f"Plot saved as {args.output}")
+    plt.savefig(f"/pscratch/sd/j/jiuy97/6_MNC/figures/dos/{args.output}.png", dpi=300, bbox_inches='tight')  # Save with high resolution
+    print(f"Plot saved as {args.output}.png")
 else:
     plt.show()
