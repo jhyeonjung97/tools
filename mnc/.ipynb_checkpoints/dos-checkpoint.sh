@@ -24,7 +24,6 @@ do
     # fi
     # if [[ -s sumo_${metal}_dos.dat ]] && [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/dos/pdos_${row}_${m}${metal}_${spin}${dz}.png" ]]; then
         python ~/bin/tools/mnc/dos.py --file sumo_${metal}_dos.dat --output pdos_${row}_${m}${metal}_${spin}${dz}
-    # fi
     fi
 done
 
@@ -43,6 +42,7 @@ do
     if [[ $dz == 'relaxed' ]]; then
         dz='r'
     fi
+    if [[ ($metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni') && ($spin == 'MS') && ($dz == 0 || $dz == 6) ]]; then
     # if [[ ! -s sumo.sh ]]; then
     #     sed -i 's/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/0.0/g' vasprun.xml
     #     cp /pscratch/sd/j/jiuy97/6_MNC/scripts/sumo.sh .
@@ -51,7 +51,7 @@ do
     # if [[ ! -s sumo_${metal}_dos.dat ]]; then
     #     sh sumo.sh
     # fi
-    if [[ -s sumo_${metal}_dos.dat ]] && [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/dos/pdos_${ads}_${m}${metal}_${spin}${dz}.png" ]]; then
+    # if [[ -s sumo_${metal}_dos.dat ]] && [[ ! -s "/pscratch/sd/j/jiuy97/6_MNC/figures/dos/pdos_${ads}_${m}${metal}_${spin}${dz}.png" ]]; then
         python ~/bin/tools/mnc/dos.py --file sumo_${metal}_dos.dat --output pdos_${ads}_${m}${metal}_${spin}${dz}.png
     fi
 done
