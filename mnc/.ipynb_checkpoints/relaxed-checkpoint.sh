@@ -63,6 +63,9 @@ do
     ads=$(echo "${path[-3]}" | cut -d'_' -f2)
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     spin=$(echo "${path[-1]}" | cut -d'_' -f2)
+    if [[ -n $(echo "${path[-3]}" | cut -d'_' -f3) ]]; then
+        continue
+    fi
     if [[ $spin == 'stable' ]]; then
         spin='MS'
     fi

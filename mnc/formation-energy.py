@@ -1217,7 +1217,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
             # plt.legend(labelspacing=0.3)
             plt.tight_layout()
-            plt.savefig(os.path.join(save_path, f"smooth_{png_filename}"), bbox_inches="tight")
+            plt.savefig(os.path.join(save_path, 'smooth', f"smooth_{png_filename}"), bbox_inches="tight")
             print(f"Figure saved as smooth_{png_filename}")
             plt.close()
     
@@ -1258,7 +1258,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
             # plt.legend(labelspacing=0.3)
             plt.tight_layout()
-            plt.savefig(os.path.join(save_path, f"empty_{png_filename}"), bbox_inches="tight")
+            plt.savefig(os.path.join(save_path, 'empty', f"empty_{png_filename}"), bbox_inches="tight")
             print(f"Figure saved as empty_{png_filename}")
             plt.close()
             
