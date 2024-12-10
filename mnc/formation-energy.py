@@ -1108,8 +1108,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         return    
     plt.figure(figsize=(4, 3), dpi=300)
     df_smooth_y = pd.DataFrame()
-    start_points = []
-    end_points = []
+    x_segments = []
     for column in df.columns:
         filtered_df = df[column].dropna()
         if not filtered_df.empty:
@@ -1132,16 +1131,12 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         current_column = min_columns[0]
         for i in range(1, len(min_columns)):
             if min_columns[i] != current_column:
-                start_points.append(x_new[start_idx])
-                end_points.append(x_new[i])
-                x_segment = np.linspace(x_new[start_idx], x_new[i], i - start_idx)
+                x_segments.append(np.linspace(x_new[start_idx], x_new[i], i - start_idx))
                 plt.plot(x_segment, min_values[start_idx:i], color=min_spins.get(current_column, 'black'), zorder=4)
                 start_idx = i
                 current_column = min_columns[i]
-        start_points.append(x_new[start_idx])
-        end_points.append(x_new[-1])
-        print(start_points, end_points)
-        x_segment = np.linspace(x_new[start_idx], x_new[-1], len(x_new) - start_idx)
+        x_segments.append(np.linspace(x_new[start_idx], x_new[-1], len(x_new) - start_idx))
+        print(x_segments)
         plt.plot(x_segment, min_values[start_idx:], color=min_spins.get(current_column, 'black'), zorder=4)
     for column in df_relaxed.columns:
         filtered_df = df_relaxed[column].dropna()
