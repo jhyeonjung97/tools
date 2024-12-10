@@ -1261,6 +1261,9 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             plt.savefig(os.path.join(save_path, f"empty_{png_filename}"), bbox_inches="tight")
             print(f"Figure saved as empty_{png_filename}")
             plt.close()
+            
+        except Exception as e:
+            print(f"An error occurred: {e}")
     
 if __name__ == '__main__':
     main()
