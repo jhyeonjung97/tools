@@ -12,7 +12,7 @@ def main():
     numbs = [5, 6, 7, 8, 4, 4]
     metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
     adsorbates = ['clean', 'O', 'OH']
-    save_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/adsorption_energy'
+    save_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
 
     # Water and hydrogen properties
     water_E = -14.23797429
@@ -68,7 +68,7 @@ def main():
         
         tsv_filename = os.path.join(save_path, f"{m+1}{metal}_{ads}ads.tsv")
         df.to_csv(tsv_filename, sep='\t', float_format='%.2f')
-        print(f"Data saved as {tsv_filename}")
+        print(f"Data saved as {m+1}{metal}_Eads.tsv")
 
         plt.figure(figsize=(4, 3), dpi=300)
         plt.plot(df.index, df['Oads'], marker='o', label='E_O')
@@ -80,7 +80,7 @@ def main():
         plt.tight_layout()
         png_filename = os.path.join(save_path, f"{m+1}{metal}_{ads}ads.png")
         plt.savefig(png_filename, bbox_inches="tight")
-        print(f"Figure saved as {png_filename}")
+        print(f"Figure saved as {m+1}{metal}_Eads.png")
         plt.close()        
         
 if __name__ == '__main__':
