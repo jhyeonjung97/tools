@@ -55,6 +55,7 @@ def main():
         for ads in adsorbates:
             if row != '3d' and ads == 'OOH':
                 df[ads] = np.nan
+                continue
             energy_path = f'/pscratch/sd/j/jiuy97/6_MNC/figures/formation_energy/{row}_{numb}{metal}_{ads}.tsv'
             energy = pd.read_csv(energy_path, sep='\t')
             ms_columns = [col for col in energy.columns if 'MS' in col]
