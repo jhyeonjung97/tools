@@ -13,6 +13,8 @@ def main():
     numbs = [5, 6, 7, 8, 4, 4]
     metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
     adsorbates = ['clean', 'O', 'OH', 'OOH']
+    ymin = [0, 0, 0, 0, 0, 0]
+    ymax = [5, 5, 5, 5, 5, 5]
     colors = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
     save_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
     
@@ -104,7 +106,7 @@ def main():
                 ax.add_patch(right_wedge)
         plt.xlabel('dz (A)')
         plt.ylabel('Adsorption energy (eV)')
-        plt.legend()
+        plt.ylim(ymin[m], ymax[m])
         plt.tight_layout()
         png_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.png")
         plt.savefig(png_filename, bbox_inches="tight")
