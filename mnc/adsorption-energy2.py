@@ -15,6 +15,7 @@ def main():
     adsorbates = ['clean', 'O', 'OH', 'OOH']
     ymin = [-1, -1, -1, -1, -4, -4]
     ymax = [5, 5, 5, 5, 3, 3]
+    dzs = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
     colors = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
     save_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
     
@@ -78,8 +79,8 @@ def main():
             df_spin[ads] = spin_data['spin_state']
 
         df_energy = df_energy.head(7)
-        df_energy.index = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
-        df_spin.index = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+        df_energy.index = dzs
+        df_spin.index = dzs
         
         df_energy['OHads'] = (df_energy['OH'] + OH_corr) - df_energy['clean'] - hydroxide_G
         df_energy['Oads'] = (df_energy['O'] + O_corr) - df_energy['clean'] - oxygen_G
@@ -96,7 +97,7 @@ def main():
             column = f'{ads}ads'
             x = df_energy.index
             y = df_energy[column]
-            plt.plot(x, y, color='black', label=f'E_{ads}', zorder=1)
+            plt.plot(x, y, color='black', label=f'E_{ads}',lw=0.75, zorder=1)
             for xi, yi in zip(x, y):
                 left_wedge = Wedge((xi, yi), 0.04, 90, 270, lw=0.75, zorder=2, 
                                    facecolor=colors[df_spin.loc[xi, 'clean']], edgecolor='black')
@@ -106,7 +107,9 @@ def main():
                 ax.add_patch(right_wedge)
         plt.xlabel('dz (A)')
         plt.ylabel('Adsorption energy (eV)')
+        # plt.xlim(0.0, 1.2)
         plt.ylim(ymin[m], ymax[m])
+        plt.xticks(dzs)
         plt.tight_layout()
         png_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.png")
         plt.savefig(png_filename, bbox_inches="tight")
