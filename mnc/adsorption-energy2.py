@@ -72,7 +72,7 @@ def main():
         plt.plot(df.index, df['OHads'], marker='o', label='E_OH')
 
         plt.xlabel('dz (A)')
-        plt.ylabel('Adsorption energy (eV)'
+        plt.ylabel('Adsorption energy (eV)')
         plt.legend()
         plt.tight_layout()
         png_filename = os.path.join(save_path, f"{m+1}{metal}_{ads}ads.png")
