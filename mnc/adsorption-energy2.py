@@ -66,7 +66,7 @@ def main():
         df['Oads'] = (df['O'] + O_corr) - df['clean'] - oxygen_G
         df['OHads'] = (df['OH'] + OH_corr) - df['clean'] - hydroxide_G
         
-        tsv_filename = os.path.join(save_path, f"{m+1}{metal}_{ads}ads.tsv")
+        tsv_filename = os.path.join(save_path, f"Eads_{m+1}{metal}.tsv")
         df.to_csv(tsv_filename, sep='\t', float_format='%.2f')
         print(f"Data saved as {m+1}{metal}_Eads.tsv")
 
@@ -78,7 +78,7 @@ def main():
         plt.ylabel('Adsorption energy (eV)')
         plt.legend()
         plt.tight_layout()
-        png_filename = os.path.join(save_path, f"{m+1}{metal}_{ads}ads.png")
+        png_filename = os.path.join(save_path, f"Eads_{m+1}{metal}.png")
         plt.savefig(png_filename, bbox_inches="tight")
         print(f"Figure saved as {m+1}{metal}_Eads.png")
         plt.close()        
