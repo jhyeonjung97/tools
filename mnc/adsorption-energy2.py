@@ -59,7 +59,10 @@ def main():
             if ms_columns:
                 energy['MS'] = energy[ms_columns].bfill(axis=1).iloc[:, 0]
             df[ads] = energy['MS']
-            
+
+        df = df.head(7)
+        df.index = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+        
         df['Oads'] = (df['O'] + O_corr) - df['clean'] - oxygen_G
         df['OHads'] = (df['OH'] + OH_corr) - df['clean'] - hydroxide_G
         
