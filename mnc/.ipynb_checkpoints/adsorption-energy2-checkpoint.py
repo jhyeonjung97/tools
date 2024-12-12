@@ -11,7 +11,7 @@ def main():
     rows = ['3d', '3d', '3d', '3d', '4d', '5d']
     numbs = [5, 6, 7, 8, 4, 4]
     metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
-    adsorbates = ['clean', 'O', 'OH']
+    adsorbates = ['clean', 'O', 'OH', 'OOH']
     save_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
 
     # Water and hydrogen properties
@@ -63,8 +63,9 @@ def main():
         df = df.head(7)
         df.index = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
         
-        df['Oads'] = (df['O'] + O_corr) - df['clean'] - oxygen_G
         df['OHads'] = (df['OH'] + OH_corr) - df['clean'] - hydroxide_G
+        df['Oads'] = (df['O'] + O_corr) - df['clean'] - oxygen_G
+        df['OOHads'] = (df['OOH'] + OOH_corr) - df['clean'] - oxygen_G - hydroxide_G
         
         tsv_filename = os.path.join(save_path, f"Eads_{m+1}{metal}.tsv")
         df.to_csv(tsv_filename, sep='\t', float_format='%.2f')
