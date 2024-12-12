@@ -7,7 +7,7 @@ import pandas as pd
 from scipy.interpolate import make_interp_spline
 import numpy as np
 
-metals = {'Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W'}
+metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
 spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
 dzs = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
 path = '/pscratch/sd/j/jiuy97/6_MNC/figure'
