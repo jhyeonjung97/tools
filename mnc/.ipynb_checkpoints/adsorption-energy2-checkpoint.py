@@ -13,7 +13,6 @@ def main():
     numbs = [5, 6, 7, 8, 4, 4]
     metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
     adsorbates = ['clean', 'O', 'OH', 'OOH']
-    colors = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
     save_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
     
     # Water and hydrogen properties
@@ -95,6 +94,7 @@ def main():
 def plotting(df_energy, ads):
     column = f'{ads}ads'
     label = f'E_{ads}'
+    colors = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
     fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
     x = df_energy.index
     y = df_energy[column]
