@@ -12,8 +12,9 @@ def main():
     numbs = [5, 6, 7, 8, 4, 4]
     metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
     adsorbates = ['clean', 'O', 'OH', 'OOH']
+    colors = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
     save_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
-
+    
     # Water and hydrogen properties
     water_E = -14.23797429
     water_Cv = 0.103
@@ -51,42 +52,68 @@ def main():
         row = rows[m]
         numb = numbs[m]
         
-        df = pd.DataFrame()
-        for ads in adsorbates:
+        df_energy = pd.DataFrame()
+        df_spin = pd.DataFrame()
+        for a, ads in enumerate(adsorbates):
             if row != '3d' and ads == 'OOH':
-                df[ads] = np.nan
+                df_energy[ads] = np.nan
+                df_spin[ads] = np.nan
                 continue
+                
             energy_path = f'/pscratch/sd/j/jiuy97/6_MNC/figures/formation_energy/{row}_{numb}{metal}_{ads}.tsv'
-            energy = pd.read_csv(energy_path, sep='\t')
-            ms_columns = [col for col in energy.columns if 'MS' in col]
+            energy_data = pd.read_csv(energy_path, sep='\t')
+            ms_columns = [col for col in energy_data.columns if 'MS' in col]
             if ms_columns:
-                energy['MS'] = energy[ms_columns].bfill(axis=1).iloc[:, 0]
-            df[ads] = energy['MS']
+                energy_data['MS'] = energy_data[ms_columns].bfill(axis=1).iloc[:, 0]
+            df_energy[ads] = energy_data['MS']
+            
+            if ads == 'clean':
+                spin_path = f'/pscratch/sd/j/jiuy97/6_MNC/{a}_{ads}/{row}/{m+1}_{metal}/lowest.tsv'
+            else:
+                spin_path = f'/pscratch/sd/j/jiuy97/6_MNC/{a}_{ads}/{m+1}_{metal}/lowest.tsv'
+            spin_data = pd.read_csv(spin_path, sep='\t')
+            df_spin[ads] = spin_data['spin_state']
 
-        df = df.head(7)
-        df.index = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+        df_energy = df_energy.head(7)
+        df_energy.index = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+        df_spin.index = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
         
-        df['OHads'] = (df['OH'] + OH_corr) - df['clean'] - hydroxide_G
-        df['Oads'] = (df['O'] + O_corr) - df['clean'] - oxygen_G
-        df['OOHads'] = (df['OOH'] + OOH_corr) - df['clean'] - oxygen_G - hydroxide_G
+        df_energy['OHads'] = (df_energy['OH'] + OH_corr) - df_energy['clean'] - hydroxide_G
+        df_energy['Oads'] = (df_energy['O'] + O_corr) - df_energy['clean'] - oxygen_G
+        df_energy['OOHads'] = (df_energy['OOH'] + OOH_corr) - df_energy['clean'] - oxygen_G - hydroxide_G
         
         tsv_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.tsv")
         df.to_csv(tsv_filename, sep='\t', float_format='%.2f')
         print(f"Data saved as adsorption_energy_{m+1}{metal}.tsv")
 
-        plt.figure(figsize=(4, 3), dpi=300)
-        plt.plot(df.index, df['OHads'], marker='o', label='E_OH')
-        plt.plot(df.index, df['Oads'], marker='o', label='E_O')
-        plt.plot(df.index, df['OOHads'], marker='o', label='E_OOH')
+        plotting(df_energy, ads='OH')
+        plotting(df_energy, ads='O')
+        if row == '3d':
+            plotting(df_energy, ads='OOH')
 
-        plt.xlabel('dz (A)')
-        plt.ylabel('Adsorption energy (eV)')
-        plt.legend()
-        plt.tight_layout()
-        png_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.png")
-        plt.savefig(png_filename, bbox_inches="tight")
-        print(f"Figure saved as adsorption_energy_{m+1}{metal}.png")
-        plt.close()        
-        
+def plotting(df_energy, ads):
+    column = f'{ads}ads'
+    label = f'E_{ads}'
+    fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
+    x = df_energy.index
+    y = df_energy[column]
+    plt.plot(x, y, label=label)
+    for xi, yi in zip(x, y):
+        left_wedge = Wedge((x, y), 90, 270, facecolor=colors[df_spin.loc[xi, 'clean']], edgecolor='black', lw=1.0)
+        right_wedge = Wedge((x, y), 270, 90, facecolor=colors[df_spin.loc[xi, ads]], edgecolor='black', lw=1.0)
+        ax.add_patch(left_wedge)
+        ax.add_patch(right_wedge)
+    plt.xlabel('dz (A)')
+    plt.ylabel('Adsorption energy (eV)')
+    plt.legend()
+    plt.tight_layout()
+    png_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.png")
+    plt.savefig(png_filename, bbox_inches="tight")
+    print(f"Figure saved as adsorption_energy_{m+1}{metal}.png")
+    plt.close()
+
+def plot_two_color_marker(ax, x, y, size, color1, color2):
+
+    
 if __name__ == '__main__':
     main()
