@@ -86,32 +86,35 @@ def main():
         tsv_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.tsv")
         df_energy.to_csv(tsv_filename, sep='\t', float_format='%.2f')
         print(f"Data saved as adsorption_energy_{m+1}{metal}.tsv")
-
+        
+        fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
         plotting(df_energy, df_spin, colors, save_path, m, metal, ads='OH')
         plotting(df_energy, df_spin, colors, save_path, m, metal, ads='O')
         if row == '3d':
             plotting(df_energy, df_spin, colors, save_path, m, metal, ads='OOH')
-
+        plt.xlabel('dz (A)')
+        plt.ylabel('Adsorption energy (eV)')
+        plt.legend()
+        plt.tight_layout()
+        png_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.png")
+        plt.savefig(png_filename, bbox_inches="tight")
+        print(f"Figure saved as adsorption_energy_{m+1}{metal}.png")
+        plt.close()
+        
 def plotting(df_energy, df_spin, colors, save_path, m, metal, ads):
     column = f'{ads}ads'
     label = f'E_{ads}'
-    fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
     x = df_energy.index
     y = df_energy[column]
-    plt.plot(x, y, label=label)
+    plt.plot(x, y, color='black', label=label)
     for xi, yi in zip(x, y):
-        left_wedge = Wedge((xi, yi), 0.2, 90, 270, facecolor=colors[df_spin.loc[xi, 'clean']], edgecolor='black', lw=1.0)
-        right_wedge = Wedge((xi, yi), 0.2, 270, 90, facecolor=colors[df_spin.loc[xi, ads]], edgecolor='black', lw=1.0)
+        left_wedge = Wedge((xi, yi), size=0.03, 90, 270, 
+                           facecolor=colors[df_spin.loc[xi, 'clean']], edgecolor='black', lw=1.0)
+        right_wedge = Wedge((xi, yi), size=0.03, 270, 90, 
+                            facecolor=colors[df_spin.loc[xi, ads]], edgecolor='black', lw=1.0)
         ax.add_patch(left_wedge)
         ax.add_patch(right_wedge)
-    plt.xlabel('dz (A)')
-    plt.ylabel('Adsorption energy (eV)')
-    plt.legend()
-    plt.tight_layout()
-    png_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.png")
-    plt.savefig(png_filename, bbox_inches="tight")
-    print(f"Figure saved as adsorption_energy_{m+1}{metal}.png")
-    plt.close()
+
     
 if __name__ == '__main__':
     main()
