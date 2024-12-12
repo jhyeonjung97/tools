@@ -89,7 +89,7 @@ def main():
         
         fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
         for ads in ['OH', 'O', 'OOH']:
-            if row != 'OOH':
+            if row != '3d' and ads == 'OOH':
                 continue
             column = f'{ads}ads'
             label = f'E_{ads}'
