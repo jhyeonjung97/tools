@@ -75,8 +75,9 @@ def main():
         print(f"Data saved as adsorption_energy_{m+1}{metal}.tsv")
 
         plt.figure(figsize=(4, 3), dpi=300)
-        plt.plot(df.index, df['Oads'], marker='o', label='E_O')
         plt.plot(df.index, df['OHads'], marker='o', label='E_OH')
+        plt.plot(df.index, df['Oads'], marker='o', label='E_O')
+        plt.plot(df.index, df['OOHads'], marker='o', label='E_OOH')
 
         plt.xlabel('dz (A)')
         plt.ylabel('Adsorption energy (eV)')
