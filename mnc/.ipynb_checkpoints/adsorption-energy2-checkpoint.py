@@ -83,7 +83,7 @@ def main():
         df_energy['OOHads'] = (df_energy['OOH'] + OOH_corr) - df_energy['clean'] - oxygen_G - hydroxide_G
         
         tsv_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.tsv")
-        df.to_csv(tsv_filename, sep='\t', float_format='%.2f')
+        df_energy.to_csv(tsv_filename, sep='\t', float_format='%.2f')
         print(f"Data saved as adsorption_energy_{m+1}{metal}.tsv")
 
         plotting(df_energy, ads='OH')
