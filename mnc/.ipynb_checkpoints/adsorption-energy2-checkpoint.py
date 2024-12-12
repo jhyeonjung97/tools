@@ -8,7 +8,6 @@ from scipy.interpolate import make_interp_spline
 import numpy as np
 from matplotlib.patches import Wedge
 
-
 def main():
     rows = ['3d', '3d', '3d', '3d', '4d', '5d']
     numbs = [5, 6, 7, 8, 4, 4]
