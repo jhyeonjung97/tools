@@ -94,10 +94,12 @@ def main():
             column = f'{ads}ads'
             x = df_energy.index
             y = df_energy[column]
-            plt.plot(x, y, color='black', label=f'E_{ads}')
+            plt.plot(x, y, color='black', label=f'E_{ads}', zorder=1)
             for xi, yi in zip(x, y):
-                left_wedge = Wedge((xi, yi), 0.03, 90, 270, facecolor=colors[df_spin.loc[xi, 'clean']], edgecolor='black', lw=1.0)
-                right_wedge = Wedge((xi, yi), 0.03, 270, 90, facecolor=colors[df_spin.loc[xi, ads]], edgecolor='black', lw=1.0)
+                left_wedge = Wedge((xi, yi), 0.03, 90, 270, lw=1.0, zorder=2, 
+                                   facecolor=colors[df_spin.loc[xi, 'clean']], edgecolor='black')
+                right_wedge = Wedge((xi, yi), 0.03, 270, 90, lw=1.0, zorder=2, 
+                                    facecolor=colors[df_spin.loc[xi, ads]], edgecolor='black')
                 ax.add_patch(left_wedge)
                 ax.add_patch(right_wedge)
         plt.xlabel('dz (A)')
