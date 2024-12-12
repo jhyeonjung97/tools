@@ -53,7 +53,7 @@ def main():
         
         df = pd.DataFrame()
         for ads in adsorbates:
-            energy_path = f'/pscratch/sd/j/jiuy97/6_MNC/figures/{row}_{numb}{metal}_{ads}.tsv'
+            energy_path = f'/pscratch/sd/j/jiuy97/6_MNC/figures/formation_energy/{row}_{numb}{metal}_{ads}.tsv'
             energy = pd.read_csv(energy_path, sep='\t')
             ms_columns = [col for col in energy.columns if 'MS' in col]
             if ms_columns:
