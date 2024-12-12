@@ -86,12 +86,12 @@ def main():
         df_energy.to_csv(tsv_filename, sep='\t', float_format='%.2f')
         print(f"Data saved as adsorption_energy_{m+1}{metal}.tsv")
 
-        plotting(df_energy, ads='OH')
-        plotting(df_energy, ads='O')
+        plotting(df_energy, df_spin, ads='OH')
+        plotting(df_energy, df_spin, ads='O')
         if row == '3d':
-            plotting(df_energy, ads='OOH')
+            plotting(df_energy, df_spin, ads='OOH')
 
-def plotting(df_energy, ads):
+def plotting(df_energy, df_spin, ads):
     column = f'{ads}ads'
     label = f'E_{ads}'
     colors = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
