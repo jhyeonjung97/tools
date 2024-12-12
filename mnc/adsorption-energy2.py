@@ -13,6 +13,7 @@ def main():
     numbs = [5, 6, 7, 8, 4, 4]
     metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
     adsorbates = ['clean', 'O', 'OH', 'OOH']
+    colors = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
     save_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
     
     # Water and hydrogen properties
@@ -86,15 +87,14 @@ def main():
         df_energy.to_csv(tsv_filename, sep='\t', float_format='%.2f')
         print(f"Data saved as adsorption_energy_{m+1}{metal}.tsv")
 
-        plotting(df_energy, df_spin, ads='OH')
-        plotting(df_energy, df_spin, ads='O')
+        plotting(df_energy, df_spin, colors, save_path, ads='OH')
+        plotting(df_energy, df_spin, colors, save_path, ads='O')
         if row == '3d':
-            plotting(df_energy, df_spin, ads='OOH')
+            plotting(df_energy, df_spin, colors, save_path, ads='OOH')
 
-def plotting(df_energy, df_spin, ads):
+def plotting(df_energy, df_spin, colors, save_path, ads):
     column = f'{ads}ads'
     label = f'E_{ads}'
-    colors = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
     fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
     x = df_energy.index
     y = df_energy[column]
