@@ -100,8 +100,8 @@ def plotting(df_energy, df_spin, ads):
     y = df_energy[column]
     plt.plot(x, y, label=label)
     for xi, yi in zip(x, y):
-        left_wedge = Wedge((x, y), 90, 270, facecolor=colors[df_spin.loc[xi, 'clean']], edgecolor='black', lw=1.0)
-        right_wedge = Wedge((x, y), 270, 90, facecolor=colors[df_spin.loc[xi, ads]], edgecolor='black', lw=1.0)
+        left_wedge = Wedge((xi, yi), 0.2, 90, 270, facecolor=colors[df_spin.loc[xi, 'clean']], edgecolor='black', lw=1.0)
+        right_wedge = Wedge((xi, yi), 0.2, 270, 90, facecolor=colors[df_spin.loc[xi, ads]], edgecolor='black', lw=1.0)
         ax.add_patch(left_wedge)
         ax.add_patch(right_wedge)
     plt.xlabel('dz (A)')
