@@ -70,9 +70,9 @@ def main():
         df['Oads'] = (df['O'] + O_corr) - df['clean'] - oxygen_G
         df['OOHads'] = (df['OOH'] + OOH_corr) - df['clean'] - oxygen_G - hydroxide_G
         
-        tsv_filename = os.path.join(save_path, f"Eads_{m+1}{metal}.tsv")
+        tsv_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.tsv")
         df.to_csv(tsv_filename, sep='\t', float_format='%.2f')
-        print(f"Data saved as {m+1}{metal}_Eads.tsv")
+        print(f"Data saved as adsorption_energy_{m+1}{metal}.tsv")
 
         plt.figure(figsize=(4, 3), dpi=300)
         plt.plot(df.index, df['Oads'], marker='o', label='E_O')
@@ -82,9 +82,9 @@ def main():
         plt.ylabel('Adsorption energy (eV)')
         plt.legend()
         plt.tight_layout()
-        png_filename = os.path.join(save_path, f"Eads_{m+1}{metal}.png")
+        png_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.png")
         plt.savefig(png_filename, bbox_inches="tight")
-        print(f"Figure saved as {m+1}{metal}_Eads.png")
+        print(f"Figure saved as adsorption_energy_{m+1}{metal}.png")
         plt.close()        
         
 if __name__ == '__main__':
