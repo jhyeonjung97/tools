@@ -111,9 +111,6 @@ def plotting(df_energy, ads):
     plt.savefig(png_filename, bbox_inches="tight")
     print(f"Figure saved as adsorption_energy_{m+1}{metal}.png")
     plt.close()
-
-def plot_two_color_marker(ax, x, y, size, color1, color2):
-
     
 if __name__ == '__main__':
     main()
