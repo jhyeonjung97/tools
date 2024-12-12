@@ -88,10 +88,19 @@ def main():
         print(f"Data saved as adsorption_energy_{m+1}{metal}.tsv")
         
         fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
-        plotting(ax, df_energy, df_spin, colors, save_path, m, metal, ads='OH')
-        plotting(ax, df_energy, df_spin, colors, save_path, m, metal, ads='O')
-        if row == '3d':
-            plotting(ax, df_energy, df_spin, colors, save_path, m, metal, ads='OOH')
+        for ads in ['OH', 'O', 'OOH']:
+            if row != 'OOH':
+                continue
+            column = f'{ads}ads'
+            label = f'E_{ads}'
+            x = df_energy.index
+            y = df_energy[column]
+            plt.plot(x, y, color='black', label=label)
+            for xi, yi in zip(x, y):
+                left_wedge = Wedge((xi, yi), 0.03, 90, 270, facecolor=colors[df_spin.loc[xi, 'clean']], edgecolor='black', lw=1.0)
+                right_wedge = Wedge((xi, yi), 0.03, 270, 90, facecolor=colors[df_spin.loc[xi, ads]], edgecolor='black', lw=1.0)
+                ax.add_patch(left_wedge)
+                ax.add_patch(right_wedge)
         plt.xlabel('dz (A)')
         plt.ylabel('Adsorption energy (eV)')
         plt.legend()
@@ -100,19 +109,6 @@ def main():
         plt.savefig(png_filename, bbox_inches="tight")
         print(f"Figure saved as adsorption_energy_{m+1}{metal}.png")
         plt.close()
-        
-def plotting(df_energy, df_spin, colors, save_path, m, metal, ads):
-    column = f'{ads}ads'
-    label = f'E_{ads}'
-    x = df_energy.index
-    y = df_energy[column]
-    plt.plot(x, y, color='black', label=label)
-    for xi, yi in zip(x, y):
-        left_wedge = Wedge((xi, yi), 0.03, 90, 270, facecolor=colors[df_spin.loc[xi, 'clean']], edgecolor='black', lw=1.0)
-        right_wedge = Wedge((xi, yi), 0.03, 270, 90, facecolor=colors[df_spin.loc[xi, ads]], edgecolor='black', lw=1.0)
-        ax.add_patch(left_wedge)
-        ax.add_patch(right_wedge)
-
     
 if __name__ == '__main__':
     main()
