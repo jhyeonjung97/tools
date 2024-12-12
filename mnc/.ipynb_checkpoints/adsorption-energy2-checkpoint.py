@@ -88,10 +88,10 @@ def main():
         print(f"Data saved as adsorption_energy_{m+1}{metal}.tsv")
         
         fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
-        plotting(df_energy, df_spin, colors, save_path, m, metal, ads='OH')
-        plotting(df_energy, df_spin, colors, save_path, m, metal, ads='O')
+        plotting(ax, df_energy, df_spin, colors, save_path, m, metal, ads='OH')
+        plotting(ax, df_energy, df_spin, colors, save_path, m, metal, ads='O')
         if row == '3d':
-            plotting(df_energy, df_spin, colors, save_path, m, metal, ads='OOH')
+            plotting(ax, df_energy, df_spin, colors, save_path, m, metal, ads='OOH')
         plt.xlabel('dz (A)')
         plt.ylabel('Adsorption energy (eV)')
         plt.legend()
