@@ -6,6 +6,8 @@ import os
 import pandas as pd
 from scipy.interpolate import make_interp_spline
 import numpy as np
+from matplotlib.patches import Wedge
+
 
 def main():
     rows = ['3d', '3d', '3d', '3d', '4d', '5d']
