@@ -154,7 +154,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         plt.axhline(y=0.0, color='blue', linestyle='--')
         plt.axhline(y=0.8, color='red', linestyle='--')
     plt.xticks(dzs)
-    plt.xlabel('dz')
+    plt.xlabel('Δz (Å)')
     plt.ylabel(ylabel)
     if ymin and ymax:
         plt.ylim(ymin, ymax)

@@ -105,7 +105,7 @@ def main():
                                     facecolor=colors[df_spin.loc[xi, ads]], edgecolor='black')
                 ax.add_patch(left_wedge)
                 ax.add_patch(right_wedge)
-        plt.xlabel('dz (A)')
+        plt.xlabel('Δz (Å)')
         plt.ylabel('Adsorption energy (eV)')
         # plt.xlim(0.0, 1.2)
         plt.ylim(ymin[m], ymax[m])

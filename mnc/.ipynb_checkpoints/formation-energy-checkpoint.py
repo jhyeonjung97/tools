@@ -963,7 +963,7 @@ def main():
             plotting(df=Ef, df_relaxed=Ef_relaxed, dzs=dzs, spins=spins, 
                      ylabel=r'E$_{\sf f}$ (eV)', png_filename=png_Ef_filename)
             plotting(df=df_dz, df_relaxed=df_dz_relaxed, dzs=dzs, spins=spins, 
-                     ylabel='dz (Å)', png_filename=png_dz_filename)
+                     ylabel='Δz (Å)', png_filename=png_dz_filename)
             # plotting(df=df_rel, df_relaxed=df_relaxed_rel, dzs=dzs, spins=spins, color='black', 
             #          ylabel='Spin crossover energy (eV)', png_filename=png_rel_filename)
             plotting(df=df_mag, df_relaxed=df_relaxed_mag, dzs=dzs, spins=spins, 
@@ -982,7 +982,7 @@ def main():
                 plotting(df=Ef_O, df_relaxed=Ef_O_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Formation energy (eV)', png_filename=png_O_Ef_filename)
                 plotting(df=df_O_dz, df_relaxed=df_O_relaxed_dz, dzs=dzs, spins=spins, 
-                         ylabel='dz (Å)', png_filename=png_O_dz_filename)
+                         ylabel='Δz (Å)', png_filename=png_O_dz_filename)
                 plotting(df=df_O_mag, df_relaxed=df_O_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moments (uB)', png_filename=png_O_mag_filename)
@@ -1002,7 +1002,7 @@ def main():
                 plotting(df=Ef_OH, df_relaxed=Ef_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Formation energy (eV)', png_filename=png_OH_Ef_filename)
                 plotting(df=df_OH_dz, df_relaxed=df_OH_relaxed_dz, dzs=dzs, spins=spins, 
-                         ylabel='dz (Å)', png_filename=png_OH_dz_filename)
+                         ylabel='Δz (Å)', png_filename=png_OH_dz_filename)
                 plotting(df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moments', png_filename=png_OH_mag_filename)
@@ -1022,7 +1022,7 @@ def main():
                 plotting(df=Ef_OOH, df_relaxed=Ef_OOH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Formation energy (eV)', png_filename=png_OOH_Ef_filename)
                 plotting(df=df_OOH_dz, df_relaxed=df_OOH_relaxed_dz, dzs=dzs, spins=spins, 
-                         ylabel='dz (Å)', png_filename=png_OOH_dz_filename)
+                         ylabel='Δz (Å)', png_filename=png_OOH_dz_filename)
                 plotting(df=df_OOH_mag, df_relaxed=df_OOH_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moments', png_filename=png_OOH_mag_filename)
@@ -1030,53 +1030,53 @@ def main():
                          ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.21, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_OOH_bond_filename)
 
-            # if path_O_OH: 
-            #     combining(df=df_O_OH, df_relaxed=df_O_OH_relaxed, tsv_filename=tsv_O_OH_filename)
-            #     combining(df=Ef_O_OH, df_relaxed=Ef_O_OH_relaxed, tsv_filename=tsv_O_OH_Ef_filename)
-            #     combining(df=df_O_OH_dz, df_relaxed=df_O_OH_relaxed_dz, tsv_filename=tsv_O_OH_dz_filename)
-            #     combining(df=df_O_OH_mag, df_relaxed=df_O_OH_relaxed_mag, tsv_filename=tsv_O_OH_mag_filename)
-            #     combining(df=df_O_OH_bond1, df_relaxed=df_O_OH_relaxed_bond1, tsv_filename=tsv_O_OH_bond1_filename)
-            #     combining(df=df_O_OH_bond2, df_relaxed=df_O_OH_relaxed_bond2, tsv_filename=tsv_O_OH_bond2_filename)
+            if path_O_OH: 
+                combining(df=df_O_OH, df_relaxed=df_O_OH_relaxed, tsv_filename=tsv_O_OH_filename)
+                combining(df=Ef_O_OH, df_relaxed=Ef_O_OH_relaxed, tsv_filename=tsv_O_OH_Ef_filename)
+                combining(df=df_O_OH_dz, df_relaxed=df_O_OH_relaxed_dz, tsv_filename=tsv_O_OH_dz_filename)
+                combining(df=df_O_OH_mag, df_relaxed=df_O_OH_relaxed_mag, tsv_filename=tsv_O_OH_mag_filename)
+                combining(df=df_O_OH_bond1, df_relaxed=df_O_OH_relaxed_bond1, tsv_filename=tsv_O_OH_bond1_filename)
+                combining(df=df_O_OH_bond2, df_relaxed=df_O_OH_relaxed_bond2, tsv_filename=tsv_O_OH_bond2_filename)
                 
-            #     plotting(df=df_O_OH, df_relaxed=df_O_OH_relaxed, dzs=dzs, spins=spins, 
-            #              ylabel='Energy (eV)', png_filename=png_O_OH_filename)
-            #     plotting(df=Ef_O_OH, df_relaxed=Ef_O_OH_relaxed, dzs=dzs, spins=spins, 
-            #              ylabel='Formation energy (eV)', png_filename=png_O_OH_Ef_filename)
-            #     plotting(df=df_O_OH_dz, df_relaxed=df_O_OH_relaxed_dz, dzs=dzs, spins=spins, 
-            #              ylabel='dz (Å)', png_filename=png_O_OH_dz_filename)
-            #     plotting(df=df_O_OH_mag, df_relaxed=df_O_OH_relaxed_mag, dzs=dzs, spins=spins, 
-            #              ymin=-0.5, ymax=5.5, yticks=np.arange(6),
-            #              ylabel='Magnetic Moments', png_filename=png_O_OH_mag_filename)
-            #     plotting(df=df_O_OH_bond1, df_relaxed=df_O_OH_relaxed_bond1, dzs=dzs, spins=spins, 
-            #              ymin=1.6, ymax=2.1, yticks = np.arange(1.6, 2.11, 0.1),
-            #              ylabel='Bond Length (Å)', png_filename=png_O_OH_bond1_filename)
-            #     plotting(df=df_O_OH_bond2, df_relaxed=df_O_OH_relaxed_bond2, dzs=dzs, spins=spins, 
-            #              ymin=1.9, ymax=2.4, yticks = np.arange(1.9, 2.41, 0.1),
-            #              ylabel='Bond Length (Å)', png_filename=png_O_OH_bond2_filename)
+                plotting(df=df_O_OH, df_relaxed=df_O_OH_relaxed, dzs=dzs, spins=spins, 
+                         ylabel='Energy (eV)', png_filename=png_O_OH_filename)
+                plotting(df=Ef_O_OH, df_relaxed=Ef_O_OH_relaxed, dzs=dzs, spins=spins, 
+                         ylabel='Formation energy (eV)', png_filename=png_O_OH_Ef_filename)
+                plotting(df=df_O_OH_dz, df_relaxed=df_O_OH_relaxed_dz, dzs=dzs, spins=spins, 
+                         ylabel='Δz (Å)', png_filename=png_O_OH_dz_filename)
+                plotting(df=df_O_OH_mag, df_relaxed=df_O_OH_relaxed_mag, dzs=dzs, spins=spins, 
+                         ymin=-0.5, ymax=5.5, yticks=np.arange(6),
+                         ylabel='Magnetic Moments', png_filename=png_O_OH_mag_filename)
+                plotting(df=df_O_OH_bond1, df_relaxed=df_O_OH_relaxed_bond1, dzs=dzs, spins=spins, 
+                         ymin=1.6, ymax=2.1, yticks = np.arange(1.6, 2.11, 0.1),
+                         ylabel='Bond Length (Å)', png_filename=png_O_OH_bond1_filename)
+                plotting(df=df_O_OH_bond2, df_relaxed=df_O_OH_relaxed_bond2, dzs=dzs, spins=spins, 
+                         ymin=1.9, ymax=2.4, yticks = np.arange(1.9, 2.41, 0.1),
+                         ylabel='Bond Length (Å)', png_filename=png_O_OH_bond2_filename)
+
+            if path_OH_OH: 
+                combining(df=df_OH_OH, df_relaxed=df_OH_OH_relaxed, tsv_filename=tsv_OH_OH_filename)
+                combining(df=Ef_OH_OH, df_relaxed=Ef_OH_OH_relaxed, tsv_filename=tsv_OH_OH_Ef_filename)
+                combining(df=df_OH_OH_dz, df_relaxed=df_OH_OH_relaxed_dz, tsv_filename=tsv_OH_OH_dz_filename)
+                combining(df=df_OH_OH_mag, df_relaxed=df_OH_OH_relaxed_mag, tsv_filename=tsv_OH_OH_mag_filename)
+                combining(df=df_OH_OH_bond1, df_relaxed=df_OH_OH_relaxed_bond1, tsv_filename=tsv_OH_OH_bond1_filename)
+                combining(df=df_OH_OH_bond2, df_relaxed=df_OH_OH_relaxed_bond2, tsv_filename=tsv_OH_OH_bond2_filename)
                 
-            # if path_OH_OH: 
-            #     combining(df=df_OH_OH, df_relaxed=df_OH_OH_relaxed, tsv_filename=tsv_OH_OH_filename)
-            #     combining(df=Ef_OH_OH, df_relaxed=Ef_OH_OH_relaxed, tsv_filename=tsv_OH_OH_Ef_filename)
-            #     combining(df=df_OH_OH_dz, df_relaxed=df_OH_OH_relaxed_dz, tsv_filename=tsv_OH_OH_dz_filename)
-            #     combining(df=df_OH_OH_mag, df_relaxed=df_OH_OH_relaxed_mag, tsv_filename=tsv_OH_OH_mag_filename)
-            #     combining(df=df_OH_OH_bond1, df_relaxed=df_OH_OH_relaxed_bond1, tsv_filename=tsv_OH_OH_bond1_filename)
-            #     combining(df=df_OH_OH_bond2, df_relaxed=df_OH_OH_relaxed_bond2, tsv_filename=tsv_OH_OH_bond2_filename)
-                
-            #     plotting(df=df_OH_OH, df_relaxed=df_OH_OH_relaxed, dzs=dzs, spins=spins, 
-            #              ylabel='Energy (eV)', png_filename=png_OH_OH_filename)
-            #     plotting(df=Ef_OH_OH, df_relaxed=Ef_OH_OH_relaxed, dzs=dzs, spins=spins, 
-            #              ylabel='Formation energy (eV)', png_filename=png_OH_OH_Ef_filename)
-            #     plotting(df=df_OH_OH_dz, df_relaxed=df_OH_OH_relaxed_dz, dzs=dzs, spins=spins, 
-            #              ylabel='dz (Å)', png_filename=png_OH_OH_dz_filename)
-            #     plotting(df=df_OH_OH_mag, df_relaxed=df_OH_OH_relaxed_mag, dzs=dzs, spins=spins, 
-            #              ymin=-0.5, ymax=5.5, yticks=np.arange(6),
-            #              ylabel='Magnetic Moments', png_filename=png_OH_OH_mag_filename)
-            #     plotting(df=df_OH_OH_bond1, df_relaxed=df_OH_OH_relaxed_bond1, dzs=dzs, spins=spins, 
-            #              ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.21, 0.1),
-            #              ylabel='Bond Length (Å)', png_filename=png_OH_OH_bond1_filename)
-            #     plotting(df=df_OH_OH_bond2, df_relaxed=df_OH_OH_relaxed_bond2, dzs=dzs, spins=spins, 
-            #              ymin=1.9, ymax=2.4, yticks = np.arange(1.9, 2.41, 0.1),
-            #              ylabel='Bond Length (Å)', png_filename=png_OH_OH_bond2_filename)
+                plotting(df=df_OH_OH, df_relaxed=df_OH_OH_relaxed, dzs=dzs, spins=spins, 
+                         ylabel='Energy (eV)', png_filename=png_OH_OH_filename)
+                plotting(df=Ef_OH_OH, df_relaxed=Ef_OH_OH_relaxed, dzs=dzs, spins=spins, 
+                         ylabel='Formation energy (eV)', png_filename=png_OH_OH_Ef_filename)
+                plotting(df=df_OH_OH_dz, df_relaxed=df_OH_OH_relaxed_dz, dzs=dzs, spins=spins, 
+                         ylabel='Δz (Å)', png_filename=png_OH_OH_dz_filename)
+                plotting(df=df_OH_OH_mag, df_relaxed=df_OH_OH_relaxed_mag, dzs=dzs, spins=spins, 
+                         ymin=-0.5, ymax=5.5, yticks=np.arange(6),
+                         ylabel='Magnetic Moments', png_filename=png_OH_OH_mag_filename)
+                plotting(df=df_OH_OH_bond1, df_relaxed=df_OH_OH_relaxed_bond1, dzs=dzs, spins=spins, 
+                         ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.21, 0.1),
+                         ylabel='Bond Length (Å)', png_filename=png_OH_OH_bond1_filename)
+                plotting(df=df_OH_OH_bond2, df_relaxed=df_OH_OH_relaxed_bond2, dzs=dzs, spins=spins, 
+                         ymin=1.9, ymax=2.4, yticks = np.arange(1.9, 2.41, 0.1),
+                         ylabel='Bond Length (Å)', png_filename=png_OH_OH_bond2_filename)
                 
 def relative(df, df_rel):
     if 'HS' in Ef.columns and 'LS' in Ef.columns:
@@ -1150,7 +1150,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
         plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
         plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
     plt.xticks(dzs)
-    plt.xlabel('dz (Å)', fontsize='large')
+    plt.xlabel('Δz (Å)', fontsize='large')
     plt.ylabel(ylabel, fontsize='large')
     if ymin and ymax:
         plt.ylim(ymin, ymax)
@@ -1207,7 +1207,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                 plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
                 plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
             plt.xticks(dzs)
-            plt.xlabel('dz (Å)', fontsize='large')
+            plt.xlabel('Δz (Å)', fontsize='large')
             plt.ylabel(ylabel, fontsize='large')
             if ymin and ymax:
                 plt.ylim(ymin, ymax)
@@ -1248,7 +1248,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                 plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
                 plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
             plt.xticks(dzs)
-            plt.xlabel('dz (Å)', fontsize='large')
+            plt.xlabel('Δz (Å)', fontsize='large')
             plt.ylabel(ylabel, fontsize='large')
             if ymin and ymax:
                 plt.ylim(ymin, ymax)
