@@ -1097,10 +1097,10 @@ def plot_smooth_line(x, y, color):
         y_smooth = spl(x_new)
         plt.plot(x_new, y_smooth, color=color, zorder=1)
         plt.scatter(x, y, marker='s', edgecolors=color, facecolors='white', zorder=2)
-        return y_smooth
+        return pd.Series(y_smooth, index=x_new)
     except ValueError as e:
         print(f"Error while creating spline: {e}")
-        return None
+        return pd.Series(dtype=float)
 
 def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=None, yticks=None, color=None):
     if df.isna().all().all():
@@ -1183,6 +1183,8 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                         plt.scatter(x, y, marker='x', color=ms_spins.get(column, 'black'), zorder=5)
                     else:
                         df_smooth_y[column] = plot_smooth_line(x, y, color or spins.get(column, 'black'))
+                        if not df_smooth_y[column].empty:
+                            df_smooth_y = df_smooth_y.reindex(index=np.linspace(min(dzs), max(dzs), int((max(dzs)-min(dzs))*300)))
             start_idx = 0
             current_column = min_columns[0]
             for i in range(1, len(min_columns)):
