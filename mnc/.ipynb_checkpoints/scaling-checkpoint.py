@@ -80,7 +80,12 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     line = np.poly1d(coeffs)
     plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
-    plt.text(0.5, 0.1 if coeffs[0] > 0 else 0.1, equation, transform=plt.gca().transAxes, fontsize=10, color='black')
+    y_pred = line(x)
+    ss_total = np.sum((y - np.mean(y))**2)
+    ss_residual = np.sum((y - y_pred)**2)
+    r_squared = 1 - (ss_residual / ss_total)
+    equation_with_r2 = f'{equation}\n(R² = {r_squared:.2f})'
+    plt.text(0.5, 0.1 if coeffs[0] > 0 else 0.1, equation_with_r2, transform=plt.gca().transAxes, fontsize=10, color='black')
     plt.xlabel(fr'$\Delta$G$_{{\sf {ads1}}}$ (eV)', fontsize='large')
     plt.ylabel(fr'$\Delta$G$_{{\sf {ads2}}}$ (eV)', fontsize='large')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
