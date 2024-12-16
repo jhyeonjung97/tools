@@ -6,8 +6,6 @@ from matplotlib.ticker import FormatStrFormatter
 from scipy.interpolate import make_interp_spline
 from matplotlib.patches import Wedge, Rectangle
 
-a, b = 0.90, 3.07
-
 # Figure and font settings
 fig_width_pt = 1.8 * 246.0
 inches_per_pt = 1.0 / 72.27
@@ -19,11 +17,11 @@ fig_height = fig_width * golden_mean
 OERs = ['H2O->*OH', '*OH->*O', '*O->*OOH', '*OOH->O2']
 ORRs = ['O2->*OOH', '*OOH->*O', '*O->*OH', '*OH->H2O']
 rows = ['3d', '3d', '3d', '3d', '4d', '5d']
-groups = ['5', '6', '7', '8' , '4', '4']
-metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
+groups = ['5', '6', '7', '8'] # , '4', '4']
+metals = ['Mn', 'Fe', 'Co', 'Ni'] #, 'Mo', 'W']
 adsorbates = ['clean', 'O', 'OH', 'OOH']
 # colors = ['#FFC3BD', '#A8E6A1', '#FFD92F', '#A0C8F8']
-colors = ['blue', 'green', 'orange', 'red' , 'purple', 'grey']
+colors = ['blue', 'green', 'orange', 'red'] # , 'purple', 'grey']
 ms_colors = {'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
 replacement_map = {'dG1': 'dG4', 'dG2': 'dG3', 'dG3': 'dG2', 'dG4': 'dG1'}
 
@@ -64,12 +62,6 @@ OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 root = '/pscratch/sd/j/jiuy97/6_MNC/figures/formation_energy'
 relaxed_energies = {}
 scaling_relationship = pd.DataFrame()
-
-def calculate_dG_OOH(row):
-    if pd.notna(row['G_OOH']):
-        return row['G_OOH'] - row['G_'] - oxygen_G - hydroxide_G
-    else:
-        return a * row['dG_OH'] + b
         
 def main():
     for m, metal in enumerate(metals):
@@ -138,14 +130,11 @@ def main():
         
         gibbs_energies['dG_OH'] = gibbs_energies['G_OH'] - gibbs_energies['G_'] - hydroxide_G
         gibbs_energies['dG_O'] = gibbs_energies['G_O'] - gibbs_energies['G_'] - oxygen_G 
-        gibbs_energies['dG_OOH'] = gibbs_energies.apply(calculate_dG_OOH, axis=1)
+        gibbs_energies['dG_OOH'] = gibbs_energies['G_OOH'] - gibbs_energies['G_'] - oxygen_G - hydroxide_G
 
         dG_OH = G_OH - G_ - hydroxide_G
         dG_O = G_O - G_ - oxygen_G
-        if G_OOH:
-            dG_OOH = G_OOH - G_ - oxygen_G - hydroxide_G
-        else:
-            dG_OOH = a * dG_OH + b
+        dG_OOH = G_OOH - G_ - oxygen_G - hydroxide_G
         
         gibbs_energies['dG1'] = gibbs_energies['dG_OH']
         gibbs_energies['dG2'] = gibbs_energies['dG_O'] - gibbs_energies['dG_OH']
@@ -193,7 +182,7 @@ def main():
 
     scaling_relationship['dG_OH'] = scaling_relationship['G_OH'] - scaling_relationship['G_'] - hydroxide_G
     scaling_relationship['dG_O'] = scaling_relationship['G_O'] - scaling_relationship['G_'] - oxygen_G
-    scaling_relationship['dG_OOH'] = scaling_relationship.apply(calculate_dG_OOH, axis=1)
+    scaling_relationship['dG_O'] = scaling_relationship['G_OOH'] - scaling_relationship['G_'] - oxygen_G - hydroxide_G
 
     scaling_relationship['dG1'] = scaling_relationship['dG_OH']
     scaling_relationship['dG2'] = scaling_relationship['dG_O'] - scaling_relationship['dG_OH']
@@ -300,7 +289,7 @@ def plotting(gibbs_energies, spin_cross_over, row, group, metal, rxn, rds, overp
                 color_ = ms_colors[spin_cross_over.loc[xi, 'clean']]
                 color_OH = ms_colors[spin_cross_over.loc[xi, 'OH']]
                 color_O = ms_colors[spin_cross_over.loc[xi, 'O']]
-                color_OOH = 'white'
+                color_OOH = ms_colors[spin_cross_over.loc[xi, 'OOH']]
                 dGrds = gibbs_energies.loc[xi, rds]
 
                 if rxn == 'OER':
