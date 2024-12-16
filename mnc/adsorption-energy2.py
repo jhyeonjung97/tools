@@ -111,8 +111,7 @@ def main():
         plt.ylabel('Adsorption energy (eV)')
         # plt.xlim(0.0, 1.2)
         plt.ylim(ymin[m], ymax[m])
-        plt.yticks(ymin[m], ymax[m] + 0.1, 0.5)
-
+        plt.yticks(np.arange(ymin[m], ymax[m] + 0.1, 0.5))
         plt.xticks(dzs)
         plt.tight_layout()
         png_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.png")
