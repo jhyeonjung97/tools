@@ -1271,25 +1271,25 @@ if __name__ == '__main__':
     main()
     custom_legend = [
         Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#ff7f0e', 
-               label='LS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
+               label='LS (constrained Δz, enforced spin)', markersize=8, linestyle='None'),
         Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#279ff2', 
-               label='IS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
+               label='IS (constrained Δz, enforced spin)', markersize=8, linestyle='None'),
         Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#9467bd', 
-               label='HS (fixed, w/ nupdown)', markersize=8, linestyle='None'),
+               label='HS (constrained Δz, enforced spin)', markersize=8, linestyle='None'),
     
         Line2D([0], [0], marker='s', color='#ff7f0e', 
-               label='LS (relaxed, w/ nupdown)', markersize=8, linestyle='None'),
+               label='LS (relaxed Δz, free spin)', markersize=8, linestyle='None'),
         Line2D([0], [0], marker='s', color='#279ff2', 
-               label='IS (relaxed, w/ nupdown)', markersize=8, linestyle='None'),
+               label='IS (relaxed Δz, free spin)', markersize=8, linestyle='None'),
         Line2D([0], [0], marker='s', color='#9467bd', 
-               label='HS (relaxed, w/ nupdown)', markersize=8, linestyle='None'),
+               label='HS (relaxed Δz, free spin)', markersize=8, linestyle='None'),
     
         Line2D([0], [0], marker='x', color='#ff7f0e', 
-               label='LS (fixed, w/o nupdown)', markersize=8, linestyle='None'),
+               label='LS (constrained Δz, free spin)', markersize=8, linestyle='None'),
         Line2D([0], [0], marker='x', color='#279ff2', 
-               label='IS (fixed, w/o nupdown)', markersize=8, linestyle='None'),
+               label='IS (constrained Δz, free spin)', markersize=8, linestyle='None'),
         Line2D([0], [0], marker='x', color='#9467bd', 
-               label='HS (fixed, w/o nupdown)', markersize=8, linestyle='None'),
+               label='HS (constrained Δz, free spin)', markersize=8, linestyle='None'),
     ]
     fig, ax = plt.subplots()
     ax.legend(handles=custom_legend, ncol=3)
