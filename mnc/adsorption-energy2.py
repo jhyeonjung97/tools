@@ -69,6 +69,8 @@ def main():
             ms_columns = [col for col in energy_data.columns if 'MS' in col]
             if ms_columns:
                 energy_data['MS'] = energy_data[ms_columns].bfill(axis=1).iloc[:, 0]
+            else:
+                energy_data['MS'] = np.nan
             df_energy[ads] = energy_data['MS']
             
             if ads == 'clean':
