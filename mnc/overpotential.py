@@ -182,7 +182,7 @@ def main():
 
     scaling_relationship['dG_OH'] = scaling_relationship['G_OH'] - scaling_relationship['G_'] - hydroxide_G
     scaling_relationship['dG_O'] = scaling_relationship['G_O'] - scaling_relationship['G_'] - oxygen_G
-    scaling_relationship['dG_O'] = scaling_relationship['G_OOH'] - scaling_relationship['G_'] - oxygen_G - hydroxide_G
+    scaling_relationship['dG_OOH'] = scaling_relationship['G_OOH'] - scaling_relationship['G_'] - oxygen_G - hydroxide_G
 
     scaling_relationship['dG1'] = scaling_relationship['dG_OH']
     scaling_relationship['dG2'] = scaling_relationship['dG_O'] - scaling_relationship['dG_OH']
