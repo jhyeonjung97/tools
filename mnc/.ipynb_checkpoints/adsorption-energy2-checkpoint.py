@@ -90,7 +90,7 @@ def main():
         df_energy.to_csv(tsv_filename, sep='\t', float_format='%.2f')
         print(f"Data saved as adsorption_energy_{m+1}{metal}.tsv")
         
-        fig, ax = plt.subplots(figsize=(3, 4), dpi=300)
+        fig, ax = plt.subplots(figsize=(3, 5), dpi=300)
         for ads in ['OH', 'O', 'OOH']:
             if row != '3d' and ads == 'OOH':
                 continue
