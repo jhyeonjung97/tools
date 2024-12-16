@@ -11,7 +11,7 @@ from matplotlib.patches import Wedge
 def main():
     rows = ['3d', '3d', '3d', '3d', '4d', '5d']
     numbs = [5, 6, 7, 8, 4, 4]
-    metals = ['Mn', 'Fe', 'Co', 'Ni', 'Mo', 'W']
+    metals = ['Mn', 'Fe', 'Co', 'Ni'] # , 'Mo', 'W']
     adsorbates = ['clean', 'O', 'OH', 'OOH']
     ymin = [-1, -1, -1, -1, -4, -4]
     ymax = [5, 5, 5, 5, 3, 3]
