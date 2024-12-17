@@ -66,7 +66,7 @@ print(f"Data saved as {args.output}.tsv")
 ylimit = max(abs(y_min), abs(y_max)) * 1.2
 
 # Create a single figure with stacked plots, no space between subplots
-fig, axes = plt.subplots(len(orbitals), 1, figsize=(2.5, len(orbitals) * 1), sharex=True,
+fig, axes = plt.subplots(len(orbitals), 1, figsize=(3.0, len(orbitals) * 1.2), sharex=True,
                          gridspec_kw={"hspace": 0})  # No vertical space between subplots
 
                 
