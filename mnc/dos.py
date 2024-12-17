@@ -7,7 +7,7 @@ import argparse
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description="Plot projected DOS for orbitals with unified y-axis and customizable y-title.")
 parser.add_argument("--file", type=str, required=True, help="Path to the input DOS data file.")
-parser.add_argument("--xrange", type=float, nargs=2, metavar=('XMIN', 'XMAX'), default=(-8, 6),
+parser.add_argument("--xrange", type=float, nargs=2, metavar=('XMIN', 'XMAX'), default=(-8, 4),
                     help="Energy range for the x-axis (default: -8 to 6).")
 parser.add_argument("--output", type=str, default=None, help="Output file name to save the plot (e.g., 'output.png').")
 args = parser.parse_args()
