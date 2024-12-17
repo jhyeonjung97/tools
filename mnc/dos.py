@@ -61,7 +61,7 @@ for orbital, center in d_band_centers.items():
 ylimit = max(abs(y_min), abs(y_max)) * 1.2
 
 # Create a single figure with stacked plots, no space between subplots
-fig, axes = plt.subplots(len(orbitals), 1, figsize=(4, len(orbitals) * 1.5), sharex=True,
+fig, axes = plt.subplots(len(orbitals), 1, figsize=(2.5, len(orbitals) * 1), sharex=True,
                          gridspec_kw={"hspace": 0})  # No vertical space between subplots
 
                 
