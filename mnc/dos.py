@@ -98,6 +98,7 @@ axes[-1].set_xlabel("Energy (eV)", fontsize=10)
 
 # Set x-axis range
 plt.xlim(args.xrange)
+plt.xlim(np.range(args.xrange, 2))
 
 # Adjust layout
 if args.output:
