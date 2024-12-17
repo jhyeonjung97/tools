@@ -52,12 +52,15 @@ for orbital in orbitals:
     d_band_centers[orbital] = calculate_d_band_center(energy, dos_up, dos_down)
     y_min = min(y_min, data[f"{orbital}(up)"].min(), data[f"{orbital}(down)"].min())
     y_max = max(y_max, data[f"{orbital}(up)"].max(), data[f"{orbital}(down)"].max())
+   
+tsv_file = f"/pscratch/sd/j/jiuy97/6_MNC/figures/dos/{args.output}.png"
+with open(tsv_file, mode='w', newline='') as file:
+    writer = csv.writer(file, delimiter='\t')
+    writer.writerow(["Orbital", "d-Band Center (eV)"])  # 헤더 추가
+    for orbital, center in d_band_centers.items():
+        writer.writerow([orbital, f"{center:.4f}"])  # 데이터 추가
+print(f"Data saved as {args.output}.tsv")
 
-# Print d-band centers
-print("d-Band Centers:")
-for orbital, center in d_band_centers.items():
-    print(f"{orbital}: {center:.4f} eV")
-    
 # Scale the limit symmetrically
 ylimit = max(abs(y_min), abs(y_max)) * 1.2
 
@@ -97,7 +100,7 @@ plt.xlim(args.xrange)
 
 # Adjust layout
 if args.output:
-    plt.savefig(f"/pscratch/sd/j/jiuy97/6_MNC/figures/dos/{args.output}", dpi=300, bbox_inches='tight')  # Save with high resolution
-    print(f"Plot saved as {args.output}")
+    plt.savefig(f"/pscratch/sd/j/jiuy97/6_MNC/figures/dos/{args.output}.png", dpi=300, bbox_inches='tight')  # Save with high resolution
+    print(f"Plot saved as {args.output}.png")
 else:
     plt.show()
