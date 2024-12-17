@@ -97,8 +97,10 @@ for i, orbital in enumerate(orbitals):
 axes[-1].set_xlabel("Energy (eV)", fontsize=10)
 
 # Set x-axis range
-plt.xlim(args.xrange)
-plt.xlim(np.range(args.xrange, 2))
+x_start, x_end = args.xrange  # Assuming args.xrange = [xmin, xmax]
+x_ticks = np.arange(x_start, x_end + 1, 2)  # Range with step size of 2
+plt.xlim(x_start, x_end)  # Set x-axis limits
+plt.xticks(x_ticks)       # Apply the range to the ticks
 
 # Adjust layout
 if args.output:
