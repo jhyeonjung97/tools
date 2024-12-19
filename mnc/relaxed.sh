@@ -102,6 +102,9 @@ do
             elif [[ $spin == 'HS' ]]; then
                 sed -i 's/mnc-sol.py/mnc-sol-hs-nupdown.py/' relaxed/submit.sh
             fi
+            if [[ $ads == 'OOH' ]]; then
+                sed -i 's/nupdown.py/nupdown-ooh.py/' relaxed/submit.sh
+            fi
             sed -i "/#SBATCH -J/c\#SBATCH -J ${ads}${metal}${spin}r" relaxed/submit.sh
         fi
     fi
