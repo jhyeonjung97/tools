@@ -1268,7 +1268,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             print(f"An error occurred: {e}")
     
 if __name__ == '__main__':
-    main()
+    # main()
     custom_legend = [
         Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#ff7f0e', 
                label='LS (constrained Δz, enforced spin)', markersize=8, linestyle='None'),
