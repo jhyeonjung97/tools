@@ -80,7 +80,7 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     line = np.poly1d(coeffs)
     plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black')
     if ads1 == 'OH' and ads2 == 'O':
-        plt.plot(xx, 1.64*xx+0.95, linestyle='--', color='gray', zorder=0)
+        plt.plot(xx, 1.64*xx+0.95, linestyle='--', color='grey', zorder=0)
         plt.plot(xx, 2.00*xx-0.75, linestyle='--', color='gray', zorder=0)
     elif ads1 == 'OH' and ads2 == 'OOH':
         plt.plot(xx, 1.05*xx+3.01, linestyle='--', color='gray', zorder=0)
