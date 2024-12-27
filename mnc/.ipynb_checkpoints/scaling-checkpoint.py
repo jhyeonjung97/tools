@@ -78,15 +78,15 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
                      xytext=(0, 5), ha='center', color='black', fontsize=8, zorder=4)
     coeffs = np.polyfit(x, y, 1)
     line = np.poly1d(coeffs)
-    plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', color='black', zorder=2)
+    plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linewidth=0.85, linestyle='-', color='black', zorder=2)
     if ads1 == 'OH' and ads2 == 'O':
-        plt.plot(xx, 2.00*xx-0.75, linestyle='--', color='lightgray', zorder=0)
-        plt.plot(xx, 1.64*xx+0.95, linestyle='--', color='darkgray', zorder=1)
+        plt.plot(xx, 2.00*xx-0.75, linewidth=0.85, linestyle='--', color='lightgray', zorder=0)
+        plt.plot(xx, 1.64*xx+0.95, linewidth=0.85, linestyle='--', color='darkgray', zorder=1)
         plt.text(0.32, 0.17, 'y = 2.00x - 0.75 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
         plt.text(0.32, 0.11, 'y = 1.64x + 0.95 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
     elif ads1 == 'OH' and ads2 == 'OOH':
-        plt.plot(xx, 1.06*xx+3.16, linestyle='--', color='lightgray', zorder=0)
-        plt.plot(xx, 1.05*xx+3.01, linestyle='--', color='darkgray', zorder=1)
+        plt.plot(xx, 1.06*xx+3.16, linewidth=0.85, linestyle='--', color='lightgray', zorder=0)
+        plt.plot(xx, 1.05*xx+3.01, linewidth=0.85, linestyle='--', color='darkgray', zorder=1)
         plt.text(0.32, 0.17, 'y = 1.06x + 3.16 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
         plt.text(0.32, 0.11, 'y = 1.05x + 3.01 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
