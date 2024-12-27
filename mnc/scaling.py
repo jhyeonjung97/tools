@@ -82,16 +82,20 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     if ads1 == 'OH' and ads2 == 'O':
         plt.plot(xx, 1.64*xx+0.95, linestyle='--', color='lightgrey', zorder=0)
         plt.plot(xx, 2.00*xx-0.75, linestyle='--', color='silver', zorder=0)
+        plt.text(0.3, 0.15, 'y = 1.64x + 0.95', transform=plt.gca().transAxes, fontsize=10, color='lightgrey')
+        plt.text(0.3, 0.10, 'y = 2.00x - 0.75', transform=plt.gca().transAxes, fontsize=10, color='silver')
     elif ads1 == 'OH' and ads2 == 'OOH':
-        plt.plot(xx, 1.05*xx+3.01, linestyle='--', color='gray', zorder=0)
-        plt.plot(xx, 1.06*xx+3.16, linestyle='--', color='gray', zorder=0)
+        plt.plot(xx, 1.05*xx+3.01, linestyle='--', color='lightgrey', zorder=0)
+        plt.plot(xx, 1.06*xx+3.16, linestyle='--', color='silver', zorder=0)
+        plt.text(0.3, 0.15, 'y = 1.05x + 3.01', transform=plt.gca().transAxes, fontsize=10, color='lightgrey')
+        plt.text(0.3, 0.10, 'y = 1.06x + 3.16', transform=plt.gca().transAxes, fontsize=10, color='silver')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
     y_pred = line(x)
     ss_total = np.sum((y - np.mean(y))**2)
     ss_residual = np.sum((y - y_pred)**2)
     r_squared = 1 - (ss_residual / ss_total)
-    equation_with_r2 = f'{equation}\n(R² = {r_squared:.2f})'
-    plt.text(0.5, 0.1 if coeffs[0] > 0 else 0.1, equation_with_r2, transform=plt.gca().transAxes, fontsize=10, color='black')
+    equation_with_r2 = f'{equation} (R² = {r_squared:.2f})'
+    plt.text(0.3, 0.05, equation_with_r2, transform=plt.gca().transAxes, fontsize=10, color='black')
     plt.xlabel(fr'$\Delta$G$_{{\sf {ads1}}}$ (eV)', fontsize='large')
     plt.ylabel(fr'$\Delta$G$_{{\sf {ads2}}}$ (eV)', fontsize='large')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
