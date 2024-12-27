@@ -79,6 +79,12 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     coeffs = np.polyfit(x, y, 1)
     line = np.poly1d(coeffs)
     plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black')
+    if ads1 == 'OH' and ads2 == 'O':
+        plt.plot(xx, 0.61*xx-0.58, linestyle='-', color='black')
+        plt.plot(xx, 2.00*xx-0.75, linestyle='-', color='black')
+    # elif ads1 == 'OH' and ads2 == 'OOH':
+    #     plt.plot(xx, 2*xx-0.75, linestyle='-', color='black')
+    #     plt.plot(xx, 2*xx-0.75, linestyle='-', color='black')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
     y_pred = line(x)
     ss_total = np.sum((y - np.mean(y))**2)
