@@ -72,21 +72,21 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     x, y, c = x[mask], y[mask], df['color'][mask]
     xx = np.linspace(min(x), max(x), 100)
     plt.figure(figsize=(4, 3), dpi=300)
-    plt.scatter(x, y, c=c, s=20)
+    plt.scatter(x, y, c=c, s=20, zorder=3)
     for xi, yi, metal in zip(x, y, df.index):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", 
-                     xytext=(0, 5), ha='center', color='black', fontsize=8)
+                     xytext=(0, 5), ha='center', color='black', fontsize=8, zorder=4)
     coeffs = np.polyfit(x, y, 1)
     line = np.poly1d(coeffs)
-    plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linewidth=0.5, linestyle='-', color='black')
+    plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linewidth=0.75, linestyle='-', color='black', zorder=2)
     if ads1 == 'OH' and ads2 == 'O':
-        plt.plot(xx, 2.00*xx-0.75, linewidth=0.5, linestyle='--', color='lightgray', zorder=0)
-        plt.plot(xx, 1.64*xx+0.95, linewidth=0.5, linestyle='--', color='darkgray', zorder=0)
+        plt.plot(xx, 2.00*xx-0.75, linewidth=0.75, linestyle='--', color='lightgray', zorder=0)
+        plt.plot(xx, 1.64*xx+0.95, linewidth=0.75, linestyle='--', color='darkgray', zorder=1)
         plt.text(0.32, 0.17, 'y = 2.00x - 0.75 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
         plt.text(0.32, 0.11, 'y = 1.64x + 0.95 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
     elif ads1 == 'OH' and ads2 == 'OOH':
-        plt.plot(xx, 1.06*xx+3.16, linewidth=0.5, linestyle='--', color='lightgray', zorder=0)
-        plt.plot(xx, 1.05*xx+3.01, linewidth=0.5, linestyle='--', color='darkgray', zorder=0)
+        plt.plot(xx, 1.06*xx+3.16, linewidth=0.75, linestyle='--', color='lightgray', zorder=0)
+        plt.plot(xx, 1.05*xx+3.01, linewidth=0.75, linestyle='--', color='darkgray', zorder=1)
         plt.text(0.32, 0.17, 'y = 1.06x + 3.16 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
         plt.text(0.32, 0.11, 'y = 1.05x + 3.01 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
@@ -95,7 +95,7 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     ss_residual = np.sum((y - y_pred)**2)
     r_squared = 1 - (ss_residual / ss_total)
     equation_with_r2 = f'{equation} (R² = {r_squared:.2f})'
-    plt.text(0.3, 0.05, equation_with_r2, transform=plt.gca().transAxes, fontsize=10, color='black')
+    plt.text(0.32, 0.05, equation_with_r2, transform=plt.gca().transAxes, fontsize=10, color='black')
     plt.xlabel(fr'$\Delta$G$_{{\sf {ads1}}}$ (eV)', fontsize='large')
     plt.ylabel(fr'$\Delta$G$_{{\sf {ads2}}}$ (eV)', fontsize='large')
     plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.1f'))
