@@ -82,13 +82,13 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     if ads1 == 'OH' and ads2 == 'O':
         plt.plot(xx, 2.00*xx-0.75, linestyle='--', color='lightgray', zorder=0)
         plt.plot(xx, 1.64*xx+0.95, linestyle='--', color='darkgray', zorder=0)
-        plt.text(0.3, 0.15, 'y = 2.00x - 0.75 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
-        plt.text(0.3, 0.10, 'y = 1.64x + 0.95 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
+        plt.text(0.3, 0.17, 'y = 2.00x - 0.75 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
+        plt.text(0.3, 0.11, 'y = 1.64x + 0.95 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
     elif ads1 == 'OH' and ads2 == 'OOH':
         plt.plot(xx, 1.06*xx+3.16, linestyle='--', color='lightgray', zorder=0)
         plt.plot(xx, 1.05*xx+3.01, linestyle='--', color='darkgray', zorder=0)
-        plt.text(0.3, 0.15, 'y = 1.06x + 3.16 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
-        plt.text(0.3, 0.10, 'y = 1.05x + 3.01 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
+        plt.text(0.3, 0.17, 'y = 1.06x + 3.16 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
+        plt.text(0.3, 0.11, 'y = 1.05x + 3.01 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
     y_pred = line(x)
     ss_total = np.sum((y - np.mean(y))**2)
