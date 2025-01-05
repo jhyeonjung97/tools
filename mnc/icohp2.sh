@@ -6,6 +6,6 @@ do
     dz=$(echo "${path[-1]}" | cut -d'_' -f1)
     cp ~/bin/tools/mnc/lobsterin2 ./lobsterin    
     cp ~/bin/tools/mnc/static.sh ./submit.sh
-    sed -i -e "s/jobname/ICOHP_${ads}${dz}/" icohp/submit.sh
+    sed -i -e "s/jobname/ICOHP_${ads}${dz}/" ./submit.sh
     sbatch submit.sh
 done
