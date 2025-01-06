@@ -1,11 +1,3 @@
-import os
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FormatStrFormatter
-from scipy.interpolate import make_interp_spline
-from matplotlib.patches import Wedge, Rectangle
-
 # Water and hydrogen properties
 water_E = -14.23797429
 water_Cv = 0.103
@@ -39,7 +31,7 @@ OOH_TS = 0.134
 OOH_ZPE = 0.471
 OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 
-E_ = -278.49290591
+E_ = -279.1
 E_OH = -289.57160323
 E_O = -284.14645182
 E_OOH = -294.13407435
