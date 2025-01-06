@@ -61,7 +61,7 @@ dG4 = 4.92 - dG_OOH
 OER = max(dG1, dG2, dG3, dG4) - 1.23
 ORR = 1.23 - min(dG1, dG2, dG3, dG4)
 
-print(OER)
+print(G_, G_OH, G_O, G_OOH, dG_OH, dG_O, dG_OOH, dG1, dG2, dG3, dG4, OER, ORR)
 
 
 
