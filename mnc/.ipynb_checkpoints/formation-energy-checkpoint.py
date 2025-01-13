@@ -273,10 +273,10 @@ def main():
                             energy = atoms.get_total_energy()
                             df.at[dz, spin] = energy
                             formation_energy = (energy
-                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - vacancy[2]
                                                 - metal_df.at[metal, 'energy']
-                                                + elements_data[metal]['electrode_potential']
-                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G
                                                )
                             Ef.at[dz, spin] = formation_energy
                             try:
@@ -301,10 +301,10 @@ def main():
                             energy_O = atoms.get_total_energy()
                             df_O.at[dz, spin] = energy_O
                             formation_energy = (energy_O
-                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - vacancy[2]
                                                 - metal_df.at[metal, 'energy']
-                                                + elements_data[metal]['electrode_potential']
-                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G
                                                 - oxygen_G
                                                 )
                             Ef_O.at[dz, spin] = formation_energy
@@ -338,10 +338,10 @@ def main():
                             energy_OH = atoms.get_total_energy()
                             df_OH.at[dz, spin] = energy_OH
                             formation_energy = (energy_OH
-                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - vacancy[2]
                                                 - metal_df.at[metal, 'energy']
-                                                + elements_data[metal]['electrode_potential']
-                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G
                                                 - hydroxide_G
                                                 )
                             Ef_OH.at[dz, spin] = formation_energy
@@ -375,10 +375,10 @@ def main():
                             energy_OOH = atoms.get_total_energy()
                             df_OOH.at[dz, spin] = energy_OOH
                             formation_energy = (energy_OOH
-                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - vacancy[2]
                                                 - metal_df.at[metal, 'energy']
-                                                + elements_data[metal]['electrode_potential']
-                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G
                                                 - hydroxide_G - oxygen_G
                                                 )
                             Ef_OOH.at[dz, spin] = formation_energy
@@ -415,10 +415,10 @@ def main():
                             energy_O_OH = atoms.get_total_energy()
                             df_O_OH.at[dz, spin] = energy_O_OH
                             formation_energy = (energy_O_OH
-                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - vacancy[2]
                                                 - metal_df.at[metal, 'energy']
-                                                + elements_data[metal]['electrode_potential']
-                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G
                                                 - hydroxide_G - oxygen_G
                                                 )
                             Ef_O_OH.at[dz, spin] = formation_energy
@@ -458,10 +458,10 @@ def main():
                             energy_OH_OH = atoms.get_total_energy()
                             df_OH_OH.at[dz, spin] = energy_OH_OH
                             formation_energy = (energy_OH_OH
-                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - vacancy[2]
                                                 - metal_df.at[metal, 'energy']
-                                                + elements_data[metal]['electrode_potential']
-                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G
                                                 - 2 * hydroxide_G
                                                 )
                             Ef_OH_OH.at[dz, spin] = formation_energy
@@ -505,10 +505,10 @@ def main():
                         energy = atoms.get_total_energy()
                         df_relaxed.at[dz_relaxed, spin] = energy
                         formation_energy = (energy
-                                            - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                            - vacancy[2]
                                             - metal_df.at[metal, 'energy']
-                                            + elements_data[metal]['electrode_potential']
-                                            + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                            - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                            + 2 * hydrogen_G
                                            )
                         Ef_relaxed.at[dz_relaxed, spin] = formation_energy
                         try:
@@ -532,10 +532,10 @@ def main():
                         energy_O = atoms.get_total_energy()
                         df_O_relaxed.at[dz_relaxed, spin] = energy_O
                         formation_energy = (energy_O
-                                            - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                            - vacancy[2]
                                             - metal_df.at[metal, 'energy']
-                                            + elements_data[metal]['electrode_potential']
-                                            + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                            - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                            + 2 * hydrogen_G
                                             - oxygen_G
                                            )
                         Ef_O_relaxed.at[dz_relaxed, spin] = formation_energy
@@ -566,10 +566,10 @@ def main():
                         energy_OH = atoms.get_total_energy()
                         df_OH_relaxed.at[dz_relaxed, spin] = energy_OH
                         formation_energy = (energy_OH
-                                            - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                            - vacancy[2]
                                             - metal_df.at[metal, 'energy']
-                                            + elements_data[metal]['electrode_potential']
-                                            + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                            - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                            + 2 * hydrogen_G
                                             - hydroxide_G
                                            )
                         Ef_OH_relaxed.at[dz_relaxed, spin] = formation_energy
@@ -600,10 +600,10 @@ def main():
                         energy_OOH = atoms.get_total_energy()
                         df_OOH_relaxed.at[dz_relaxed, spin] = energy_OOH
                         formation_energy = (energy_OOH
-                                            - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                            - vacancy[2]
                                             - metal_df.at[metal, 'energy']
-                                            + elements_data[metal]['electrode_potential']
-                                            + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                            - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                            + 2 * hydrogen_G
                                             - hydroxide_G - oxygen_G
                                            )
                         Ef_OOH_relaxed.at[dz_relaxed, spin] = formation_energy
@@ -637,10 +637,10 @@ def main():
                         energy_O_OH = atoms.get_total_energy()
                         df_O_OH_relaxed.at[dz_relaxed, spin] = energy_O_OH
                         formation_energy = (energy_O_OH
-                                            - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                            - vacancy[2]
                                             - metal_df.at[metal, 'energy']
-                                            + elements_data[metal]['electrode_potential']
-                                            + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                            - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                            + 2 * hydrogen_G
                                             - hydroxide_G - oxygen_G
                                            )
                         Ef_O_OH_relaxed.at[dz_relaxed, spin] = formation_energy
@@ -676,10 +676,10 @@ def main():
                         energy_OH_OH = atoms.get_total_energy()
                         df_OH_OH_relaxed.at[dz_relaxed, spin] = energy_OH_OH
                         formation_energy = (energy_OH_OH
-                                            - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                            - vacancy[2]
                                             - metal_df.at[metal, 'energy']
-                                            + elements_data[metal]['electrode_potential']
-                                            + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                            - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                            + 2 * hydrogen_G
                                             - 2 * hydroxide_G
                                            )
                         Ef_OH_OH_relaxed.at[dz_relaxed, spin] = formation_energy
@@ -733,10 +733,10 @@ def main():
                             energy = atoms.get_total_energy()
                             df.at[dz, f'MS({ms})'] = energy
                             formation_energy = (energy
-                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - vacancy[2]
                                                 - metal_df.at[metal, 'energy']
-                                                + elements_data[metal]['electrode_potential']
-                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G
                                                )
                             Ef.at[dz, f'MS({ms})'] = formation_energy
                             try:
@@ -770,10 +770,10 @@ def main():
                             energy_O = atoms.get_total_energy()
                             df_O.at[dz, f'MS({ms})'] = energy_O
                             formation_energy = (energy_O
-                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - vacancy[2]
                                                 - metal_df.at[metal, 'energy']
-                                                + elements_data[metal]['electrode_potential']
-                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G
                                                 - oxygen_G
                                                )
                             Ef_O.at[dz, f'MS({ms})'] = formation_energy
@@ -809,10 +809,10 @@ def main():
                             energy_OH = atoms.get_total_energy()
                             df_OH.at[dz, f'MS({ms})'] = energy_OH
                             formation_energy = (energy_OH
-                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - vacancy[2]
                                                 - metal_df.at[metal, 'energy']
-                                                + elements_data[metal]['electrode_potential']
-                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G
                                                 - hydroxide_G
                                                )
                             Ef_OH.at[dz, f'MS({ms})'] = formation_energy
@@ -848,10 +848,10 @@ def main():
                             energy_OOH = atoms.get_total_energy()
                             df_OOH.at[dz, f'MS({ms})'] = energy_OOH
                             formation_energy = (energy_OOH
-                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - vacancy[2]
                                                 - metal_df.at[metal, 'energy']
-                                                + elements_data[metal]['electrode_potential']
-                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G
                                                 - hydroxide_G - oxygen_G
                                                )
                             Ef_OOH.at[dz, f'MS({ms})'] = formation_energy
@@ -887,10 +887,10 @@ def main():
                             energy_O_OH = atoms.get_total_energy()
                             df_O_OH.at[dz, f'MS({ms})'] = energy_O_OH
                             formation_energy = (energy_O_OH
-                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - vacancy[2]
                                                 - metal_df.at[metal, 'energy']
-                                                + elements_data[metal]['electrode_potential']
-                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G
                                                 - hydroxide_G - oxygen_G
                                                )
                             Ef_O_OH.at[dz, f'MS({ms})'] = formation_energy
@@ -926,10 +926,10 @@ def main():
                             energy_OH_OH = atoms.get_total_energy()
                             df_OH_OH.at[dz, f'MS({ms})'] = energy_OH_OH
                             formation_energy = (energy_OH_OH
-                                                - vacancy[2] # vacancy[elements_data[metal]['cation_charge']]
+                                                - vacancy[2]
                                                 - metal_df.at[metal, 'energy']
-                                                + elements_data[metal]['electrode_potential']
-                                                + 2 * hydrogen_G # elements_data[metal]['cation_charge'] * hydrogen_G
+                                                - elements_data[metal]['cation_charge'] * elements_data[metal]['electrode_potential']
+                                                + 2 * hydrogen_G
                                                 - 2 * hydroxide_G
                                                )
                             Ef_OH_OH.at[dz, f'MS({ms})'] = formation_energy
