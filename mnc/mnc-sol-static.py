@@ -45,7 +45,7 @@ def get_bands(atoms):
             nbands += 1
             continue
         orbitals = element(symbol).ec.get_valence().to_str().split()
-        nbands += sum(nbands_per_orbital[orbital[1]] * int(orbital[2:]) for orbital in orbitals)
+        nbands += sum(n bands_per_orbital[orbital[1]] * int(orbital[2:]) for orbital in orbitals)
     return nbands
 
 nbands = get_bands(atoms)
