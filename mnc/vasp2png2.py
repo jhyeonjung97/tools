@@ -4,7 +4,7 @@ import re
 from ase.io import read, write
 
 for i in range(8):
-    contcar_path=f'/pscratch/sd/j/jiuy97/6_MNC/empty/{i}_/CONTCAR/'
+    contcar_path=f'/pscratch/sd/j/jiuy97/6_MNC/empty/{i}_/CONTCAR'
     atoms = read(contcar_path)
     vasp_output_file = f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/vac{i}.vasp'
     write(vasp_output_file, atoms)
