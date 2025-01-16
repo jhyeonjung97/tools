@@ -41,7 +41,7 @@ for atom in atoms:
 def get_bands(atoms, zval_mapping):
     nbands = 0
     for symbol in atoms.get_chemical_symbols():
-        nbands += zval_mapping(symbol)
+        nbands += zval_mapping[symbol]
     return nbands
 
 def parse_zval_from_potcar(potcar_content):
