@@ -1,3 +1,4 @@
+import re
 import sys
 import json
 import subprocess
@@ -37,18 +38,40 @@ for atom in atoms:
     else:
         ldau_luj[atom.symbol] = {'L': 2, 'U': 0.0, 'J': 0.0}   
 
-def get_bands(atoms):
+def get_bands(atoms, zval_mapping):
     nbands = 0
-    nbands_per_orbital = {'s': 1, 'p': 3, 'd': 5, 'f': 7}
     for symbol in atoms.get_chemical_symbols():
-        if symbol == 'H':  # H is bugged
-            nbands += 1
-            continue
-        orbitals = element(symbol).ec.get_valence().to_str().split()
-        nbands += sum(nbands_per_orbital[orbital[1]] * int(orbital[2:]) for orbital in orbitals)
+        nbands += zval_mapping(symbol)
     return nbands
 
-nbands = get_bands(atoms)
+def parse_zval_from_potcar(potcar_content):
+    symbols = []
+    zvals = []
+    symbol_pattern = re.compile(r"TITEL\s*=\s*PAW_PBE\s*(\w+)")
+    zval_pattern = re.compile(r"ZVAL\s*=\s*(\d+\.\d+)")
+
+    lines = potcar_content.splitlines()
+    for line in lines:
+        match1 = symbol_pattern.search(line)
+        if match1:
+            symbols.append(match1.group(1))
+        match2 = zval_pattern.search(line)
+        if match2:
+            zvals.append(int(float(match2.group(1))))
+
+    if len(symbols) != len(zvals):
+        raise ValueError("Mismatch between number of symbols and ZVALs in POTCAR content.")
+
+    zval_mapping = dict(zip(symbols, zvals))
+    return zval_mapping
+
+with open("POTCAR", "r") as potcar_file:
+    potcar_content = potcar_file.read()
+
+zval_mapping = parse_zval_from_potcar(potcar_content)
+nbands = get_bands(atoms, zval_mapping)
+
+print(nbands)
 
 atoms.calc = vasp_calculator.Vasp(
                     encut=500,
