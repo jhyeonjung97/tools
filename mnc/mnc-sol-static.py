@@ -71,8 +71,6 @@ with open("POTCAR", "r") as potcar_file:
 zval_mapping = parse_zval_from_potcar(potcar_content)
 nbands = get_bands(atoms, zval_mapping)
 
-print(nbands)
-
 atoms.calc = vasp_calculator.Vasp(
                     encut=500,
                     gga='PE',
