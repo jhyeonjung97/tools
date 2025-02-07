@@ -1,0 +1,14 @@
+title: "Tuning Local Structure and Spin State to Improve ORR and OER Performance of M-N-C Catalysts"
+authors:
+- Jung, Hyeonjung
+- Fanta, Roman
+- Hossain, Md Delowar
+- Bajdich, Michal
+journal: Submitted
+volume: null
+number: null
+pages: null
+year: 2025
+email: jiuy97@stanford.edu
+publisher: null
+doi: null
