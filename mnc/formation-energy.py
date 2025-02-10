@@ -1007,7 +1007,7 @@ def main():
             plotting(df=df, df_relaxed=df_relaxed, dzs=dzs, spins=spins, 
                      ylabel='Energy (eV)', png_filename=png_filename)
             plotting(df=Ef, df_relaxed=Ef_relaxed, dzs=dzs, spins=spins, 
-                     ylabel=r'E$_{\sf f}$ (eV)', png_filename=png_Ef_filename)
+                     ylabel=r'ΔE$_{f}$ (eV)', png_filename=png_Ef_filename)
             plotting(df=df_dz, df_relaxed=df_dz_relaxed, dzs=dzs, spins=spins, 
                      ylabel='Δz (Å)', png_filename=png_dz_filename)
             # plotting(df=df_rel, df_relaxed=df_relaxed_rel, dzs=dzs, spins=spins, color='black', 
@@ -1026,7 +1026,7 @@ def main():
                 plotting(df=df_O, df_relaxed=df_O_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_O_filename)
                 plotting(df=Ef_O, df_relaxed=Ef_O_relaxed, dzs=dzs, spins=spins, 
-                         ylabel='Formation energy (eV)', png_filename=png_O_Ef_filename)
+                         ylabel=r'ΔE$_{f}$ (eV)', png_filename=png_O_Ef_filename)
                 plotting(df=df_O_dz, df_relaxed=df_O_relaxed_dz, dzs=dzs, spins=spins, 
                          ylabel='Δz (Å)', png_filename=png_O_dz_filename)
                 plotting(df=df_O_mag, df_relaxed=df_O_relaxed_mag, dzs=dzs, spins=spins, 
@@ -1046,7 +1046,7 @@ def main():
                 plotting(df=df_OH, df_relaxed=df_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_OH_filename)
                 plotting(df=Ef_OH, df_relaxed=Ef_OH_relaxed, dzs=dzs, spins=spins, 
-                         ylabel='Formation energy (eV)', png_filename=png_OH_Ef_filename)
+                         ylabel=r'ΔE$_{f}$ (eV)', png_filename=png_OH_Ef_filename)
                 plotting(df=df_OH_dz, df_relaxed=df_OH_relaxed_dz, dzs=dzs, spins=spins, 
                          ylabel='Δz (Å)', png_filename=png_OH_dz_filename)
                 plotting(df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, dzs=dzs, spins=spins, 
@@ -1066,7 +1066,7 @@ def main():
                 plotting(df=df_OOH, df_relaxed=df_OOH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_OOH_filename)
                 plotting(df=Ef_OOH, df_relaxed=Ef_OOH_relaxed, dzs=dzs, spins=spins, 
-                         ylabel='Formation energy (eV)', png_filename=png_OOH_Ef_filename)
+                         ylabel=r'ΔE$_{f}$ (eV)', png_filename=png_OOH_Ef_filename)
                 plotting(df=df_OOH_dz, df_relaxed=df_OOH_relaxed_dz, dzs=dzs, spins=spins, 
                          ylabel='Δz (Å)', png_filename=png_OOH_dz_filename)
                 plotting(df=df_OOH_mag, df_relaxed=df_OOH_relaxed_mag, dzs=dzs, spins=spins, 
@@ -1087,7 +1087,7 @@ def main():
                 plotting(df=df_O_OH, df_relaxed=df_O_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_O_OH_filename)
                 plotting(df=Ef_O_OH, df_relaxed=Ef_O_OH_relaxed, dzs=dzs, spins=spins, 
-                         ylabel='Formation energy (eV)', png_filename=png_O_OH_Ef_filename)
+                         ylabel=r'ΔE$_{f}$ (eV)', png_filename=png_O_OH_Ef_filename)
                 plotting(df=df_O_OH_dz, df_relaxed=df_O_OH_relaxed_dz, dzs=dzs, spins=spins, 
                          ylabel='Δz (Å)', png_filename=png_O_OH_dz_filename)
                 plotting(df=df_O_OH_mag, df_relaxed=df_O_OH_relaxed_mag, dzs=dzs, spins=spins, 
@@ -1111,7 +1111,7 @@ def main():
                 plotting(df=df_OH_OH, df_relaxed=df_OH_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_OH_OH_filename)
                 plotting(df=Ef_OH_OH, df_relaxed=Ef_OH_OH_relaxed, dzs=dzs, spins=spins, 
-                         ylabel='Formation energy (eV)', png_filename=png_OH_OH_Ef_filename)
+                         ylabel=r'ΔE$_{f}$ (eV)', png_filename=png_OH_OH_Ef_filename)
                 plotting(df=df_OH_OH_dz, df_relaxed=df_OH_OH_relaxed_dz, dzs=dzs, spins=spins, 
                          ylabel='Δz (Å)', png_filename=png_OH_OH_dz_filename)
                 plotting(df=df_OH_OH_mag, df_relaxed=df_OH_OH_relaxed_mag, dzs=dzs, spins=spins, 
