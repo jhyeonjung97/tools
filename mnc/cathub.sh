@@ -19,9 +19,9 @@ for dir in ${mnc}/0_clean/*d/*_*/most_stable; do
     IFS='/' read -r -a path <<< "$dir"
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     
-    dest_dir="${cathub}/${metal}N4C26-relaxed"
+    dest_dir="${cathub}/${metal}N4C26-relaxed/001-${site1}"
     mkdir -p "${dest_dir}"
-    cp "${dir}/relaxed/final_with_calculator.json" "${dest_dir}/001-${site1}/empty_slab.json"
+    cp "${dir}/relaxed/final_with_calculator.json" "${dest_dir}/empty_slab.json"
     # echo "Copied relaxed/final_with_calculator.json to ${dest_dir}"
     
     dest_dir="${cathub}/${metal}N4C26-relaxed/001-${site1}/H2Ogas_-1.0H2gas_star__Ostar"
