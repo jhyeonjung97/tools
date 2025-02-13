@@ -10,10 +10,10 @@ site1='M'
 site2='N'
 site3='D'
 
-cp -r "${mnc}/gas" "${cathub}"
 mkdir -p "${cathub}/N4C26/001-${site2}"
 cp "${mnc}/empty/0_/final_with_calculator.json" "${cathub}/N4C26/empty_slab.json"
 cp "${mnc}/empty/2_/final_with_calculator.json" "${cathub}/N4C26/001-${site2}"
+cp -r "${mnc}/gas" "${cathub}"
 
 for dir in ${mnc}/0_clean/*d/*_*/most_stable; do
     IFS='/' read -r -a path <<< "$dir"
