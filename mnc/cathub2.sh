@@ -2,7 +2,7 @@
 
 mnc="/pscratch/sd/j/jiuy97/6_MNC"
 vasp_pbe="VASP-6.3.2/PBE+U+D3+VASPsol"
-cathub="${mnc}/JungTuning2025_dz/${vasp_pbe}"
+cathub="${mnc}/JungTuning2025-dz/${vasp_pbe}"
 # gas="/global/cfs/cdirs/m2997/Delowar/OER/MOF/data_storage_MOF/gas"
 cd "${cathub_path}" || exit 1
 
@@ -165,7 +165,7 @@ find "${cathub}" -type d -empty -delete
 tree "${cathub}"
 
 cd "${mnc}" || exit 1
-cp ~/bin/tools/mnc/publication.txt JungTuning2025_dz
-cathub folder2db JungTuning2025_dz
+cp ~/bin/tools/mnc/publication.txt JungTuning2025-dz
+cathub folder2db JungTuning2025-dz
 
 
