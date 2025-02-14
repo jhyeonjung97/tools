@@ -324,11 +324,7 @@ for dir in dirs:
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
     elif A == '3' and B == 'Mo':
-        overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
-        overpotential('o', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), ('ooh-o', 'o-ooh'), df, OER, ORR)
-        overpotential('o', 'oho', ('ohooh', 'oohoh'), ('oooh', 'ooho'), df, OER, ORR)
         overpotential('o', 'oho', 'oo', ('oooh', 'ooho'), df, OER, ORR)
-        overpotential('ooh', 'oo', ('oooh', 'ooho'), ('oohooh', 'oohooh'), df, OER, ORR)
 
     # Define surfaces with extracted E0 values
     surfs = [
