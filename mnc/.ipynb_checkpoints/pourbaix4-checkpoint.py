@@ -316,13 +316,13 @@ for dir in dirs:
     df['dG'] = df['G'] - df.loc['clean', 'E'] - gh * df['#H'] - go * df['#O'] - goh * df['#OH'] - gooh * df['#OOH']
     df.loc['vac', 'dG'] += bulk_metal
     
-    overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
-    if A == '1' and B == 'Fe':       
+    if A == '1' and B == 'Fe':
+        overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
     elif A == '2' and B == 'Co':
+        overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
-        overpotential('ooh', 'o-o', ('ooh-o', 'o-ooh'), 'ooh-ooh', df, OER, ORR)
     elif A == '3' and B == 'Mo':
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), ('ooh-o', 'o-ooh'), df, OER, ORR)
