@@ -555,10 +555,10 @@ for dir in dirs:
     print(f"Data saved as {A}{B}_oer.png")
 
     ORR_df = pd.DataFrame(ORR)
-    ORR_df['dg12'] = ORR_df['dg12'].round(2)
-    ORR_df['dg23'] = ORR_df['dg23'].round(2)
-    ORR_df['dg34'] = ORR_df['dg34'].round(2)
-    ORR_df['dg41'] = ORR_df['dg41'].round(2)
+    ORR_df['dg12'] = ORR_df['dg12'].round(2) + 1.23
+    ORR_df['dg23'] = ORR_df['dg23'].round(2) + 1.23
+    ORR_df['dg34'] = ORR_df['dg34'].round(2) + 1.23
+    ORR_df['dg41'] = ORR_df['dg41'].round(2) + 1.23
     ORR_df['overP'] = ORR_df['overP'].round(2)
     ORR_df['onsetP'] = ORR_df['onsetP'].round(2)
     ORR_df.to_csv(f'{figure_path}/{A}{B}_orr.tsv', sep='\t') #, index=False)
