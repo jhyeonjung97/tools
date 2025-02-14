@@ -104,7 +104,8 @@ color = ['darkgray', ##
          'navy']
 pH2 = np.arange(0, 14.01, 0.01)
 
-metal_path = '/pscratch/sd/j/jiuy97/6_MNC/gas/metals.tsv'
+figure_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
+metal_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 
 # Function to findthe lowest E0 value in each subdirectory
@@ -453,7 +454,7 @@ for dir in dirs:
     plt.legend(loc='lower left', bbox_to_anchor=(0.0, 1.02), # borderaxespad=17, 
                ncol=1, labelspacing=0.3, handlelength=2, fontsize=10,
                fancybox=True, shadow=True)
-    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{A}{B}_pourbaix_full.png', bbox_inches='tight')
+    plt.savefig(f'{figure_path}/{A}{B}_pourbaix_full.png', bbox_inches='tight')
     print(f"Figure saved as {A}{B}_pourbaix_full.png")
     plt.close()
 
@@ -513,7 +514,7 @@ for dir in dirs:
         ax.text(0.2, ORR['onsetP'][2] - 0.34,
                 r"S$_{11}$$\rightarrow$S$_{10}$$\rightarrow$S$_{8}$$\rightarrow$S$_{5}$: " + f"{ORR['overP'][2]:.2f} eV", 
                 color='green', rotation=-9.5, fontsize=10)
-    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{A}{B}_pourbaix_clean.png', bbox_inches='tight')
+    plt.savefig(f'{figure_path}/{A}{B}_pourbaix_clean.png', bbox_inches='tight')
     print(f"Figure saved as {A}{B}_pourbaix_clean.png")
     plt.close()
     
@@ -542,7 +543,7 @@ for dir in dirs:
     # plt.legend(loc='lower left', bbox_to_anchor=(0.0, 1.02), # borderaxespad=17, 
     #            ncol=2, columnspacing=1.0, labelspacing=0.3, handlelength=2, fontsize=10,
     #            fancybox=True, shadow=True)
-    plt.savefig(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{A}{B}_pourbaix.png', bbox_inches='tight')
+    plt.savefig(f'{figure_path}/{A}{B}_pourbaix.png', bbox_inches='tight')
     print(f"Figure saved as {A}{B}_pourbaix.png")
     # plt.show()
     plt.close()
@@ -554,7 +555,7 @@ for dir in dirs:
     df['E'] = df['E'].round(2)
     df['G'] = df['G'].round(2)
     df['dG'] = df['dG'].round(2)
-    df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{A}{B}_energies.tsv', sep='\t') #, index=False)
+    df.to_csv(f'{figure_path}/{A}{B}_energies.tsv', sep='\t') #, index=False)
     print(f"Data saved as {A}{B}_energies.png")
 
     OER_df = pd.DataFrame(OER)
@@ -564,7 +565,7 @@ for dir in dirs:
     OER_df['dg41'] = OER_df['dg41'].round(2)
     OER_df['overP'] = OER_df['overP'].round(2)
     OER_df['onsetP'] = OER_df['onsetP'].round(2)
-    OER_df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{A}{B}_oer.tsv', sep='\t') #, index=False)
+    OER_df.to_csv(f'{figure_path}/{A}{B}_oer.tsv', sep='\t') #, index=False)
     print(f"Data saved as {A}{B}_oer.png")
 
     ORR_df = pd.DataFrame(ORR)
@@ -574,6 +575,6 @@ for dir in dirs:
     ORR_df['dg41'] = ORR_df['dg41'].round(2)
     ORR_df['overP'] = ORR_df['overP'].round(2)
     ORR_df['onsetP'] = ORR_df['onsetP'].round(2)
-    ORR_df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{A}{B}_orr.tsv', sep='\t') #, index=False)
+    ORR_df.to_csv(f'{figure_path}/{A}{B}_orr.tsv', sep='\t') #, index=False)
     print(f"Data saved as {A}{B}_orr.png")
     
