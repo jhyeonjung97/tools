@@ -336,7 +336,7 @@ for dir in dirs:
         # df.loc['ooh-oh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),  
         # df.loc['ooh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),
         df.loc['oho', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),
-        df.loc['oh-o', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),  
+        # df.loc['oh-o', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),  
         df.loc['o-oh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),
         # df.loc['oo', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),  
         df.loc['o-o', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),
