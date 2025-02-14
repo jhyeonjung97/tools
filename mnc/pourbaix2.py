@@ -314,7 +314,7 @@ for dir in dirs:
 
     df['G'] = df['E'] + dgh * df['#H'] + dgo * df['#O'] + dgoh * df['#OH'] + dgooh * df['#OOH']
     df['dG'] = df['G'] - df.loc['clean', 'E'] - gh * df['#H'] - go * df['#O'] - goh * df['#OH'] - gooh * df['#OOH']
-    df.loc['vac', 'dG'] += cation
+    df.loc['vac', 'dG'] += bulk_metal
     
     overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
     if A == '1' and B == 'Fe':
