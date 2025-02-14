@@ -94,10 +94,10 @@ color = [
 ]
 pH2 = np.arange(0, 14.01, 0.01)
 
-path = '/Users/hailey/Desktop/jan20/pourbaix/'
-metal_path = '/Users/hailey/Desktop/jan20/metals.tsv'
-# path = '/Users/jiuy97/Desktop/jan6/figures/pourbaix/'
-# metal_path = '/Users/jiuy97/Desktop/jan21/metals.tsv'
+# path = '/Users/hailey/Desktop/jan20/pourbaix/'
+# metal_path = '/Users/hailey/Desktop/jan20/metals.tsv'
+path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/'
+metal_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 metals = ['Fe', 'Co', 'Mo']
 
