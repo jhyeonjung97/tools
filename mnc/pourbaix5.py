@@ -319,11 +319,11 @@ for dir in dirs:
     if A == '1' and B == 'Fe':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
-        overpotential('oh', 'o', 'ooh', ('ooh-oh', 'oh-ooh'), df, OER, ORR)
-        overpotential('oh', 'o', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
+        # overpotential('oh', 'o', 'ooh', ('ooh-oh', 'oh-ooh'), df, OER, ORR)
+        # overpotential('oh', 'o', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
-        overpotential('o', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
-        overpotential('o', 'ooh', ('ooh-oh', 'oh-ooh'), ('ooh-o', 'o-ooh'), df, OER, ORR)
+        # overpotential('o', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
+        # overpotential('o', 'ooh', ('ooh-oh', 'oh-ooh'), ('ooh-o', 'o-ooh'), df, OER, ORR)
     elif A == '2' and B == 'Co':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
