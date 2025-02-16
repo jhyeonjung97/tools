@@ -203,64 +203,8 @@ def overpotential(int1, int2, int3, int4, df, OER, ORR):
     OER['overP'].append(overP_oer); OER['onsetP'].append(onsetP_oer)
     
     ORR['int1'].append(int4); ORR['int2'].append(int3); ORR['int3'].append(int2); ORR['int4'].append(int1)
-    ORR['dg12'].append(1.23-dG34+1.23); ORR['dg23'].append(1.23-dG23+1.23); ORR['dg34'].append(1.23-dG12+1.23); ORR['dg41'].append(1.23-dG41+1.23)
+    ORR['dg12'].append(1.23-dG41+1.23); ORR['dg23'].append(1.23-dG34+1.23); ORR['dg34'].append(1.23-dG23+1.23); ORR['dg41'].append(1.23-dG12+1.23)
     ORR['overP'].append(overP_orr); ORR['onsetP'].append(onsetP_orr)
-    
-def overpotential_oer(int1, int2, int3, int4, df, OER):
-    ints = [int1, int2, int3, int4]
-    for i, int in enumerate(ints):
-        if isinstance(int, tuple):
-            if np.isnan(df.loc[int[1], 'E']):
-                ints[i] = int[0]
-            elif np.isnan(df.loc[int[0], 'E']):
-                ints[i] = int[1]
-            elif df.loc[int[0], 'E'] < df.loc[int[1], 'E']:
-                ints[i] = int[0]
-            else:
-                ints[i] = int[1]
-    int1, int2, int3, int4 = ints
-    
-    dG12 = df.loc[int2, 'dG'] - df.loc[int1, 'dG']
-    dG23 = df.loc[int3, 'dG'] - df.loc[int2, 'dG']
-    dG34 = df.loc[int4, 'dG'] - df.loc[int3, 'dG']
-    dG41 = 4.92 - dG12 - dG23 - dG34
-    if any(np.isnan(value) for value in [dG12, dG23, dG34, dG41]):
-        onsetP = np.nan
-        overP = np.nan
-    else:
-        onsetP = max(dG12, dG23, dG34, dG41)
-        overP = onsetP - 1.23
-    OER['int1'].append(int1); OER['int2'].append(int2); OER['int3'].append(int3); OER['int4'].append(int4)
-    OER['dg12'].append(dG12); OER['dg23'].append(dG23); OER['dg34'].append(dG34); OER['dg41'].append(dG41)
-    OER['overP'].append(overP); OER['onsetP'].append(onsetP)
-    
-def overpotential_orr(int1, int2, int3, int4, df, ORR):
-    ints = [int1, int2, int3, int4]
-    for i, int in enumerate(ints):
-        if isinstance(int, tuple):
-            if np.isnan(df.loc[int[1], 'E']):
-                ints[i] = int[0]
-            elif np.isnan(df.loc[int[0], 'E']):
-                ints[i] = int[1]
-            elif df.loc[int[0], 'E'] < df.loc[int[1], 'E']:
-                ints[i] = int[0]
-            else:
-                ints[i] = int[1]
-    int1, int2, int3, int4 = ints
-    
-    dG12 = df.loc[int2, 'dG'] - df.loc[int1, 'dG']
-    dG23 = df.loc[int3, 'dG'] - df.loc[int2, 'dG']
-    dG34 = df.loc[int4, 'dG'] - df.loc[int3, 'dG']
-    dG41 = -4.92 - dG12 - dG23 - dG34
-    if any(np.isnan(value) for value in [dG43, dG32, dG34, dG41]):
-        onsetP = np.nan
-        overP = np.nan
-    else:
-        onsetP = -max(dG12, dG23, dG34, dG41)
-        overP = 1.23 + max(dG12, dG23, dG34, dG41)
-    ORR['int1'].append(int1); ORR['int2'].append(int2); ORR['int3'].append(int3); ORR['int4'].append(int4)
-    ORR['dg12'].append(dG12); ORR['dg23'].append(dG23); ORR['dg34'].append(dG34); ORR['dg41'].append(dG41)
-    ORR['overP'].append(overP); ORR['onsetP'].append(onsetP)
     
 for dir in dirs:
     os.chdir(dir)
