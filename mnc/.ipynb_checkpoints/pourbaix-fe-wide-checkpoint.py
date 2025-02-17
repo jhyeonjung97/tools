@@ -15,6 +15,7 @@ from pymatgen.analysis.pourbaix_diagram import IonEntry, PDEntry, ComputedEntry
 warnings.filterwarnings('ignore')
 
 filename = '1Fe'
+tag = ''
 
 kbt = 0.0256 
 const = kbt * np.log(10)
@@ -173,7 +174,7 @@ def plot_pourbaix(entries, png_name):
     pourbaix = PourbaixDiagram(entries, filter_solids=False)
     plotter = PourbaixPlotter(pourbaix)
 
-    fig, ax = plt.subplots(figsize=(8, 5))    
+    fig, ax = plt.subplots(figsize=(7, 5))    
     plotter.get_pourbaix_plot(limits=[[0, 14], [-1, 3]], label_domains=False, label_fontsize=14,
                               show_water_lines=False, show_neutral_axes=False, ax=ax)
     stable_entries = pourbaix.stable_entries
@@ -185,20 +186,12 @@ def plot_pourbaix(entries, png_name):
         text.set_color('black')
         text.set_fontweight('bold')
         
-    pH2 = np.arange(0, 14.01, 0.01)
-    plt.plot(pH2, 1.23 - pH2 * const, color='black', lw=1.5, dashes=(5, 2))
-    plt.plot(pH2, df_oer['onsetP'][0] - pH2 * const, color='red', lw=1.5)
-    plt.plot(pH2, df_oer['onsetP'][1] - pH2 * const, color='red', lw=1.5, dashes=(5, 2))
-    plt.plot(pH2, df_orr['onsetP'][0] - pH2 * const, color='blue', lw=1.5)
-
-    if 'bulk' not in png_name:
-        ax.text(0.2, 0.29+0.34, r'2H$_2$O $\leftrightarrow$ 4H$^+$ + O$_2$ + 4e$^-$', color='black', rotation=-9.9, fontsize=13)
-        ax.text(0.2, df_oer['onsetP'][0] - 0.71+0.34, get_equation(1, 4, 5, 8, df_oer, 0),
-               color='red', rotation=-9.9, fontsize=14)
-        ax.text(0.2, df_oer['onsetP'][1] - 1.00+0.34, get_equation(4, 7, 9, 12, df_oer, 1),
-               color='red', rotation=-9.9, fontsize=14)
-        ax.text(0.2, df_orr['onsetP'][0] - 0.97+0.34, get_equation(8, 5, 4, 1, df_orr, 0),
-               color='blue', rotation=-9.9, fontsize=14)
+    if 'bulk' in png_name:
+        pH2 = np.arange(0, 14.01, 0.01)
+        plt.plot(pH2, 1.23 - pH2 * const, color='black', lw=2.0) #, dashes=(5, 2))
+        plt.plot(pH2, df_oer['onsetP'][0] - pH2 * const, color='red', lw=2.0)
+        plt.plot(pH2, df_oer['onsetP'][1] - pH2 * const, color='red', lw=2.0, dashes=(5, 2))
+        plt.plot(pH2, df_orr['onsetP'][0] - pH2 * const, color='blue', lw=2.0)
 
     vac_entries = [entry for entry in stable_entries if 'XFe' not in entry.name]
     sac_entries = [entry for entry in stable_entries if 'XFe' in entry.name]
@@ -216,6 +209,14 @@ def plot_pourbaix(entries, png_name):
         'Fe[+3] + XH2(s)': 2,
         'Fe[+3] + X(s)': 3,
         'FeOH[+2] + X(s)': 4,
+
+        'Fe(s)': 0,
+        'Fe[+2]': 1,
+        'Fe[+3]': 2, 
+        'FeOH[+2]': 3, 
+        'FeHO2[-1]': 4, 
+        'Fe2O3(s)': 5,
+        'Fe3O4(s)': 6,
     }
 
     sac_mapping = {
@@ -225,7 +226,7 @@ def plot_pourbaix(entries, png_name):
         'XFeHO2(s)': 3,
         'XFeO2(s)': 4,
     }
-        
+            
     for i, entry in enumerate(vac_entries):
         vertices = plotter.domain_vertices(entry)
         x, y = zip(*vertices)
@@ -237,18 +238,6 @@ def plot_pourbaix(entries, png_name):
         x, y = zip(*vertices)
         color = sac_colors[sac_mapping[entry.name]]
         ax.fill(x, y, color=color)
-        
-    if 'bulk' in png_name:
-        ax.text(2.6, 1.5, r"S$_{\mathbf{v}}$+FeOH$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
-        ax.text(0.2, 2.1, r"S$_{\mathbf{v}}$+Fe$^{\mathbf{3+}}$", fontsize=14, color="black", fontweight='bold')
-        ax.text(0.2, 0.8, r"S$_{\mathbf{v}}$+Fe$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
-        ax.text(0.2, -0.5, r"S$_{\mathbf{0}}$+Fe$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
-    ax.text(13.1, 2.1, r"S$_{\mathbf{7}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, 1.0, r"S$_{\mathbf{6}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, 0.68, r"S$_{\mathbf{8}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, 0.0, r"S$_{\mathbf{4}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, -0.8, r"S$_{\mathbf{1}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(0.2, -0.9, r"S$_{\mathbf{0}}$+Fe(s)", fontsize=14, color="black", fontweight='bold')
 
     ax.set_xlabel("pH", fontsize=14)
     ax.set_ylabel("Potential (V vs SHE)", fontsize=14)
@@ -283,15 +272,13 @@ def main():
     print("\nTotal Entries:", len(all_entries))
     
     all_entries = ref_entries + sac_entries
-    plot_pourbaix(all_entries, f'{filename}_pourbaix_sac_left.png')
+    plot_pourbaix(all_entries, f'{filename}_pourbaix_sac{tag}.png')
     
-    # plot_pourbaix(solid_entries, f'{filename}_pourbaix_solid.png')
-    # plot_pourbaix(ion_entries, f'{filename}_pourbaix_ion.png')
-    # all_entries = solid_entries + ion_entries
-    # plot_pourbaix(all_entries, f'{filename}_pourbaix_exp.png')
+    all_entries = solid_entries + ion_entries
+    plot_pourbaix(all_entries, f'{filename}_pourbaix_exp{tag}.png')
     
     all_entries = ref_entries + sac_entries + solid_entries + ion_entries
-    plot_pourbaix(all_entries, f'{filename}_pourbaix_bulk_left.png')
+    plot_pourbaix(all_entries, f'{filename}_pourbaix_bulk{tag}.png')
 
 
 if __name__ == "__main__":
