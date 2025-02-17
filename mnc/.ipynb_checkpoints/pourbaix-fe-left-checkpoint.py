@@ -67,7 +67,7 @@ dgoh = zpeoh + cvoh - tsoh
 dgooh = zpeooh + cvooh - tsooh
 dgh = dgoh - dgo
 
-metal_path = './metals.tsv'
+metal_path = '~/bin/tools/mnc/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 gm = metal_df.loc['Fe', 'energy']
 
@@ -89,7 +89,7 @@ df['comp'] = df['comp'].str.replace('FeXNH', 'FeXH')
 df['energy'] = df['dG'] + df.loc['clean', 'G'] + gh2 - gm - H2N4C26 - 2 * dgh - water * (df['#O'] + df['#OH'] + df['#OOH']*2)
 
 df = df.drop(index='vac')
-df = df.drop(index='o-oh')
+df = df.drop(index='oo')
 df = df.drop(index='ooh')
 df = df.drop(index='o-ooh')
 df = df.drop(index='ooh-o')
@@ -225,7 +225,7 @@ def plot_pourbaix(entries, png_name):
         'XFeHO2(s)': 3,
         'XFeO2(s)': 4,
     }
-
+        
     for i, entry in enumerate(vac_entries):
         vertices = plotter.domain_vertices(entry)
         x, y = zip(*vertices)
@@ -243,9 +243,9 @@ def plot_pourbaix(entries, png_name):
         ax.text(0.2, 2.1, r"S$_{\mathbf{v}}$+Fe$^{\mathbf{3+}}$", fontsize=14, color="black", fontweight='bold')
         ax.text(0.2, 0.8, r"S$_{\mathbf{v}}$+Fe$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
         ax.text(0.2, -0.5, r"S$_{\mathbf{0}}$+Fe$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
-    ax.text(13.1, 2.1, r"S$_{\mathbf{10}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, 1.0, r"S$_{\mathbf{9}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, 0.68, r"S$_{\mathbf{5}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
+    ax.text(13.1, 2.1, r"S$_{\mathbf{7}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
+    ax.text(13.1, 1.0, r"S$_{\mathbf{6}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
+    ax.text(13.1, 0.68, r"S$_{\mathbf{8}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
     ax.text(13.1, 0.0, r"S$_{\mathbf{4}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
     ax.text(13.1, -0.8, r"S$_{\mathbf{1}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
     ax.text(0.2, -0.9, r"S$_{\mathbf{0}}$+Fe(s)", fontsize=14, color="black", fontweight='bold')

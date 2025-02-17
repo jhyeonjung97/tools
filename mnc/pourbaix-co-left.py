@@ -67,7 +67,7 @@ dgoh = zpeoh + cvoh - tsoh
 dgooh = zpeooh + cvooh - tsooh
 dgh = dgoh - dgo
 
-metal_path = './metals.tsv'
+metal_path = '~/bin/tools/mnc/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 gm = metal_df.loc['Co', 'energy']
 
