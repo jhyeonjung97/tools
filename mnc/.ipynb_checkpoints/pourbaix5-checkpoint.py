@@ -268,10 +268,12 @@ for dir in dirs:
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         # overpotential('o', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         # overpotential('o', 'ooh', ('ooh-oh', 'oh-ooh'), ('ooh-o', 'o-ooh'), df, OER, ORR)
+        overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
     elif A == '2' and B == 'Co':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
+        overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
     elif A == '3' and B == 'Mo':
         overpotential('o', 'oho', 'oo', ('oooh', 'ooho'), df, OER, ORR)
 
