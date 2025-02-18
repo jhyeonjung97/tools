@@ -42,7 +42,7 @@ for root_dir in root_dirs:
         most_stable_dir = 'most_stable'  # Name of the most stable directory
 
         # Define the path to the CONTcar file
-        contcar_path = os.path.join(root_dir, main_dir, most_stable_dir, 'final_with_calculator.json')
+        contcar_path = os.path.join(root_dir, main_dir, most_stable_dir, 'CONTCAR')
         
         if os.path.exists(contcar_path):
             atoms = read(contcar_path)
@@ -50,7 +50,7 @@ for root_dir in root_dirs:
             # Search for the subdirectory with the minimum energy
             min_e0_dir = find_min_e_dir(os.path.join(root_dir, main_dir), sub_dirs)
             if min_e0_dir is not None:
-                atoms = read(os.path.join(root_dir, main_dir, min_e0_dir, 'final_with_calculator.json'))
+                atoms = read(os.path.join(root_dir, main_dir, min_e0_dir, 'CONTCAR'))
             else:
                 print(f"No valid CONTCAR file found in {main_dir}")
                 continue  # Skip to the next iteration if invalid
