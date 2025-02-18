@@ -72,7 +72,7 @@ hydrogen_G = hydrogen2_G / 2
 
 oxygen_G = water_G - hydrogen2_G
 print(oxygen_G)
-oxygen_G = 2*water_G - 2*hydrogen2_G - 4.92
+oxygen_G = water_G - hydrogen2_G + 4.92/2
 print(oxygen_G)
 hydroxide_G = water_G - hydrogen_G
 
