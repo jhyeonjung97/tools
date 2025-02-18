@@ -71,6 +71,9 @@ hydrogen2_G = hydrogen2_E + hydrogen2_Cv - hydrogen2_TS + hydrogen2_ZPE
 hydrogen_G = hydrogen2_G / 2
 
 oxygen_G = water_G - hydrogen2_G
+print(oxygen_G)
+oxygen_G = 2*water_G - 2*hydrogen2_G - 4.92
+print(oxygen_G)
 hydroxide_G = water_G - hydrogen_G
 
 nitrogen2_E = -16.64503942
