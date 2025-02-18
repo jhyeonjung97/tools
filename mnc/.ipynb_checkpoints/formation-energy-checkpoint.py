@@ -1051,7 +1051,7 @@ def main():
                          ylabel='Δz (Å)', png_filename=png_OH_dz_filename)
                 plotting(df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
-                         ylabel='Magnetic Moments', png_filename=png_OH_mag_filename)
+                         ylabel='Magnetic Moment (μB)', png_filename=png_OH_mag_filename)
                 plotting(df=df_OH_bond, df_relaxed=df_OH_relaxed_bond, dzs=dzs, spins=spins, 
                          ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.21, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_OH_bond_filename)
@@ -1071,7 +1071,7 @@ def main():
                          ylabel='Δz (Å)', png_filename=png_OOH_dz_filename)
                 plotting(df=df_OOH_mag, df_relaxed=df_OOH_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
-                         ylabel='Magnetic Moments', png_filename=png_OOH_mag_filename)
+                         ylabel='Magnetic Moment (μB)', png_filename=png_OOH_mag_filename)
                 plotting(df=df_OOH_bond, df_relaxed=df_OOH_relaxed_bond, dzs=dzs, spins=spins, 
                          ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.21, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_OOH_bond_filename)
@@ -1092,7 +1092,7 @@ def main():
                          ylabel='Δz (Å)', png_filename=png_O_OH_dz_filename)
                 plotting(df=df_O_OH_mag, df_relaxed=df_O_OH_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
-                         ylabel='Magnetic Moments', png_filename=png_O_OH_mag_filename)
+                         ylabel='Magnetic Moment (μB)', png_filename=png_O_OH_mag_filename)
                 plotting(df=df_O_OH_bond1, df_relaxed=df_O_OH_relaxed_bond1, dzs=dzs, spins=spins, 
                          ymin=1.6, ymax=2.1, yticks = np.arange(1.6, 2.11, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_O_OH_bond1_filename)
@@ -1116,7 +1116,7 @@ def main():
                          ylabel='Δz (Å)', png_filename=png_OH_OH_dz_filename)
                 plotting(df=df_OH_OH_mag, df_relaxed=df_OH_OH_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
-                         ylabel='Magnetic Moments', png_filename=png_OH_OH_mag_filename)
+                         ylabel='Magnetic Moment (μB)', png_filename=png_OH_OH_mag_filename)
                 plotting(df=df_OH_OH_bond1, df_relaxed=df_OH_OH_relaxed_bond1, dzs=dzs, spins=spins, 
                          ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.21, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_OH_OH_bond1_filename)
