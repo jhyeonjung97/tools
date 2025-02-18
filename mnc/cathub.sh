@@ -10,7 +10,7 @@ site1='M'
 site2='N'
 
 mkdir -p "${cathub}/N4C26-${site2}/001"
-cp "${mnc}/empty/0_/final_with_calculator.json" "${cathub}/N4C26/empty_slab.json"
+cp "${mnc}/empty/0_/final_with_calculator.json" "${cathub}/N4C26-${site2}/empty_slab.json"
 cp "${mnc}/empty/2_/final_with_calculator.json" "${cathub}/N4C26-${site2}/001"
 cp -r "${mnc}/gas" "${cathub}"
 
