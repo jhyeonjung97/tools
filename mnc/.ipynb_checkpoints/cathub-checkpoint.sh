@@ -155,7 +155,7 @@ for dir in ${mnc}/pourbaix/*_*/*/most_stable; do
         cp "${dir}/final_with_calculator.json" "${dest_dir}"
         # echo "Copied final_with_calculator.json to ${dest_dir}"
         if [[ ! ${site} == ${site1} ]]; then
-            cp "${cathub}/${metal}N4C26-relaxed-${site1}/001/empty_slab.json" "${cathub}/${metal}N4C26-relaxed/001-${site}"
+            cp "${cathub}/${metal}N4C26-relaxed-${site1}/001/empty_slab.json" "${cathub}/${metal}N4C26-relaxed-${site}/001"
         fi
     fi
 done
