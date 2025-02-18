@@ -154,8 +154,8 @@ for dir in ${mnc}/pourbaix/*_*/*/most_stable; do
         mkdir -p "${dest_dir}"
         cp "${dir}/final_with_calculator.json" "${dest_dir}"
         # echo "Copied final_with_calculator.json to ${dest_dir}"
-        if [[ ! ${site} == ${site1} ]]; then
-            cp "${cathub}/${metal}N4C26-Δz:relaxed-${site1}${dual}/001/empty_slab.json" "${cathub}/${metal}N4C26-Δz:relaxed-${site}${dual}/001"
+        if [[ ! ${site}${dual} == ${site1} ]]; then
+            cp "${cathub}/${metal}N4C26-Δz:relaxed-${site1}/001/empty_slab.json" "${cathub}/${metal}N4C26-Δz:relaxed-${site}${dual}/001"
         fi
     fi
 done
