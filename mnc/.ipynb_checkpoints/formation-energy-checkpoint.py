@@ -70,10 +70,7 @@ hydrogen2_ZPE = 0.273
 hydrogen2_G = hydrogen2_E + hydrogen2_Cv - hydrogen2_TS + hydrogen2_ZPE
 hydrogen_G = hydrogen2_G / 2
 
-oxygen_G = water_G - hydrogen2_G
-print(oxygen_G)
-oxygen_G = water_G - hydrogen2_G + 4.92/2
-print(oxygen_G)
+oxygen_G = water_G - hydrogen2_G + 2*1.229
 hydroxide_G = water_G - hydrogen_G
 
 nitrogen2_E = -16.64503942
