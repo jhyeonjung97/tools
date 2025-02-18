@@ -123,29 +123,29 @@ for dir in ${mnc}/pourbaix/*_*/*/most_stable; do
     elif [[ "$ads_upper" == "OOH" ]]; then
         site=${site1}; dual=''; rxn="2.0H2Ogas_-1.5H2gas_star__OOHstar"
     elif [[ "$ads_upper" == "OO" ]]; then
-        site=${site1}; dual='-adjacent'; rxn="2.0H2Ogas_-2.0H2gas_star__OstarOstar"
+        site=${site1}; dual=':adjacent'; rxn="2.0H2Ogas_-2.0H2gas_star__OstarOstar"
     elif [[ "$ads_upper" == "OHO" ]]; then
-        site=${site1}; dual='-adjacent'; rxn="2.0H2Ogas_-1.5H2gas_star__OHstarOstar"
+        site=${site1}; dual=':adjacent'; rxn="2.0H2Ogas_-1.5H2gas_star__OHstarOstar"
     elif [[ "$ads_upper" == "OHOH" ]]; then
-        site=${site1}; dual='-adjacent'; rxn="2.0H2Ogas_-1.0H2gas_star__OHstarOHstar"
+        site=${site1}; dual=':adjacent'; rxn="2.0H2Ogas_-1.0H2gas_star__OHstarOHstar"
     elif [[ "$ads_upper" == "OOHO" ]] || [[ "$ads_upper" == "OOOH" ]]; then
-        site=${site1}; dual='-adjacent'; rxn="3.0H2Ogas_-2.5H2gas_star__OOHstarOstar"
+        site=${site1}; dual=':adjacent'; rxn="3.0H2Ogas_-2.5H2gas_star__OOHstarOstar"
     elif [[ "$ads_upper" == "OOHOH" ]] || [[ "$ads_upper" == "OHOOH" ]]; then
-        site=${site1}; dual='-adjacent'; rxn="3.0H2Ogas_-2.0H2gas_star__OOHstarOHstar"
+        site=${site1}; dual=':adjacent'; rxn="3.0H2Ogas_-2.0H2gas_star__OOHstarOHstar"
     elif [[ "$ads_upper" == "OOHOOH" ]]; then
-        site=${site1}; dual='-adjacent'; rxn="4.0H2Ogas_-3.0H2gas_star__OOHstarOOHstar"
+        site=${site1}; dual=':adjacent'; rxn="4.0H2Ogas_-3.0H2gas_star__OOHstarOOHstar"
     elif [[ "$ads_upper" == "O-O" ]]; then
-        site=${site1}; dual='-antipodal'; rxn="2.0H2Ogas_-2.0H2gas_star__OstarOstar"
+        site=${site1}; dual=':antipodal'; rxn="2.0H2Ogas_-2.0H2gas_star__OstarOstar"
     elif [[ "$ads_upper" == "OH-O" ]]; then
-        site=${site1}; dual='-antipodal'; rxn="2.0H2Ogas_-1.5H2gas_star__OHstarOstar"
+        site=${site1}; dual=':antipodal'; rxn="2.0H2Ogas_-1.5H2gas_star__OHstarOstar"
     elif [[ "$ads_upper" == "OH-OH" ]]; then
-        site=${site1}; dual='-antipodal'; rxn="2.0H2Ogas_-1.0H2gas_star__OHstarOHstar"
+        site=${site1}; dual=':antipodal'; rxn="2.0H2Ogas_-1.0H2gas_star__OHstarOHstar"
     elif [[ "$ads_upper" == "OOH-O" ]]; then
-        site=${site1}; dual='-antipodal'; rxn="3.0H2Ogas_-2.5H2gas_star__OOHstarOstar"
+        site=${site1}; dual=':antipodal'; rxn="3.0H2Ogas_-2.5H2gas_star__OOHstarOstar"
     elif [[ "$ads_upper" == "OOH-OH" ]]; then
-        site=${site1}; dual='-antipodal'; rxn="3.0H2Ogas_-2.0H2gas_star__OOHstarOHstar"
+        site=${site1}; dual=':antipodal'; rxn="3.0H2Ogas_-2.0H2gas_star__OOHstarOHstar"
     elif [[ "$ads_upper" == "OOH-OOH" ]]; then
-        site=${site1}; dual='-antipodal'; rxn="4.0H2Ogas_-3.0H2gas_star__OOHstarOOHstar"
+        site=${site1}; dual=':antipodal'; rxn="4.0H2Ogas_-3.0H2gas_star__OOHstarOOHstar"
     else
         rxn=''
     fi
