@@ -150,7 +150,7 @@ for dir in ${mnc}/pourbaix/*_*/*/most_stable; do
         rxn=''
     fi
     if [[ -n "${rxn}" ]] && [[ -f "${dir}/final_with_calculator.json" ]]; then
-        dest_dir="${cathub}/${metal}N4C26-relaxed-${site}${site}/001/${rxn}"
+        dest_dir="${cathub}/${metal}N4C26-relaxed-${site}/001/${rxn}"
         mkdir -p "${dest_dir}"
         cp "${dir}/final_with_calculator.json" "${dest_dir}"
         # echo "Copied final_with_calculator.json to ${dest_dir}"
