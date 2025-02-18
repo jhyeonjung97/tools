@@ -1,4 +1,4 @@
-title: "Tuning Local Structure and Spin State to Improve ORR and OER Performance of M-N-C Catalysts"
+title: "Tunability Potential and Limits in Local Structure and Spin State Modulation for ORR and OER Activity of M–N–C Catalysts"
 authors:
 - Jung, Hyeonjung
 - Fanta, Roman
