@@ -1014,7 +1014,7 @@ def main():
             #          ylabel='Spin crossover energy (eV)', png_filename=png_rel_filename)
             plotting(df=df_mag, df_relaxed=df_relaxed_mag, dzs=dzs, spins=spins, 
                      ymin=-0.5, ymax=5.5, yticks=np.arange(6),
-                     ylabel='Magnetic Moments (uB)', png_filename=png_mag_filename)
+                     ylabel='Magnetic Moment (μB)', png_filename=png_mag_filename)
             
             if path_O: 
                 combining(df=df_O, df_relaxed=df_O_relaxed, tsv_filename=tsv_O_filename)
@@ -1031,7 +1031,7 @@ def main():
                          ylabel='Δz (Å)', png_filename=png_O_dz_filename)
                 plotting(df=df_O_mag, df_relaxed=df_O_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
-                         ylabel='Magnetic Moments (uB)', png_filename=png_O_mag_filename)
+                         ylabel='Magnetic Moment (μB)', png_filename=png_O_mag_filename)
                 plotting(df=df_O_bond, df_relaxed=df_O_relaxed_bond, dzs=dzs, spins=spins, 
                          ymin=1.5, ymax=2.0, yticks = np.arange(1.5, 2.01, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_O_bond_filename)
