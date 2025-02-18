@@ -101,6 +101,9 @@ df = df.drop(index='o-o')
 df = df.drop(index='o-oh')
 df = df.drop(index='oh-o')
 df = df.drop(index='oh-oh')
+df = df.drop(index='ooho')
+df = df.drop(index='oohoh')
+df = df.drop(index='oohooh')
 df = df.dropna()
 print(df)
 
@@ -179,7 +182,7 @@ def plot_pourbaix(entries, png_name):
     plotter = PourbaixPlotter(pourbaix)
 
     fig, ax = plt.subplots(figsize=(7, 5))    
-    plotter.get_pourbaix_plot(limits=[[0, 14], [-1, 3]], label_domains=False, label_fontsize=14,
+    plotter.get_pourbaix_plot(limits=[[0, 14], [-1, 3]], label_domains=True, label_fontsize=14,
                               show_water_lines=False, show_neutral_axes=False, ax=ax)
     stable_entries = pourbaix.stable_entries
 
@@ -194,7 +197,7 @@ def plot_pourbaix(entries, png_name):
         pH2 = np.arange(0, 14.01, 0.01)
         plt.plot(pH2, 1.23 - pH2 * const, color='black', lw=2.0) #, dashes=(5, 2))
         plt.plot(pH2, df_oer['onsetP'][0] - pH2 * const, color='red', lw=2.0)
-        plt.plot(pH2, df_oer['onsetP'][1] - pH2 * const, color='red', lw=2.0, dashes=(5, 2))
+        plt.plot(pH2, df_oer['onsetP'][3] - pH2 * const, color='red', lw=2.0, dashes=(5, 2))
         plt.plot(pH2, df_orr['onsetP'][0] - pH2 * const, color='blue', lw=2.0)
 
     vac_entries = [entry for entry in stable_entries if 'XFe' not in entry.name]
@@ -208,12 +211,14 @@ def plot_pourbaix(entries, png_name):
         'XH2(s) + Fe[+3]': 2,
         'X(s) + Fe[+3]': 3,
         'X(s) + FeOH[+2]': 4,
+        'X(s) + Fe2O3(s)': 5,
         'Fe(s) + XH2(s)': 0,
         'Fe[+2] + XH2(s)': 1,
         'Fe[+3] + XH2(s)': 2,
         'Fe[+3] + X(s)': 3,
         'FeOH[+2] + X(s)': 4,
-
+        'Fe2O3(s) + X(s)': 5,
+        
         'Fe(s)': 0,
         'Fe[+2]': 1,
         'Fe[+3]': 2, 
@@ -222,13 +227,11 @@ def plot_pourbaix(entries, png_name):
         'Fe2O3(s)': 5,
         'Fe3O4(s)': 6,
     }
-
+    
     sac_mapping = {
         'XFe(s)': 0,
         'XFeHO(s)': 1,
         'XFeO(s)': 2,
-        'XFeHO2(s)': 3,
-        'XFeO2(s)': 4,
     }
 
     for entry in vac_entries:
