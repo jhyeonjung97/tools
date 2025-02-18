@@ -136,13 +136,13 @@ for dir in ${mnc}/pourbaix/*_*/*/most_stable; do
         site=${site1}; dual=':adjacent'; rxn="4.0H2Ogas_-3.0H2gas_star__OOHstarOOHstar"
     elif [[ "$ads_upper" == "O-O" ]]; then
         site=${site1}; dual=':antipodal'; rxn="2.0H2Ogas_-2.0H2gas_star__OstarOstar"
-    elif [[ "$ads_upper" == "OH-O" ]]; then
+    elif [[ "$ads_upper" == "OH-O" ]] || [[ "$ads_upper" == "O-OH" ]]; then
         site=${site1}; dual=':antipodal'; rxn="2.0H2Ogas_-1.5H2gas_star__OHstarOstar"
     elif [[ "$ads_upper" == "OH-OH" ]]; then
         site=${site1}; dual=':antipodal'; rxn="2.0H2Ogas_-1.0H2gas_star__OHstarOHstar"
-    elif [[ "$ads_upper" == "OOH-O" ]]; then
+    elif [[ "$ads_upper" == "OOH-O" ]] || [[ "$ads_upper" == "O-OOH" ]]; then
         site=${site1}; dual=':antipodal'; rxn="3.0H2Ogas_-2.5H2gas_star__OOHstarOstar"
-    elif [[ "$ads_upper" == "OOH-OH" ]]; then
+    elif [[ "$ads_upper" == "OOH-OH" ]] || [[ "$ads_upper" == "OH-OOH" ]]; then
         site=${site1}; dual=':antipodal'; rxn="3.0H2Ogas_-2.0H2gas_star__OOHstarOHstar"
     elif [[ "$ads_upper" == "OOH-OOH" ]]; then
         site=${site1}; dual=':antipodal'; rxn="4.0H2Ogas_-3.0H2gas_star__OOHstarOOHstar"
