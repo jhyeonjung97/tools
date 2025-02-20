@@ -17,7 +17,8 @@ groups = ['5', '6', '7', '8'] #, '4', '4']
 metals = ['Mn', 'Fe', 'Co', 'Ni'] #, 'Mo', 'W']
 
 # Figure and font settings
-fig = plt.figure(figsize=(5,4), dpi=300)
+fx, fy= 5, 4
+fig = plt.figure(figsize=(fx, fy), dpi=300)
 font_size = 9
 plt.rcParams.update({
     'ps.usedistiller': 'xpdf',
@@ -141,6 +142,6 @@ ax.scatter([], [], label='fixed Δz', s=24, marker='o', linewidths=0.5, facecolo
 ax.set_xticks([])
 ax.set_yticks([])
 ax.plot(x, a * x + b, '--', lw=1, dashes=(3, 1), c='black')
-fig.savefig(os.path.join(save_path, 'contour_toc.png'), bbox_inches='tight')
+fig.savefig(os.path.join(save_path, f'contour_toc_{fx}x{fy}.png'), bbox_inches='tight')
 print("Figure saved as contour_toc.png")
 fig.clf()
