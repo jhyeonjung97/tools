@@ -17,14 +17,7 @@ groups = ['5', '6', '7', '8'] #, '4', '4']
 metals = ['Mn', 'Fe', 'Co', 'Ni'] #, 'Mo', 'W']
 
 # Figure and font settings
-fig_width_pt = 1.8 * 246.0
-inches_per_pt = 1.0 / 72.27
-golden_mean = (np.sqrt(5) - 1.0) / 2.0
-fig_width = fig_width_pt * inches_per_pt
-fig_height = fig_width * golden_mean
-fig_size = [fig_width, fig_height]
-fig = plt.figure(figsize=fig_size, dpi=300)
-
+fig = plt.figure(figsize=(4,3), dpi=300)
 font_size = 9
 plt.rcParams.update({
     'ps.usedistiller': 'xpdf',
@@ -53,8 +46,6 @@ x1, x2 = xcenter - 1.4, xcenter + 1.2
 y1, y2 = ycenter - 1.6, ycenter + 1.6
 
 ax.axis([x1, x2, y1, y2])
-ax.set_xlabel(r'$\Delta$G$_{\sf OH}$ (eV)', fontsize='large')
-ax.set_ylabel(r'$\Delta$G$_{\sf OOH}$ (eV)', fontsize='large')
 
 # Define functions for overpotential calculations
 def ooh_oh_scaling(doh):
