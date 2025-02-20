@@ -17,7 +17,7 @@ groups = ['5', '6', '7', '8'] #, '4', '4']
 metals = ['Mn', 'Fe', 'Co', 'Ni'] #, 'Mo', 'W']
 
 # Figure and font settings
-fig = plt.figure(figsize=(4,3), dpi=300)
+fig = plt.figure(figsize=(4,4), dpi=300)
 font_size = 9
 plt.rcParams.update({
     'ps.usedistiller': 'xpdf',
