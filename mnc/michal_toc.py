@@ -17,7 +17,7 @@ groups = ['5', '6', '7', '8'] #, '4', '4']
 metals = ['Mn', 'Fe', 'Co', 'Ni'] #, 'Mo', 'W']
 
 # Figure and font settings
-fx, fy= 6, 5
+fx, fy = 4, 3
 fig = plt.figure(figsize=(fx, fy), dpi=300)
 font_size = 9
 plt.rcParams.update({
@@ -71,8 +71,8 @@ def overpotential_orr_full(doh, do, dooh):
     return [round(m + 1.23, 2), round(-m, 2), orr_step(dg14.index(m))]
     
 # Read data from the TSV file
-save_path='/pscratch/sd/j/jiuy97/6_MNC/figures/contour'
-df = pd.read_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.tsv', sep='\t', header=0, index_col=0)
+save_path='/Users/jiuy97/Desktop/feb20/contour'
+df = pd.read_csv('/Users/jiuy97/Desktop/feb20/contour/scaling_relationship.tsv', sep='\t', header=0, index_col=0)
 
 df['overpotential'] = df.apply(lambda row: overpotential_orr(row['dG_OH'], row['dG_O'], row['dG_OOH']), axis=1)
 
@@ -81,7 +81,7 @@ dfs = {}
 for m, metal in enumerate(metals):
     row = rows[m]
     group = groups[m]
-    dfs[metal] = pd.read_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.tsv', sep='\t', header=0, index_col=0)
+    dfs[metal] = pd.read_csv(f'/Users/jiuy97/Desktop/feb20/contour/{row}_{group}{metal}_gibbs.tsv', sep='\t', header=0, index_col=0)
     dfs[metal]['overpotential'] = dfs[metal].apply(lambda row: overpotential_orr(row['dG_OH'], row['dG_O'], row['dG_OOH']), axis=1)
 
 # Generate data for contour plot
@@ -97,6 +97,7 @@ CS = plt.contourf(X, Y, Z, levels, cmap=ListedColormap([
     '#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090', '#ffffbf',
     '#ffffe5', '#ffffff', '#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695'
 ]), extend='max', origin='lower')
+cbar = plt.colorbar(CS, ticks=np.arange(0.1, 1.6, 0.1))
 
 # Plot data points from the TSV file with their calculated overpotentials
 markers = ['o', 's', 'd', '^', 'v', '*']  # Different markers for metals
@@ -141,7 +142,9 @@ ax.scatter([], [], label='relaxed Δz', s=24, marker='X', linewidths=0.5, faceco
 ax.scatter([], [], label='fixed Δz', s=24, marker='o', linewidths=0.5, facecolor='black', edgecolor='black')
 ax.set_xticks([])
 ax.set_yticks([])
+cbar.set_ticks([])
+
 ax.plot(x, a * x + b, '--', lw=1, dashes=(3, 1), c='black')
-fig.savefig(os.path.join(save_path, f'contour_toc_{fx}x{fy}.png'), bbox_inches='tight')
-print("Figure saved as contour_toc.png")
+fig.savefig(os.path.join(save_path, f'contour_toc_{fx}x{fy}.png'), dpi=200, bbox_inches='tight')
+print(f"Figure saved as contour_toc_{fx}x{fy}.png")
 fig.clf()
