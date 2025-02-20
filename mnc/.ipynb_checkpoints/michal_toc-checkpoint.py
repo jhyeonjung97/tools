@@ -156,6 +156,6 @@ ax.text(1.4, 2.3, rf'+{b} eV', color=(0.8,0.8,0.8), fontsize=10)
 ax.legend(bbox_to_anchor=(0.5, 1.1), loc='center', borderaxespad=0.5,
           ncol=3, columnspacing=1.0, handletextpad=0.4,
           fancybox=True, shadow=False, fontsize='small', handlelength=2)
-fig.savefig(os.path.join(save_path, 'contour_ORR.png'), bbox_inches='tight')
+fig.savefig(os.path.join(save_path, 'contour_toc.png'), bbox_inches='tight')
 print("Figure saved as contour_toc.png")
 fig.clf()
