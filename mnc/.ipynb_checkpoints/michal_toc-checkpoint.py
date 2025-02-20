@@ -17,7 +17,7 @@ groups = ['5', '6', '7', '8'] #, '4', '4']
 metals = ['Mn', 'Fe', 'Co', 'Ni'] #, 'Mo', 'W']
 
 # Figure and font settings
-fx, fy= 5, 4
+fx, fy= 4, 3
 fig = plt.figure(figsize=(fx, fy), dpi=300)
 font_size = 9
 plt.rcParams.update({
