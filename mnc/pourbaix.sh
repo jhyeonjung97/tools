@@ -1,13 +1,13 @@
 #!/bin/bash
 
-dir='/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/6_Fe/most_stable/2_'
+dir='/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/7_Co/most_stable/2_'
 cd ${dir}
 python ~/bin/tools/mnc/add-oo.py
 python ~/bin/tools/mnc/add-oo-oh.py
 python ~/bin/tools/mnc/add-oo-o.py
 python ~/bin/tools/mnc/add-oo-ooh.py
 
-pb_path='/pscratch/sd/j/jiuy97/6_MNC/pourbaix/1_Fe'   
+pb_path='/pscratch/sd/j/jiuy97/6_MNC/pourbaix/2_Co'   
 for ads in oo oo-oh oo-o oo-ooh
 do
     for spin in LS IS HS
