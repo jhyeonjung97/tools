@@ -629,7 +629,7 @@ for dir in dirs:
     df['E'] = df['E'].round(2)
     df['G'] = df['G'].round(2)
     df['dG'] = df['dG'].round(2)
-    df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{A}{B}_energies.tsv', sep='\t') #, index=False)
+    df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{A}{B}_energies.tsv', sep=',') #, index=False)
     print(f"Data saved as {A}{B}_energies.png")
 
     OER_df = pd.DataFrame(OER)
@@ -639,7 +639,7 @@ for dir in dirs:
     OER_df['dg41'] = OER_df['dg41'].round(2)
     OER_df['overP'] = OER_df['overP'].round(2)
     OER_df['onsetP'] = OER_df['onsetP'].round(2)
-    OER_df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{A}{B}_oer.tsv', sep='\t') #, index=False)
+    OER_df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{A}{B}_oer.tsv', sep=',') #, index=False)
     print(f"Data saved as {A}{B}_oer.png")
 
     ORR_df = pd.DataFrame(ORR)
@@ -649,6 +649,6 @@ for dir in dirs:
     ORR_df['dg41'] = ORR_df['dg41'].round(2)
     ORR_df['overP'] = ORR_df['overP'].round(2)
     ORR_df['onsetP'] = ORR_df['onsetP'].round(2)
-    ORR_df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{A}{B}_orr.tsv', sep='\t') #, index=False)
+    ORR_df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{A}{B}_orr.tsv', sep=',') #, index=False)
     print(f"Data saved as {A}{B}_orr.png")
     

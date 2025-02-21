@@ -78,7 +78,7 @@ def dg(i, x, y):
             + surfs[i][3] * addOH(x, y) 
             + surfs[i][4] * addOOH(x, y))
 
-data = pd.read_csv('/pscratch/sd/j/jiuy97/6_MNC/figure/scaling_relationship.tsv', sep='\t', header=0, index_col=0)
+data = pd.read_csv('/pscratch/sd/j/jiuy97/6_MNC/figure/scaling_relationship.tsv', sep=',', header=0, index_col=0)
 
 for m, metal in enumerate(data.index):
     G_clean = data.loc[metal, 'G_']  # Clean surface

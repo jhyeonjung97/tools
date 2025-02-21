@@ -72,7 +72,7 @@ def overpotential_orr_for_contour(doh, dooh):
     return max(dg14) + 1.23
 
 # Read data from the TSV file
-df = pd.read_csv('/pscratch/sd/j/jiuy97/6_MNC/figure/scaling_relationship.tsv', sep='\t', index_col=0)
+df = pd.read_csv('/pscratch/sd/j/jiuy97/6_MNC/figure/scaling_relationship.tsv', sep=',', index_col=0)
 
 # Extract values from the dataframe
 doh_values = df['dG_OH']
