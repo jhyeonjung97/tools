@@ -110,23 +110,38 @@ metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 metals = ['Fe', 'Co', 'Mo']
 
 # Function to findthe lowest E0 value in each subdirectory
-def find_min_e0(main_dir, sub_dirs):
-    min_e0 = None
-    for sub_dir in sub_dirs:
-        oszicar_path = os.path.join(main_dir, sub_dir, "OSZICAR")
-        if os.path.isfile(oszicar_path):
-            with open(oszicar_path, 'r') as file:
-                for line in file:
-                    match = e0_pattern.search(line)
-                    if match:
-                        e0_value = float(match.group(1))
-                        if min_e0 is None or e0_value < min_e0:
-                            min_e0 = e0_value
-    return min_e0
+# def find_min_e0(main_dir, sub_dirs):
+#     min_e0 = None
+#     for sub_dir in sub_dirs:
+#         oszicar_path = os.path.join(main_dir, sub_dir, "OSZICAR")
+#         if os.path.isfile(oszicar_path):
+#             with open(oszicar_path, 'r') as file:
+#                 for line in file:
+#                     match = e0_pattern.search(line)
+#                     if match:
+#                         e0_value = float(match.group(1))
+#                         if min_e0 is None or e0_value < min_e0:
+#                             min_e0 = e0_value
+#     return min_e0
     
 # Function to extract energy from DONE in most_stable or find min_e0 as fallback
-def get_energy(main_dir, sub_dirs):
-    most_stable_dir = os.path.join(main_dir, "most_stable")
+def get_energy(main_dir, sub_dirs, metal):
+    if metal == 'Fe':
+        i=3; j=6; k=2
+    elif metal == 'Co':
+        i=3; j=7; k=3
+    elif metal == 'Mo':
+        i=4; j=4; k=5
+    if main_dir == 'clean':
+        most_stable_dir = f"/pscratch/sd/j/jiuy97/6_MNC/0_clean/{i}d/{j}_{metal}/most_stable/relaxed"
+    elif main_dir == 'o':
+        most_stable_dir = f"/pscratch/sd/j/jiuy97/6_MNC/1_O/{k}_{metal}/most_stable/relaxed"
+    elif main_dir == 'oh':
+        most_stable_dir = f"/pscratch/sd/j/jiuy97/6_MNC/2_OH/{k}_{metal}/most_stable/relaxed"
+    elif main_dir == 'ooh':
+        most_stable_dir = f"/pscratch/sd/j/jiuy97/6_MNC/3_OOH/{k}_{metal}/most_stable/relaxed"
+    else:
+        most_stable_dir = os.path.join(main_dir, "most_stable")
     done_path = os.path.join(most_stable_dir, "DONE")
     json_path = os.path.join(most_stable_dir, "final_with_calculator.json")
     if os.path.isfile(done_path) and os.path.isfile(json_path):
@@ -222,7 +237,7 @@ for dir in dirs:
     
     # Iterate through each main directory to extract E0 values and plot
     for main_dir in main_dirs:
-        min_e0 = get_energy(main_dir, sub_dirs)
+        min_e0 = get_energy(main_dir, sub_dirs, B)
     
         if min_e0 is None:
             # print(f"Missing data in directory '{main_dir}' for plotting.")
