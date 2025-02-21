@@ -265,20 +265,20 @@ for m, metal in enumerate(metals):
     print(f"Figure saved as contour_OER_{m+1}{metal}.png")
     fig.clf()
 
-# CSV writing for overpotential results
-with open(os.path.join(save_path, 'contour_OER.csv'), 'w', newline='') as myfile:
-    fieldnames = ['Surface name', 'dOH', 'dO', 'dOOH', 'overpotential', 'onset potential', 'PLS']
-    writer = csv.DictWriter(myfile, fieldnames=fieldnames)
-    writer.writeheader()
-    for idx, row in df.iterrows():
-        recalculated_over = overpotential_oer_full(row['dG_OH'], row['dG_O'], row['dG_OOH'])
-        writer.writerow({
-            'Surface name': row.name, 
-            'dOH': row['dG_OH'], 'dO': row['dG_O'], 'dOOH': row['dG_OOH'], 
-            'overpotential': recalculated_over[0],
-            'onset potential': recalculated_over[1], 
-            'PLS': recalculated_over[2]
-        })
+# # CSV writing for overpotential results
+# with open(os.path.join(save_path, 'contour_OER.csv'), 'w', newline='') as myfile:
+#     fieldnames = ['Surface name', 'dOH', 'dO', 'dOOH', 'overpotential', 'onset potential', 'PLS']
+#     writer = csv.DictWriter(myfile, fieldnames=fieldnames)
+#     writer.writeheader()
+#     for idx, row in df.iterrows():
+#         recalculated_over = overpotential_oer_full(row['dG_OH'], row['dG_O'], row['dG_OOH'])
+#         writer.writerow({
+#             'Surface name': row.name, 
+#             'dOH': row['dG_OH'], 'dO': row['dG_O'], 'dOOH': row['dG_OOH'], 
+#             'overpotential': recalculated_over[0],
+#             'onset potential': recalculated_over[1], 
+#             'PLS': recalculated_over[2]
+#         })
 
 # TSV writing for overpotential results
 with open(os.path.join(save_path, 'contour_OER.csv'), 'w', newline='') as myfile:
@@ -298,6 +298,8 @@ with open(os.path.join(save_path, 'contour_OER.csv'), 'w', newline='') as myfile
             'onsetP': recalculated_over[1],
             'PLS': recalculated_over[2]
         })
+pd_csv=pd.read_csv(os.path.join(save_path, 'contour_OER.csv'), sep=',', header=0, index_col=0)
+pd_csv.to_csv(os.path.join(save_path, 'contour_OER.tsv'), sep='\t', float_format='%.2f')
 
 # Write results for each metal
 for m, metal in enumerate(metals):
