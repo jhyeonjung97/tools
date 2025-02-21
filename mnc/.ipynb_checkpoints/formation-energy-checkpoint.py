@@ -1314,7 +1314,6 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             print(f"An error occurred: {e}")
     
 if __name__ == '__main__':
-    main()
     custom_legend = [
         Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#ff7f0e', 
                label='LS (constrained Δz, enforced spin)', markersize=8, linestyle='None'),
@@ -1344,3 +1343,13 @@ if __name__ == '__main__':
     plt.savefig(os.path.join(save_path, png_filename), bbox_inches="tight")
     print(f"Figure saved as {png_filename}")
     plt.close()
+
+    fig, ax = plt.subplots()
+    ax.legend(handles=custom_legend, ncol=1)
+    ax.axis('off')
+    png_filename = "custom_legend_markers_only2.png"  # Update with your file path
+    plt.savefig(os.path.join(save_path, png_filename), bbox_inches="tight")
+    print(f"Figure saved as {png_filename}")
+    plt.close()
+
+    main()
