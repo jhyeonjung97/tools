@@ -84,34 +84,34 @@ def main():
                     relaxed_dz = energies[adsorbate][column].dropna().idxmin()
                     relaxed_energies[adsorbate].at[relaxed_dz, column] = relaxed_min
                     
-            ms_columns = [col for col in relaxed_energies[adsorbate].columns if 'MS' in col]
-            non_ms_columns = [col for col in relaxed_energies[adsorbate].columns if 'MS' not in col]
+            # ms_columns = [col for col in relaxed_energies[adsorbate].columns if 'MS' in col]
+            # non_ms_columns = [col for col in relaxed_energies[adsorbate].columns if 'MS' not in col]
 
-            if ms_columns:
-                ms_data = relaxed_energies[adsorbate][ms_columns]
-                if not ms_data.dropna(how='all').empty:
-                    scaling_min = ms_data.min().min()
-                    scaling_dz = ms_data.stack().idxmin()[0]
-                else:
-                    non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
-                    if not non_ms_data.stack().empty:
-                        scaling_min = non_ms_data.min().min()
-                        scaling_dz = non_ms_data.stack().idxmin()[0]
-                    else:
-                        scaling_min = np.nan
-                        scaling_dz = np.nan
-            else:
-                non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
-                if not non_ms_data.stack().empty:
-                    scaling_min = non_ms_data.min().min()
-                    scaling_dz = non_ms_data.stack().idxmin()[0]
-                else:
-                    scaling_min = np.nan
-                    scaling_dz = np.nan
+            # if ms_columns:
+            #     ms_data = relaxed_energies[adsorbate][ms_columns]
+            #     if not ms_data.dropna(how='all').empty:
+            #         scaling_min = ms_data.min().min()
+            #         scaling_dz = ms_data.stack().idxmin()[0]
+            #     else:
+            #         non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
+            #         if not non_ms_data.stack().empty:
+            #             scaling_min = non_ms_data.min().min()
+            #             scaling_dz = non_ms_data.stack().idxmin()[0]
+            #         else:
+            #             scaling_min = np.nan
+            #             scaling_dz = np.nan
+            # else:
+            #     non_ms_data = relaxed_energies[adsorbate][non_ms_columns]
+            #     if not non_ms_data.stack().empty:
+            #         scaling_min = non_ms_data.min().min()
+            #         scaling_dz = non_ms_data.stack().idxmin()[0]
+            #     else:
+            #         scaling_min = np.nan
+            #         scaling_dz = np.nan
 
-            tag = '' if adsorbate == 'clean' else adsorbate
-            scaling_relationship.at[metal, f'E_{tag}'] = scaling_min
-            scaling_relationship.at[metal, f'dz_{tag}'] = scaling_dz
+            # tag = '' if adsorbate == 'clean' else adsorbate
+            # scaling_relationship.at[metal, f'E_{tag}'] = scaling_min
+            # scaling_relationship.at[metal, f'dz_{tag}'] = scaling_dz
 
             energies[adsorbate] = energies[adsorbate].head(7)
             energies[adsorbate]['energy'] = energies[adsorbate].min(axis=1, skipna=True)
@@ -183,10 +183,10 @@ def main():
                  rxn='ORR', rds='dGmin', overpotential=ORR, ymin=0.2, ymax=1.4)
         print(f"Figures saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
     
-    scaling_relationship['G_'] = scaling_relationship['E_']
-    scaling_relationship['G_OH'] = scaling_relationship['E_OH'] + OH_corr
-    scaling_relationship['G_O'] = scaling_relationship['E_O'] + O_corr
-    scaling_relationship['G_OOH'] = scaling_relationship['E_OOH'] + OOH_corr
+    scaling_relationship['G_'] = scaling_relationship['clean']
+    scaling_relationship['G_OH'] = scaling_relationship['OH'] + OH_corr
+    scaling_relationship['G_O'] = scaling_relationship['O'] + O_corr
+    scaling_relationship['G_OOH'] = scaling_relationship['OOH'] + OOH_corr
 
     scaling_relationship['dG_OH'] = scaling_relationship['G_OH'] - scaling_relationship['G_'] - hydroxide_G
     scaling_relationship['dG_O'] = scaling_relationship['G_O'] - scaling_relationship['G_'] - oxygen_G
