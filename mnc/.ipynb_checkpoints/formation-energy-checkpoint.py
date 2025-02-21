@@ -1132,8 +1132,7 @@ def combining(df, df_relaxed, tsv_filename):
     combined_df = pd.concat([df, df_relaxed])
     csv_filename = tsv_filename.replace(".tsv", ".csv")
     combined_df.to_csv(os.path.join(save_path, csv_filename), sep=',') #, float_format='%.2f')
-    combined_df.round(2)
-    combined_df.to_csv(os.path.join(save_path, tsv_filename), sep='\t') #, float_format='%.2f')
+    combined_df.to_csv(os.path.join(save_path, tsv_filename), sep='\t', float_format='%.2f')
     print(f"Data saved to {tsv_filename}")
 
 def plot_smooth_line(x, y, color):
