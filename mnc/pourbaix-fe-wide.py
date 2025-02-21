@@ -25,8 +25,8 @@ calmol = 23.061
 water = 2.4583 # the standard Gibbs free energy of formation of water
 
 # gas
-h2 = -6.77149190
-h2o = -14.23091949
+h2 = -6.77149558
+h2o = -14.23320346
 
 zpeh2o = 0.560
 cvh2o = 0.103

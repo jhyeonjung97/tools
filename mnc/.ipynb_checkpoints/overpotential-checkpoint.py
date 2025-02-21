@@ -26,16 +26,16 @@ ms_colors = {'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
 replacement_map = {'dG1': 'dG4', 'dG2': 'dG3', 'dG3': 'dG2', 'dG4': 'dG1'}
 
 # Water and hydrogen properties
-water_E = -14.23797429
+water_E = -14.23320346
 water_Cv = 0.103
 water_TS = 0.675
 water_ZPE = 0.558
 water_G = water_E + water_Cv - water_TS + water_ZPE
 
-hydrogen2_E = -6.77412273
+hydrogen2_E = -6.77149558
 hydrogen2_Cv = 0.0905
 hydrogen2_TS = 0.408
-hydrogen2_ZPE = 0.273
+hydrogen2_ZPE = 0.268
 hydrogen2_G = hydrogen2_E + hydrogen2_Cv - hydrogen2_TS + hydrogen2_ZPE
 hydrogen_G = hydrogen2_G / 2
 
@@ -117,7 +117,12 @@ def main():
                 lambda row: row.idxmin(skipna=True) if row.notna().any() else None, axis=1)
             energies[adsorbate]['spin'] = energies[adsorbate]['spin'].apply(
                 lambda x: f'MS({x})' if x in ['LS', 'IS', 'HS'] else x)
-
+            
+        gibbs_energies['E_'] = energies['clean']['energy']
+        gibbs_energies['E_OH'] = energies['OH']['energy']
+        gibbs_energies['E_O'] = energies['O']['energy']
+        gibbs_energies['E_OOH'] = energies['OOH']['energy']
+        
         gibbs_energies['G_'] = energies['clean']['energy']
         gibbs_energies['G_OH'] = energies['OH']['energy'] + OH_corr
         gibbs_energies['G_O'] = energies['O']['energy'] + O_corr
