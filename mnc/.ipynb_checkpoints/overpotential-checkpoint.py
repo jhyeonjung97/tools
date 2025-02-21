@@ -61,8 +61,10 @@ OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 # Set the root directory for data files
 root = '/pscratch/sd/j/jiuy97/6_MNC/figures/formation_energy'
 relaxed_energies = {}
-scaling_relationship = pd.DataFrame()
-        
+
+scaling_relationship_tsv = '/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship_full.tsv'
+scaling_relationship = pd.read_csv(tsv_path, sep='\t', index_col=0)
+
 def main():
     for m, metal in enumerate(metals):
         row = rows[m]
