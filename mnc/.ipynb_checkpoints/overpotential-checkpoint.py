@@ -62,7 +62,7 @@ OOH_corr = OOH_Cv - OOH_TS + OOH_ZPE
 root = '/pscratch/sd/j/jiuy97/6_MNC/figures/formation_energy'
 relaxed_energies = {}
 
-scaling_relationship_tsv = '/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship_full.tsv'
+scaling_relationship_tsv = '/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship_full.csv'
 scaling_relationship = pd.read_csv(scaling_relationship_tsv, sep=',', index_col=0)
 scaling_relationship = scaling_relationship.loc[metals]
 
