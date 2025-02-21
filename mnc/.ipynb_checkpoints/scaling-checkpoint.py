@@ -23,21 +23,21 @@ adsorbates = ['clean', 'OH', 'O', 'OOH']
 
 def main():
     df = pd.DataFrame()
-    for row_key, metals in rows.items():
-        for m, metal in enumerate(metals, start=2):
-            for d, dir in enumerate(dirs):
-                ads = adsorbates[d]
-                df.at[metal, 'row'] = row_key
-                df.at[metal, 'color'] = colors[row_key]
-                path = f'/pscratch/sd/j/jiuy97/6_MNC/0_clean/{row_key}/{m}_{metal}/most_stable/{dir}'
-                path_DONE = os.path.join(path, 'DONE')
-                path_json = os.path.join(path, 'final_with_calculator.json')
-                if os.path.exists(path_DONE) and os.path.exists(path_json):
-                    atoms = read(path_json)
-                    energy = atoms.get_total_energy()
-                    df.at[metal, ads] = energy
-                else:
-                    df.at[metal, ads] = np.nan
+    # for row_key, metals in rows.items():
+    #     for m, metal in enumerate(metals, start=2):
+    #         for d, dir in enumerate(dirs):
+    #             ads = adsorbates[d]
+    #             df.at[metal, 'row'] = row_key
+    #             df.at[metal, 'color'] = colors[row_key]
+    #             path = f'/pscratch/sd/j/jiuy97/6_MNC/0_clean/{row_key}/{m}_{metal}/most_stable/{dir}'
+    #             path_DONE = os.path.join(path, 'DONE')
+    #             path_json = os.path.join(path, 'final_with_calculator.json')
+    #             if os.path.exists(path_DONE) and os.path.exists(path_json):
+    #                 atoms = read(path_json)
+    #                 energy = atoms.get_total_energy()
+    #                 df.at[metal, ads] = energy
+    #             else:
+    #                 df.at[metal, ads] = np.nan
     for m, metal in enumerate(specific_metals, start=1):
         for i, ads in enumerate(['O', 'OH', 'OOH'], start=1):
             path = f'/pscratch/sd/j/jiuy97/6_MNC/{i}_{ads}/{m}_{metal}/most_stable/relaxed'
@@ -46,8 +46,7 @@ def main():
             if os.path.exists(path_DONE) and os.path.exists(path_json):
                 atoms = read(path_json)
                 energy = atoms.get_total_energy()
-                if df.loc[metal, ads] > energy:
-                    df.at[metal, ads] = energy
+                df.at[metal, ads] = energy
                 
     df['G_'] = df['clean']
     df['G_OH'] = df['OH'] + OH_corr
