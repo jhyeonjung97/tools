@@ -64,7 +64,7 @@ def main():
                 df_spin[ads] = np.nan
                 continue
                 
-            energy_path = f'/pscratch/sd/j/jiuy97/6_MNC/figures/formation_energy/{row}_{numb}{metal}_{ads}.tsv'
+            energy_path = f'/pscratch/sd/j/jiuy97/6_MNC/figures/formation_energy/{row}_{numb}{metal}_{ads}.csv'
             energy_data = pd.read_csv(energy_path, sep=',')
             ms_columns = [col for col in energy_data.columns if 'MS' in col]
             if ms_columns:
@@ -74,9 +74,9 @@ def main():
             df_energy[ads] = energy_data['MS']
             
             if ads == 'clean':
-                spin_path = f'/pscratch/sd/j/jiuy97/6_MNC/{a}_{ads}/{row}/{numb}_{metal}/lowest.tsv'
+                spin_path = f'/pscratch/sd/j/jiuy97/6_MNC/{a}_{ads}/{row}/{numb}_{metal}/lowest.csv'
             else:
-                spin_path = f'/pscratch/sd/j/jiuy97/6_MNC/{a}_{ads}/{m+1}_{metal}/lowest.tsv'
+                spin_path = f'/pscratch/sd/j/jiuy97/6_MNC/{a}_{ads}/{m+1}_{metal}/lowest.csv'
             spin_data = pd.read_csv(spin_path, sep=',')
             df_spin[ads] = spin_data['spin_state']
 
@@ -88,8 +88,10 @@ def main():
         df_energy['Oads'] = (df_energy['O'] + O_corr) - df_energy['clean'] - oxygen_G
         df_energy['OOHads'] = (df_energy['OOH'] + OOH_corr) - df_energy['clean'] - oxygen_G - hydroxide_G
         
+        csv_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.csv")
         tsv_filename = os.path.join(save_path, f"adsorption_energy_{m+1}{metal}.tsv")
-        df_energy.to_csv(tsv_filename, sep=',', float_format='%.2f')
+        df_energy.to_csv(csv_filename, sep=',') #, float_format='%.2f')
+        df_energy.to_csv(tsv_filename, sep='\t', float_format='%.2f')
         print(f"Data saved as adsorption_energy_{m+1}{metal}.tsv")
         
         fig, ax = plt.subplots(figsize=(3, 5), dpi=300)
