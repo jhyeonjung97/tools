@@ -97,7 +97,7 @@ dfs = {}
 for m, metal in enumerate(metals):
     row = rows[m]
     group = groups[m]
-    dfs[metal] = pd.read_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.tsv', sep=',', header=0, index_col=0)
+    dfs[metal] = pd.read_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.csv', sep=',', header=0, index_col=0)
     # doh_values = dfs[metal]['dG_OH']
     # do_values = dfs[metal]['dG_O']
     # dooh_values = dfs[metal]['dG_OOH']
@@ -270,5 +270,5 @@ for m, metal in enumerate(metals):
                 'PLS': recalculated_over[2]
             })
     pd_csv=pd.read_csv(os.path.join(save_path, f'contour_ORR_{m+1}{metal}.csv'), sep=',', header=0, index_col=0)
-    pd_csv.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.tsv', sep='\t', float_format='%.2f')
+    pd_csv.to_csv(os.path.join(save_path, f'contour_ORR_{m+1}{metal}.tsv'), sep='\t', float_format='%.2f')
 
