@@ -83,7 +83,7 @@ def overpotential_orr_full(doh, do, dooh):
     
 # Read data from the TSV file
 save_path='/pscratch/sd/j/jiuy97/6_MNC/figures/contour'
-df = pd.read_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.tsv', sep=',', header=0, index_col=0)
+df = pd.read_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.csv', sep=',', header=0, index_col=0)
 
 # Extract values from the dataframe
 # doh_values = df['dG_OH']
@@ -232,9 +232,9 @@ with open(os.path.join(save_path, 'contour_ORR.csv'), 'w', newline='') as myfile
         })
 
 # TSV writing for overpotential results
-with open(os.path.join(save_path, 'contour_ORR.tsv'), 'w', newline='') as myfile:
+with open(os.path.join(save_path, 'contour_ORR.csv'), 'w', newline='') as myfile:
     fieldnames = ['Surf.', 'dOH', 'dO', 'dO*', 'diff', 'dOOH', 'overP', 'onsetP', 'PLS']
-    writer = csv.DictWriter(myfile, fieldnames=fieldnames, delimiter='\t')  # Change delimiter to '\t'
+    writer = csv.DictWriter(myfile, fieldnames=fieldnames) #, delimiter='\t')  # Change delimiter to '\t'
     writer.writeheader()
     for idx, row in df.iterrows():
         recalculated_over = overpotential_orr_full(row['dG_OH'], row['dG_O'], row['dG_OOH'])
@@ -252,9 +252,9 @@ with open(os.path.join(save_path, 'contour_ORR.tsv'), 'w', newline='') as myfile
 
 # Write results for each metal
 for m, metal in enumerate(metals):
-    with open(os.path.join(save_path, f'contour_ORR_{m+1}{metal}.tsv'), 'w', newline='') as myfile:
+    with open(os.path.join(save_path, f'contour_ORR_{m+1}{metal}.csv'), 'w', newline='') as myfile:
         fieldnames = ['Surf.', 'dOH', 'dO', 'dO*', 'diff', 'dOOH', 'overP', 'onsetP', 'PLS']
-        writer = csv.DictWriter(myfile, fieldnames=fieldnames, delimiter='\t')
+        writer = csv.DictWriter(myfile, fieldnames=fieldnames) #, delimiter='\t')
         writer.writeheader()
         for idx, row in dfs[metal].iterrows():
             recalculated_over = overpotential_orr_full(row['dG_OH'], row['dG_O'], row['dG_OOH'])
