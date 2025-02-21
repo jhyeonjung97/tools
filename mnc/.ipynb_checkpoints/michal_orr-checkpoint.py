@@ -79,11 +79,11 @@ def overpotential_orr_for_contour(doh, dooh):
 def overpotential_orr_full(doh, do, dooh):
     dg14 = [-doh, -do + doh, -dooh + do, -4.92 + dooh]
     m = max(dg14)
-    return [round(m + 1.23, 2), round(-m, 2), orr_step(dg14.index(m))]
+    return [m + 1.23, -m, orr_step(dg14.index(m))]
     
 # Read data from the TSV file
-save_path='/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
-df = pd.read_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/scaling_relationship.tsv', sep='\t', header=0, index_col=0)
+save_path='/pscratch/sd/j/jiuy97/6_MNC/figures/contour'
+df = pd.read_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.tsv', sep=',', header=0, index_col=0)
 
 # Extract values from the dataframe
 # doh_values = df['dG_OH']
@@ -97,7 +97,7 @@ dfs = {}
 for m, metal in enumerate(metals):
     row = rows[m]
     group = groups[m]
-    dfs[metal] = pd.read_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{row}_{group}{metal}_gibbs.tsv', sep='\t', header=0, index_col=0)
+    dfs[metal] = pd.read_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.tsv', sep=',', header=0, index_col=0)
     # doh_values = dfs[metal]['dG_OH']
     # do_values = dfs[metal]['dG_O']
     # dooh_values = dfs[metal]['dG_OOH']
@@ -240,13 +240,13 @@ with open(os.path.join(save_path, 'contour_ORR.tsv'), 'w', newline='') as myfile
         recalculated_over = overpotential_orr_full(row['dG_OH'], row['dG_O'], row['dG_OOH'])
         writer.writerow({
             'Surf.': row.name, 
-            'dOH': round(row['dG_OH'], 2),
-            'dO': round(row['dG_O'], 2),
-            'dO*': round(c*row['dG_OH']+d, 2),
-            'diff': round(c*row['dG_OH']+d-row['dG_O'], 2),
-            'dOOH': round(row['dG_OOH'], 2),
-            'overP': round(recalculated_over[0], 2),
-            'onsetP': round(recalculated_over[1], 2),
+            'dOH': row['dG_OH'],
+            'dO': row['dG_O'],
+            'dO*': c*row['dG_OH']+d,
+            'diff': c*row['dG_OH']+d-row['dG_O'],
+            'dOOH': row['dG_OOH'],
+            'overP': recalculated_over[0],
+            'onsetP': recalculated_over[1],
             'PLS': recalculated_over[2]
         })
 
@@ -260,12 +260,12 @@ for m, metal in enumerate(metals):
             recalculated_over = overpotential_orr_full(row['dG_OH'], row['dG_O'], row['dG_OOH'])
             writer.writerow({
                 'Surf.': row.name, 
-                'dOH': round(row['dG_OH'], 2),
-                'dO': round(row['dG_O'], 2),
-                'dO*': round(c*row['dG_OH']+d, 2),
-                'diff': round(c*row['dG_OH']+d-row['dG_O'], 2),
-                'dOOH': round(row['dG_OOH'], 2),
-                'overP': round(recalculated_over[0], 2),
-                'onsetP': round(recalculated_over[1], 2),
+                'dOH': row['dG_OH'],
+                'dO': row['dG_O'],
+                'dO*': c*row['dG_OH']+d,
+                'diff': c*row['dG_OH']+d-row['dG_O'],
+                'dOOH': row['dG_OOH'],
+                'overP': recalculated_over[0],
+                'onsetP': recalculated_over[1],
                 'PLS': recalculated_over[2]
             })

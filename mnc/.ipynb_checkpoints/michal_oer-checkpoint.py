@@ -82,7 +82,7 @@ def overpotential_oer_for_contour(do_doh, doh):
 def overpotential_oer_full(doh, do, dooh):
     dg14 = [doh, do - doh, dooh - do, 4.92 - dooh]
     m = max(dg14)
-    return [round(m - 1.23, 2), round(-m, 2), oer_step(dg14.index(m))]
+    return [m - 1.23, -m, oer_step(dg14.index(m))]
     
 # Read data from the TSV file
 save_path='/pscratch/sd/j/jiuy97/6_MNC/figures/contour'
