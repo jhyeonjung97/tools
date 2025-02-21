@@ -149,7 +149,7 @@ def get_energy(main_dir, sub_dirs, metal):
         min_e0 = atoms.get_potential_energy()
         return min_e0
     # Fallback to finding minimum E0 value
-    return find_min_e0(main_dir, sub_dirs)
+    # return find_min_e0(main_dir, sub_dirs)
     if min_e0 is None:
         print(f"Warning: No valid energy found in {main_dir}.")
     return min_e0
