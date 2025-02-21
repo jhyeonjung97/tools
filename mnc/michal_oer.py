@@ -85,7 +85,7 @@ def overpotential_oer_full(doh, do, dooh):
     return [round(m - 1.23, 2), round(-m, 2), oer_step(dg14.index(m))]
     
 # Read data from the TSV file
-save_path='/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
+save_path='/pscratch/sd/j/jiuy97/6_MNC/figures/contour'
 df = pd.read_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.csv', sep=',', index_col=0)
 
 # Extract values from the dataframe
@@ -100,7 +100,7 @@ dfs = {}
 for m, metal in enumerate(metals):
     row = rows[m]
     group = groups[m]
-    dfs[metal] = pd.read_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/{row}_{group}{metal}_gibbs.csv', sep=',', header=0, index_col=0)
+    dfs[metal] = pd.read_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.csv', sep=',', header=0, index_col=0)
     # doh_values = dfs[metal]['dG_OH']
     # do_values = dfs[metal]['dG_O']
     # dooh_values = dfs[metal]['dG_OOH']
