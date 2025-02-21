@@ -509,7 +509,7 @@ for dir in dirs:
     # df['G'] = df['G'].round(2)
     # df['dG'] = df['dG'].round(2)
     df.to_csv(f'{figure_path}/{A}{B}_energies.csv', sep=',') #, index=False)
-    df.to_csv(f'{figure_path}/{A}{B}_energies.tsv', sep='\t', float_format='%.2f'))
+    df.to_csv(f'{figure_path}/{A}{B}_energies.tsv', sep='\t', float_format='%.2f')
     print(f"Data saved as {A}{B}_energies.png")
 
     OER_df = pd.DataFrame(OER)
@@ -520,7 +520,7 @@ for dir in dirs:
     # OER_df['overP'] = OER_df['overP'].round(2)
     # OER_df['onsetP'] = OER_df['onsetP'].round(2)
     OER_df.to_csv(f'{figure_path}/{A}{B}_oer.csv', sep=',') #, index=False)
-    OER_df.to_csv(f'{figure_path}/{A}{B}_oer.tsv', sep='\t', float_format='%.2f'))
+    OER_df.to_csv(f'{figure_path}/{A}{B}_oer.tsv', sep='\t', float_format='%.2f')
     print(f"Data saved as {A}{B}_oer.png")
 
     ORR_df = pd.DataFrame(ORR)
@@ -531,6 +531,6 @@ for dir in dirs:
     # ORR_df['overP'] = ORR_df['overP'].round(2)
     # ORR_df['onsetP'] = ORR_df['onsetP'].round(2)
     ORR_df.to_csv(f'{figure_path}/{A}{B}_orr.csv', sep=',') #, index=False)
-    ORR_df.to_csv(f'{figure_path}/{A}{B}_orr.tsv', sep='\t', float_format='%.2f'))
+    ORR_df.to_csv(f'{figure_path}/{A}{B}_orr.tsv', sep='\t', float_format='%.2f')
     print(f"Data saved as {A}{B}_orr.png")
     
