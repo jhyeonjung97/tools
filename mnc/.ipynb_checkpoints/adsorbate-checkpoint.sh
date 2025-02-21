@@ -277,6 +277,7 @@
 #     fi
 # done
 
+pb_path='/pscratch/sd/j/jiuy97/6_MNC/pourbaix/1_Fe'
 for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/*_*S
 do
     cd "$dir" || continue
@@ -291,8 +292,18 @@ do
     python ~/bin/tools/mnc/add-oo-oh.py
     python ~/bin/tools/mnc/add-oo-o.py
     python ~/bin/tools/mnc/add-oo-ooh.py
-    cd "$dir" || continue
     
+    for ads in oo oo-oh oo-o oo-ooh
+    do
+        for spin in LS1 LS5 IS1 IS5 HS1 HS5
+        dest_dir="${pb_path}/${ads}/${spin}"
+        mkdir -p ${dest_dir}
+        cp "${dir}/relaxed/restart-${ads}.json" "./restart.json"
+        sh ~/bin/verve/spread.sh "restart.json"
+        sh ~/bin/verve/spread.sh "~/bin/tools/mnc/submit.sh"
+    done
+    
+#   cd "$dir" || continue   
 #     for ads in o oh #ooh
 #     do
 #         mkdir -p "$ads"
