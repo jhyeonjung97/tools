@@ -269,3 +269,6 @@ for m, metal in enumerate(metals):
                 'onsetP': recalculated_over[1],
                 'PLS': recalculated_over[2]
             })
+    pd_csv=pd.read_csv(os.path.join(save_path, f'contour_ORR_{m+1}{metal}.csv'), sep=',', header=0, index_col=0)
+    pd_csv.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.tsv', sep='\t', float_format='%.2f')
+
