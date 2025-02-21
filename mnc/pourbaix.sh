@@ -16,5 +16,7 @@ do
         mkdir -p ${dest_dir}
         cp "${dir}/start-${ads}.traj" "${dest_dir}/start.traj"
         cp "~/bin/tools/mnc/submit.sh" "${dest_dir}"
+        sed -i -e "s/mnc-sol.py/mnc-sol-${spin}-nupdown-oo.py/g" "${dest_dir}/submit.sh"
+        sed -i -e "s/jobname/Fe-${spin}-{ads}/g" "${dest_dir}/submit.sh"
     done
 done
