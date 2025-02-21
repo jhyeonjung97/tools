@@ -13,7 +13,7 @@ export OMP_NUM_THREADS=1
 export OMP_PLACES=threads
 export OMP_PROC_BIND=spread
 
-module load vasp-tpc/6.3.2-cpu
+module load vasp-tpc/6.4.2-cpu
 
 export VASP_SCRIPT=/global/homes/j/jiuy97/bin/run_vasp_cpu.py
 export VASP_PP_PATH=/global/cfs/cdirs/m2997/vasp-psp/pseudo54
