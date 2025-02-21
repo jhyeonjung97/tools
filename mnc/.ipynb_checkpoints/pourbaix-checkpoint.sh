@@ -18,7 +18,7 @@ do
         cp "${dir}/start-${ads}.traj" ./start.traj
         cp ~/bin/tools/mnc/submit.sh .
         sed -i -e "s/mnc-sol.py/mnc-sol-${spin}-nupdown-oo.py/g" submit.sh
-        sed -i -e "s/jobname/Fe-${ads}-${spin}/g" submit.sh
+        sed -i -e "s/jobname/Co-${ads}-${spin}/g" submit.sh
         sbatch submit.sh
         # python "/pscratch/sd/j/jiuy97/6_MNC/scripts/mnc-sol-${spin}-nupdown-oo.py"
     done
