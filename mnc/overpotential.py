@@ -108,7 +108,7 @@ def main():
                     scaling_dz = np.nan
 
             tag = '' if adsorbate == 'clean' else adsorbate
-            scaling_relationship.at[metal, f'G_{tag}'] = scaling_min
+            scaling_relationship.at[metal, f'E_{tag}'] = scaling_min
             scaling_relationship.at[metal, f'dz_{tag}'] = scaling_dz
 
             energies[adsorbate] = energies[adsorbate].head(7)
@@ -181,9 +181,10 @@ def main():
                  rxn='ORR', rds='dGmin', overpotential=ORR, ymin=0.2, ymax=1.4)
         print(f"Figures saved as {row}_{group}{metal}_OER.png and {row}_{group}{metal}_ORR.png")
     
-    scaling_relationship['G_OH'] = scaling_relationship['G_OH'] + OH_corr
-    scaling_relationship['G_O'] = scaling_relationship['G_O'] + O_corr
-    scaling_relationship['G_OOH'] = scaling_relationship['G_OOH'] + OOH_corr
+    scaling_relationship['G_'] = scaling_relationship['E_']
+    scaling_relationship['G_OH'] = scaling_relationship['E_OH'] + OH_corr
+    scaling_relationship['G_O'] = scaling_relationship['E_O'] + O_corr
+    scaling_relationship['G_OOH'] = scaling_relationship['E_OOH'] + OOH_corr
 
     scaling_relationship['dG_OH'] = scaling_relationship['G_OH'] - scaling_relationship['G_'] - hydroxide_G
     scaling_relationship['dG_O'] = scaling_relationship['G_O'] - scaling_relationship['G_'] - oxygen_G
