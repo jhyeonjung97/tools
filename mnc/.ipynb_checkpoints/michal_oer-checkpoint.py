@@ -86,7 +86,7 @@ def overpotential_oer_full(doh, do, dooh):
     
 # Read data from the TSV file
 save_path='/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
-df = pd.read_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix/scaling_relationship.csv', sep=',', index_col=0)
+df = pd.read_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.csv', sep=',', index_col=0)
 
 # Extract values from the dataframe
 # doh_values = df['dG_OH']
