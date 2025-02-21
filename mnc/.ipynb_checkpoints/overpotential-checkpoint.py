@@ -63,7 +63,7 @@ root = '/pscratch/sd/j/jiuy97/6_MNC/figures/formation_energy'
 relaxed_energies = {}
 
 scaling_relationship_tsv = '/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship_full.tsv'
-scaling_relationship = pd.read_csv(scaling_relationship_tsv, sep='\t', index_col=0)
+scaling_relationship = pd.read_csv(scaling_relationship_tsv, sep=',', index_col=0)
 scaling_relationship = scaling_relationship.loc[metals]
 
 def main():
@@ -76,7 +76,7 @@ def main():
 
         for adsorbate in adsorbates:
             tsv_path = os.path.join(root, f'{row}_{group}{metal}_{adsorbate}.tsv')
-            energies[adsorbate] = pd.read_csv(tsv_path, sep='\t', index_col=0)
+            energies[adsorbate] = pd.read_csv(tsv_path, sep=',', index_col=0)
             relaxed_energies[adsorbate] = energies[adsorbate].iloc[7:].copy()
 
             for column in relaxed_energies[adsorbate].columns:
@@ -174,8 +174,8 @@ def main():
             spin_cross_over.loc[index, 'O'] = energies['O']['spin'].loc[index]
             spin_cross_over.loc[index, 'OOH'] = energies['OOH']['spin'].loc[index]
         
-        gibbs_energies.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.tsv', sep='\t') #, float_format='%.2f')
-        spin_cross_over.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_spin.tsv', sep='\t')
+        gibbs_energies.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.tsv', sep=',') #, float_format='%.2f')
+        spin_cross_over.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_spin.tsv', sep=',')
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
         plotting(gibbs_energies=gibbs_energies, spin_cross_over=spin_cross_over, row=row, group=group, metal=metal,
@@ -207,7 +207,7 @@ def main():
     scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].apply(
         lambda row: row.idxmin() if row.notna().all() else np.nan, axis=1)
     
-    scaling_relationship.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.tsv', sep='\t') #, float_format='%.2f')
+    scaling_relationship.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.tsv', sep=',') #, float_format='%.2f')
     
     volcano(scaling_relationship, rxn='OER', rds='dGmax', descriptor='dG2', xlabel='O-OH (dG2)', 
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)

@@ -766,7 +766,7 @@ def main():
             for path in matching_paths:
                 spin_tsv = os.path.join(path, 'lowest.tsv')
                 if os.path.exists(spin_tsv):
-                    spin_df = pd.read_csv(spin_tsv, sep='\t')
+                    spin_df = pd.read_csv(spin_tsv, sep=',')
                     spin_df.set_index('dz', inplace=True)
                     for i, dz in enumerate(dzs):
                         if len(spin_df) > 0:
@@ -803,7 +803,7 @@ def main():
             for path_O in matching_O_paths:
                 spin_tsv = os.path.join(path_O, 'lowest.tsv')
                 if os.path.exists(spin_tsv):
-                    spin_df = pd.read_csv(spin_tsv, sep='\t')
+                    spin_df = pd.read_csv(spin_tsv, sep=',')
                     spin_df.set_index('dz', inplace=True)
                     for i, dz in enumerate(dzs):
                         if len(spin_df) > 0:
@@ -842,7 +842,7 @@ def main():
             for path_OH in matching_OH_paths:
                 spin_tsv = os.path.join(path_OH, 'lowest.tsv')
                 if os.path.exists(spin_tsv):
-                    spin_df = pd.read_csv(spin_tsv, sep='\t')
+                    spin_df = pd.read_csv(spin_tsv, sep=',')
                     spin_df.set_index('dz', inplace=True)
                     for i, dz in enumerate(dzs):
                         if len(spin_df) > 0:
@@ -881,7 +881,7 @@ def main():
             for path_OOH in matching_OOH_paths:
                 spin_tsv = os.path.join(path_OOH, 'lowest.tsv')
                 if os.path.exists(spin_tsv):
-                    spin_df = pd.read_csv(spin_tsv, sep='\t')
+                    spin_df = pd.read_csv(spin_tsv, sep=',')
                     spin_df.set_index('dz', inplace=True)
                     for i, dz in enumerate(dzs):
                         if len(spin_df) > 0:
@@ -920,7 +920,7 @@ def main():
             for path_O_OH in matching_O_OH_paths:
                 spin_tsv = os.path.join(path_O_OH, 'lowest.tsv')
                 if os.path.exists(spin_tsv):
-                    spin_df = pd.read_csv(spin_tsv, sep='\t')
+                    spin_df = pd.read_csv(spin_tsv, sep=',')
                     spin_df.set_index('dz', inplace=True)
                     for i, dz in enumerate(dzs):
                         if len(spin_df) > 0:
@@ -959,7 +959,7 @@ def main():
             for path_OH_OH in matching_OH_OH_paths:
                 spin_tsv = os.path.join(path_OH_OH, 'lowest.tsv')
                 if os.path.exists(spin_tsv):
-                    spin_df = pd.read_csv(spin_tsv, sep='\t')
+                    spin_df = pd.read_csv(spin_tsv, sep=',')
                     spin_df.set_index('dz', inplace=True)
                     for i, dz in enumerate(dzs):
                         if len(spin_df) > 0:
@@ -1130,7 +1130,7 @@ def relative(df, df_rel):
 
 def combining(df, df_relaxed, tsv_filename):
     combined_df = pd.concat([df, df_relaxed])
-    combined_df.to_csv(os.path.join(save_path, tsv_filename), sep='\t') #, float_format='%.2f')
+    combined_df.to_csv(os.path.join(save_path, tsv_filename), sep=',') #, float_format='%.2f')
     print(f"Data saved to {tsv_filename}")
 
 def plot_smooth_line(x, y, color):

@@ -64,7 +64,7 @@ def main():
             # xmin=0.0, xmax=1.5, ymin=3.5, ymax=4.5, txtx=0.1, txty=0.2)
 
     df = df.drop(columns='color')
-    df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship_full.tsv', sep='\t') #, float_format='%.2f')
+    df.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship_full.tsv', sep=',') #, float_format='%.2f')
 
 def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     x, y = df[dG1], df[dG2]
