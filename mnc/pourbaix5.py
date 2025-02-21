@@ -126,6 +126,7 @@ metals = ['Fe', 'Co', 'Mo']
     
 # Function to extract energy from DONE in most_stable or find min_e0 as fallback
 def get_energy(main_dir, sub_dirs, metal):
+    min_e0 = None
     if metal == 'Fe':
         i=3; j=6; k=2
     elif metal == 'Co':
