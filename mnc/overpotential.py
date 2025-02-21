@@ -174,7 +174,7 @@ def main():
             spin_cross_over.loc[index, 'O'] = energies['O']['spin'].loc[index]
             spin_cross_over.loc[index, 'OOH'] = energies['OOH']['spin'].loc[index]
         
-        gibbs_energies.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
+        gibbs_energies.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.tsv', sep='\t') #, float_format='%.2f')
         spin_cross_over.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_spin.tsv', sep='\t')
         print(f"Data saved to {row}_{group}{metal}_gibbs.tsv and {row}_{group}{metal}_spin.tsv")
         
@@ -207,7 +207,7 @@ def main():
     scaling_relationship['dGmin'] = scaling_relationship[['dG1', 'dG2', 'dG3', 'dG4']].apply(
         lambda row: row.idxmin() if row.notna().all() else np.nan, axis=1)
     
-    scaling_relationship.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.tsv', sep='\t', float_format='%.2f')
+    scaling_relationship.to_csv('/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship.tsv', sep='\t') #, float_format='%.2f')
     
     volcano(scaling_relationship, rxn='OER', rds='dGmax', descriptor='dG2', xlabel='O-OH (dG2)', 
             xmin=-2.0, xmax=3.0, ymin=-4.0, ymax=1.0)
