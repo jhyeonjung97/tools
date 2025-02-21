@@ -64,6 +64,7 @@ relaxed_energies = {}
 
 scaling_relationship_tsv = '/pscratch/sd/j/jiuy97/6_MNC/figures/contour/scaling_relationship_full.tsv'
 scaling_relationship = pd.read_csv(scaling_relationship_tsv, sep='\t', index_col=0)
+scaling_relationship = scaling_relationship.loc[metals]
 
 def main():
     for m, metal in enumerate(metals):
