@@ -173,6 +173,7 @@ ax.legend(bbox_to_anchor=(0.5, 1.1), loc='center', borderaxespad=0.5,
           fancybox=True, shadow=False, fontsize='small', handlelength=2)
 fig.savefig(os.path.join(save_path, 'contour_ORR.png'), bbox_inches='tight')
 print("Figure saved as contour_ORR.png")
+
 fig.clf()
 
 for m, metal in enumerate(metals):
