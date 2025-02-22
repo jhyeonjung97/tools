@@ -55,7 +55,7 @@ U2 = np.arange(Umin, Umax2, 0.01)
 h2 = -6.77149190
 h2o = -14.23091949
 
-zpeh2o = 0.560
+zpeh2o = 0.558
 cvh2o = 0.103
 tsh2o = 0.675
 

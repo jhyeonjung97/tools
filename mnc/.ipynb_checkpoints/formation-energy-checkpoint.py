@@ -57,19 +57,20 @@ min_spins = {'LS': '#ff7f0e', 'IS': '#279ff2', 'HS': '#9467bd'}
 ms_spins ={'MS(LS)': '#ff7f0e', 'MS(IS)': '#279ff2', 'MS(HS)': '#9467bd'}
 dzs = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
 
-water_E = -14.23797429
+water_E = -14.23091949
 water_Cv = 0.103
 water_TS = 0.675
 water_ZPE = 0.558
 water_G = water_E + water_Cv - water_TS + water_ZPE
 
-hydrogen2_E = -6.77412273
+hydrogen2_E = -6.77149190
 hydrogen2_Cv = 0.0905
 hydrogen2_TS = 0.408
-hydrogen2_ZPE = 0.273
+hydrogen2_ZPE = 0.268
 hydrogen2_G = hydrogen2_E + hydrogen2_Cv - hydrogen2_TS + hydrogen2_ZPE
 hydrogen_G = hydrogen2_G / 2
 
+# oxygen_G = water_G - hydrogen2_G
 oxygen_G = water_G - hydrogen2_G + 2*1.229
 hydroxide_G = water_G - hydrogen_G
 
@@ -85,7 +86,7 @@ carbon_E = -9.3573635
 h2 = -6.77149190
 h2o = -14.23091949
 
-zpeh2o = 0.560
+zpeh2o = 0.558
 cvh2o = 0.103
 tsh2o = 0.675
 

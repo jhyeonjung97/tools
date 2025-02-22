@@ -117,13 +117,13 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
 if __name__ == '__main__':
     
     # Water and hydrogen properties
-    water_E = -14.23320346
+    water_E = -14.23091949
     water_Cv = 0.103
     water_TS = 0.675
-    water_ZPE = 0.560
+    water_ZPE = 0.558
     water_G = water_E + water_Cv - water_TS + water_ZPE
     
-    hydrogen2_E = -6.77149558
+    hydrogen2_E = -6.77149190
     hydrogen2_Cv = 0.0905
     hydrogen2_TS = 0.408
     hydrogen2_ZPE = 0.268
