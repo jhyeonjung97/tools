@@ -74,10 +74,10 @@ def main():
             df_energy[ads] = energy_data['MS']
             
             if ads == 'clean':
-                spin_path = f'/pscratch/sd/j/jiuy97/6_MNC/{a}_{ads}/{row}/{numb}_{metal}/lowest.csv'
+                spin_path = f'/pscratch/sd/j/jiuy97/6_MNC/{a}_{ads}/{row}/{numb}_{metal}/lowest.tsv'
             else:
-                spin_path = f'/pscratch/sd/j/jiuy97/6_MNC/{a}_{ads}/{m+1}_{metal}/lowest.csv'
-            spin_data = pd.read_csv(spin_path, sep=',')
+                spin_path = f'/pscratch/sd/j/jiuy97/6_MNC/{a}_{ads}/{m+1}_{metal}/lowest.tsv'
+            spin_data = pd.read_csv(spin_path, sep='\t')
             df_spin[ads] = spin_data['spin_state']
 
         df_energy = df_energy.head(7)
