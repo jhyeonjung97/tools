@@ -28,7 +28,7 @@ water = 2.4583 # the standard Gibbs free energy of formation of water
 h2 = -6.77149190
 h2o = -14.23091949
 
-zpeh2o = 0.560
+zpeh2o = 0.558
 cvh2o = 0.103
 tsh2o = 0.675
 
@@ -72,7 +72,7 @@ metal_path = '~/bin/tools/mnc/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 gm = metal_df.loc['Mo', 'energy']
 
-df = pd.read_csv(f'{filename}_energies.tsv', delimiter='\t', index_col=0)
+df = pd.read_csv(f'{filename}_energies.csv', delimiter=',', index_col=0)
 df_oer = pd.read_csv(f'{filename}_oer.tsv', delimiter='\t', index_col=0)
 df_orr = pd.read_csv(f'{filename}_orr.tsv', delimiter='\t', index_col=0)
 
@@ -90,13 +90,18 @@ df['comp'] = df['comp'].str.replace('MoXNH', 'MoXH')
 df['energy'] = df['dG'] + df.loc['clean', 'G'] + gh2 - gm - H2N4C26 - 2 * dgh - water * (df['#O'] + df['#OH'] + df['#OOH']*2)
 
 df = df.drop(index='vac')
-df = df.drop(index='o-oh')
-df = df.drop(index='ooho')
+df = df.drop(index='ooh')
 df = df.drop(index='o-ooh')
 df = df.drop(index='ooh-o')
 df = df.drop(index='oh-ooh')
 df = df.drop(index='ooh-oh')
 df = df.drop(index='ooh-ooh')
+# df = df.drop(index='o-o')
+# df = df.drop(index='oh-o')
+# df = df.drop(index='oh-oh')
+df = df.drop(index='ooho')
+df = df.drop(index='oohoh')
+df = df.drop(index='oohooh')
 df = df.dropna()
 print(df)
 

@@ -28,7 +28,7 @@ water = 2.4583 # the standard Gibbs free energy of formation of water
 h2 = -6.77149190
 h2o = -14.23091949
 
-zpeh2o = 0.560
+zpeh2o = 0.558
 cvh2o = 0.103
 tsh2o = 0.675
 
@@ -182,7 +182,7 @@ def plot_pourbaix(entries, png_name):
     plotter = PourbaixPlotter(pourbaix)
 
     fig, ax = plt.subplots(figsize=(7, 5))    
-    plotter.get_pourbaix_plot(limits=[[0, 14], [-1, 3]], label_domains=True, label_fontsize=14,
+    plotter.get_pourbaix_plot(limits=[[0, 14], [-1, 3]], label_domains=False, label_fontsize=14,
                               show_water_lines=False, show_neutral_axes=False, ax=ax)
     stable_entries = pourbaix.stable_entries
 
@@ -234,10 +234,10 @@ def plot_pourbaix(entries, png_name):
         'XFeO(s)': 2,
     }
 
-    for entry in vac_entries:
-        print(entry.name)
-    for entry in sac_entries:
-        print(entry.name)
+    # for entry in vac_entries:
+    #     print(entry.name)
+    # for entry in sac_entries:
+    #     print(entry.name)
         
     for i, entry in enumerate(vac_entries):
         vertices = plotter.domain_vertices(entry)
