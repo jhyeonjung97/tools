@@ -174,7 +174,7 @@ def main():
             spin_cross_over.loc[index, 'O'] = energies['O']['spin'].loc[index]
             spin_cross_over.loc[index, 'OOH'] = energies['OOH']['spin'].loc[index]
         
-        gibbs_energies.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.csv', sep=',', float_format='%.2f')
+        gibbs_energies.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.csv', sep=',')
         spin_cross_over.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_spin.csv', sep=',')
         gibbs_energies.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_gibbs.tsv', sep='\t', float_format='%.2f')
         spin_cross_over.to_csv(f'/pscratch/sd/j/jiuy97/6_MNC/figures/contour/{row}_{group}{metal}_spin.tsv', sep='\t', float_format='%.2f')
