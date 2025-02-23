@@ -225,6 +225,11 @@ def plot_pourbaix(entries, png_name):
         'XCoO2(s)': 2,
     }
     
+    for entry in vac_entries:
+        print(entry.name)
+    for entry in sac_entries:
+        print(entry.name)
+    
     for i, entry in enumerate(vac_entries):
         vertices = plotter.domain_vertices(entry)
         x, y = zip(*vertices)
