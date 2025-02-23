@@ -18,6 +18,7 @@ python ~/bin/tools/mnc/add-ohh-ooh.py
 pb_path='/pscratch/sd/j/jiuy97/6_MNC/pourbaix/1_Fe'   
 for ads in oo oo-oo oo-ohh oo-oh oo-o oo-ooh ohh ohh-ohh ohh-oo ohh-oh ohh-o ohh-ooh
 do
+    echo "${ads}"
     for spin in LS IS HS
     do
         dest_dir="${pb_path}/${ads}/${spin}1"
@@ -60,6 +61,7 @@ python ~/bin/tools/mnc/add-ohh-ooh.py
 pb_path='/pscratch/sd/j/jiuy97/6_MNC/pourbaix/2_Co'   
 for ads in oo oo-oo oo-ohh oo-oh oo-o oo-ooh ohh ohh-ohh ohh-oo ohh-oh ohh-o ohh-ooh
 do
+    echo "${ads}"
     for spin in LS IS HS
     do
         dest_dir="${pb_path}/${ads}/${spin}1"
