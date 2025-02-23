@@ -49,9 +49,6 @@ y1, y2 = ycenter - 1.6, ycenter + 1.6
 ax.axis([x1, x2, y1, y2])
 
 # Define functions for overpotential calculations
-def ooh_oh_scaling(doh):
-    return a * doh + b
-
 def orr_step(i):
     steps = ['O2->OOH*', 'OOH*->O*', 'O*->OH*', 'OH*->H2O']
     return steps[i]
@@ -72,7 +69,7 @@ def overpotential_orr_full(doh, do, dooh):
     
 # Read data from the TSV file
 save_path='/Users/jiuy97/Desktop/feb20/contour'
-df = pd.read_csv('/Users/jiuy97/Desktop/feb20/contour/scaling_relationship.tsv', sep=',', header=0, index_col=0)
+df = pd.read_csv('/Users/jiuy97/Desktop/feb20/contour/scaling_relationship.csv', sep=',', header=0, index_col=0)
 
 df['overpotential'] = df.apply(lambda row: overpotential_orr(row['dG_OH'], row['dG_O'], row['dG_OOH']), axis=1)
 
@@ -81,7 +78,7 @@ dfs = {}
 for m, metal in enumerate(metals):
     row = rows[m]
     group = groups[m]
-    dfs[metal] = pd.read_csv(f'/Users/jiuy97/Desktop/feb20/contour/{row}_{group}{metal}_gibbs.tsv', sep=',', header=0, index_col=0)
+    dfs[metal] = pd.read_csv(f'/Users/jiuy97/Desktop/feb20/contour/{row}_{group}{metal}_gibbs.csv', sep=',', header=0, index_col=0)
     dfs[metal]['overpotential'] = dfs[metal].apply(lambda row: overpotential_orr(row['dG_OH'], row['dG_O'], row['dG_OOH']), axis=1)
 
 # Generate data for contour plot
