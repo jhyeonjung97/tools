@@ -33,7 +33,7 @@ do
             oxi=4
         else
             echo "Warning: spin for ${ads} is not defined"
-            exit()
+            exit
         fi
         sed -i -e "s/mnc-sol.py/mnc-sol-${spin}-nupdown${oxi}.py/g" submit.sh
         sed -i -e "s/jobname/Fe-${ads}-${spin}/g" submit.sh
@@ -75,7 +75,7 @@ do
             oxi=4
         else
             echo "Warning: spin for ${ads} is not defined"
-            exit()
+            exit
         fi
         sed -i -e "s/mnc-sol.py/mnc-sol-${spin}-nupdown${oxi}.py/g" submit.sh
         sed -i -e "s/jobname/Co-${ads}-${spin}/g" submit.sh
