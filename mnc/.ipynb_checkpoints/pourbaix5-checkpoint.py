@@ -297,22 +297,22 @@ for dir in dirs:
     surfs = [
         df.loc['vac', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),
         df.loc['clean', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #1
-        df.loc['mh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),
-        df.loc['nh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),
+        df.loc['mh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #2
+        df.loc['nh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #3
         df.loc['oh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #4
-        df.loc['o', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #5
-        df.loc['ohoh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #6
-        df.loc['oh-oh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #7
+        df.loc['oh-oh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #5
+        df.loc['o-oh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #6
+        df.loc['o-o', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #7
+        df.loc['o', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #8
+        df.loc['ohoh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #9
         # df.loc['ohooh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),
         # df.loc['oohoh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),
         # df.loc['oh-ooh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),
         # df.loc['ooh-oh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),  
         # df.loc['ooh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),
-        df.loc['oho', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #8
+        df.loc['oho', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #10
         # df.loc['oh-o', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),  
-        df.loc['o-oh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #9
         # df.loc['oo', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),  
-        df.loc['o-o', ['E', '#H', '#O', '#OH', '#OOH']].tolist(), #10
         # df.loc['oooh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),  
         # df.loc['ooho', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),  
         # df.loc['o-ooh', ['E', '#H', '#O', '#OH', '#OOH']].tolist(),  

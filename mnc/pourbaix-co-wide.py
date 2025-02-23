@@ -204,10 +204,12 @@ def plot_pourbaix(entries, png_name):
     vac_mapping = {
         'XH2(s) + Co(s)': 0,
         'XH2(s) + Co[+2]': 1,
-        'X(s) + Co[+3]': 2,
+        'X(s) + Co[+2]': 2,
+        'X(s) + Co[+3]': 3,
         'Co(s) + XH2(s)': 0,
         'Co[+2] + XH2(s)': 1,
-        'Co[+3] + X(s)': 2,
+        'Co[+2] + X(s)': 2,
+        'Co[+3] + X(s)': 3,
 
         'Co(s)': 0,
         'Co[+2]': 1,
@@ -218,17 +220,16 @@ def plot_pourbaix(entries, png_name):
         'CoO2(s)': 6,
     }
 
-
     sac_mapping = {
         'XCo(s)': 0,
         'XCo(HO)2(s)': 1,
         'XCoO2(s)': 2,
     }
     
-    for entry in vac_entries:
-        print(entry.name)
-    for entry in sac_entries:
-        print(entry.name)
+    # for entry in vac_entries:
+    #     print(entry.name)
+    # for entry in sac_entries:
+    #     print(entry.name)
     
     for i, entry in enumerate(vac_entries):
         vertices = plotter.domain_vertices(entry)
