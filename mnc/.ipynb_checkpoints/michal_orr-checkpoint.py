@@ -9,8 +9,8 @@ import matplotlib.colors as mcolors
 from matplotlib.colors import ListedColormap
 from matplotlib.markers import MarkerStyle
 
-a, b = 0.87, 3.08
-c, d = 1.79, 0.62
+a, b = 0.87, 3.08 # oh ooh
+c, d = 1.79, 0.62 # oh o
 
 rows = ['3d', '3d', '3d', '3d'] #, '4d', '5d']
 groups = ['5', '6', '7', '8'] #, '4', '4']
@@ -60,9 +60,6 @@ ax.set_xlabel(r'$\Delta$G$_{\sf OH}$ (eV)', fontsize='large')
 ax.set_ylabel(r'$\Delta$G$_{\sf OOH}$ (eV)', fontsize='large')
 
 # Define functions for overpotential calculations
-def ooh_oh_scaling(doh):
-    return a * doh + b
-
 def orr_step(i):
     steps = ['O2->OOH*', 'OOH*->O*', 'O*->OH*', 'OH*->H2O']
     return steps[i]

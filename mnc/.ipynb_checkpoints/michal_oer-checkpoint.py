@@ -9,8 +9,8 @@ import matplotlib.colors as mcolors
 from matplotlib.colors import ListedColormap
 from matplotlib.markers import MarkerStyle
 
-a, b = 0.87, 3.08
-c, d = 1.79, 0.62
+a, b = 0.87, 3.08 # oh ooh
+c, d = 1.79, 0.62 # oh o
 
 rows = ['3d', '3d', '3d', '3d'] #, '4d', '5d']
 groups = ['5', '6', '7', '8'] #, '4', '4']
@@ -62,9 +62,6 @@ ax.set_xlabel(r'$\Delta$G$_{\sf O}$ - $\Delta$G$_{\sf OH}$(eV)', fontsize='large
 ax.set_ylabel(r'$\Delta$G$_{\sf OH}$ (eV)', fontsize='large')
 
 # Define functions for overpotential calculations
-def ooh_oh_scaling(doh):
-    return a * doh + b
-
 def oer_step(i):
     steps = ['H2O->OH*', 'OH*->O*', 'O*->OOH*', 'OOH*->O2']
     return steps[i]
@@ -75,7 +72,7 @@ def overpotential_oer(doh, do, dooh):
     
 def overpotential_oer_for_contour(do_doh, doh):
     do = do_doh + doh
-    dooh = ooh_oh_scaling(doh)
+    dooh = a * doh + b
     dg14 = [doh, do - doh, dooh - do, 4.92 - dooh]
     return max(dg14) - 1.23
     
@@ -166,8 +163,8 @@ for row_num, row in enumerate(df.itertuples(), 1):
 ax.scatter([], [], label='relaxed Δz', s=24, marker='X', linewidths=0.5, facecolor='black', edgecolor='black')
 ax.scatter([], [], label='fixed Δz', s=24, marker='o', linewidths=0.5, facecolor='black', edgecolor='black')
 
-ax.plot(x, x + 3.2, '--', lw=1, dashes=(3, 1), c='black')
-ax.text(1.1, 2.3, r'$\Delta$G$_{\sf OOH}$=$\Delta$G$_{\sf OH}$+3.2 eV', color='black', fontsize=10)
+ax.plot(x, (1-c) * x + d, '--', lw=1, dashes=(3, 1), c='black')
+ax.text(1.1, 2.3, rf'$\Delta$G$_{\sf O}$={c}*$\Delta$G$_{{\sf OH}}$+{d} eV', color=(0.8,0.8,0.8), fontsize=10)
 
 ax.legend(bbox_to_anchor=(0.5, 1.1), loc='center', borderaxespad=0.5,
           ncol=3, columnspacing=1.0, handletextpad=0.4,
