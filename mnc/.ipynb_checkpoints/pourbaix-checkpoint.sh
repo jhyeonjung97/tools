@@ -26,7 +26,9 @@ do
         cd ${dest_dir}
         cp "${dir}/start-${ads}.traj" ./start.traj
         cp ~/bin/tools/mnc/submit.sh .
-        if [[ ${ads} == oo ]] || [[ ${ads} == oo-oo ]] || [[ ${ads} == oo-ohh ]] || [[ ${ads} == ohh-oo ]]; then
+        if [[ ${ads} == oo ]] || [[ ${ads} == oo-oo ]] || [[ ${ads} == ohh ]] || [[ ${ads} == ohh-ohh ]]; then
+            oxi=2
+        elif [[ ${ads} == oo-ohh ]] || [[ ${ads} == ohh-oo ]]; then
             oxi=2
         elif [[ ${ads} == oo-oh ]] || [[ ${ads} == oo-ooh ]] || [[ ${ads} == ohh-oh ]] || [[ ${ads} == ohh-ooh ]]; then
             oxi=3
@@ -69,7 +71,9 @@ do
         cd ${dest_dir}
         cp "${dir}/start-${ads}.traj" ./start.traj
         cp ~/bin/tools/mnc/submit.sh .
-        if [[ ${ads} == oo ]] || [[ ${ads} == oo-oo ]] || [[ ${ads} == oo-ohh ]] || [[ ${ads} == ohh-oo ]]; then
+        if [[ ${ads} == oo ]] || [[ ${ads} == oo-oo ]] || [[ ${ads} == ohh ]] || [[ ${ads} == ohh-ohh ]]; then
+            oxi=2
+        elif [[ ${ads} == oo-ohh ]] || [[ ${ads} == ohh-oo ]]; then
             oxi=2
         elif [[ ${ads} == oo-oh ]] || [[ ${ads} == oo-ooh ]] || [[ ${ads} == ohh-oh ]] || [[ ${ads} == ohh-ooh ]]; then
             oxi=3
