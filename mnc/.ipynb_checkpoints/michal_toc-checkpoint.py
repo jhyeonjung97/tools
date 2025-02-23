@@ -68,8 +68,7 @@ def overpotential_orr_full(doh, do, dooh):
     return [round(m + 1.23, 2), round(-m, 2), orr_step(dg14.index(m))]
     
 # Read data from the TSV file
-save_path='/Users/jiuy97/Desktop/feb20/contour'
-df = pd.read_csv('/Users/jiuy97/Desktop/feb20/contour/scaling_relationship.csv', sep=',', header=0, index_col=0)
+df = pd.read_csv('scaling_relationship.csv', sep=',', header=0, index_col=0)
 
 df['overpotential'] = df.apply(lambda row: overpotential_orr(row['dG_OH'], row['dG_O'], row['dG_OOH']), axis=1)
 
@@ -78,7 +77,7 @@ dfs = {}
 for m, metal in enumerate(metals):
     row = rows[m]
     group = groups[m]
-    dfs[metal] = pd.read_csv(f'/Users/jiuy97/Desktop/feb20/contour/{row}_{group}{metal}_gibbs.csv', sep=',', header=0, index_col=0)
+    dfs[metal] = pd.read_csv(f'./{row}_{group}{metal}_gibbs.csv', sep=',', header=0, index_col=0)
     dfs[metal]['overpotential'] = dfs[metal].apply(lambda row: overpotential_orr(row['dG_OH'], row['dG_O'], row['dG_OOH']), axis=1)
 
 # Generate data for contour plot
@@ -142,6 +141,6 @@ ax.set_yticks([])
 cbar.set_ticks([])
 
 ax.plot(x, a * x + b, '--', lw=1, dashes=(3, 1), c='black')
-fig.savefig(os.path.join(save_path, f'contour_toc_{fx}x{fy}.png'), dpi=200, bbox_inches='tight')
+fig.savefig(f'contour_toc_{fx}x{fy}.png', dpi=200, bbox_inches='tight')
 print(f"Figure saved as contour_toc_{fx}x{fy}.png")
 fig.clf()
