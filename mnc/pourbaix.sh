@@ -74,7 +74,7 @@ do
         elif [[ ${ads} == oo-o ]] || [[ ${ads} == ohh-o ]]; then
             oxi=4
         else
-            print("Warning: spin for ${ads} is not defined")
+            echo "Warning: spin for ${ads} is not defined"
             exit()
         fi
         sed -i -e "s/mnc-sol.py/mnc-sol-${spin}-nupdown${oxi}.py/g" submit.sh
