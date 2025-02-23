@@ -11,20 +11,20 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'mnc-ls'
+name = 'mnc-is'
 
-spin_states_plus_2 = {'Ti': 0, 'V': 1, 'Cr': 0, 'Mn': 1, 'Fe': 0, 'Co': 1, 'Ni': 0, 'Cu': 1,
-                      'Zr': 0, 'Nb': 1, 'Mo': 0, 'Tc': 1, 'Ru': 0, 'Rh': 1, 'Pd': 0, 
-                      'Hf': 0, 'Ta': 1, 'W': 0, 'Re': 1, 'Os': 0, 'Ir': 1, 'Pt': 0
-                      }
-spin_states_plus_3 = {'Ti': 1, 'V': 0, 'Cr': 1, 'Mn': 0, 'Fe': 1, 'Co': 0, 'Ni': 1, 'Cu': 0,
-                      'Zr': 1, 'Nb': 0, 'Mo': 1, 'Tc': 0, 'Ru': 1, 'Rh': 0, 'Pd': 1, 
-                      'Hf': 1, 'Ta': 0, 'W': 1, 'Re': 0, 'Os': 1, 'Ir': 0, 'Pt': 1
-                      }
-spin_states_plus_4 = {'Ti': 0, 'V': 1, 'Cr': 0, 'Mn': 1, 'Fe': 0, 'Co': 1, 'Ni': 0, 'Cu': 1,
-                      'Zr': 0, 'Nb': 1, 'Mo': 0, 'Tc': 1, 'Ru': 0, 'Rh': 1, 'Pd': 0, 
-                      'Hf': 0, 'Ta': 1, 'W': 0, 'Re': 1, 'Os': 0, 'Ir': 1, 'Pt': 0
-                      }
+spin_states_plus_2 = {'Cr': 2, 'Mn': 3, 'Fe': 2,
+                      'Mo': 2, 'Tc': 3, 'Ru': 2,
+                      'W': 2, 'Re': 3, 'Os': 2
+                     }
+spin_states_plus_3 = {'Mn': 2, 'Fe': 3, 'Co': 2,
+                      'Tc': 2, 'Ru': 3, 'Rh': 2,
+                      'Re': 2, 'Os': 3, 'Ir': 2
+                     }
+spin_states_plus_4 = {'Fe': 2, 'Co': 3, 'Ni': 2,
+                      'Ru': 2, 'Rh': 3, 'Pd': 2,
+                      'Os': 2, 'Ir': 3, 'Pt': 2
+                     }
 
 ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
@@ -43,17 +43,7 @@ elif path.exists('start.traj'):
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
 
-count_o = len([atom for atom in atoms if atom.symbol == 'O']) - 2 #oo
-count_h = len([atom for atom in atoms if atom.symbol == 'H'])
-
-if count_o == 0 or count_h == 0:
-    spin_states = spin_states_plus_2
-elif count_o == 1 or count_h == 1:
-    spin_states = spin_states_plus_3
-elif count_o == 1 or count_h == 0:
-    spin_states = spin_states_plus_4
-elif count_o == 2 or count_h == 1:
-    spin_states = spin_states_plus_3
+spin_states = spin_states_plus_2
     
 for atom in atoms:
     if atom.symbol in spin_states:
@@ -61,7 +51,7 @@ for atom in atoms:
         atom.magmom = spin
     elif atom.symbol not in ['C', 'N', 'O', 'H']:
         raise ValueError(f"Unexpected atom symbol '{atom.symbol}' found in start.traj")
-            
+
 lmaxmix = 2
 for atom in atoms:
     if atom.symbol in ldau_luj:
