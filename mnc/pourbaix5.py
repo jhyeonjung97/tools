@@ -199,7 +199,7 @@ def overpotential(int1, int2, int3, int4, df, OER, ORR):
                 ints[i] = int[0]
             else:
                 ints[i] = int[1]
-            print(int, ints[i])
+            # print(int, ints[i])
     int1, int2, int3, int4 = ints
     
     dG12 = df.loc[int2, 'dG'] - df.loc[int1, 'dG']
@@ -284,15 +284,15 @@ for dir in dirs:
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
-        overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh'), df, OER, ORR)
-        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh'), df, OER, ORR)
+        overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
+        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
     elif A == '2' and B == 'Co':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
-        overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh'), df, OER, ORR)
-        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh'), df, OER, ORR)
+        overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
+        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
     elif A == '3' and B == 'Mo':
         overpotential('o', 'oho', 'oo', ('oooh', 'ooho'), df, OER, ORR)
 
