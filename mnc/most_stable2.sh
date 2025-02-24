@@ -54,7 +54,7 @@ for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/1_Fe/*/; do
         
         # Modify submit.sh with the appropriate job name and time limit
         sed -i -e "/#SBATCH -J/c\#SBATCH -J ${metal}-${ads}-MS" most_stable/submit.sh
-        sed -i -e "/mnc-sol/c\python ~\/bin\/tools\/mnc-sol.py" most_stable/submit.sh
+        sed -i -e "/mnc-sol/c\python ~\/bin\/tools\/mnc\/mnc-sol.py" most_stable/submit.sh
     else
         echo "No valid directory found with lower energy."
     fi
