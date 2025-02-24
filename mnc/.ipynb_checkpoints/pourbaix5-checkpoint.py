@@ -110,19 +110,19 @@ metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 metals = ['Fe', 'Co', 'Mo']
 
 # Function to findthe lowest E0 value in each subdirectory
-# def find_min_e0(main_dir, sub_dirs):
-#     min_e0 = None
-#     for sub_dir in sub_dirs:
-#         oszicar_path = os.path.join(main_dir, sub_dir, "OSZICAR")
-#         if os.path.isfile(oszicar_path):
-#             with open(oszicar_path, 'r') as file:
-#                 for line in file:
-#                     match = e0_pattern.search(line)
-#                     if match:
-#                         e0_value = float(match.group(1))
-#                         if min_e0 is None or e0_value < min_e0:
-#                             min_e0 = e0_value
-#     return min_e0
+def find_min_e0(main_dir, sub_dirs):
+    min_e0 = None
+    for sub_dir in sub_dirs:
+        oszicar_path = os.path.join(main_dir, sub_dir, "OSZICAR")
+        if os.path.isfile(oszicar_path):
+            with open(oszicar_path, 'r') as file:
+                for line in file:
+                    match = e0_pattern.search(line)
+                    if match:
+                        e0_value = float(match.group(1))
+                        if min_e0 is None or e0_value < min_e0:
+                            min_e0 = e0_value
+    return min_e0
     
 # Function to extract energy from DONE in most_stable or find min_e0 as fallback
 def get_energy(main_dir, sub_dirs, metal):
@@ -150,7 +150,7 @@ def get_energy(main_dir, sub_dirs, metal):
         min_e0 = atoms.get_potential_energy()
         return min_e0
     # Fallback to finding minimum E0 value
-    # return find_min_e0(main_dir, sub_dirs)
+    return find_min_e0(main_dir, sub_dirs)
     if min_e0 is None:
         print(f"Warning: No valid energy found in {main_dir}.")
     return min_e0
@@ -279,17 +279,17 @@ for dir in dirs:
     if A == '1' and B == 'Fe':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
-        # overpotential('oh', 'o', 'ooh', ('ooh-oh', 'oh-ooh'), df, OER, ORR)
-        # overpotential('oh', 'o', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
-        # overpotential('o', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
-        # overpotential('o', 'ooh', ('ooh-oh', 'oh-ooh'), ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
+        overpotential('oo', ('oo-oh', 'oh-oo'), ('oo-o', 'o-oo'), ('oo-ooh', 'ooh-oo'), df, OER, ORR)
+        overpotential('ohh', ('ohh-oh', 'oh-ohh'), ('ohh-o', 'o-ohh'), ('ohh-ooh', 'ooh-ohh'), df, OER, ORR)
     elif A == '2' and B == 'Co':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
+        overpotential('oo', ('oo-oh', 'oh-oo'), ('oo-o', 'o-oo'), ('oo-ooh', 'ooh-oo'), df, OER, ORR)
+        overpotential('ohh', ('ohh-oh', 'oh-ohh'), ('ohh-o', 'o-ohh'), ('ohh-ooh', 'ooh-ohh'), df, OER, ORR)
     elif A == '3' and B == 'Mo':
         overpotential('o', 'oho', 'oo', ('oooh', 'ooho'), df, OER, ORR)
 
