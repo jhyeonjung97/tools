@@ -106,6 +106,19 @@ color = ['darkgray', ##
          'gold', 
          'pink', ##
          'plum', ##
+         'navy',
+         'darkgray', ##
+         'cornflowerblue', ## 
+         'yellowgreen', 
+         'teal', 
+         'tan', ##
+         'salmon', ##
+         'forestgreen', 
+         'lightsteelblue', ##
+         'orange', 
+         'gold', 
+         'pink', ##
+         'plum', ##
          'navy']
 pH2 = np.arange(0, 14.01, 0.01)
 
