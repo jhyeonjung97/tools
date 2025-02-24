@@ -23,7 +23,7 @@ for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/1_Fe/*/; do
     all_done=true
     for sub_dir in ${dir}/*S*/; do
         if [[ ! -f "${sub_dir}/DONE" ]]; then
-            echo "Skipping ${dir}, ${sub_dir} is missing DONE file."
+            # echo "Skipping ${dir}, ${sub_dir} is missing DONE file."
             all_done=false
             break
         fi
@@ -53,8 +53,8 @@ for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/1_Fe/*/; do
         cp ~/bin/tools/mnc/submit.sh most_stable/ || echo "Failed to copy submit.sh"
         
         # Modify submit.sh with the appropriate job name and time limit
-        sed -i -e "/#SBATCH -t/c\#SBATCH -t 02:00:00" most_stable/submit.sh
-        sed -i -e "/#SBATCH -J/c\#SBATCH -J ${numb}${metal}MS${ads}" most_stable/submit.sh
+        sed -i -e "/#SBATCH -J/c\#SBATCH -J ${metal}-${ads}-MS" most_stable/submit.sh
+        sed -i -e "/mnc-sol/c\python ~\/bin\/tools\/mnc-sol.py" most_stable/submit.sh
     else
         echo "No valid directory found with lower energy."
     fi
