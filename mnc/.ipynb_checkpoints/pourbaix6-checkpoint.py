@@ -92,7 +92,7 @@ dgoh = zpeoh + cvoh - tsoh
 dgooh = zpeooh + cvooh - tsooh
 dgh = dgoh - dgo
 dgo2 = dgooh - dgh
-dgoh2 = dgoh + dgh
+dgh2o = dgoh + dgh
 
 color = ['darkgray', ##
          'cornflowerblue', ## 
