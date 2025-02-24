@@ -14,9 +14,9 @@ dirs = ["/pscratch/sd/j/jiuy97/6_MNC/pourbaix/1_Fe/",
 main_dirs = ["clean", "mh", "nh", "oh", "o",
              "ohoh", "oh-oh", "ohooh", "oohoh", "oh-ooh", "ooh-oh",
              "ooh", "oho", "oh-o", "o-oh", "oo", "o-o",
-             "oooh", "ooho", "o-ooh", "ooh-o", "oohooh", "ooh-ooh",
-             "oo", "oo-oo", "oo-ohh", "oo-o", "oo-oh", "oo-ooh",
-             "ohh", "ohh-oo", "ohh-ohh", "ohh-o", "ohh-oh", "ohh-ooh",]
+             "oooh", "ooho", "o-ooh", "ooh-o", "oohooh", "ooh-ooh",]
+             # "oo", "oo-oo", "oo-ohh", "oo-o", "oo-oh", "oo-ooh",
+             # "ohh", "ohh-oo", "ohh-ohh", "ohh-o", "ohh-oh", "ohh-ooh",]
 sub_dirs = ["HS1", "HS5", "IS1", "IS5", "LS1", "LS5"]
 
 e0_pattern = re.compile(r"E0=\s*(-?\.\d+E[+-]?\d+)")
@@ -274,7 +274,7 @@ for dir in dirs:
     df.loc['ooh-o', ['#H', '#O', '#OH', '#OOH']] = [0, 1, 0, 1]
     df.loc['oohooh', ['#H', '#O', '#OH', '#OOH']] = [0, 0, 0, 2]
     df.loc['ooh-ooh', ['#H', '#O', '#OH', '#OOH']] = [0, 0, 0, 2]
-
+    
     df['G'] = df['E'] + dgh * df['#H'] + dgo * df['#O'] + dgoh * df['#OH'] + dgooh * df['#OOH']
     df['dG'] = df['G'] - df.loc['clean', 'E'] - gh * df['#H'] - go * df['#O'] - goh * df['#OH'] - gooh * df['#OOH']
     df.loc['vac', 'dG'] += bulk_metal
@@ -284,15 +284,15 @@ for dir in dirs:
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
-        overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
-        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
+        # overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
+        # overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
     elif A == '2' and B == 'Co':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
-        overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
-        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
+        # overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
+        # overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
     elif A == '3' and B == 'Mo':
         overpotential('o', 'oho', 'oo', ('oooh', 'ooho'), df, OER, ORR)
 
