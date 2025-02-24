@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navigate through specified directories to find and submit jobs based on energy values.
-for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/1_Fe/*/; do
+for dir in /pscratch/sd/j/jiuy97/6_MNC/pourbaix/*_*/*/; do
     IFS='/' read -r -a path <<< "$dir"
     ads=${path[-1]}
     numb=$(echo "${path[-2]}" | cut -d'_' -f1)
