@@ -11,10 +11,12 @@ from matplotlib.ticker import FormatStrFormatter
 dirs = ["/pscratch/sd/j/jiuy97/6_MNC/pourbaix/1_Fe/",
         "/pscratch/sd/j/jiuy97/6_MNC/pourbaix/2_Co/",
         "/pscratch/sd/j/jiuy97/6_MNC/pourbaix/3_Mo/"]
-main_dirs = ["clean", "mh", "nh", "oh", "o", 
+main_dirs = ["clean", "mh", "nh", "oh", "o",
              "ohoh", "oh-oh", "ohooh", "oohoh", "oh-ooh", "ooh-oh",
              "ooh", "oho", "oh-o", "o-oh", "oo", "o-o",
-             "oooh", "ooho", "o-ooh", "ooh-o", "oohooh", "ooh-ooh"]
+             "oooh", "ooho", "o-ooh", "ooh-o", "oohooh", "ooh-ooh",
+             "oo", "oo-oo", "oo-ohh", "oo-o", "oo-oh", "oo-ooh",
+             "ohh", "ohh-oo", "ohh-ohh", "ohh-o", "ohh-oh", "ohh-ooh",]
 sub_dirs = ["HS1", "HS5", "IS1", "IS5", "LS1", "LS5"]
 
 e0_pattern = re.compile(r"E0=\s*(-?\.\d+E[+-]?\d+)")
@@ -282,15 +284,15 @@ for dir in dirs:
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
-        overpotential('oo', ('oo-oh', 'oh-oo'), ('oo-o', 'o-oo'), ('oo-ooh', 'ooh-oo'), df, OER, ORR)
-        overpotential('ohh', ('ohh-oh', 'oh-ohh'), ('ohh-o', 'o-ohh'), ('ohh-ooh', 'ooh-ohh'), df, OER, ORR)
+        overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh'), df, OER, ORR)
+        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh'), df, OER, ORR)
     elif A == '2' and B == 'Co':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
-        overpotential('oo', ('oo-oh', 'oh-oo'), ('oo-o', 'o-oo'), ('oo-ooh', 'ooh-oo'), df, OER, ORR)
-        overpotential('ohh', ('ohh-oh', 'oh-ohh'), ('ohh-o', 'o-ohh'), ('ohh-ooh', 'ooh-ohh'), df, OER, ORR)
+        overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh'), df, OER, ORR)
+        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh'), df, OER, ORR)
     elif A == '3' and B == 'Mo':
         overpotential('o', 'oho', 'oo', ('oooh', 'ooho'), df, OER, ORR)
 
