@@ -270,7 +270,7 @@ def overpotential_orr(ints, df, ORR):
     oo_tag = False
     for i, intt in enumerate(ints):
         # print(dG[i], ints[i], ints[(i+1) % len(ints)])
-        if oo_tag == False and (ints[i] == 'oo' or re.match(r"oo-*", ints[i])):
+        if oo_tag == False and (ints[i] == 'oo' or re.match(r"oo-.*", ints[i])):
             oo_tag = True
             print('is this?: ', ints[i])
         else:
