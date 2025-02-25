@@ -254,18 +254,20 @@ def overpotential_orr(int0, int1, int2, int3, int4, df, ORR_O2):
                 ints[i] = int[0]
             else:
                 ints[i] = int[1]
-        # if ints[i] == 'oo' or re.match(r"oo-.*", ints[i]):
-        #     df.loc[ints[i], 'dG'] = df.loc[ints[i], 'dG'] + go2 - 2*go
+
     int0, int1, int2, int3, int4 = ints
     
     dG = np.zeros(5)
-    # for i in range(5):
-    #     print(ints[i], df.loc[ints[i], 'dG'])
+
     dG[0] = df.loc[int1, 'dG'] - df.loc[int0, 'dG']
     dG[1] = df.loc[int2, 'dG'] - df.loc[int1, 'dG']
     dG[2] = df.loc[int3, 'dG'] - df.loc[int2, 'dG']
     dG[3] = df.loc[int4, 'dG'] - df.loc[int3, 'dG']
     dG[4] = -4.92 - dG[0] - dG[1] - dG[2] - dG[3]
+    for i in range(5):
+        # print(ints[i], df.loc[ints[i], 'dG'])
+        if ints[i] == 'oo' or re.match(r"oo-.*", ints[i]):
+            dG[i] -= 1.23
     # print(ints, dG)
     
     if any(np.isnan(value) for value in dG):
