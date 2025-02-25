@@ -400,9 +400,13 @@ for dir in dirs:
         
         overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR)
         overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR)
+        overpotential_orr(['ooh', 'oo-ooh', 'oo-o', 'oo-oh', 'oo'], df, ORR)
+        overpotential_orr(['oo-ooh', 'oo-o', 'oo-oh', 'oo', 'oo-oo'], df, ORR)
         overpotential_orr([('oh-ooh', 'ooh-oh'), 'ooh', 'o', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr([('ooh-oh', 'oh-ooh'), 'ooh', 'oo-ooh', 'oo-o', 'oo-oh'], df, ORR)
         overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'o', 'oh', 'oo-oh'], df, ORR)
         overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR)
+
     elif A == '2' and B == 'Co':
         overpotential(['clean', 'oh', 'o', 'ooh'], df, OER, ORR)
         overpotential(['oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh')], df, OER, ORR)
@@ -413,6 +417,10 @@ for dir in dirs:
         overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR)
         overpotential_orr(['ooh', 'oo-ooh', 'oo-o', 'oo-oh', 'oo'], df, ORR)
         overpotential_orr(['oo-ooh', 'oo-o', 'oo-oh', 'oo', 'oo-oo'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), 'ooh', 'o', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr([('ooh-oh', 'oh-ooh'), 'ooh', 'oo-ooh', 'oo-o', 'oo-oh'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'o', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR)
     elif A == '3' and B == 'Mo':
         overpotential(['o', 'oho', 'oo', ('oooh', 'ooho')], df, OER, ORR)
         
