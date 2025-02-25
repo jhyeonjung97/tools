@@ -238,8 +238,6 @@ def overpotential(ints, df, OER, ORR):
     ORR['dg4'].append(1.23-dG[0])
     ORR['overP'].append(overP_orr)
     ORR['onsetP'].append(onsetP_orr)
-    ORR['hidden_int'].append(None)
-    ORR['hidden_dg'].append(None)
     
 for dir in dirs:
     os.chdir(dir)
