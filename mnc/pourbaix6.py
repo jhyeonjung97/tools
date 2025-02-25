@@ -291,7 +291,7 @@ def overpotential_orr(ints, df, ORR):
         else:
             filtered_dG.append(dG[i-1])
             filtered_ints.append(ints[i])   
-            
+    filtered_dG = [filtered_dG[1], filtered_dG[2], filtered_dG[3], filtered_dG[0]]
 
     print(hidden_dg, hidden_int)
     print(filtered_dG)
