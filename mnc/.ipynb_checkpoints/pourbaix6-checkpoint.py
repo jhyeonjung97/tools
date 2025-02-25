@@ -274,7 +274,7 @@ def overpotential_orr(ints, df, ORR):
         if oo_tag == False and (ints[i] == 'oo' or re.match(r"oo-.*", ints[i])):
             oo_tag = True
         else:
-            filtered_dG.append(dG[i-1])
+            filtered_dG.append(dG[i])
             filtered_ints.append(ints[i])
     print(filtered_dG)
     print(filtered_ints)
