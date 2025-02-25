@@ -258,10 +258,10 @@ def overpotential_orr(int0, int1, int2, int3, int4, df, ORR):
             df.loc[ints[i], 'dG'] += go2
             
     dG = np.zeros(5)
-    dG[0] = df.loc[int2, 'dG'] - df.loc[int1, 'dG']
-    dG[1] = df.loc[int3, 'dG'] - df.loc[int2, 'dG']
-    dG[2] = df.loc[int4, 'dG'] - df.loc[int3, 'dG']
-    dG[3] = df.loc[int5, 'dG'] - df.loc[int4, 'dG']
+    dG[0] = df.loc[int1, 'dG'] - df.loc[int0, 'dG']
+    dG[1] = df.loc[int2, 'dG'] - df.loc[int1, 'dG']
+    dG[2] = df.loc[int3, 'dG'] - df.loc[int2, 'dG']
+    dG[3] = df.loc[int4, 'dG'] - df.loc[int3, 'dG']
     dG[4] = -4.92 - dG[0] - dG[1] - dG[2] - dG[3]
     print(ints, dG)
 #     if any(np.isnan(value) for value in [dG12, dG23, dG34, dG45, dG51]):
