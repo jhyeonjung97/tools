@@ -201,7 +201,8 @@ def dg(i, x, y):
           + surfs[i][2] * addO(x, y) 
           + surfs[i][3] * addOH(x, y) 
           + surfs[i][4] * addOOH(x, y)
-          + surfs[i][5] * addO2(x, y))
+          + surfs[i][5] * addH2O(x, y)
+          + surfs[i][6] * addO2(x, y))
     if i == 0 and surfs[i][1] == 2:
         return dg + bulk_metal
     return dg
@@ -269,42 +270,51 @@ for dir in dirs:
         else:
             df.loc[main_dir, 'E'] = min_e0
     
-    df.loc['vac', ['#H', '#O', '#OH', '#OOH', '#O2']] = [2, 0, 0, 0, 0]
-    df.loc['clean', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 0, 0, 0] # [energy, #Hs, #Os, #OHs, #OOHs]
-    df.loc['mh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [1, 0, 0, 0, 0]
-    df.loc['nh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [1, 0, 0, 0, 0]
-    df.loc['o', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 1, 0, 0, 0]
-    df.loc['oh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 1, 0, 0]
-    df.loc['ohoh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 2, 0, 0]
-    df.loc['oh-oh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 2, 0, 0]
-    df.loc['ohooh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 1, 1, 0]
-    df.loc['oohoh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 1, 1, 0]
-    df.loc['oh-ooh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 1, 1, 0]
-    df.loc['ooh-oh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 1, 1, 0]
-    df.loc['ooh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 0, 1, 0]
-    df.loc['oho', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 1, 1, 0, 0]
-    df.loc['oh-o', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 1, 1, 0, 0]
-    df.loc['o-oh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 1, 1, 0, 0]
-    df.loc['oo', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 2, 0, 0, 0]
-    df.loc['o-o', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 2, 0, 0, 0]
-    df.loc['oooh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 1, 0, 1, 0]
-    df.loc['ooho', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 1, 0, 1, 0]
-    df.loc['o-ooh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 1, 0, 1, 0]
-    df.loc['ooh-o', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 1, 0, 1, 0]
-    df.loc['oohooh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 0, 2, 0]
-    df.loc['ooh-ooh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 0, 2, 0]
+    df.loc['vac', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [2, 0, 0, 0, 0, 0]
+    df.loc['clean', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 0, 0, 0, 0] # [energy, #Hs, #Os, #OHs, #OOHs]
+    df.loc['mh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [1, 0, 0, 0, 0, 0]
+    df.loc['nh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [1, 0, 0, 0, 0, 0]
+    df.loc['o', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 1, 0, 0, 0, 0]
+    df.loc['oh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 1, 0, 0, 0]
+    df.loc['ohoh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 2, 0, 0, 0]
+    df.loc['oh-oh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 2, 0, 0, 0]
+    df.loc['ohooh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 1, 1, 0, 0]
+    df.loc['oohoh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 1, 1, 0, 0]
+    df.loc['oh-ooh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 1, 1, 0, 0]
+    df.loc['ooh-oh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 1, 1, 0, 0]
+    df.loc['ooh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 0, 1, 0, 0]
+    df.loc['oho', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 1, 1, 0, 0, 0]
+    df.loc['oh-o', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 1, 1, 0, 0, 0]
+    df.loc['o-oh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 1, 1, 0, 0, 0]
+    df.loc['oo', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 2, 0, 0, 0, 0]
+    df.loc['o-o', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 2, 0, 0, 0, 0]
+    df.loc['oooh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 1, 0, 1, 0, 0]
+    df.loc['ooho', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 1, 0, 1, 0, 0]
+    df.loc['o-ooh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 1, 0, 1, 0, 0]
+    df.loc['ooh-o', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 1, 0, 1, 0, 0]
+    df.loc['oohooh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 0, 2, 0, 0]
+    df.loc['ooh-ooh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 0, 2, 0, 0]
     
-    df.loc['oo', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 0, 0, 1]
-    df.loc['oo-oo', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 0, 0, 2]
-    df.loc['oo-o', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 1, 0, 0, 1]
-    df.loc['oo-oh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 1, 0, 1]
-    df.loc['oo-ooh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 0, 1, 1]
+    df.loc['oo', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 0, 0, 0, 1]
+    df.loc['oo-oo', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 0, 0, 0, 2]
+    df.loc['oo-ohh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 0, 0, 1, 1]
+    df.loc['oo-o', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 1, 0, 0, 0, 1]
+    df.loc['oo-oh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 1, 0, 0, 1]
+    df.loc['oo-ooh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 0, 1, 0, 1]
+    
+    df.loc['ohh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 0, 0, 1, 0]
+    df.loc['ohh-oo', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 0, 0, 1, 1]
+    df.loc['ohh-ohh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 0, 0, 2, 0]
+    df.loc['ohh-o', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 1, 0, 0, 1, 0]
+    df.loc['ohh-oh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 1, 0, 1, 0]
+    df.loc['ohh-ooh', ['#H', '#O', '#OH', '#OOH', '#H2O', '#O2']] = [0, 0, 0, 1, 1, 0]
     
     df['G'] = (df['E'] 
                + dgh * df['#H'] 
                + dgo * df['#O'] 
                + dgoh * df['#OH'] 
                + dgooh * df['#OOH'] 
+               + dgh2o * df['#H2O'] 
                + dgo2 * df['#O2'])
     df['dG'] = (df['G'] 
                 - df.loc['clean', 'E'] 
@@ -312,6 +322,7 @@ for dir in dirs:
                 - go * df['#O'] 
                 - goh * df['#OH'] 
                 - gooh * df['#OOH'] 
+                - gh2o * df['#H2O'] 
                 - go2 * df['#O2'])
     df.loc['vac', 'dG'] += bulk_metal
     
@@ -321,46 +332,55 @@ for dir in dirs:
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
         overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
+        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
     elif A == '2' and B == 'Co':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
         overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
+        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
     elif A == '3' and B == 'Mo':
         overpotential('o', 'oho', 'oo', ('oooh', 'ooho'), df, OER, ORR)
 
     # Define surfaces with extracted E0 values
     surfs = [
-        df.loc['vac', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),
-        df.loc['clean', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(), #1
-        df.loc['mh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(), #2
-        df.loc['nh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(), #3
-        df.loc['oh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(), #4
-        df.loc['oh-oh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(), #5
-        df.loc['o-oh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(), #6
-        df.loc['o-o', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(), #7
-        df.loc['o', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(), #8
-        df.loc['ohoh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(), #9
-        # df.loc['ohooh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),
-        # df.loc['oohoh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),
-        # df.loc['oh-ooh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),
-        # df.loc['ooh-oh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        # df.loc['ooh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),
-        df.loc['oho', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(), #10
-        # df.loc['oh-o', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        # df.loc['oo', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        # df.loc['oooh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        # df.loc['ooho', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        # df.loc['o-ooh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        # df.loc['ooh-o', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        # df.loc['oohooh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        # df.loc['ooh-ooh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        df.loc['oo', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        df.loc['oo-oo', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        df.loc['oo-o', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        df.loc['oo-oh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        # df.loc['oo-ooh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
+        df.loc['vac', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),
+        df.loc['clean', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(), #1
+        df.loc['mh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(), #2
+        df.loc['nh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(), #3
+        df.loc['oh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(), #4
+        df.loc['oh-oh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(), #5
+        df.loc['o-oh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(), #6
+        df.loc['o-o', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(), #7
+        df.loc['o', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(), #8
+        df.loc['ohoh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(), #9
+        # df.loc['ohooh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),
+        # df.loc['oohoh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),
+        # df.loc['oh-ooh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),
+        # df.loc['ooh-oh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        # df.loc['ooh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),
+        df.loc['oho', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(), #10
+        # df.loc['oh-o', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        # df.loc['oo', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        # df.loc['oooh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        # df.loc['ooho', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        # df.loc['o-ooh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        # df.loc['ooh-o', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        # df.loc['oohooh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        # df.loc['ooh-ooh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        df.loc['oo', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        df.loc['oo-oo', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        df.loc['oo-ohh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        df.loc['oo-o', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        df.loc['oo-oh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        # df.loc['oo-ooh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        df.loc['ohh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        df.loc['ohh-oo', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        df.loc['ohh-ohh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        df.loc['ohh-o', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        df.loc['ohh-oh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
+        # df.loc['ohh-ooh', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),  
     ]
         
     surfs = [surf for surf in surfs if not any(pd.isna(x) for x in surf)]
@@ -399,7 +419,7 @@ for dir in dirs:
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     for i in range(len(uniquesurf)):
         k = uniquesurf[i]
-        label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i O2-%i)" % (k, surfs[k][1], surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
+        label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i H2O-%i O2-%i)" % (k, surfs[k][1], surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5], surfs[k][6])
         plt.fill_between(pH2, crossover[i] - pH2 * const, crossover[i + 1] - pH2 * const, 
                          facecolor=color[k], alpha=0.3, lw=0.5, edgecolor='black')
         plt.plot([], [], color=color[k], alpha=0.3, linewidth=5, label=label)
@@ -440,7 +460,7 @@ for dir in dirs:
     ax.set_ylabel(r'$\Delta$G (kJ/mol)', fontsize='large')
     xx = np.arange(-1.00, 2.55, 0.01)
     for k in range(nsurfs):
-        label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i O2-%i)" % (k, surfs[k][1], surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
+        label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i H2O-%i O2-%i)" % (k, surfs[k][1], surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5], surfs[k][6])
         dg_value = dg(k, 0, xx)
         if dg_value is not None:
             ax.plot(xx, dg_value * kjmol, '-', lw=1, c=color[k], label=label)
@@ -458,6 +478,7 @@ for dir in dirs:
     df['#O'] = df['#O'].astype(int)
     df['#OH'] = df['#OH'].astype(int)
     df['#OOH'] = df['#OOH'].astype(int)
+    df['#H2O'] = df['#H2O'].astype(int)
     df['#O2'] = df['#O2'].astype(int)
     df.to_csv(f'{figure_path}/{A}{B}_energies_oo.csv', sep=',') #, index=False)
     df.to_csv(f'{figure_path}/{A}{B}_energies_oo.tsv', sep='\t', float_format='%.2f')
