@@ -422,7 +422,7 @@ for dir in dirs:
     plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     for i in range(len(uniquesurf)):
         k = uniquesurf[i]
-        label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][1], surfs[k][2], surfs[k][3], surfs[k][4])
+        label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i H2O-%i O2-%i)" % (k, surfs[k][1], surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5], surfs[k][6])
         plt.fill_between(pH2, crossover[i] - pH2 * const, crossover[i + 1] - pH2 * const, 
                          facecolor=color[k], alpha=0.3, lw=0.5, edgecolor='black')
         plt.plot([], [], color=color[k], alpha=0.3, linewidth=5, label=label)
@@ -545,7 +545,7 @@ for dir in dirs:
     ax.set_ylabel(r'$\Delta$G (kJ/mol)', fontsize='large')
     xx = np.arange(-1.00, 2.55, 0.01)
     for k in range(nsurfs):
-        label = r"S$_{%i}$(H: %i O: %i OH: %i OOH: %i)" % (k, surfs[k][1], surfs[k][2], surfs[k][3], surfs[k][4])
+        label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i H2O-%i O2-%i)" % (k, surfs[k][1], surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5], surfs[k][6])
         dg_value = dg(k, 0, xx)
         if dg_value is not None:
             ax.plot(xx, dg_value * kjmol, '-', lw=1, c=color[k], label=label)
@@ -567,6 +567,8 @@ for dir in dirs:
     df['#O'] = df['#O'].astype(int)
     df['#OH'] = df['#OH'].astype(int)
     df['#OOH'] = df['#OOH'].astype(int)
+    df['#H2O'] = df['#H2O'].astype(int)
+    df['#O2'] = df['#O2'].astype(int)
     # df['E'] = df['E'].round(2)
     # df['G'] = df['G'].round(2)
     # df['dG'] = df['dG'].round(2)
