@@ -267,7 +267,7 @@ def overpotential_orr(ints, df, ORR):
     filtered_dG = []
     filtered_ints = []
     hidden_int = None
-    for i in len(ints):
+    for i in range(len(ints)):
         if hidden_int == None and (ints[i] == 'oo' or re.match(r"oo-.*", ints[i])):
             hidden_dg = dG[i]
             hidden_int = ints[i]
