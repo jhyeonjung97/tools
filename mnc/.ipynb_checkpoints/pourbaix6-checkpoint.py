@@ -124,7 +124,7 @@ color = ['darkgray', ##
 pH2 = np.arange(0, 14.01, 0.01)
 
 figure_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
-metal_path = '~/bin/tools/mnc/metals_oo.tsv'
+metal_path = '~/bin/tools/mnc/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 metals = ['Fe', 'Co', 'Mo']
 
