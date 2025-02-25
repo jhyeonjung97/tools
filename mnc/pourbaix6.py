@@ -241,6 +241,7 @@ def overpotential(int1, int2, int3, int4, df, OER, ORR):
     ORR['int1'].append(int4); ORR['int2'].append(int3); ORR['int3'].append(int2); ORR['int4'].append(int1)
     ORR['dg1'].append(1.23-dG41+1.23); ORR['dg2'].append(1.23-dG34+1.23); ORR['dg3'].append(1.23-dG23+1.23); ORR['dg4'].append(1.23-dG12+1.23)
     ORR['overP'].append(overP_orr); ORR['onsetP'].append(onsetP_orr)
+    ORR['hidden_int'].append(None); ORR['hidden_dg'].append(onsetP_orr)
     
 def overpotential_orr(ints, df, ORR):
     for i in range(len(ints)):
