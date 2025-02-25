@@ -289,15 +289,15 @@ def overpotential_orr(ints, df, ORR):
         onsetP_orr = max(filtered_dG)
         overP_orr = 1.23 - onsetP_orr
         
-    ORR['int1'].append(ints[0])
-    ORR['int2'].append(ints[1])
-    ORR['int3'].append(ints[2])
-    ORR['int4'].append(ints[3])
+    ORR['int1'].append(filtered_ints[0])
+    ORR['int2'].append(filtered_ints[1])
+    ORR['int3'].append(filtered_ints[2])
+    ORR['int4'].append(filtered_ints[3])
     
-    ORR['dg1'].append(dG[0])
-    ORR['dg2'].append(dG[1])
-    ORR['dg3'].append(dG[2])
-    ORR['dg4'].append(dG[3])
+    ORR['dg1'].append(filtered_dG[0])
+    ORR['dg2'].append(filtered_dG[1])
+    ORR['dg3'].append(filtered_dG[2])
+    ORR['dg4'].append(filtered_dG[3])
     
     ORR['hidden_dg'].append(hidden_dg)
     ORR['hidden_int'].append(hidden_int)
