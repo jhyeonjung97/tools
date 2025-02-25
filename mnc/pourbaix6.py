@@ -259,7 +259,8 @@ def overpotential_orr(int0, int1, int2, int3, int4, df, ORR):
     int0, int1, int2, int3, int4 = ints
     
     dG = np.zeros(5)
-    print(ints, dG)
+    for i in range(4):
+        print(ints[i], df.loc[ints[i], 'dG'])
     dG[0] = df.loc[int1, 'dG'] - df.loc[int0, 'dG']
     dG[1] = df.loc[int2, 'dG'] - df.loc[int1, 'dG']
     dG[2] = df.loc[int3, 'dG'] - df.loc[int2, 'dG']
