@@ -277,7 +277,6 @@ def overpotential_orr(ints, df, ORR):
         df.loc[ints[4], 'dG'] - df.loc[ints[3], 'dG'],
     ]
     dG.append(-4.92 - sum(dG))
-    dG = [dG[4], dG[0], dG[1], dG[2], dG[3]]
     
     filtered_dG = []
     filtered_ints = []
