@@ -71,7 +71,6 @@ gh2 = h2 + zpeh2 - tsh2 + cvh2
 gh = gh2 / 2
 go = gh2o - gh2
 go2 = 2*gh2o - 2*gh2 + 4.92
-print(go, go2/2)
 goh = gh2o - gh2 / 2
 gooh = 2 * gh2o - 1.5 * gh2
 
@@ -454,6 +453,7 @@ for dir in dirs:
     print(f"Figure saved as {A}{B}_pourbaix_oo.png")
     plt.close()
 
+    print(df)
     df['#H'] = df['#H'].astype(int)
     df['#O'] = df['#O'].astype(int)
     df['#OH'] = df['#OH'].astype(int)
