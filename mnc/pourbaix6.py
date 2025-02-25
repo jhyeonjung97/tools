@@ -204,44 +204,59 @@ def dg(i, x, y):
         return dg + bulk_metal
     return dg
         
-def overpotential(int1, int2, int3, int4, df, OER, ORR):
-    ints = [int1, int2, int3, int4]
-    for i, int in enumerate(ints):
-        if isinstance(int, tuple):
-            if np.isnan(df.loc[int[1], 'E']):
-                ints[i] = int[0]
-            elif np.isnan(df.loc[int[0], 'E']):
-                ints[i] = int[1]
-            elif df.loc[int[0], 'E'] < df.loc[int[1], 'E']:
-                ints[i] = int[0]
+def overpotential(ints, df, OER, ORR):
+    for i in range(len(ints)):
+        if isinstance(ints[i], tuple):
+            if np.isnan(df.loc[ints[i][1], 'E']):
+                ints[i] = ints[i][0]
+            elif np.isnan(df.loc[ints[i][0], 'E']):
+                ints[i] = ints[i][1]
+            elif df.loc[int[0], 'E'] < df.loc[ints[i][1], 'E']:
+                ints[i] = ints[i][0]
             else:
-                ints[i] = int[1]
-            # print(int, ints[i])
-    int1, int2, int3, int4 = ints
+                ints[i] = ints[i][1]
     
-    dG12 = df.loc[int2, 'dG'] - df.loc[int1, 'dG']
-    dG23 = df.loc[int3, 'dG'] - df.loc[int2, 'dG']
-    dG34 = df.loc[int4, 'dG'] - df.loc[int3, 'dG']
-    dG41 = 4.92 - dG12 - dG23 - dG34
-    if any(np.isnan(value) for value in [dG12, dG23, dG34, dG41]):
+    dG = [
+        df.loc[ints[1], 'dG'] - df.loc[ints[0], 'dG'],
+        df.loc[ints[2], 'dG'] - df.loc[ints[1], 'dG'],
+        df.loc[ints[3], 'dG'] - df.loc[ints[2], 'dG'],
+    ]
+    dG.append(4.92 - dG[0] - dG[1] - dG[2])
+
+    if any(np.isnan(value) for value in dG):
         onsetP_oer = np.nan
         overP_oer = np.nan
         onsetP_orr = np.nan
         overP_orr = np.nan
     else:
-        onsetP_oer = max(dG12, dG23, dG34, dG41)
+        onsetP_oer = max(dG)
         overP_oer = onsetP_oer - 1.23
-        onsetP_orr = min(dG12, dG23, dG34, dG41)
+        onsetP_orr = min(dG)
         overP_orr = 1.23 - onsetP_orr
         
-    OER['int1'].append(int1); OER['int2'].append(int2); OER['int3'].append(int3); OER['int4'].append(int4)
-    OER['dg1'].append(dG12); OER['dg2'].append(dG23); OER['dg3'].append(dG34); OER['dg4'].append(dG41)
-    OER['overP'].append(overP_oer); OER['onsetP'].append(onsetP_oer)
+    OER['int1'].append(ints[0])
+    OER['int2'].append(ints[1])
+    OER['int3'].append(ints[2])
+    OER['int4'].append(ints[3])
+    OER['dg1'].append(dG[0])
+    OER['dg2'].append(dG[1])
+    OER['dg3'].append(dG[2])
+    OER['dg4'].append(dG[3])
+    OER['overP'].append(overP_oer)
+    OER['onsetP'].append(onsetP_oer)
     
-    ORR['int1'].append(int4); ORR['int2'].append(int3); ORR['int3'].append(int2); ORR['int4'].append(int1)
-    ORR['dg1'].append(1.23-dG41+1.23); ORR['dg2'].append(1.23-dG34+1.23); ORR['dg3'].append(1.23-dG23+1.23); ORR['dg4'].append(1.23-dG12+1.23)
-    ORR['overP'].append(overP_orr); ORR['onsetP'].append(onsetP_orr)
-    ORR['hidden_int'].append(None); ORR['hidden_dg'].append(None)
+    ORR['int1'].append(ints[0])
+    ORR['int2'].append(ints[3])
+    ORR['int3'].append(ints[2])
+    ORR['int4'].append(ints[1])
+    ORR['dg1'].append(dG[3])
+    ORR['dg2'].append(dG[2])
+    ORR['dg3'].append(dG[1])
+    ORR['dg4'].append(dG[0])
+    ORR['overP'].append(overP_orr)
+    ORR['onsetP'].append(onsetP_orr)
+    ORR['hidden_int'].append(None)
+    ORR['hidden_dg'].append(None)
     
 def overpotential_orr(ints, df, ORR):
     for i in range(len(ints)):
@@ -376,10 +391,10 @@ for dir in dirs:
     df.loc['vac', 'dG'] += bulk_metal
     
     if A == '1' and B == 'Fe':
-        overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
-        overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
-        overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
-        overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
+        overpotential(['clean', 'oh', 'o', 'ooh'], df, OER, ORR)
+        overpotential(['oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh')], df, OER, ORR)
+        overpotential(['o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh')], df, OER, ORR)
+        overpotential(['oh', 'ohoh', 'oho', ('ohooh', 'oohoh')], df, OER, ORR)
         
         overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR)
         overpotential_orr([('oh-ooh', 'ooh-oh'), 'ooh', 'o', 'oh', 'oo-oh'], df, ORR)
@@ -387,10 +402,10 @@ for dir in dirs:
         overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR)
         overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR)
     elif A == '2' and B == 'Co':
-        overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
-        overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
-        overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
-        overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
+        overpotential(['clean', 'oh', 'o', 'ooh'], df, OER, ORR)
+        overpotential(['oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh')], df, OER, ORR)
+        overpotential(['o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh')], df, OER, ORR)
+        overpotential(['oh', 'ohoh', 'oho', ('ohooh', 'oohoh')], df, OER, ORR)
         
         overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR)
         overpotential_orr([('oh-ooh', 'ooh-oh'), 'ooh', 'o', 'oh', 'oo-oh'], df, ORR)
@@ -398,7 +413,7 @@ for dir in dirs:
         overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR)
         overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR)
     elif A == '3' and B == 'Mo':
-        overpotential('o', 'oho', 'oo', ('oooh', 'ooho'), df, OER, ORR)
+        overpotential(['o', 'oho', 'oo', ('oooh', 'ooho')], df, OER, ORR)
         
     # Define surfaces with extracted E0 values
     surfs = [
