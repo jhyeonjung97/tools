@@ -372,7 +372,7 @@ for dir in dirs:
     df.loc['ooh-ooh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 0, 2, 0]
     
     df.loc['oo', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 0, 0, 1]
-    # df.loc['oo-oo', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 0, 0, 2]
+    df.loc['oo-oo', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 0, 0, 2]
     df.loc['oo-o', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 1, 0, 0, 1]
     df.loc['oo-oh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 1, 0, 1]
     df.loc['oo-ooh', ['#H', '#O', '#OH', '#OOH', '#O2']] = [0, 0, 0, 1, 1]
@@ -451,7 +451,7 @@ for dir in dirs:
         # df.loc['oohooh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
         # df.loc['ooh-ooh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
         df.loc['oo', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
-        df.loc['oo-oo', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
+        # df.loc['oo-oo', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
         df.loc['oo-o', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
         df.loc['oo-oh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
         # df.loc['oo-ooh', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),  
