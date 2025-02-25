@@ -281,11 +281,11 @@ def overpotential_orr(int0, int1, int2, int3, int4, df, ORR_O2):
     ORR_O2['int4'].append(int3)
     ORR_O2['int5'].append(int4)
     
-    ORR_O2['dg1'].append(1.23-dG[0]+1.23)
-    ORR_O2['dg2'].append(1.23-dG[1]+1.23)
-    ORR_O2['dg3'].append(1.23-dG[2]+1.23)
-    ORR_O2['dg4'].append(1.23-dG[3]+1.23)
-    ORR_O2['dg5'].append(1.23-dG[4]+1.23)
+    ORR_O2['dg1'].append(dG[0]+1.23)
+    ORR_O2['dg2'].append(dG[1]+1.23)
+    ORR_O2['dg3'].append(dG[2]+1.23)
+    ORR_O2['dg4'].append(dG[3]+1.23)
+    ORR_O2['dg5'].append(dG[4]+1.23)
     
     ORR_O2['overP'].append(overP_orr)
     ORR_O2['onsetP'].append(onsetP_orr)
