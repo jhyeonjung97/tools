@@ -255,10 +255,10 @@ def overpotential_orr(ints, df, ORR):
                 ints[i] = intt[1]
 
     dG = [
+        df.loc[ints[0], 'dG'] - df.loc[ints[4], 'dG'],
         df.loc[ints[1], 'dG'] - df.loc[ints[0], 'dG'],
         df.loc[ints[2], 'dG'] - df.loc[ints[1], 'dG'],
         df.loc[ints[3], 'dG'] - df.loc[ints[2], 'dG'],
-        df.loc[ints[4], 'dG'] - df.loc[ints[3], 'dG'],
     ]
     dG.append(-4.92 - sum(dG))  # Equivalent to `dG[4] = -4.92 - (sum of previous dGs)`
     dG = np.array(dG) + 1.23  
