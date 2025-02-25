@@ -270,9 +270,10 @@ def overpotential_orr(ints, df, ORR):
         if not (ints[(i+1) % len(ints)] == 'oo' or re.match(r"oo-*", ints[(i+1) % len(ints)])):
             filtered_dG.append(dG[i])
             filtered_int.append(ints[i])
+            print(filtered_dG)
+            print(filtered_int)
     
-    print(filtered_dG)
-    print(filtered_int)
+
 
 #     if any(np.isnan(value) for value in filtered_dG):
 #         onsetP_orr = np.nan
