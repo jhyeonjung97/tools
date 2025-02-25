@@ -412,7 +412,7 @@ for dir in dirs:
         overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR)
         overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR)
         overpotential_orr(['ooh', 'oo-ooh', 'oo-o', 'oo-oh', 'oo'], df, ORR)
-        overpotential_orr(['oo-oo', 'oo-ooh', 'oo-o', 'oo-oh', 'oo'], df, ORR)
+        overpotential_orr(['oo-ooh', 'oo-o', 'oo-oh', 'oo', 'oo-oo'], df, ORR)
     elif A == '3' and B == 'Mo':
         overpotential(['o', 'oho', 'oo', ('oooh', 'ooho')], df, OER, ORR)
         
