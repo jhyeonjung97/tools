@@ -106,19 +106,19 @@ color = ['darkgray', ##
          'pink', ##
          'plum', ##
          'navy',
-         'darkgray', ##
-         'cornflowerblue', ## 
-         'yellowgreen', 
-         'teal', 
-         'tan', ##
-         'salmon', ##
-         'forestgreen', 
-         'lightsteelblue', ##
-         'orange', 
-         'gold', 
-         'pink', ##
-         'plum', ##
-         'navy']
+         'blue', ##
+         'green', ## 
+         'red', 
+         'purple', 
+         'brown', ##
+         'gray', ##
+         'olive', 
+         'cyan', ##
+         'b', 
+         'g', 
+         'r', ##
+         'c', ##
+         'm']
 pH2 = np.arange(0, 14.01, 0.01)
 
 figure_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
@@ -279,8 +279,8 @@ def overpotential_orr(ints, df, ORR):
     ]
     dG.append(-4.92 - sum(dG))
     
-    print(dG)
-    print(ints)
+    # print(dG)
+    # print(ints)
     
     filtered_dG = []
     filtered_ints = []
@@ -294,9 +294,9 @@ def overpotential_orr(ints, df, ORR):
             filtered_ints.append(ints[i])   
     filtered_dG = [filtered_dG[1], filtered_dG[2], filtered_dG[3], filtered_dG[0]]
 
-    print(hidden_dg, hidden_int)
-    print(filtered_dG)
-    print(filtered_ints)
+    # print(hidden_dg, hidden_int)
+    # print(filtered_dG)
+    # print(filtered_ints)
     
     if any(np.isnan(value) for value in filtered_dG):
         onsetP_orr = np.nan
