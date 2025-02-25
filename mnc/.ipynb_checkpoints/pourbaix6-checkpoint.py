@@ -267,6 +267,7 @@ def overpotential_orr(int0, int1, int2, int3, int4, df, ORR_O2):
     for i in range(5):
         # print(ints[i], df.loc[ints[i], 'dG'])
         if ints[i] == 'oo' or re.match(r"oo-.*", ints[i]):
+            print(dG[i-1])
             dG[i-1] -= 1.23
     print(ints, dG)
     
