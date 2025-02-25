@@ -124,7 +124,7 @@ color = ['darkgray', ##
 pH2 = np.arange(0, 14.01, 0.01)
 
 figure_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
-metal_path = '~/bin/tools/mnc/metals.tsv'
+metal_path = '~/bin/tools/mnc/metals_oo.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 metals = ['Fe', 'Co', 'Mo']
 
@@ -469,8 +469,8 @@ for dir in dirs:
     plt.legend(loc='lower left', bbox_to_anchor=(0.0, 1.02), # borderaxespad=17, 
                ncol=1, labelspacing=0.3, handlelength=2, fontsize=10,
                fancybox=True, shadow=True)
-    plt.savefig(f'{figure_path}/{A}{B}_pourbaix_full.png', bbox_inches='tight')
-    print(f"Figure saved as {A}{B}_pourbaix_full.png")
+    plt.savefig(f'{figure_path}/{A}{B}_pourbaix_full_oo.png', bbox_inches='tight')
+    print(f"Figure saved as {A}{B}_pourbaix_full_oo.png")
     plt.close()
 
     plt.clf()
@@ -529,8 +529,8 @@ for dir in dirs:
     #     ax.text(0.2, ORR['onsetP'][2] - 0.34,
     #             r"S$_{11}$$\rightarrow$S$_{10}$$\rightarrow$S$_{8}$$\rightarrow$S$_{5}$: " + f"{ORR['overP'][2]:.2f} eV", 
     #             color='green', rotation=-9.5, fontsize=10)
-    plt.savefig(f'{figure_path}/{A}{B}_pourbaix_clean.png', bbox_inches='tight')
-    print(f"Figure saved as {A}{B}_pourbaix_clean.png")
+    plt.savefig(f'{figure_path}/{A}{B}_pourbaix_clean_oo.png', bbox_inches='tight')
+    print(f"Figure saved as {A}{B}_pourbaix_clean_oo.png")
     plt.close()
     
     plt.clf()
@@ -558,8 +558,8 @@ for dir in dirs:
     # plt.legend(loc='lower left', bbox_to_anchor=(0.0, 1.02), # borderaxespad=17, 
     #            ncol=2, columnspacing=1.0, labelspacing=0.3, handlelength=2, fontsize=10,
     #            fancybox=True, shadow=True)
-    plt.savefig(f'{figure_path}/{A}{B}_pourbaix.png', bbox_inches='tight')
-    print(f"Figure saved as {A}{B}_pourbaix.png")
+    plt.savefig(f'{figure_path}/{A}{B}_pourbaix_oo.png', bbox_inches='tight')
+    print(f"Figure saved as {A}{B}_pourbaix_oo.png")
     # plt.show()
     plt.close()
 
@@ -572,9 +572,9 @@ for dir in dirs:
     # df['E'] = df['E'].round(2)
     # df['G'] = df['G'].round(2)
     # df['dG'] = df['dG'].round(2)
-    df.to_csv(f'{figure_path}/{A}{B}_energies.csv', sep=',') #, index=False)
-    df.to_csv(f'{figure_path}/{A}{B}_energies.tsv', sep='\t', float_format='%.2f')
-    print(f"Data saved as {A}{B}_energies.png")
+    df.to_csv(f'{figure_path}/{A}{B}_energies_oo.csv', sep=',') #, index=False)
+    df.to_csv(f'{figure_path}/{A}{B}_energies_oo.tsv', sep='\t', float_format='%.2f')
+    print(f"Data saved as {A}{B}_energies_oo.png")
 
     OER_df = pd.DataFrame(OER)
     # OER_df['dg12'] = OER_df['dg12'].round(2)
@@ -583,9 +583,9 @@ for dir in dirs:
     # OER_df['dg41'] = OER_df['dg41'].round(2)
     # OER_df['overP'] = OER_df['overP'].round(2)
     # OER_df['onsetP'] = OER_df['onsetP'].round(2)
-    OER_df.to_csv(f'{figure_path}/{A}{B}_oer.csv', sep=',') #, index=False)
-    OER_df.to_csv(f'{figure_path}/{A}{B}_oer.tsv', sep='\t', float_format='%.2f')
-    print(f"Data saved as {A}{B}_oer.png")
+    OER_df.to_csv(f'{figure_path}/{A}{B}_oer_oo.csv', sep=',') #, index=False)
+    OER_df.to_csv(f'{figure_path}/{A}{B}_oer_oo.tsv', sep='\t', float_format='%.2f')
+    print(f"Data saved as {A}{B}_oer_oo.png")
 
     ORR_df = pd.DataFrame(ORR)
     # ORR_df['dg12'] = ORR_df['dg12'].round(2)
@@ -594,7 +594,7 @@ for dir in dirs:
     # ORR_df['dg41'] = ORR_df['dg41'].round(2)
     # ORR_df['overP'] = ORR_df['overP'].round(2)
     # ORR_df['onsetP'] = ORR_df['onsetP'].round(2)
-    ORR_df.to_csv(f'{figure_path}/{A}{B}_orr.csv', sep=',') #, index=False)
-    ORR_df.to_csv(f'{figure_path}/{A}{B}_orr.tsv', sep='\t', float_format='%.2f')
-    print(f"Data saved as {A}{B}_orr.png")
+    ORR_df.to_csv(f'{figure_path}/{A}{B}_orr_oo.csv', sep=',') #, index=False)
+    ORR_df.to_csv(f'{figure_path}/{A}{B}_orr_oo.tsv', sep='\t', float_format='%.2f')
+    print(f"Data saved as {A}{B}_orr_oo.png")
     
