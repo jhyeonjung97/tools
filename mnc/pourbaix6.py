@@ -254,8 +254,8 @@ def overpotential_orr(int0, int1, int2, int3, int4, df, ORR):
                 ints[i] = int[0]
             else:
                 ints[i] = int[1]
-        if ints[i] == 'oo' or re.match(r"oo-.*", ints[i]):
-            df.loc[ints[i], 'dG'] += 2*go
+        # if ints[i] == 'oo' or re.match(r"oo-.*", ints[i]):
+        #     df.loc[ints[i], 'dG'] += 2*go
     int0, int1, int2, int3, int4 = ints
     
     dG = np.zeros(5)
