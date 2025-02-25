@@ -262,8 +262,7 @@ def overpotential_orr(ints, df, ORR):
     ]
     dG.append(-4.92 - sum(dG))
     dG = np.array(dG) + 1.23  
-    print(dG)
-    print(ints)
+    dG = [dG[1], dG[2], dG[3], dG[4], dG[0]]
     
     filtered_dG = []
     filtered_ints = []
@@ -272,7 +271,6 @@ def overpotential_orr(ints, df, ORR):
         # print(dG[i], ints[i], ints[(i+1) % len(ints)])
         if oo_tag == False and (ints[i] == 'oo' or re.match(r"oo-.*", ints[i])):
             oo_tag = True
-            print('is this?: ', ints[i])
         else:
             filtered_dG.append(dG[i])
             filtered_ints.append(ints[i])
