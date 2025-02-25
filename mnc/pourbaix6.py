@@ -529,3 +529,6 @@ for dir in dirs:
     ORR_df.to_csv(f'{figure_path}/{A}{B}_orr_oo.tsv', sep='\t', float_format='%.2f')
     print(f"Data saved as {A}{B}_orr_oo.png")
     
+    ORR_O2_df = pd.DataFrame(ORR_O2)
+    ORR_O2_df.to_csv(f'{figure_path}/{A}{B}_oo.csv', sep=',') #, index=False)
+    ORR_O2_df.to_csv(f'{figure_path}/{A}{B}_oo.tsv', sep='\t', float_format='%.2f')    
