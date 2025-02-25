@@ -243,7 +243,7 @@ def overpotential(int1, int2, int3, int4, df, OER, ORR):
     ORR['overP'].append(overP_orr); ORR['onsetP'].append(onsetP_orr)
     
 def overpotential_orr(ints, df, ORR):
-    for i in len(ints):
+    for i in range(len(ints)):
         if isinstance(ints[i], tuple):
             if np.isnan(df.loc[ints[i][1], 'E']):
                 ints[i] = ints[i][0]
