@@ -259,7 +259,7 @@ def overpotential_orr(int0, int1, int2, int3, int4, df, ORR):
     int0, int1, int2, int3, int4 = ints
     
     dG = np.zeros(5)
-    for i in range(4):
+    for i in range(5):
         print(ints[i], df.loc[ints[i], 'dG'])
     # dG[0] = df.loc[int1, 'dG'] - df.loc[int0, 'dG']
     # dG[1] = df.loc[int2, 'dG'] - df.loc[int1, 'dG']
@@ -355,12 +355,18 @@ for dir in dirs:
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
         
+        # overpotential_orr('oo', 'ooh', 'o', 'oh', 'oo-oh', df, ORR)
+        # overpotential_orr('ooh', 'o', 'oh', 'oo-oh', ('oh-ooh', 'ooh-oh'), df, ORR)
+        # overpotential_orr('o', 'oh', 'oo-oh', ('ooh-oh', 'oh-ooh'), ('o-oh', 'oh-o'), df, ORR)
+        # overpotential_orr('oh', 'oo-oh', ('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', df, ORR)
+        # overpotential_orr('clean', 'oo', 'ooh', 'o', 'oh', df, ORR)
+
         overpotential_orr('oo', 'ooh', 'o', 'oh', 'oo-oh', df, ORR)
         overpotential_orr('ooh', 'o', 'oh', 'oo-oh', ('oh-ooh', 'ooh-oh'), df, ORR)
         overpotential_orr('o', 'oh', 'oo-oh', ('ooh-oh', 'oh-ooh'), ('o-oh', 'oh-o'), df, ORR)
         overpotential_orr('oh', 'oo-oh', ('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', df, ORR)
         overpotential_orr('clean', 'oo', 'ooh', 'o', 'oh', df, ORR)
-
+        
     elif A == '2' and B == 'Co':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
