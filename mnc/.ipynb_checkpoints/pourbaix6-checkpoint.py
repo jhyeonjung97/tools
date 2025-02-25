@@ -243,16 +243,16 @@ def overpotential(int1, int2, int3, int4, df, OER, ORR):
     ORR['overP'].append(overP_orr); ORR['onsetP'].append(onsetP_orr)
     
 def overpotential_orr(ints, df, ORR):
-    for i, intt in enumerate(ints):
-        if isinstance(intt, tuple):
-            if np.isnan(df.loc[intt[1], 'E']):
-                ints[i] = intt[0]
-            elif np.isnan(df.loc[intt[0], 'E']):
-                ints[i] = intt[1]
-            elif df.loc[intt[0], 'E'] < df.loc[intt[1], 'E']:
-                ints[i] = intt[0]
+    for i in len(ints):
+        if isinstance(ints[i], tuple):
+            if np.isnan(df.loc[ints[i][1], 'E']):
+                ints[i] = ints[i][0]
+            elif np.isnan(df.loc[ints[i][0], 'E']):
+                ints[i] = ints[i][1]
+            elif df.loc[ints[i][0], 'E'] < df.loc[ints[i][1], 'E']:
+                ints[i] = ints[i][0]
             else:
-                ints[i] = intt[1]
+                ints[i] = ints[i][1]
 
     dG = [
         df.loc[ints[1], 'dG'] - df.loc[ints[0], 'dG'],
@@ -263,45 +263,39 @@ def overpotential_orr(ints, df, ORR):
     dG.append(-4.92 - sum(dG))
     dG = np.array(dG) + 1.23  
     dG = [dG[4], dG[0], dG[1], dG[2], dG[3]]
-    print(dG)
-    print(ints)
     
     filtered_dG = []
     filtered_ints = []
-    oo_tag = False
-    for i, intt in enumerate(ints):
-        # print(dG[i], ints[i], ints[(i+1) % len(ints)])
-        if oo_tag == False and (ints[i] == 'oo' or re.match(r"oo-.*", ints[i])):
-            oo_tag = True
+    hidden_int = None
+    for i in len(ints):
+        if hidden_int == None and (ints[i] == 'oo' or re.match(r"oo-.*", ints[i])):
+            hidden_dg = dG[i]
+            hidden_int = ints[i]
         else:
             filtered_dG.append(dG[i])
-            filtered_ints.append(ints[i])
-    print(filtered_dG)
-    print(filtered_ints)
-    # filtered_dG = [filtered_dG[1], filtered_dG[2], filtered_dG[3], filtered_dG[0]]
-    
+            filtered_ints.append(ints[i])    
 
-
-#     if any(np.isnan(value) for value in filtered_dG):
-#         onsetP_orr = np.nan
-#         overP_orr = np.nan
-#     else:
-#         onsetP_orr = max(filtered_dG)
-#         overP_orr = 1.23 - onsetP_orr
+    if any(np.isnan(value) for value in filtered_dG):
+        onsetP_orr = np.nan
+        overP_orr = np.nan
+    else:
+        onsetP_orr = max(filtered_dG)
+        overP_orr = 1.23 - onsetP_orr
         
-#     ORR_O2['int1'].append(int0)
-#     ORR_O2['int2'].append(int1)
-#     ORR_O2['int3'].append(int2)
-#     ORR_O2['int4'].append(int3)
-#     ORR_O2['int5'].append(int4)
+    ORR['int1'].append(ints[0])
+    ORR['int2'].append(ints[1])
+    ORR['int3'].append(ints[2])
+    ORR['int4'].append(ints[3])
     
-#     ORR_O2['dg1'].append(dG[0])
-#     ORR_O2['dg2'].append(dG[1])
-#     ORR_O2['dg3'].append(dG[2])
-#     ORR_O2['dg4'].append(dG[3])
+    ORR['dg1'].append(dG[0])
+    ORR['dg2'].append(dG[1])
+    ORR['dg3'].append(dG[2])
+    ORR['dg4'].append(dG[3])
     
-#     ORR_O2['overP'].append(overP_orr)
-#     ORR_O2['onsetP'].append(onsetP_orr)
+    ORR['hidden_dg'].append(hidden_dg)
+    ORR['hidden_int'].append(hidden_int)
+    ORR['overP'].append(overP_orr)
+    ORR['onsetP'].append(onsetP_orr)
     
 for dir in dirs:
     os.chdir(dir)
@@ -311,9 +305,8 @@ for dir in dirs:
 
     df = pd.DataFrame()
     OER = {'int1': [], 'int2': [], 'int3': [], 'int4': [], 'dg1': [], 'dg2': [], 'dg3': [], 'dg4': [], 'overP': [], 'onsetP': []}
-    ORR = {'int1': [], 'int2': [], 'int3': [], 'int4': [], 'dg1': [], 'dg2': [], 'dg3': [], 'dg4': [], 'overP': [], 'onsetP': []}
-    ORR_O2 = {'int1': [], 'int2': [], 'int3': [], 'int4': [], 'int5': [], 
-              'dg1': [], 'dg2': [], 'dg3': [], 'dg4': [], 'dg5': [], 'overP': [], 'onsetP': []}
+    ORR = {'int1': [], 'int2': [], 'int3': [], 'int4': [], 'dg1': [], 'dg2': [], 'dg3': [], 'dg4': [], 'overP': [], 'onsetP': [],
+          'hidden_int': [], 'hidden_dg': []}
     
     json_path = '/pscratch/sd/j/jiuy97/6_MNC/empty/2_/final_with_calculator.json'
     atoms = read(json_path)
@@ -382,25 +375,25 @@ for dir in dirs:
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
         
-        # overpotential_orr('oo', 'ooh', 'o', 'oh', 'oo-oh', df, ORR)
-        # overpotential_orr('ooh', 'o', 'oh', 'oo-oh', ('oh-ooh', 'ooh-oh'), df, ORR)
-        # overpotential_orr('o', 'oh', 'oo-oh', ('ooh-oh', 'oh-ooh'), ('o-oh', 'oh-o'), df, ORR)
-        # overpotential_orr('oh', 'oo-oh', ('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', df, ORR)
-        # overpotential_orr('clean', 'oo', 'ooh', 'o', 'oh', df, ORR)
-
-        overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR_O2)
-        overpotential_orr([('oh-ooh', 'ooh-oh'), 'ooh', 'o', 'oh', 'oo-oh'], df, ORR_O2)
-        overpotential_orr([('ooh-oh', 'oh-ooh'), ('o-oh', 'oh-o'), 'o', 'oh', 'oo-oh'], df, ORR_O2)
-        overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR_O2)
-        overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR_O2)
-        
+        overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), 'ooh', 'o', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr([('ooh-oh', 'oh-ooh'), ('o-oh', 'oh-o'), 'o', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR)
     elif A == '2' and B == 'Co':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
+        
+        overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), 'ooh', 'o', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr([('ooh-oh', 'oh-ooh'), ('o-oh', 'oh-o'), 'o', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR)
     elif A == '3' and B == 'Mo':
         overpotential('o', 'oho', 'oo', ('oooh', 'ooho'), df, OER, ORR)
+        
     # Define surfaces with extracted E0 values
     surfs = [
         df.loc['vac', ['E', '#H', '#O', '#OH', '#OOH', '#O2']].tolist(),
@@ -541,7 +534,3 @@ for dir in dirs:
     ORR_df.to_csv(f'{figure_path}/{A}{B}_orr_oo.csv', sep=',') #, index=False)
     ORR_df.to_csv(f'{figure_path}/{A}{B}_orr_oo.tsv', sep='\t', float_format='%.2f')
     print(f"Data saved as {A}{B}_orr_oo.png")
-    
-    ORR_O2_df = pd.DataFrame(ORR_O2)
-    ORR_O2_df.to_csv(f'{figure_path}/{A}{B}_oo.csv', sep=',') #, index=False)
-    ORR_O2_df.to_csv(f'{figure_path}/{A}{B}_oo.tsv', sep='\t', float_format='%.2f')    
