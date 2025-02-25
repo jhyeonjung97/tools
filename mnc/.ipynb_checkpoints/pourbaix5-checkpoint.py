@@ -303,7 +303,7 @@ for dir in dirs:
         # overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
         # overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
     elif A == '2' and B == 'Co':
-        overpotential(['clean', 'oh', 'o', 'ooh', df, OER, ORR)
+        overpotential(['clean', 'oh', 'o', 'ooh'], df, OER, ORR)
         overpotential(['oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh')], df, OER, ORR)
         overpotential(['o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh')], df, OER, ORR)
         overpotential(['oh', 'ohoh', 'oho', ('ohooh', 'oohoh')], df, OER, ORR)
