@@ -302,7 +302,7 @@ def overpotential_orr(ints, df, ORR):
         overP_orr = np.nan
     else:
         overP_orr = max(filtered_dG)
-        onsetP_orr = 1.23 - onsetP_orr
+        onsetP_orr = 1.23 - overP_orr
         
     ORR['int1'].append(filtered_ints[0])
     ORR['int2'].append(filtered_ints[1])
