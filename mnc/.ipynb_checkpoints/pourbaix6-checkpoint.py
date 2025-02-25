@@ -274,8 +274,14 @@ def overpotential_orr(ints, df, ORR):
             hidden_int = ints[i]
         else:
             filtered_dG.append(dG[i])
-            filtered_ints.append(ints[i])    
-
+            filtered_ints.append(ints[i])   
+            
+    print(dG)
+    print(ints)
+    print(hidden_dg, hidden_int)
+    print(filtered_dG)
+    print(filtered_ints)
+    
     if any(np.isnan(value) for value in filtered_dG):
         onsetP_orr = np.nan
         overP_orr = np.nan
