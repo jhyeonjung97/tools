@@ -262,7 +262,7 @@ def overpotential_orr(ints, df, ORR):
     ]
     dG.append(-4.92 - sum(dG))
     dG = np.array(dG) + 1.23  
-    # dG = [dG[1], dG[2], dG[3], dG[4], dG[0]]
+    dG = [dG[4], dG[0], dG[1], dG[2], dG[3]]
     print(dG)
     print(ints)
     
