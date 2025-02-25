@@ -308,10 +308,10 @@ def overpotential_orr(ints, df, ORR):
     ORR['int3'].append(filtered_ints[2])
     ORR['int4'].append(filtered_ints[3])
     
-    ORR['dg1'].append(filtered_dG[0])
-    ORR['dg2'].append(filtered_dG[1])
-    ORR['dg3'].append(filtered_dG[2])
-    ORR['dg4'].append(filtered_dG[3])
+    ORR['dg1'].append(filtered_dG[0]+1.23)
+    ORR['dg2'].append(filtered_dG[1]+1.23)
+    ORR['dg3'].append(filtered_dG[2]+1.23)
+    ORR['dg4'].append(filtered_dG[3]+1.23)
     
     ORR['hidden_dg'].append(hidden_dg)
     ORR['hidden_int'].append(hidden_int)
