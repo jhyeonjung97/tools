@@ -70,7 +70,7 @@ gh2 = h2 + zpeh2 - tsh2 + cvh2
 
 gh = gh2 / 2
 go = gh2o - gh2
-go2 = 2*gh2o - 2*gh2 - 4*1.229
+go2 = 2*gh2o - 2*gh2 + 4.92
 print(go, go2/2)
 goh = gh2o - gh2 / 2
 gooh = 2 * gh2o - 1.5 * gh2
