@@ -242,6 +242,38 @@ def overpotential(int1, int2, int3, int4, df, OER, ORR):
     ORR['dg12'].append(1.23-dG41+1.23); ORR['dg23'].append(1.23-dG34+1.23); ORR['dg34'].append(1.23-dG23+1.23); ORR['dg41'].append(1.23-dG12+1.23)
     ORR['overP'].append(overP_orr); ORR['onsetP'].append(onsetP_orr)
     
+def overpotential_orr(int1, int2, int3, int4, int5, df, ORR):
+    ints = [int1, int2, int3, int4, int5]
+    for i, int in enumerate(ints):
+        if isinstance(int, tuple):
+            if np.isnan(df.loc[int[1], 'E']):
+                ints[i] = int[0]
+            elif np.isnan(df.loc[int[0], 'E']):
+                ints[i] = int[1]
+            elif df.loc[int[0], 'E'] < df.loc[int[1], 'E']:
+                ints[i] = int[0]
+            else:
+                ints[i] = int[1]
+    int1, int2, int3, int4, int5 = ints
+    
+    dG = np.zeros(5)
+    dG[0] = df.loc[int2, 'dG'] - df.loc[int1, 'dG']
+    dG[1] = df.loc[int3, 'dG'] - df.loc[int2, 'dG']
+    dG[2] = df.loc[int4, 'dG'] - df.loc[int3, 'dG']
+    dG[3] = df.loc[int5, 'dG'] - df.loc[int4, 'dG']
+    dG[4] = 4.92 - dG[0] - dG[1] - dG[2] - dG[3]
+    print(ints, dG)
+#     if any(np.isnan(value) for value in [dG12, dG23, dG34, dG45, dG51]):
+#         onsetP_orr = np.nan
+#         overP_orr = np.nan
+#     else:
+#         onsetP_orr = min(dG12, dG23, dG34, dG45, dG51)
+#         overP_orr = 1.23 - onsetP_orr
+        
+#     ORR['int1'].append(int4); ORR['int2'].append(int3); ORR['int3'].append(int2); ORR['int4'].append(int1)
+#     ORR['dg12'].append(1.23-dG41+1.23); ORR['dg23'].append(1.23-dG34+1.23); ORR['dg34'].append(1.23-dG23+1.23); ORR['dg41'].append(1.23-dG12+1.23)
+#     ORR['overP'].append(overP_orr); ORR['onsetP'].append(onsetP_orr)
+    
 for dir in dirs:
     os.chdir(dir)
     basename = os.path.basename(os.path.normpath(dir))
@@ -318,13 +350,18 @@ for dir in dirs:
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
-        overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
+        
+        overpotential_orr('oo', 'ooh', 'o', 'oh', 'oo-oh', df, ORR)
+        overpotential_orr('ooh', 'o', 'oh', 'oo-oh', ('oh-ooh', 'ooh-oh'), df, ORR)
+        overpotential_orr('o', 'oh', 'oo-oh', ('ooh-oh', 'oh-ooh'), ('o-oh', 'oh-o'), df, ORR)
+        overpotential_orr('oh', 'oo-oh', ('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', df, ORR)
+        overpotential_orr('clean', 'oo', 'ooh', 'o', 'oh', df, ORR)
+
     elif A == '2' and B == 'Co':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
         overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
-        overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
     elif A == '3' and B == 'Mo':
         overpotential('o', 'oho', 'oo', ('oooh', 'ooho'), df, OER, ORR)
 
@@ -368,8 +405,6 @@ for dir in dirs:
     
     for j in U2:
         values = [dg(k, 0, j) for k in range(nsurfs) if dg(k, 0, j) is not None]
-        # if -0.01 < j and j < 0.01:
-        #     print(j, values)
         lowest_surfaces.append(np.argmin(values))
         
     crossover = []
@@ -452,7 +487,6 @@ for dir in dirs:
     print(f"Figure saved as {A}{B}_pourbaix_oo.png")
     plt.close()
 
-    print(df)
     df['#H'] = df['#H'].astype(int)
     df['#O'] = df['#O'].astype(int)
     df['#OH'] = df['#OH'].astype(int)
