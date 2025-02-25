@@ -211,7 +211,7 @@ def overpotential(ints, df, OER, ORR):
                 ints[i] = ints[i][0]
             elif np.isnan(df.loc[ints[i][0], 'E']):
                 ints[i] = ints[i][1]
-            elif df.loc[int[0], 'E'] < df.loc[ints[i][1], 'E']:
+            elif df.loc[ints[i][0], 'E'] < df.loc[ints[i][1], 'E']:
                 ints[i] = ints[i][0]
             else:
                 ints[i] = ints[i][1]
