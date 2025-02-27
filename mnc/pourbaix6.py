@@ -279,8 +279,8 @@ def overpotential_orr(ints, df, ORR):
     ]
     dG.append(-4.92 - sum(dG))
     
-    print(dG)
-    print(ints)
+    # print(dG)
+    # print(ints)
     
     filtered_dG = []
     filtered_ints = []

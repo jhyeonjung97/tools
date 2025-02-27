@@ -34,8 +34,8 @@ def main():
     df.loc["haily_adjacentOH", ["E_", "E_OH"]] = [-290.94763409999996, -300.7382192]
     df.loc["haily_antipodalO", ["E_", "E_OH"]] = [-285.94477754, -295.52658608]
     df.loc["haily_adjacentO", ["E_", "E_OH"]] = [-285.94477754, -295.22826514]
-    df.loc["haily_antipodalOOH", ["E_", "E_OH"]] = [-295.18886945, -304.81150537999997]
-    df.loc["haily_adjacentOOH", ["E_", "E_OH"]] = [-295.18886945, -305.39491661]
+    # df.loc["haily_antipodalOOH", ["E_", "E_OH"]] = [-295.18886945, -304.81150537999997]
+    # df.loc["haily_adjacentOOH", ["E_", "E_OH"]] = [-295.18886945, -305.39491661]
     # df.loc["roman_SCAN(HS→LS)", ["ΔE_OH"]] = 0.51
     df.loc["roman_PBE+U4.3(HS→LS)", ["ΔE_OH"]] = 0.35
     # df.loc["roman_BELYP(HS→LS)", ["ΔE_OH"]] = 0.60
