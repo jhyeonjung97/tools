@@ -45,8 +45,8 @@ def main():
                 for m in metals:
                     for atom in atoms:
                         if atom.symbol == m and not atom.symbol == metal:   
-                            df.at[f'{metal}{j+1}', f'm{m}'] = moments[atom.index]
-                df.at[f'{metal}{j+1}', f'm{metal}'] = moments[17]
+                            df.at[f'{metal}{j+1}', f'm{m}'] = float(moments[atom.index])
+                df.at[f'{metal}{j+1}', f'm{metal}'] = float(moments[17])
                 df.at[f'{metal}{j+1}', 'clean'] = atoms.get_total_energy()
             else:
                 df.at[f'{metal}{j+1}', 'clean'] = np.nan
