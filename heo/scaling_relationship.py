@@ -75,8 +75,8 @@ def main():
 
 def scaling_OH_O(df):
     """Plots the ORR volcano plot."""
-    # xmin, xmax, xtick = -1.0, 3.0, 0.5
-    # ymin, ymax, ytick = 0.0, 1.1, 0.2
+    xmin, xmax, xtick = -1.0, 4.0, 0.5
+    ymin, ymax, ytick = 1.0, 5.0, 0.5
     
     # # Scatter plot with labels
     # x, y = df[dG1], df[dG2]
@@ -93,12 +93,12 @@ def scaling_OH_O(df):
     # line = np.poly1d(coeffs)
     # plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black', zorder=2)
 
-    # plt.xlim(xmin, xmax)
-    # plt.ylim(ymin, ymax)
-    # plt.xticks(np.arange(xmin, xmax+xtick, xtick), fontsize=8) 
-    # plt.yticks(np.arange(ymin, ymax+ytick, ytick), fontsize=8) 
-    # plt.xlabel(r"$\mathrm{\Delta G_{OH}}$ (eV)")
-    # plt.ylabel("Limiting Potential (V)")
+    plt.xlim(xmin, xmax)
+    plt.ylim(ymin, ymax)
+    plt.xticks(np.arange(xmin, xmax+xtick, xtick), fontsize=8) 
+    plt.yticks(np.arange(ymin, ymax+ytick, ytick), fontsize=8) 
+    plt.xlabel(r"$\mathrm{\Delta G_{OH}}$ (eV)")
+    plt.ylabel(r"$\mathrm{\Delta G_{O}}$ (eV)")
     # plt.legend(loc="lower center", bbox_to_anchor=(0.5, 0.02), fontsize=8, ncol=4, columnspacing=1.0)
     plt.tight_layout()
     plt.savefig('heo_scaling.png')
