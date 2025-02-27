@@ -29,19 +29,28 @@ dgooh = zpeooh + cvooh - tsooh
 def main():
     """Initialize energy data and plot the ORR volcano diagram."""
     df = pd.DataFrame(columns=["E_", "E_OH", "ΔE_OH", "ΔG_OH", "lp"])
-    df.loc["haily_clean", ["E_", "E_OH"]] = [-280.17697237, -290.94763409999996]
-    df.loc["haily_antipodalOH", ["E_", "E_OH"]] = [-290.94763409999996, -300.6264046]
-    df.loc["haily_adjacentOH", ["E_", "E_OH"]] = [-290.94763409999996, -300.7382192]
-    df.loc["haily_antipodalO", ["E_", "E_OH"]] = [-285.94477754, -295.52658608]
-    df.loc["haily_adjacentO", ["E_", "E_OH"]] = [-285.94477754, -295.22826514]
+    df.loc["haily_clean(IS→HS)", ["E_", "E_OH"]] = [-280.17697237, -290.94763409999996]
+    df.loc["haily_antipodal(HS→HS)", ["E_", "E_OH"]] = [-290.94763409999996, -300.6264046]
+    df.loc["haily_adjacent(HS→LS)", ["E_", "E_OH"]] = [-290.94763409999996, -300.7382192]
+    # df.loc["haily_antipodalO", ["E_", "E_OH"]] = [-285.94477754, -295.52658608]
+    # df.loc["haily_adjacentO", ["E_", "E_OH"]] = [-285.94477754, -295.22826514]
     # df.loc["haily_antipodalOOH", ["E_", "E_OH"]] = [-295.18886945, -304.81150537999997]
     # df.loc["haily_adjacentOOH", ["E_", "E_OH"]] = [-295.18886945, -305.39491661]
+    # df.loc["haily_adjacent(HS→HS)", ["E_", "E_OH"]] = [-290.91601036, -300.7382192]
     # df.loc["roman_SCAN(HS→LS)", ["ΔE_OH"]] = 0.51
-    df.loc["roman_PBE+U4.3(HS→LS)", ["ΔE_OH"]] = 0.35
-    # df.loc["roman_BELYP(HS→LS)", ["ΔE_OH"]] = 0.60
-    df.loc["roman_HSE06(HS→LS)", ["ΔE_OH"]] = 0.53
+    df.loc["roman_PBE+U4.3(IS→HS)", ["ΔE_OH"]] = 0.35
+    df.loc["roman_PBE+U4.3(IS→IS)", ["ΔE_OH"]] = 0.64
+    df.loc["roman_PBE+U4.3+sol(IS→HS)", ["ΔE_OH"]] = 0.16
+    df.loc["roman_PBE+U4.3+sol(IS→IS)", ["ΔE_OH"]] = 0.39
+    # df.loc["roman_PBE+U3.3(IS→HS)", ["ΔE_OH"]] = 0.65
+    # df.loc["roman_B3LYP(IS→HS)", ["ΔE_OH"]] = 0.60
+    # df.loc["roman_HSE06(IS→HS)", ["ΔE_OH"]] = 0.53
     # df.loc["roman_PBE0(HS→LS)", ["ΔE_OH"]] = 0.52
-    df.loc["roman_DMC(HS→LS)", ["ΔE_OH"]] = -0.11
+    df.loc["roman_DMC(IS→IS)", ["ΔE_OH"]] = 0.69
+    df.loc["roman_DMC+sol(IS→IS)", ["ΔE_OH"]] = 0.69 - 0.19
+    df.loc["roman_DMC+sol+vdw(IS→IS)", ["ΔE_OH"]] = 0.69 - 0.19 - 0.08
+    df.loc["roman_DMC(IS→HS)", ["ΔE_OH"]] = -0.11
+    df.loc["roman_DMC+sol+vdw+antipodal(HS→HS)", ["ΔE_OH"]] = -0.11 - 0.19 - 0.08 + 1.091891
     df.loc["zheng_0.0V(IS→IS)", ["ΔG_OH"]] = 0.8
     df.loc["zheng_1.0V(IS→IS)", ["ΔG_OH"]] = 0.9
     df.loc["zheng_0.0V(HS→HS)", ["ΔG_OH"]] = 0.4
@@ -57,7 +66,6 @@ def main():
             df.loc[index, "lp"] = get_orr_activity3(row["ΔG_OH"])
 
     print(df)
-    # Plot volcano diagram
     volcano_orr(df)
 
 def get_orr_activity1(clean, oh):
@@ -94,7 +102,7 @@ def get_orr_activity3(doh):
 def volcano_orr(df):
     """Plots the ORR volcano plot."""
     xmin, xmax, xtick = -1.0, 3.0, 0.5
-    ymin, ymax, ytick = -0.5, 1.5, 0.25
+    ymin, ymax, ytick = 0.0, 1.1, 0.2
     
     xx = np.linspace(xmin, xmax, 100)
 
@@ -108,8 +116,8 @@ def volcano_orr(df):
     dg3 = (a2 - a1) * xx + (b2 - b1)
     dg4 = 4.92 - (a2 * xx + b2)
 
-    plt.figure(figsize=(5, 4), dpi=200)
-    plt.plot(xx, np.full_like(xx, 1.23), linewidth=1.0, color='black', linestyle='--')
+    plt.figure(figsize=(8, 5), dpi=200)
+    plt.plot(xx, np.full_like(xx, 0.9), linewidth=1.0, color='lightgray', linestyle='--')
     plt.plot(xx, dg4, linewidth=1.0, color='lightsteelblue', label=r"$\ast \rightarrow \ast \mathrm{OOH}$")
     plt.plot(xx, dg3, linewidth=1.0, color='lavender', label=r"$\ast \mathrm{OOH} \rightarrow \ast \mathrm{O}$")
     plt.plot(xx, dg2, linewidth=1.0, color='wheat', label=r"$\ast \mathrm{O} \rightarrow \ast \mathrm{OH}$")
@@ -121,10 +129,11 @@ def volcano_orr(df):
         plt.scatter(x, y, s=20, zorder=6)
         ha = "right" if x < 1 else "left"
         xtext = 5 if x >= 1 else -5
-        if txt == "haily_clean" or txt == "zheng_1.0V(IS→IS)":
+        fontweight = "bold" if (txt == "roman_DMC+sol+vdw(IS→IS)" or  txt == "roman_DMC+sol+vdw+antipodal(HS→HS)") else "normal"
+        if txt == "haily_clean(IS→HS)":
             ha = "left"; xtext = 5
         plt.annotate(txt, (x, y), xytext=(xtext, 0),
-                     textcoords="offset points", ha=ha, fontsize=8)
+                     textcoords="offset points", ha=ha, fontsize=8, fontweight=fontweight)
 
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
@@ -132,7 +141,7 @@ def volcano_orr(df):
     plt.yticks(np.arange(ymin, ymax+ytick, ytick), fontsize=8) 
     plt.xlabel(r"$\mathrm{\Delta G_{OH}}$ (eV)")
     plt.ylabel("Limiting Potential (V)")
-    plt.legend(loc="lower center", bbox_to_anchor=(0.5, 0.02), fontsize=8, ncol=2, columnspacing=0.5)
+    plt.legend(loc="lower center", bbox_to_anchor=(0.5, 0.02), fontsize=8, ncol=4, columnspacing=1.0)
     plt.tight_layout()
     plt.savefig('volcano_orr.png')
     plt.show()
