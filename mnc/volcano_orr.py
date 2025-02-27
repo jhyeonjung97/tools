@@ -29,32 +29,32 @@ dgooh = zpeooh + cvooh - tsooh
 def main():
     """Initialize energy data and plot the ORR volcano diagram."""
     df = pd.DataFrame(columns=["E_", "E_OH", "ΔE_OH", "ΔG_OH", "lp"])
-    df.loc["haily_clean(IS→HS)", ["E_", "E_OH"]] = [-280.17697237, -290.94763409999996]
-    df.loc["haily_antipodal(HS→HS)", ["E_", "E_OH"]] = [-290.94763409999996, -300.6264046]
-    df.loc["haily_adjacent(HS→LS)", ["E_", "E_OH"]] = [-290.94763409999996, -300.7382192]
+    df.loc["haily_clean", ["E_", "E_OH"]] = [-280.17697237, -290.94763409999996]
+    df.loc["haily_antipodal", ["E_", "E_OH"]] = [-290.94763409999996, -300.6264046]
+    df.loc["haily_adjacent", ["E_", "E_OH"]] = [-290.94763409999996, -300.7382192]
     # df.loc["haily_antipodalO", ["E_", "E_OH"]] = [-285.94477754, -295.52658608]
     # df.loc["haily_adjacentO", ["E_", "E_OH"]] = [-285.94477754, -295.22826514]
     # df.loc["haily_antipodalOOH", ["E_", "E_OH"]] = [-295.18886945, -304.81150537999997]
     # df.loc["haily_adjacentOOH", ["E_", "E_OH"]] = [-295.18886945, -305.39491661]
     # df.loc["haily_adjacent(HS→HS)", ["E_", "E_OH"]] = [-290.91601036, -300.7382192]
     # df.loc["roman_SCAN(HS→LS)", ["ΔE_OH"]] = 0.51
-    df.loc["roman_PBE+U4.3(IS→HS)", ["ΔE_OH"]] = 0.35
-    df.loc["roman_PBE+U4.3(IS→IS)", ["ΔE_OH"]] = 0.64
-    df.loc["roman_PBE+U4.3+sol(IS→HS)", ["ΔE_OH"]] = 0.16
-    df.loc["roman_PBE+U4.3+sol(IS→IS)", ["ΔE_OH"]] = 0.39
+    df.loc["roman_PBE+U4.3", ["ΔE_OH"]] = 0.35
+    df.loc["roman_PBE+U4.3(IS)", ["ΔE_OH"]] = 0.64
+    df.loc["roman_PBE+U4.3+sol", ["ΔE_OH"]] = 0.16
+    df.loc["roman_PBE+U4.3+sol(IS)", ["ΔE_OH"]] = 0.39
     # df.loc["roman_PBE+U3.3(IS→HS)", ["ΔE_OH"]] = 0.65
     # df.loc["roman_B3LYP(IS→HS)", ["ΔE_OH"]] = 0.60
     # df.loc["roman_HSE06(IS→HS)", ["ΔE_OH"]] = 0.53
     # df.loc["roman_PBE0(HS→LS)", ["ΔE_OH"]] = 0.52
-    df.loc["roman_DMC(IS→IS)", ["ΔE_OH"]] = 0.69
-    df.loc["roman_DMC+sol(IS→IS)", ["ΔE_OH"]] = 0.69 - 0.19
-    df.loc["roman_DMC+sol+vdw(IS→IS)", ["ΔE_OH"]] = 0.69 - 0.19 - 0.08
-    df.loc["roman_DMC(IS→HS)", ["ΔE_OH"]] = -0.11
-    df.loc["roman_DMC+sol+vdw+antipodal(HS→HS)", ["ΔE_OH"]] = -0.11 - 0.19 - 0.08 + 1.091891
-    df.loc["zheng_0.0V(IS→IS)", ["ΔG_OH"]] = 0.8
-    df.loc["zheng_1.0V(IS→IS)", ["ΔG_OH"]] = 0.9
-    df.loc["zheng_0.0V(HS→HS)", ["ΔG_OH"]] = 0.4
-    df.loc["zheng_1.0V(HS→HS)", ["ΔG_OH"]] = 1.0
+    df.loc["roman_DMC(IS)", ["ΔE_OH"]] = 0.69
+    df.loc["roman_DMC+sol(IS)", ["ΔE_OH"]] = 0.69 - 0.19
+    df.loc["roman_DMC+sol+vdw(IS)", ["ΔE_OH"]] = 0.69 - 0.19 - 0.08
+    df.loc["roman_DMC", ["ΔE_OH"]] = -0.11
+    df.loc["roman_DMC+sol+vdw+antipodal", ["ΔE_OH"]] = -0.11 - 0.19 - 0.08 + 1.091891
+    df.loc["zheng_0.0V(IS)", ["ΔG_OH"]] = 0.8
+    df.loc["zheng_1.0V(IS)", ["ΔG_OH"]] = 0.9
+    df.loc["zheng_0.0V(HS)", ["ΔG_OH"]] = 0.4
+    df.loc["zheng_1.0V(HS)", ["ΔG_OH"]] = 1.0
 
     # Iterate over rows to apply conditions
     for index, row in df.iterrows():
@@ -129,8 +129,8 @@ def volcano_orr(df):
         plt.scatter(x, y, s=20, zorder=6)
         ha = "right" if x < 1 else "left"
         xtext = 5 if x >= 1 else -5
-        fontweight = "bold" if (txt == "roman_DMC+sol+vdw(IS→IS)" or  txt == "roman_DMC+sol+vdw+antipodal(HS→HS)") else "normal"
-        if txt == "haily_clean(IS→HS)":
+        fontweight = "bold" if (txt == "roman_DMC+sol+vdw(IS)" or  txt == "roman_DMC+sol+vdw+antipodal") else "normal"
+        if txt == "haily_clean":
             ha = "left"; xtext = 5
         plt.annotate(txt, (x, y), xytext=(xtext, 0),
                      textcoords="offset points", ha=ha, fontsize=8, fontweight=fontweight)

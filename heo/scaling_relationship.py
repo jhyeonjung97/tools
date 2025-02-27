@@ -32,7 +32,7 @@ metals = ['Cr', 'Mn', 'Fe', 'Co', 'Ni']
 adsorbates = ['O', 'OH']
 
 def main():
-    df = pd.DataFrame()    
+    df = pd.DataFrame(columns=['mCr', 'mMn', 'mFe', 'mCo', 'mNi'])    
     for i, metal in enumerate(metals):
         for j in range(3):
             path = f'/pscratch/sd/j/jiuy97/5_HEO/4_local/{i+1}_{metal}/{j+1}_'
@@ -40,12 +40,17 @@ def main():
             path_json = os.path.join(path, 'final_with_calculator.json')
             if os.path.exists(path_DONE) and os.path.exists(path_json):
                 atoms = read(path_json)
-                energy = atoms.get_total_energy()
+                moments = atoms.get_magnetic_moments()
+                for m in metals:
+                    for atom in atoms:
+                        if atom.symbol == m and not atom.symbol == metal:   
+                            df.at[f'{metal}{j+1}', f'm{m}'] = moments[atom.index]
+                df.at[f'{metal}{j+1}', f'm{metal}'] = moments[17]
+                df.at[f'{metal}{j+1}', 'clean'] = atoms.get_total_energy()
             else:
-                energy = np.nan
+                df.at[f'{metal}{j+1}', 'clean'] = np.nan
                 
             for k, ads in enumerate(adsorbates):
-                df.at[f'{metal}{j+1}', 'clean'] = energy
                 path = f'/pscratch/sd/j/jiuy97/5_HEO/4_local/{i+1}_{metal}/{j+1}_/{k+1}_{ads}'
                 path_DONE = os.path.join(path, 'DONE')
                 path_json = os.path.join(path, 'final_with_calculator.json')
@@ -56,10 +61,10 @@ def main():
                     df.at[f'{metal}{j+1}', ads] = np.nan
                     
     for index, row in df.iterrows():
-        if pd.notna(row["clean"]) and pd.notna(row["OH"]):
+        if pd.notna(row["clean"]) and pd.notna(row["O"]):
             df.at[index, "go"] = row["O"] - row["clean"] - (gh2o - gh2) + dgo
         if pd.notna(row["clean"]) and pd.notna(row["OH"]):
-            df.at[index, "goh"] = row["OH"] - row["clean"] - (gh2o - gh2 / 2) + dgoh
+            df.at[index, "goh"] = row["OH"] - row["clean"] - (gh2o - gh2/2) + dgoh
     
     df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.csv', sep=',')
     df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.tsv', sep='\t', float_format='%.2f')
