@@ -28,12 +28,12 @@ dgo = zpeo + cvo - tso
 dgoh = zpeoh + cvoh - tsoh
 dgooh = zpeooh + cvooh - tsooh
 
-metals = ['Cr', 'Mn', 'Fe', 'Co', 'Ni']
+metals = {'Cr': 'blue', 'Mn': 'orange', 'Fe': 'green', 'Co': 'red', 'Ni': 'purple'}
 adsorbates = ['O', 'OH']
 
 def main():
     df = pd.DataFrame(columns=['a.site', 'mCr', 'mMn', 'mFe', 'mCo', 'mNi'])    
-    for i, metal in enumerate(metals):
+    for i, (metal, color) in enumerate(metals.items()):
         for j in range(3):
             path = f'/pscratch/sd/j/jiuy97/5_HEO/4_local/{i+1}_{metal}/{j+1}_'
             path_DONE = os.path.join(path, 'DONE')
@@ -72,32 +72,32 @@ def main():
     df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.tsv', sep='\t', float_format='%.2f')
     
 
-def volcano_orr(df):
+def scaling_OH_O(df):
     """Plots the ORR volcano plot."""
-    xmin, xmax, xtick = -1.0, 3.0, 0.5
-    ymin, ymax, ytick = 0.0, 1.1, 0.2
+    # xmin, xmax, xtick = -1.0, 3.0, 0.5
+    # ymin, ymax, ytick = 0.0, 1.1, 0.2
     
-    # Scatter plot with labels
-    x, y = df[dG1], df[dG2]
-    mask = np.isfinite(x) & np.isfinite(y)
-    x, y, c = x[mask], y[mask], df['color'][mask]
-    xx = np.linspace(min(x), max(x), 100)
+    # # Scatter plot with labels
+    # x, y = df[dG1], df[dG2]
+    # mask = np.isfinite(x) & np.isfinite(y)
+    # x, y, c = x[mask], y[mask], df['color'][mask]
+    # xx = np.linspace(min(x), max(x), 100)
     plt.figure(figsize=(4, 3), dpi=300)
-    plt.scatter(x, y, c=c, s=20, zorder=3)
-    for xi, yi, metal in zip(x, y, df.index):
-        plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", 
-                     xytext=(0, 5), ha='center', color='black', fontsize=8, zorder=4)
-    coeffs = np.polyfit(x, y, 1)
-    line = np.poly1d(coeffs)
-    plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black', zorder=2)
+    plt.scatter(df['goh'], df['go'], c=metals[df['a.site']], s=20, zorder=3)
+    # for xi, yi, metal in zip(x, y, df.index):
+    #     plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", 
+    #                  xytext=(0, 5), ha='center', color='black', fontsize=8, zorder=4)
+    # coeffs = np.polyfit(x, y, 1)
+    # line = np.poly1d(coeffs)
+    # plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black', zorder=2)
 
-    plt.xlim(xmin, xmax)
-    plt.ylim(ymin, ymax)
-    plt.xticks(np.arange(xmin, xmax+xtick, xtick), fontsize=8) 
-    plt.yticks(np.arange(ymin, ymax+ytick, ytick), fontsize=8) 
-    plt.xlabel(r"$\mathrm{\Delta G_{OH}}$ (eV)")
-    plt.ylabel("Limiting Potential (V)")
-    plt.legend(loc="lower center", bbox_to_anchor=(0.5, 0.02), fontsize=8, ncol=4, columnspacing=1.0)
+    # plt.xlim(xmin, xmax)
+    # plt.ylim(ymin, ymax)
+    # plt.xticks(np.arange(xmin, xmax+xtick, xtick), fontsize=8) 
+    # plt.yticks(np.arange(ymin, ymax+ytick, ytick), fontsize=8) 
+    # plt.xlabel(r"$\mathrm{\Delta G_{OH}}$ (eV)")
+    # plt.ylabel("Limiting Potential (V)")
+    # plt.legend(loc="lower center", bbox_to_anchor=(0.5, 0.02), fontsize=8, ncol=4, columnspacing=1.0)
     plt.tight_layout()
     plt.savefig('volcano_orr.png')
     plt.show()
