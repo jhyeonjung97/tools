@@ -38,7 +38,8 @@ def main():
                                'mMn', 'OmMn', 'OHmMn', 
                                'mFe', 'OmFe', 'OHmFe', 
                                'mCo', 'OmCo', 'OHmCo', 
-                               'mNi', 'OmNi', 'OHmNi'])    
+                               'mNi', 'OmNi', 'OHmNi', 
+                               'clean', 'O', 'OH', 'go', 'goh'])    
     for i, (metal, color) in enumerate(metals.items()):
         for j in range(3):
             path = f'/pscratch/sd/j/jiuy97/5_HEO/4_local/{i+1}_{metal}/{j+1}_'
@@ -54,8 +55,6 @@ def main():
                             df.at[f'{metal}{j+1}', f'm{m}'] = moments[atom.index]
                 df.at[f'{metal}{j+1}', f'm{metal}'] = moments[17]
                 df.at[f'{metal}{j+1}', 'clean'] = atoms.get_total_energy()
-            else:
-                df.at[f'{metal}{j+1}', 'clean'] = np.nan
                 
             for k, ads in enumerate(adsorbates):
                 path = f'/pscratch/sd/j/jiuy97/5_HEO/4_local/{i+1}_{metal}/{j+1}_/{k+1}_{ads}'
@@ -63,10 +62,14 @@ def main():
                 path_json = os.path.join(path, 'final_with_calculator.json')
                 if os.path.exists(path_DONE) and os.path.exists(path_json):
                     atoms = read(path_json)
+                    moments = atoms.get_magnetic_moments()
+                    for m in metals:
+                        for atom in atoms:
+                            if atom.symbol == m and not atom.symbol == metal:   
+                                df.at[f'{metal}{j+1}', f'{ads}m{m}'] = moments[atom.index]
+                    df.at[f'{metal}{j+1}', f'{ads}m{metal}'] = moments[17]
                     df.at[f'{metal}{j+1}', ads] = atoms.get_total_energy()
-                else:
-                    df.at[f'{metal}{j+1}', ads] = np.nan
-                    
+                                        
     for index, row in df.iterrows():
         if pd.notna(row["clean"]) and pd.notna(row["O"]):
             df.at[index, "go"] = row["O"] - row["clean"] - (gh2o - gh2) + dgo
