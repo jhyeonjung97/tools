@@ -76,22 +76,17 @@ def main():
 def scaling_OH_O(df):
     """Plots the ORR volcano plot."""
     xmin, xmax, xtick = -1.0, 4.0, 0.5
-    ymin, ymax, ytick = 1.0, 5.0, 0.5
+    ymin, ymax, ytick = 0.0, 5.0, 0.5
+
+    x, y, c = df['goh'], df['go'], df['a.site'].map(metals)
     
-    # # Scatter plot with labels
-    # x, y = df[dG1], df[dG2]
-    # mask = np.isfinite(x) & np.isfinite(y)
-    # x, y, c = x[mask], y[mask], df['color'][mask]
-    # xx = np.linspace(min(x), max(x), 100)
     plt.figure(figsize=(4, 3), dpi=300)
-    df['color'] = df['a.site'].map(metals)
-    plt.scatter(df['goh'], df['go'], c=df['color'], s=20, zorder=3)
-    # for xi, yi, metal in zip(x, y, df.index):
-    #     plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", 
-    #                  xytext=(0, 5), ha='center', color='black', fontsize=8, zorder=4)
-    # coeffs = np.polyfit(x, y, 1)
-    # line = np.poly1d(coeffs)
-    # plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black', zorder=2)
+    plt.scatter(x, y, c=c, s=20, zorder=3)
+    
+    xx = np.linspace(min(x), max(x), 100)
+    coeffs = np.polyfit(x, y, 1)
+    line = np.poly1d(coeffs)
+    plt.plot(xx, line(xx), linestyle='-', color='black', zorder=2)
 
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
