@@ -98,11 +98,11 @@ def scaling_OH_O(df):
     plt.ylabel(r"$\mathrm{\Delta G_{O}}$ (eV)")
 
     legend_elements = [
-        Line2D([0], [0], marker='o', linestyle='', label='Cr', markerfacecolor='blue'),
-        Line2D([0], [0], marker='o', linestyle='', label='Mn', markerfacecolor='orange'),
-        Line2D([0], [0], marker='o', linestyle='', label='Fe', markerfacecolor='green'),
-        Line2D([0], [0], marker='o', linestyle='', label='Co', markerfacecolor='red'),
-        Line2D([0], [0], marker='o', linestyle='', label='Ni', markerfacecolor='purple'),
+        Line2D([0], [0], marker='o', linestyle='', label='Cr', color='w', markerfacecolor='blue'),
+        Line2D([0], [0], marker='o', linestyle='', label='Mn', color='w', markerfacecolor='orange'),
+        Line2D([0], [0], marker='o', linestyle='', label='Fe', color='w', markerfacecolor='green'),
+        Line2D([0], [0], marker='o', linestyle='', label='Co', color='w', markerfacecolor='red'),
+        Line2D([0], [0], marker='o', linestyle='', label='Ni', color='w', markerfacecolor='purple'),
     ]
     plt.legend(handles=legend_elements, loc="lower center", bbox_to_anchor=(0.5, 0.02), 
                fontsize=8, ncol=5, columnspacing=1.0)
