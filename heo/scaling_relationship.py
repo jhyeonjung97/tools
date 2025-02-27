@@ -3,6 +3,7 @@ from ase.io import read, write
 import numpy as np # v1.26.4
 import pandas as pd # v2.2.2
 import matplotlib.pyplot as plt # v3.8.3
+from matplotlib.lines import Line2D
 
 # Scaling relationship
 a1, b1 = 1.79, 0.62  # OH → O
