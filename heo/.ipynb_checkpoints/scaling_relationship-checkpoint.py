@@ -97,17 +97,13 @@ def scaling_OH_O(df):
     plt.xlabel(r"$\mathrm{\Delta G_{OH}}$ (eV)")
     plt.ylabel(r"$\mathrm{\Delta G_{O}}$ (eV)")
 
-    metals = {'Cr': 'blue', 'Mn': 'orange', 'Fe': 'green', 'Co': 'red', 'Ni': 'purple'}
-
-    
     legend_elements = [
-        Line2D([0], [0], marker='o', color='blue', label='Cr'), #markersize=7),
-        Line2D([0], [0], marker='o', color='orange', label='Mn'),
-        Line2D([0], [0], marker='o', color='green', label='Fe'),
-        Line2D([0], [0], marker='o', color='red', label='Co'),
-        Line2D([0], [0], marker='o', color='purple', label='Ni'),
+        Line2D([0], [0], marker='o', linestyle='', markerfacecolor='blue', label='Cr'),
+        Line2D([0], [0], marker='o', linestyle='', markerfacecolor='orange', label='Mn'),
+        Line2D([0], [0], marker='o', linestyle='', markerfacecolor='green', label='Fe'),
+        Line2D([0], [0], marker='o', linestyle='', markerfacecolor='red', label='Co'),
+        Line2D([0], [0], marker='o', linestyle='', markerfacecolor='purple', label='Ni'),
     ]
-    
     plt.legend(loc="lower center", bbox_to_anchor=(0.5, 0.02), fontsize=8, ncol=5, columnspacing=1.0)
     plt.tight_layout()
     plt.savefig('heo_scaling.png')
