@@ -68,6 +68,7 @@ def main():
             df.at[index, "goh"] = row["OH"] - row["clean"] - (gh2o - gh2/2) + dgoh
     
     df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.csv', sep=',')
+    df = df.apply(pd.to_numeric, errors='ignore')  # Convert only valid numeric columns
     df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.tsv', sep='\t', float_format='%.2f')
     
 
