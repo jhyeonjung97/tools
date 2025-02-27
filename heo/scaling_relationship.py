@@ -33,9 +33,9 @@ adsorbates = ['O', 'OH']
 
 def main():
     df = pd.DataFrame()    
-    for i, metal in enumerate(metals, start=1):
+    for i, metal in enumerate(metals):
         for j in range(3):
-            path = f'/pscratch/sd/j/jiuy97/5_HEO/4_local/{i}_{metal}/{j}_'
+            path = f'/pscratch/sd/j/jiuy97/5_HEO/4_local/{i+1}_{metal}/{j+1}_'
             path_DONE = os.path.join(path, 'DONE')
             path_json = os.path.join(path, 'final_with_calculator.json')
             if os.path.exists(path_DONE) and os.path.exists(path_json):
@@ -44,9 +44,9 @@ def main():
             else:
                 energy = np.nan
                 
-            for k, ads in enumerate(adsorbates, start=1):
+            for k, ads in enumerate(adsorbates):
                 df.at[f'{metal}{j+1}', 'clean'] = energy
-                path = f'/pscratch/sd/j/jiuy97/5_HEO/4_local/{i}_{metal}/{j}_/{k}_{ads}'
+                path = f'/pscratch/sd/j/jiuy97/5_HEO/4_local/{i+1}_{metal}/{j+1}_/{k+1}_{ads}'
                 path_DONE = os.path.join(path, 'DONE')
                 path_json = os.path.join(path, 'final_with_calculator.json')
                 if os.path.exists(path_DONE) and os.path.exists(path_json):
