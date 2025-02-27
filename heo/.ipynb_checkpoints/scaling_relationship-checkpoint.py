@@ -54,8 +54,15 @@ def main():
                     df.at[f'{metal}{j+1}', ads] = atoms.get_total_energy()
                 else:
                     df.at[f'{metal}{j+1}', ads] = np.nan
-
-    print(df)
+                    
+    for index, row in df.iterrows():
+        if pd.notna(row["clean"]) and pd.notna(row["OH"]):
+            df.at[index, "go"] = row["O"] - row["clean"] - (gh2o - gh2) + dgo
+        if pd.notna(row["clean"]) and pd.notna(row["OH"]):
+            df.at[index, "goh"] = row["OH"] - row["clean"] - (gh2o - gh2 / 2) + dgoh
+    
+    df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.csv', sep=',')
+    df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.tsv', sep='\t', float_format='%.2f')
     
 
 def volcano_orr(df):
