@@ -84,7 +84,8 @@ def scaling_OH_O(df):
     # x, y, c = x[mask], y[mask], df['color'][mask]
     # xx = np.linspace(min(x), max(x), 100)
     plt.figure(figsize=(4, 3), dpi=300)
-    plt.scatter(df['goh'], df['go'], c=metals[df['a.site']], s=20, zorder=3)
+    df['color'] = df['a.site'].map(metals)
+    plt.scatter(df['goh'], df['go'], c=df['color'], s=20, zorder=3)
     # for xi, yi, metal in zip(x, y, df.index):
     #     plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", 
     #                  xytext=(0, 5), ha='center', color='black', fontsize=8, zorder=4)
