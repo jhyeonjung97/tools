@@ -80,13 +80,13 @@ def scaling_OH_O(df):
 
     x, y, c = df['goh'], df['go'], df['a.site'].map(metals)
     
-    plt.figure(figsize=(4, 3), dpi=300)
+    plt.figure(figsize=(4, 3), dpi=200)
     plt.scatter(x, y, c=c, s=20, zorder=3)
     
     xx = np.linspace(min(x), max(x), 100)
     coeffs = np.polyfit(x, y, 1)
     line = np.poly1d(coeffs)
-    plt.plot(xx, line(xx), linestyle='-', color='black', zorder=2)
+    plt.plot(xx, line(xx), linewidth=0.5, linestyle='--', color='black', zorder=2)
 
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
