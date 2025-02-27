@@ -104,8 +104,8 @@ def scaling_OH_O(df):
         Line2D([0], [0], marker='o', linestyle='', label='Co', color='w', markerfacecolor='red'),
         Line2D([0], [0], marker='o', linestyle='', label='Ni', color='w', markerfacecolor='purple'),
     ]
-    plt.legend(handles=legend_elements, loc="lower center", bbox_to_anchor=(0.5, 0.02), 
-               fontsize=8, ncol=5, columnspacing=0.5, handletextpad=0.0)
+    plt.legend(handles=legend_elements, loc="uppder left", bbox_to_anchor=(0.8, 0.5), 
+               fontsize=8, ncol=1, columnspacing=0.5, handletextpad=0.0)
     plt.tight_layout()
     plt.savefig('heo_scaling.png')
     plt.show()
