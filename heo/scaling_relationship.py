@@ -71,6 +71,7 @@ def main():
     df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.csv', sep=',')
     df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.tsv', sep='\t', float_format='%.2f')
 
+    df['color'] = df['a.site'].map(metals)
     scaling_OH_O(df)
 
 def scaling_OH_O(df):
@@ -78,7 +79,7 @@ def scaling_OH_O(df):
     xmin, xmax, xtick = -1.0, 4.0, 0.5
     ymin, ymax, ytick = 0.0, 5.0, 0.5
 
-    x, y, c = df['goh'], df['go'], df['a.site'].map(metals)
+    x, y, c = df['goh'], df['go'], df['color']
     
     plt.figure(figsize=(4, 3), dpi=200)
     plt.scatter(x, y, c=c, s=20, zorder=3)
