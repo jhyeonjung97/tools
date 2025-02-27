@@ -32,13 +32,14 @@ metals = ['Cr', 'Mn', 'Fe', 'Co', 'Ni']
 adsorbates = ['O', 'OH']
 
 def main():
-    df = pd.DataFrame(columns=['mCr', 'mMn', 'mFe', 'mCo', 'mNi'])    
+    df = pd.DataFrame(columns=['a.site', 'mCr', 'mMn', 'mFe', 'mCo', 'mNi'])    
     for i, metal in enumerate(metals):
         for j in range(3):
             path = f'/pscratch/sd/j/jiuy97/5_HEO/4_local/{i+1}_{metal}/{j+1}_'
             path_DONE = os.path.join(path, 'DONE')
             path_json = os.path.join(path, 'final_with_calculator.json')
             if os.path.exists(path_DONE) and os.path.exists(path_json):
+                df.at[f'{metal}{j+1}', 'a.site'] = metal
                 atoms = read(path_json)
                 moments = atoms.get_magnetic_moments()
                 for m in metals:
