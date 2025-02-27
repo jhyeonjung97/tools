@@ -77,8 +77,8 @@ def main():
 
 def scaling_OH_O(df):
     """Plots the ORR volcano plot."""
-    xmin, xmax, xtick = -1.0, 4.0, 0.5
-    ymin, ymax, ytick = 0.0, 5.0, 0.5
+    xmin, xmax, xtick = -1.0, 3.5, 0.5
+    ymin, ymax, ytick = 0.5, 5.0, 0.5
 
     x, y, c = df['goh'], df['go'], df['color']
     
