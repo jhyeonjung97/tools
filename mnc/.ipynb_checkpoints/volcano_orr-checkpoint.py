@@ -42,7 +42,10 @@ def main():
     df.loc["roman_HSE06(HS→LS)", ["ΔE_OH"]] = 0.53
     # df.loc["roman_PBE0(HS→LS)", ["ΔE_OH"]] = 0.52
     df.loc["roman_DMC(HS→LS)", ["ΔE_OH"]] = -0.11
-    # df.loc["roman_DMC(HS→LS)", ["ΔG_OH"]] = -0.11
+    df.loc["zheng_0.0V(IS→IS)", ["ΔG_OH"]] = 0.8
+    df.loc["zheng_1.0V(IS→IS)", ["ΔG_OH"]] = 0.9
+    df.loc["zheng_0.0V(HS→HS)", ["ΔG_OH"]] = 0.4
+    df.loc["zheng_1.0V(HS→HS)", ["ΔG_OH"]] = 1.0
 
     # Iterate over rows to apply conditions
     for index, row in df.iterrows():
@@ -106,6 +109,7 @@ def volcano_orr(df):
     dg4 = 4.92 - (a2 * xx + b2)
 
     plt.figure(figsize=(5, 4), dpi=200)
+    plt.plot(xx, np.full_like(xx, 1.23), linewidth=1.0, color='black', linestyle='--')
     plt.plot(xx, dg4, linewidth=1.0, color='lightsteelblue', label=r"$\ast \rightarrow \ast \mathrm{OOH}$")
     plt.plot(xx, dg3, linewidth=1.0, color='lavender', label=r"$\ast \mathrm{OOH} \rightarrow \ast \mathrm{O}$")
     plt.plot(xx, dg2, linewidth=1.0, color='wheat', label=r"$\ast \mathrm{O} \rightarrow \ast \mathrm{OH}$")
@@ -116,7 +120,10 @@ def volcano_orr(df):
         x, y = df["ΔG_OH"].iloc[i], df["lp"].iloc[i]
         plt.scatter(x, y, s=20, zorder=6)
         ha = "right" if x < 1 else "left"
-        plt.annotate(txt, (x, y), xytext=(5 if x >= 1 else -5, 0),
+        xtext = 5 if x >= 1 else -5
+        if txt == "haily_clean" or txt == "zheng_1.0V(IS→IS)":
+            ha = "left"; xtext = 5
+        plt.annotate(txt, (x, y), xytext=(xtext, 0),
                      textcoords="offset points", ha=ha, fontsize=8)
 
     plt.xlim(xmin, xmax)
