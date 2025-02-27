@@ -45,8 +45,8 @@ def main():
                 for m in metals:
                     for atom in atoms:
                         if atom.symbol == m and not atom.symbol == metal:   
-                            df.at[f'{metal}{j+1}', f'm{m}'] = float(moments[atom.index])
-                df.at[f'{metal}{j+1}', f'm{metal}'] = float(moments[17])
+                            df.at[f'{metal}{j+1}', f'm{m}'] = moments[atom.index]
+                df.at[f'{metal}{j+1}', f'm{metal}'] = moments[17]
                 df.at[f'{metal}{j+1}', 'clean'] = atoms.get_total_energy()
             else:
                 df.at[f'{metal}{j+1}', 'clean'] = np.nan
@@ -66,9 +66,9 @@ def main():
             df.at[index, "go"] = row["O"] - row["clean"] - (gh2o - gh2) + dgo
         if pd.notna(row["clean"]) and pd.notna(row["OH"]):
             df.at[index, "goh"] = row["OH"] - row["clean"] - (gh2o - gh2/2) + dgoh
-    
+            
+    df = df.apply(pd.to_numeric, errors='ignore')
     df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.csv', sep=',')
-    df = df.apply(pd.to_numeric, errors='ignore')  # Convert only valid numeric columns
     df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.tsv', sep='\t', float_format='%.2f')
     
 
