@@ -70,7 +70,8 @@ def main():
     df = df.apply(pd.to_numeric, errors='ignore')
     df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.csv', sep=',')
     df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.tsv', sep='\t', float_format='%.2f')
-    
+
+    scaling_OH_O(df)
 
 def scaling_OH_O(df):
     """Plots the ORR volcano plot."""
@@ -99,7 +100,7 @@ def scaling_OH_O(df):
     # plt.ylabel("Limiting Potential (V)")
     # plt.legend(loc="lower center", bbox_to_anchor=(0.5, 0.02), fontsize=8, ncol=4, columnspacing=1.0)
     plt.tight_layout()
-    plt.savefig('volcano_orr.png')
+    plt.savefig('heo_scaling.png')
     plt.show()
 
 if __name__ == "__main__":
