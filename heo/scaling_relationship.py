@@ -69,15 +69,15 @@ def main():
             df.at[index, "goh"] = row["OH"] - row["clean"] - (gh2o - gh2/2) + dgoh
             
     df = df.apply(pd.to_numeric, errors='ignore')
-    df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.csv', sep=',')
-    df.to_csv(f'/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.tsv', sep='\t', float_format='%.2f')
+    df.to_csv('/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.csv', sep=',')
+    df.to_csv('/pscratch/sd/j/jiuy97/5_HEO/4_local/scaling.tsv', sep='\t', float_format='%.2f')
 
     df['color'] = df['a.site'].map(metals)
     scaling_OH_O(df)
 
 def scaling_OH_O(df):
     """Plots the ORR volcano plot."""
-    xmin, xmax, xtick = -1.0, 3.5, 0.5
+    xmin, xmax, xtick = -1.0, 4.0, 0.5
     ymin, ymax, ytick = 0.5, 5.0, 0.5
 
     x, y, c = df['goh'], df['go'], df['color']
@@ -107,7 +107,7 @@ def scaling_OH_O(df):
     plt.legend(handles=legend_elements, loc="upper left", bbox_to_anchor=(0.8, 0.5), 
                fontsize=8, ncol=1, handletextpad=0.0) #columnspacing=0.5,
     plt.tight_layout()
-    plt.savefig('heo_scaling.png')
+    plt.savefig('/pscratch/sd/j/jiuy97/5_HEO/4_local/heo_scaling.png')
     plt.show()
 
 if __name__ == "__main__":
