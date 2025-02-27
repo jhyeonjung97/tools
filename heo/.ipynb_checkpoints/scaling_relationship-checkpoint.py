@@ -33,7 +33,12 @@ metals = {'Cr': 'blue', 'Mn': 'orange', 'Fe': 'green', 'Co': 'red', 'Ni': 'purpl
 adsorbates = ['O', 'OH']
 
 def main():
-    df = pd.DataFrame(columns=['a.site', 'mCr', 'mMn', 'mFe', 'mCo', 'mNi'])    
+    df = pd.DataFrame(columns=['a.site', 
+                               'mCr', 'OmCr', 'OHmCr', 
+                               'mMn', 'OmMn', 'OHmMn', 
+                               'mFe', 'OmFe', 'OHmFe', 
+                               'mCo', 'OmCo', 'OHmCo', 
+                               'mNi', 'OmNi', 'OHmNi'])    
     for i, (metal, color) in enumerate(metals.items()):
         for j in range(3):
             path = f'/pscratch/sd/j/jiuy97/5_HEO/4_local/{i+1}_{metal}/{j+1}_'
