@@ -39,6 +39,7 @@ for atom in atoms:
 
 atoms.calc = vasp_calculator.Vasp(
                     encut=500,
+                    xc='PBE',
                     gga='PE',
                     ivdw=12,
                     kpts=(5,5,1),
