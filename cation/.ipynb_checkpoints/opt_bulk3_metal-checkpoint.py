@@ -36,6 +36,7 @@ atoms.calc = vasp_calculator.Vasp(
     setups='recommended',
     laechg=True,
     isym=0,
+    lorbit=11,
     # lsol=True,
     )
 
