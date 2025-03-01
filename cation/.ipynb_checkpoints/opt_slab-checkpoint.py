@@ -6,7 +6,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk2'
+name = 'opt_slab'
 start_time = time.time()
 
 if os.path.exists('restart.json'):
@@ -15,23 +15,23 @@ else:
     atoms = read('start.traj')
 
 atoms.calc = vasp_calculator.Vasp(
-    encut=520,
+    encut=400,
     xc='PBE',
     gga='PE',
     ivdw=12,
-    kpts=(20, 20, 20),
-    kpar=10,
-    npar=4,
+    kpts=(4, 4, 1),
+    kpar=4,
+    npar=6,
     gamma=False,
     ismear=0,
     sigma=0.05,
-    algo='Fast',
-    lreal='False',
+    algo='fast',
+    lreal='auto',
     ibrion=2,
     isif=2,
     ispin=1,
-    ediffg=-0.02,
-    ediff=1e-5,
+    ediffg=-0.03,
+    ediff=1e-4,
     nsw=800,
     setups='recommended',
     laechg=True,
