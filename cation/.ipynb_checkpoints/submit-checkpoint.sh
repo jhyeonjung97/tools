@@ -16,6 +16,6 @@ export OMP_NUM_THREADS=1
 export VASP_SCRIPT=/sdf/home/j/jiuy97/bin/run_vasp_cpu.py
 export VASP_PP_PATH=/fs/ddn/sdf/group/suncat/sw/psp/vasp/potpaw54
 
-python ./opt_slab.py
+python ~/bin/tools/cation/opt_slab.py
 python ~/bin/verve/bader.py
 python ~/bin/get_restart3
