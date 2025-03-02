@@ -5,10 +5,10 @@
 #SBATCH -c 1
 #SBATCH -n 120
 #SBATCH -p roma
-#SBATCH -A suncat
 #SBATCH --mem=480G
 #SBATCH -e err.%j.log
 #SBATCH -o out.%j.log
+#SBATCH -A suncat:normal
 
 module load mpi
 

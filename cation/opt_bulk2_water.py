@@ -6,7 +6,7 @@ from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_slab'
+name = 'opt_water2'
 start_time = time.time()
 
 if os.path.exists('restart.json'):
@@ -19,7 +19,7 @@ atoms.calc = vasp_calculator.Vasp(
     xc='PBE',
     gga='RP',
     ivdw=12,
-    kpts=(4, 4, 1),
+    kpts=(4, 4, 2),
     kpar=4,
     npar=6,
     gamma=False,
@@ -37,14 +37,14 @@ atoms.calc = vasp_calculator.Vasp(
     laechg=True,
     # isym=0,
     lorbit=11,
-    lwave=False,
+    lwave=False
     # lsol=True,
     )
 
 eng = atoms.get_potential_energy()
 print ('Calculation Complete, storing the run + calculator to traj file')
 
-Trajectory(f'final_{name}.traj', 'w').write(atoms)
+Trajectory(f'final_{name}.traj','w').write(atoms)
 subprocess.call(f'ase convert -f final_{name}.traj final_with_calculator.json', shell=True)
 
 end_time = time.time()

@@ -15,9 +15,9 @@ else:
     atoms = read('start.traj')
 
 atoms.calc = vasp_calculator.Vasp(
-    encut=400,
+    encut=500,
     xc='PBE',
-    gga='PE',
+    gga='RP',
     ivdw=12,
     kpts=(4, 4, 1),
     kpar=4,
@@ -30,21 +30,22 @@ atoms.calc = vasp_calculator.Vasp(
     ibrion=2,
     isif=2,
     ispin=2,
-    ediffg=-0.03,
-    ediff=1e-4,
-    nsw=800,
+    ediffg=-0.02,
+    ediff=1e-5,
+    nsw=200,
     setups='recommended',
     laechg=True,
-    isym=0,
+    # isym=0,
     lorbit=11,
+    lwave=False,
     # lsol=True,
     )
 
 eng = atoms.get_potential_energy()
 print ('Calculation Complete, storing the run + calculator to traj file')
 
-Trajectory(f'final_{name}.traj','w').write(atoms)
-subprocess.call(f'ase convert -f final_{name}.traj final_{name}.json', shell=True)
+Trajectory(f'final_{name}.traj', 'w').write(atoms)
+subprocess.call(f'ase convert -f final_{name}.traj final_with_calculator.json', shell=True)
 
 end_time = time.time()
 elapsed_time = end_time - start_time
