@@ -50,6 +50,12 @@ metal_path = '/pscratch/sd/j/jiuy97/3_V_bulk/metal/0_min/energy_norm_energy.tsv'
 oxide_path = '/pscratch/sd/j/jiuy97/3_V_bulk/oxide/0_min/energy_norm_energy.tsv'
 path = '/pscratch/sd/j/jiuy97/3_V_bulk/metal/merged_norm_energy.tsv'
 
+if not os.path.exists(exp_path):
+    exp_path = '/Users/jiuy97/Desktop/3_V_bulk/oxide/monoxides.tsv'
+    metal_path = '/Users/jiuy97/Desktop/3_V_bulk/metal/0_min/energy_norm_energy.tsv'
+    oxide_path = '/Users/jiuy97/Desktop/3_V_bulk/oxide/0_min/energy_norm_energy.tsv'
+    path = '/Users/jiuy97/Desktop/3_V_bulk/metal/merged_norm_energy.tsv'
+
 exp_df = pd.read_csv(exp_path, delimiter='\t')
 metal_df = pd.read_csv(metal_path, delimiter='\t').iloc[:, 1:]
 oxide_df = pd.read_csv(oxide_path, delimiter='\t').iloc[:, 1:]
@@ -100,7 +106,7 @@ for row in metal_rows:
 formation.to_csv(tsv_filename, sep='\t', float_format='%.4f')
 print(f"Merged data saved to {tsv_filename}")
 
-plt.figure(figsize=(6, 4), dpi=300)
+plt.figure(figsize=(8, 6), dpi=300)
 
 for j, column in enumerate(formation.columns):
     x = formation.index

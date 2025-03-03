@@ -50,6 +50,12 @@ metal_path = '/pscratch/sd/j/jiuy97/3_V_bulk/metal/0_min/energy_norm_energy.tsv'
 oxide_path = '/pscratch/sd/j/jiuy97/3_V_bulk/oxide/0_min/energy_norm_energy.tsv'
 path = '/pscratch/sd/j/jiuy97/3_V_bulk/metal/merged_norm_energy.tsv'
 
+if not os.path.exists(exp_path):
+    exp_path = '/Users/jiuy97/Desktop/3_V_bulk/oxide/monoxides.tsv'
+    metal_path = '/Users/jiuy97/Desktop/3_V_bulk/metal/0_min/energy_norm_energy.tsv'
+    oxide_path = '/Users/jiuy97/Desktop/3_V_bulk/oxide/0_min/energy_norm_energy.tsv'
+    path = '/Users/jiuy97/Desktop/3_V_bulk/metal/merged_norm_energy.tsv'
+
 exp_df = pd.read_csv(exp_path, delimiter='\t')
 metal_df = pd.read_csv(metal_path, delimiter='\t').iloc[:, 1:]
 oxide_df = pd.read_csv(oxide_path, delimiter='\t').iloc[:, 1:]
