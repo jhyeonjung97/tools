@@ -154,38 +154,38 @@ elif [[ ${here} == 'nersc' ]]; then
     
     ### section5-1
     
-    # cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/figures
-    # for row in 3d 4d 5d
-    # do
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Formation energy (eV/MO)" \
-    #     -o norm_formation_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_formation.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Total energy (eV)" \
-    #     -o energy_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_energy.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Total energy (eV/MO)" \
-    #     -o norm_energy_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_energy.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Cohesive energy (eV/MO)" \
-    #     -o norm_cohesive_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_cohesive.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Bond length (A/M-O)" \
-    #     -o bond_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_bond.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Volume (A^3/MO)" \
-    #     -o norm_volume_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_volume.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Bader charge (e-)" \
-    #     -o chg_M_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_chg_M.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "|Magnetization|" \
-    #     -o mag_M_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_mag_M.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "ICOHP (eV/MO)" \
-    #     -o ICOHP_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_ICOHP.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "ICOHP (eV/M-O)" \
-    #     -o norm_ICOHP_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_ICOHP.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "ICOBI (/MO)" \
-    #     -o ICOBI_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_ICOBI.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "ICOBI (/M-O)" \
-    #     -o norm_ICOBI_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_ICOBI.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Gross population (Loewdin)" \
-    #     -o GP_L_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_GP_Loewdin_M.tsv
-    #     python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Madelung energy (Loewdin, eV/MO)" \
-    #     -o norm_Madelung_L_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_Madelung_Loewdin.tsv
-    # done
+    cd /pscratch/sd/j/jiuy97/3_V_bulk/nersc/figures
+    for row in 3d 4d 5d
+    do
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Formation energy (eV/MO)" \
+        -o norm_formation_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_formation.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Total energy (eV)" \
+        -o energy_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_energy.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Total energy (eV/MO)" \
+        -o norm_energy_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_energy.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Cohesive energy (eV/MO)" \
+        -o norm_cohesive_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_cohesive.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Bond length (A/M-O)" \
+        -o bond_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_bond.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Volume (A^3/MO)" \
+        -o norm_volume_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_volume.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Bader charge (e-)" \
+        -o chg_M_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_chg_M.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "|Magnetization|" \
+        -o mag_M_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_mag_M.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "ICOHP (eV/MO)" \
+        -o ICOHP_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_ICOHP.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "ICOHP (eV/M-O)" \
+        -o norm_ICOHP_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_ICOHP.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "ICOBI (/MO)" \
+        -o ICOBI_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_ICOBI.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "ICOBI (/M-O)" \
+        -o norm_ICOBI_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_ICOBI.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Gross population (Loewdin)" \
+        -o GP_L_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_GP_Loewdin_M.tsv
+        python ~/bin/tools/tetra/tsv2.py -r ${row} -x "Metal (MO)" -y "Madelung energy (Loewdin, eV/MO)" \
+        -o norm_Madelung_L_${row} /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/${row}/energy_norm_Madelung_Loewdin.tsv
+    done
     
     ### section5-2
     
@@ -266,9 +266,9 @@ elif [[ ${here} == 'nersc' ]]; then
     #     /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]} \
     #     /pscratch/sd/j/jiuy97/3_V_bulk/metal/${files_B[$key]}
     # done
-    for file in ~/bin/tools/tetra/png_rel/lr*.sh; do
-        sh $file
-    done
+    # for file in ~/bin/tools/tetra/png_rel/lr*.sh; do
+    #     sh $file
+    # done
     # for file in ~/bin/tools/tetra/png_rel/gbr*.sh; do
     #     sh $file
     # done
@@ -297,10 +297,10 @@ elif [[ ${here} == 'nersc' ]]; then
     # python ~/bin/tools/tetra/concat.py -o coord --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_coord.tsv
     # python ~/bin/tools/tetra/concat.py -o element --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_element.tsv
     # python ~/bin/tools/tetra/concat.py -o row --X /pscratch/sd/j/jiuy97/3_V_bulk/nersc/*_*_*/merged_row.tsv
-    for file in ~/bin/tools/tetra/png/lr*.sh; do
-        sh $file
-        sh ~/bin/tools/tetra/png/lr-Ef.sh
-    done
+    # for file in ~/bin/tools/tetra/png/lr*.sh; do
+    #     sh $file
+    #     sh ~/bin/tools/tetra/png/lr-Ef.sh
+    # done
     # for file in ~/bin/tools/tetra/png/gbr*.sh; do
     #     sh $file
     # done
