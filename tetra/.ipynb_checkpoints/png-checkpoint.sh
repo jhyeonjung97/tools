@@ -38,7 +38,7 @@ elif [[ ${here} == 'nersc' ]]; then
     
     ### section2
     
-    for dir in /pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS/3d/
+    for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/
     do
         cd $dir
         # if [[ $dir == *'Tetrahedral'* ]]; then
@@ -48,8 +48,8 @@ elif [[ ${here} == 'nersc' ]]; then
         # elif [[ $dir == *'Octahedral'* ]]; then
         #     n=6
         # fi
-        python ~/bin/tools/tetra/energy.py --save -p energy -x "Metal (MO)" -y "Total energy (eV)"
-        python ~/bin/tools/tetra/energy.py --save -p energy -x "Metal (MO)" -y "Total energy (eV/MO)" -n m
+        # python ~/bin/tools/tetra/energy.py --save -p energy -x "Metal (MO)" -y "Total energy (eV)"
+        # python ~/bin/tools/tetra/energy.py --save -p energy -x "Metal (MO)" -y "Total energy (eV/MO)" -n m
         # python ~/bin/tools/tetra/energy.py --save -p bond  -x "Metal (MO)" -y "Bond length (A)"
         # python ~/bin/tools/tetra/energy.py --save -p bond -x "Metal (MO)" -y "Bond length (A/M-O)" -n $n
         # python ~/bin/tools/tetra/energy.py --save -p volume -x "Metal (MO)" -y "Volume (A^3/MO)" -n m
@@ -61,7 +61,7 @@ elif [[ ${here} == 'nersc' ]]; then
         # python ~/bin/tools/tetra/energy.py --save -p ICOBI -x "Metal (MO)" -y "ICOBI (eV/M-O)" -n $n
         # python ~/bin/tools/tetra/energy.py --save -p GP_L -e M  -x "Metal (MO)" -y "Gross population (Loewdin)"
         # python ~/bin/tools/tetra/energy.py --save -p Madelung_L -x "Metal (MO)" -y "Madelugn energy (Loewdin, eV/MO)" -n m
-        python ~/bin/tools/tetra/formation_energy.py
+        # python ~/bin/tools/tetra/formation_energy.py
         # python ~/bin/tools/tetra/cohesive_energy.py
         # # python ~/bin/tools/tetra/energy.py --save -p PSCENC -x "Metal (MO)" -y "PSCENC (eV/MO)" -n m
         # # python ~/bin/tools/tetra/energy.py --save -p TEWEN -x "Metal (MO)" -y "TEWEN (eV/MO)" -n m
@@ -77,7 +77,7 @@ elif [[ ${here} == 'nersc' ]]; then
     
     ### section3
     
-    for dir in /pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS/; do
+    for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/; do
         cd $dir
         # python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Total energy (eV)" \
         # -o energy 3d/energy_energy.tsv 4d/energy_energy.tsv 5d/energy_energy.tsv
@@ -103,8 +103,8 @@ elif [[ ${here} == 'nersc' ]]; then
         # -o GP_L_M 3d/energy_GP_Loewdin_M.tsv 4d/energy_GP_Loewdin_M.tsv 5d/energy_GP_Loewdin_M.tsv
         # python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Madelung energy (Loewdin, eV/MO)" \
         # -o norm_Madelung_L 3d/energy_norm_Madelung_Loewdin.tsv 4d/energy_norm_Madelung_Loewdin.tsv 5d/energy_norm_Madelung_Loewdin.tsv
-        python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Formation energy (eV/MO)" \
-        -o norm_formation 3d/energy_norm_formation.tsv 4d/energy_norm_formation.tsv 5d/energy_norm_formation.tsv
+        # python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Formation energy (eV/MO)" \
+        # -o norm_formation 3d/energy_norm_formation.tsv 4d/energy_norm_formation.tsv 5d/energy_norm_formation.tsv
         # python ~/bin/tools/tetra/tsv.py -l 3d 4d 5d -x "Metal (MO)" -y "Cohesive energy (eV/MO)" \
         # -o norm_cohesive 3d/energy_norm_cohesive.tsv 4d/energy_norm_cohesive.tsv 5d/energy_norm_cohesive.tsv
         # python ~/bin/tools/tetra/tsv.py -l 3d fm -x "Metal (MO)" -y "Formation energy (eV/MO)" \
