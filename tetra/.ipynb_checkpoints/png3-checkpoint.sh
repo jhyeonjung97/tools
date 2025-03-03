@@ -31,7 +31,7 @@
 
 ### section2
 
-for dir in /Users/jiuy97/Desktop/3_V_bulk/*_*_A*/*/
+for dir in /Users/jiuy97/Desktop/3_V_bulk/*_*_*/*/
 do
     cd $dir
     if [[ $dir == *'Tetrahedral'* ]]; then
