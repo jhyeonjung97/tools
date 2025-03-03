@@ -157,9 +157,9 @@ elif [[ ${here} == 'nersc' ]]; then
     
     ### section5-1
     
-    cd /pscratch/sd/j/jiuy97/3_V_bulk/figures
-    for row in 3d 4d 5d
-    do
+    # cd /pscratch/sd/j/jiuy97/3_V_bulk/figures
+    # for row in 3d 4d 5d
+    # do
         # python ~/bin/tools/tetra/tsv.py -r ${row} -x "Metal (MO)" -y "Total energy (eV)" \
         # -o energy_${row} /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/${row}/energy_energy.tsv
         # python ~/bin/tools/tetra/tsv.py -r ${row} -x "Metal (MO)" -y "Total energy (eV/MO)" \
@@ -188,7 +188,7 @@ elif [[ ${here} == 'nersc' ]]; then
         # -o GP_L_${row} /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/${row}/energy_GP_Loewdin_M.tsv
         # python ~/bin/tools/tetra/tsv.py -r ${row} -x "Metal (MO)" -y "Madelung energy (Loewdin, eV/MO)" \
         # -o norm_Madelung_L_${row} /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/${row}/energy_norm_Madelung_Loewdin.tsv
-    done
+    # done
     
     ### section5-2
     
