@@ -45,12 +45,13 @@ nist = {
     'Cu': {'M': 1, 'O': 1, 'H_form': -156.063, 'G_form': -128.292},
 }
 
-exp_path = '/pscratch/sd/j/jiuy97/3_V_bulk/oxide/monoxides.tsv'
-metal_path = '/pscratch/sd/j/jiuy97/3_V_bulk/metal/0_min/energy_norm_energy.tsv'
-oxide_path = '/pscratch/sd/j/jiuy97/3_V_bulk/oxide/0_min/energy_norm_energy.tsv'
-path = '/pscratch/sd/j/jiuy97/3_V_bulk/metal/merged_norm_energy.tsv'
-
-if not os.path.exists(exp_path):
+root = '/pscratch/sd/j/jiuy97/3_V_bulk/metal/'
+if os.path.exists(root):
+    exp_path = '/pscratch/sd/j/jiuy97/3_V_bulk/oxide/monoxides.tsv'
+    metal_path = '/pscratch/sd/j/jiuy97/3_V_bulk/metal/0_min/energy_norm_energy.tsv'
+    oxide_path = '/pscratch/sd/j/jiuy97/3_V_bulk/oxide/0_min/energy_norm_energy.tsv'
+    path = '/pscratch/sd/j/jiuy97/3_V_bulk/metal/merged_norm_energy.tsv'
+else:
     exp_path = '/Users/jiuy97/Desktop/3_V_bulk/oxide/monoxides.tsv'
     metal_path = '/Users/jiuy97/Desktop/3_V_bulk/metal/0_min/energy_norm_energy.tsv'
     oxide_path = '/Users/jiuy97/Desktop/3_V_bulk/oxide/0_min/energy_norm_energy.tsv'
@@ -89,7 +90,10 @@ for metal in metal_rows['3d']:
     if metal in nist:
         df.loc[metal, '3d'] = nist[metal]['E_metal']
 
-df.to_csv('/pscratch/sd/j/jiuy97/3_V_bulk/metal/corrected_norm_energy.tsv', sep='\t', float_format='%.4f')
+if os.path.exists(root):
+    df.to_csv('/pscratch/sd/j/jiuy97/3_V_bulk/metal/corrected_norm_energy.tsv', sep='\t', float_format='%.4f')
+else:
+    df.to_csv('/Users/jiuy97/Desktop/3_V_bulk/metal/corrected_norm_energy.tsv', sep='\t', float_format='%.4f')
 
 energy_path = './energy_norm_energy.tsv'
 if not os.path.exists(energy_path):
