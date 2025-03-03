@@ -63,8 +63,7 @@ def plot_patterns_from_multiple_tsv(filenames, output, xlabel, ylabel, labels, a
             coordination = 'Unknown'
             markers = ['d'] * l  # Default to diamonds
             colors = plt.cm.Greys(np.linspace(0.4, 0.9, l))  # Default to grey
-
-            
+        
     merged_df = None    
     plt.figure(figsize=(a, b))
     
