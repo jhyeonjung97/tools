@@ -31,24 +31,24 @@ def plot_patterns_from_multiple_tsv(filenames, output, xlabel, ylabel, labels, a
             coordination = 'ZB'
             markers = ['<'] * l
             colors = plt.cm.Oranges(np.linspace(0.4, 0.9, l))
-        elif '3_SquarePlanar_TN' in os.getcwd():
-            coordination = 'TN'
+        elif '3_Pyramidal_LT' in os.getcwd():
+            coordination = 'LT'
             markers = ['o'] * l
             colors = plt.cm.YlOrBr(np.linspace(0.4, 0.9, l))  # Yellow to brown gradient
         elif '4_SquarePlanar_PD' in os.getcwd():
             coordination = 'PD'
             markers = ['s'] * l
             colors = plt.cm.Greens(np.linspace(0.4, 0.9, l))
-        elif '5_SquarePlanar_NB' in os.getcwd():
-            coordination = 'NB'
+        elif '4_Square_Planar_TN' in os.getcwd():
+            coordination = 'TN'
             markers = ['p'] * l
             colors = plt.cm.Blues(np.linspace(0.4, 0.9, l))
-        elif '6_Octahedral_RS' in os.getcwd():
-            coordination = 'RS'
+        elif '5_Square_Planar_NB' in os.getcwd():
+            coordination = 'NB'
             markers = ['d'] * l
             colors = plt.cm.Purples(np.linspace(0.4, 0.9, l))
-        elif '7_Pyramidal_LT' in os.getcwd():
-            coordination = 'LT'
+        elif '6_Octahedral_RS' in os.getcwd():
+            coordination = 'RS'
             markers = ['h'] * l  # Hexagon marker for variation
             colors = plt.cm.cool(np.linspace(0.4, 0.9, l))  # Cool colormap
         else:
@@ -98,12 +98,10 @@ def plot_patterns_from_multiple_tsv(filenames, output, xlabel, ylabel, labels, a
         exp_path = '/pscratch/sd/j/jiuy97/3_V_bulk/oxide/monoxides.tsv'
         exp_df = pd.read_csv(exp_path, delimiter='\t')
         exp_df['dH_form'] = exp_df['dH_form'] / 96.48
-        exp_markers = {'WZ': '>', 'ZB': '<', 'TN': 'o', 
-                       'PD': 's', 'NB': 'p', 'RS': 'd', 
-                       'LT': 'h', 'AQ': '^', 'AU': 'v'}
-        exp_colors = {'WZ': '#d62728', 'ZB': '#ff7f0e', 'TN': '#ffd70e', 
-                       'PD': '#2ca02c', 'NB': '#17becf', 'RS': '#9467bd', 
-                       'LT': '#8c564b', 'AQ': '#e377c2', 'AU': '#7f7f7f'}
+        exp_markers = {'WZ': '>', 'ZB': '<', 'LT': 'o', 
+                       'TN': 's', 'NB': 'p', 'RS': 'd'}
+        exp_colors = {'WZ': '#d62728', 'ZB': '#ff7f0e', 'LT': '#ffd70e', 
+                       'TN': '#2ca02c', 'NB': '#17becf', 'RS': '#9467bd'}
         if row:
             for i in exp_df.index:
                 if exp_df['row'][i] == row:
