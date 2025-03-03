@@ -117,7 +117,7 @@ def plot_patterns_from_multiple_tsv(filenames, output, xlabel, ylabel, labels, a
                     exp_marker = exp_markers.get(exp_df['Coordination'][i], '*')
                     exp_color = exp_colors.get(exp_df['Coordination'][i], '#8a8a8a')
                     plt.scatter(exp_df['numb'][i], exp_df['dH_form'][i], 
-                                marker=exp_marker, color=exp_color, edgecolors=exp_color, facecolors='white')
+                                marker=exp_marker, color=exp_color, edgecolors=exp_color, facecolors='white', zorder=20)
         else:
             for i in exp_df.index:
                 if exp_df['Coordination'][i] == coordination:
@@ -128,7 +128,7 @@ def plot_patterns_from_multiple_tsv(filenames, output, xlabel, ylabel, labels, a
                     elif exp_df['row'][i] == '5d':
                         exp_color = colors[-1]; exp_marker = markers[-1]
                     plt.scatter(exp_df['numb'][i], exp_df['dH_form'][i],
-                                marker=exp_marker, color=exp_color, edgecolors=exp_color, facecolors='white')
+                                marker=exp_marker, color=exp_color, edgecolors=exp_color, facecolors='white', zorder=20)
     
     merged_df.to_csv(tsv_filename, sep='\t', float_format='%.4f')
     print(f"Merged data saved to {tsv_filename}")
