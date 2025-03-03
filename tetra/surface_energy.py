@@ -76,7 +76,7 @@ for i in range(7):
                 png_filename = f"surface_{i+1}{coord}_{row_key}.png"
                 tsv_filename = f"surface_{i+1}{coord}_{row_key}.tsv"
     
-                plt.figure(figsize=(8, 6))
+                plt.figure(figsize=(8, 6), dpi=300)
                 x = range(len(surface_df['energy']))
                 plt.axhline(y=0, color='gray', linestyle='--')
                 plt.plot(x, surface_df['energy'], marker=marker, color=color, label=f'{coord}_{row_key}')
@@ -94,7 +94,7 @@ for i in range(7):
         png_filename_combined = f"surface_{i+1}{coord}.png"
         tsv_filename_combined = f"surface_{i+1}{coord}.tsv"
         
-        plt.figure(figsize=(8, 6))
+        plt.figure(figsize=(8, 6), dpi=300)
         for m, column in enumerate(combined_df.columns):
             x = range(len(combined_df[column]))
             plt.axhline(y=0, color='gray', linestyle='--')

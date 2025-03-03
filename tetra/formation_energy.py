@@ -100,7 +100,7 @@ for row in metal_rows:
 formation.to_csv(tsv_filename, sep='\t', float_format='%.4f')
 print(f"Merged data saved to {tsv_filename}")
 
-plt.figure(figsize=(6, 4), dpi=300)
+plt.figure(figsize=(8, 6), dpi=300)
 
 for j, column in enumerate(formation.columns):
     x = formation.index

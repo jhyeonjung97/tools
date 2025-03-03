@@ -65,7 +65,7 @@ def plot_patterns_from_multiple_tsv(filenames, output, xlabel, ylabel, labels, a
             colors = plt.cm.Greys(np.linspace(0.4, 0.9, l))  # Default to grey
         
     merged_df = None    
-    plt.figure(figsize=(a, b))
+    plt.figure(figsize=(a, b), dpi=300)
     
     png_filename = f"merged_{output}.png"   
     tsv_filename = f"merged_{output}.tsv"
@@ -153,8 +153,8 @@ if __name__ == "__main__":
                                                               'SquarePlanar_PD', 'SquarePlanar_NB', 'Octahedral_RS',
                                                               'Pyramidal_LT', 'Tetrahedral_AQ', 'SquarePlanar_AU'])
     parser.add_argument('-r', '--row', type=str, default=None)
-    parser.add_argument('-a', type=float, default=6)
-    parser.add_argument('-b', type=float, default=5)
+    parser.add_argument('-a', type=float, default=8)
+    parser.add_argument('-b', type=float, default=6)
     parser.add_argument('--font', type=float, default=10)
     
     args = parser.parse_args()        

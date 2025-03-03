@@ -65,7 +65,7 @@ else:
     marker = 'X'; color = '#bcbd22'
 
 # Plotting the cohesive energy
-plt.figure(figsize=(6, 4), dpi=300)
+plt.figure(figsize=(8, 6), dpi=300)
 # x = []
 # filtered_values = []
 # for i, v in enumerate(Ec_oxide['energy']):

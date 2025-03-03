@@ -248,7 +248,7 @@ def main():
     df_combined.to_csv(tsv_filename, sep='\t', index=False)
 
     # # Plotting (if needed)
-    # plt.figure(figsize=(10, 8))
+    # plt.figure(figsize=(8, 6), dpi=300)
     # colors = ['red', 'green', 'blue']
     # markers = ['v', '^', 's', 'D', 'o']
     # for i, row in enumerate([3, 4, 5]):
@@ -266,7 +266,7 @@ def main():
     # plt.gcf().savefig(png_filename, bbox_inches="tight")
     # plt.close()
 
-    # plt.figure(figsize=(7, 6))
+    # plt.figure(figsize=(8, 6), dpi=300)
     # sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap='coolwarm')
     # plt.xticks(np.arange(M.shape[1]) + 0.5, M.columns, rotation=90, ha='right')
     # plt.yticks(np.arange(M.shape[1]) + 0.5, M.columns, rotation=0, va='center')
