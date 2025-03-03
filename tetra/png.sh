@@ -38,7 +38,7 @@ elif [[ ${here} == 'nersc' ]]; then
     
     ### section2
     
-    for dir in /pscratch/sd/j/jiuy97/3_V_bulk/*_*_*/*/
+    for dir in /pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS/3d/
     do
         cd $dir
         # if [[ $dir == *'Tetrahedral'* ]]; then
