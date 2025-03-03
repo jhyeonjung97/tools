@@ -78,7 +78,9 @@ Cp_H2 = 0.09
 
 Ref_H2 = E_H2 + ZPE_H2 + Cp_H2
 Ref_H2O = E_H2O + ZPE_H2O + Cp_H2O
-Ref_O = Ref_H2O - Ref_H2 + 2.506
+Ref_O = Ref_H2O - Ref_H2 # + 2.506
+# print(Ref_H2O - Ref_H2)
+# print(Ref_O)
 
 for element, data in nist.items():
     data['H_form'] = data['H_form'] / data['M'] / 96.48
