@@ -2,34 +2,34 @@
     
 ### section1
 
-for dir in /Users/jiuy97/Desktop/3_V_bulk/metal/*/
-do
-    cd $dir
-    python ~/bin/tools/tetra/energy.py --save -x "Metal (M)" -y "Total energy (eV/M)" -n m
-done
-cd /Users/jiuy97/Desktop/3_V_bulk/metal
-python ~/bin/tools/tetra/tsv.py -l  3d 4d 5d -x "Metal (MO)" -y "Total energy (eV)" -o norm_energy *d/energy_norm_energy.tsv
-cd /Users/jiuy97/Desktop/3_V_bulk/oxide/0_min
-python ~/bin/tools/tetra/energy.py --save -x "Metal (MxOy)" -y "Total energy (eV/M)" -n m
-cd /Users/jiuy97/Desktop/3_V_bulk/6_Octahedral_RS
-python ~/bin/tools/tetra/mendeleev2tsv.py -p \
-group_id atomic_number atomic_volume  \
-boiling_point melting_point \
-mass density dipole_polarizability en_pauling \
-covalent_radius metallic_radius vdw_radius \
-evaporation_heat fusion_heat heat_of_formation \
-ionenergies[1] ionenergies[2] ionenergies[3]
-python ~/bin/tools/tetra/operator.py -o + \
--x mendeleev_ionenergies_1.tsv \
--y mendeleev_ionenergies_2.tsv \
--z mendeleev_ionenergies_12.tsv
-python ~/bin/tools/tetra/operator.py -o + \
--x mendeleev_evaporation_heat.tsv \
--y mendeleev_fusion_heat.tsv \
--z mendeleev_sublimation_heat.tsv
-if [[ ${here} == 'nersc' ]]; then
-    sed -i 's/\x0//g' *.tsv
-fi
+# for dir in /Users/jiuy97/Desktop/3_V_bulk/metal/*/
+# do
+#     cd $dir
+#     python ~/bin/tools/tetra/energy.py --save -x "Metal (M)" -y "Total energy (eV/M)" -n m
+# done
+# cd /Users/jiuy97/Desktop/3_V_bulk/metal
+# python ~/bin/tools/tetra/tsv.py -l  3d 4d 5d -x "Metal (MO)" -y "Total energy (eV)" -o norm_energy *d/energy_norm_energy.tsv
+# cd /Users/jiuy97/Desktop/3_V_bulk/oxide/0_min
+# python ~/bin/tools/tetra/energy.py --save -x "Metal (MxOy)" -y "Total energy (eV/M)" -n m
+# cd /Users/jiuy97/Desktop/3_V_bulk/6_Octahedral_RS
+# python ~/bin/tools/tetra/mendeleev2tsv.py -p \
+# group_id atomic_number atomic_volume  \
+# boiling_point melting_point \
+# mass density dipole_polarizability en_pauling \
+# covalent_radius metallic_radius vdw_radius \
+# evaporation_heat fusion_heat heat_of_formation \
+# ionenergies[1] ionenergies[2] ionenergies[3]
+# python ~/bin/tools/tetra/operator.py -o + \
+# -x mendeleev_ionenergies_1.tsv \
+# -y mendeleev_ionenergies_2.tsv \
+# -z mendeleev_ionenergies_12.tsv
+# python ~/bin/tools/tetra/operator.py -o + \
+# -x mendeleev_evaporation_heat.tsv \
+# -y mendeleev_fusion_heat.tsv \
+# -z mendeleev_sublimation_heat.tsv
+# if [[ ${here} == 'nersc' ]]; then
+#     sed -i 's/\x0//g' *.tsv
+# fi
 
 ### section2
 
