@@ -94,8 +94,8 @@ Ref_H2 = E_H2 + ZPE_H2 + Cp_H2
 Ref_H2O = E_H2O + ZPE_H2O + Cp_H2O
 Ref_O2 = 2*Ref_H2O - 2*Ref_H2 + 4.92
 Ref_O = Ref_H2O - Ref_H2
-print(Ref_O2/2)
-print(Ref_O)
+# print(Ref_O2/2)
+# print(Ref_O)
 
 for element, data in nist.items():
     # data['H_form'] = data['H_form'] / data['M'] / 96.48
@@ -126,9 +126,7 @@ for row in metal_rows:
     if metal_rows[row] == energy_df.index.tolist():
         formation = energy_df.sub(df[row].values, axis=0) - n * Ref_O2 / 2
         break
-print(n)
-print(energy_df)
-print(formation)
+        
 formation.to_csv(tsv_filename, sep='\t', float_format='%.4f')
 print(f"Merged data saved to {tsv_filename}")
 
