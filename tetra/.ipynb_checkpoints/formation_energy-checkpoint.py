@@ -34,35 +34,49 @@ metal_rows = {
     '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb']
 }
 
+# nist = {
+#     'Ti': {'M': 1, 'O': 2, 'H_form': -944.747, 'G_form': -889.406},
+#     'V': {'M': 2, 'O': 5, 'H_form': -1550.590, 'G_form': -1419.359},
+#     'Cr': {'M': 2, 'O': 3, 'H_form': -1139.701, 'G_form': -1058.067},
+#     'Mn': {'M': 1, 'O': 1, 'H_form': -385.221, 'G_form': -362.898},
+#     'Fe': {'M': 2, 'O': 3, 'H_form': -824.248, 'G_form': -742.294},
+#     'Co': {'M': 3, 'O': 4, 'H_form': -910.020, 'G_form': -794.901},
+#     'Ni': {'M': 1, 'O': 1, 'H_form': -239.701, 'G_form': -211.539},
+#     'Cu': {'M': 1, 'O': 1, 'H_form': -156.063, 'G_form': -128.292},
+# }
 nist = {
-    'Ti': {'M': 1, 'O': 2, 'H_form': -944.747, 'G_form': -889.406},
-    'V': {'M': 2, 'O': 5, 'H_form': -1550.590, 'G_form': -1419.359},
-    'Cr': {'M': 2, 'O': 3, 'H_form': -1139.701, 'G_form': -1058.067},
-    'Mn': {'M': 1, 'O': 1, 'H_form': -385.221, 'G_form': -362.898},
-    'Fe': {'M': 2, 'O': 3, 'H_form': -824.248, 'G_form': -742.294},
-    'Co': {'M': 3, 'O': 4, 'H_form': -910.020, 'G_form': -794.901},
-    'Ni': {'M': 1, 'O': 1, 'H_form': -239.701, 'G_form': -211.539},
-    'Cu': {'M': 1, 'O': 1, 'H_form': -156.063, 'G_form': -128.292},
+    'Ti': {'M': 1, 'O': 2, 'H_form': -212.330},
+    'V': {'M': 2, 'O': 5, 'H_form': -344.000},
+    'Cr': {'M': 2, 'O': 3, 'H_form': -260.530},
+    'Mn': {'M': 1, 'O': 1, 'H_form': -90.210},
+    'Fe': {'M': 2, 'O': 3, 'H_form': -177.100},
+    'Co': {'M': 3, 'O': 4, 'H_form': -167.835},
+    'Ni': {'M': 1, 'O': 1, 'H_form': -51.610},
+    'Cu': {'M': 1, 'O': 1, 'H_form': -30.400},
 }
-
-root = '/pscratch/sd/j/jiuy97/3_V_bulk/metal/'
-if os.path.exists(root):
+if os.path.exists('/pscratch/sd/j/jiuy97/3_V_bulk/'):
     exp_path = '/pscratch/sd/j/jiuy97/3_V_bulk/oxide/monoxides.tsv'
     metal_path = '/pscratch/sd/j/jiuy97/3_V_bulk/metal/0_min/energy_norm_energy.tsv'
     oxide_path = '/pscratch/sd/j/jiuy97/3_V_bulk/oxide/0_min/energy_norm_energy.tsv'
     path = '/pscratch/sd/j/jiuy97/3_V_bulk/metal/merged_norm_energy.tsv'
-else:
+elif os.path.exists('/Users/jiuy97/Desktop/3_V_bulk/'):
     exp_path = '/Users/jiuy97/Desktop/3_V_bulk/oxide/monoxides.tsv'
     metal_path = '/Users/jiuy97/Desktop/3_V_bulk/metal/0_min/energy_norm_energy.tsv'
     oxide_path = '/Users/jiuy97/Desktop/3_V_bulk/oxide/0_min/energy_norm_energy.tsv'
     path = '/Users/jiuy97/Desktop/3_V_bulk/metal/merged_norm_energy.tsv'
+elif os.path.exists('/Users/hailey/Desktop/3_V_bulk/'):
+    exp_path = '/Users/hailey/Desktop/3_V_bulk/oxide/monoxides.tsv'
+    metal_path = '/Users/hailey/Desktop/3_V_bulk/metal/0_min/energy_norm_energy.tsv'
+    oxide_path = '/Users/hailey/Desktop/3_V_bulk/oxide/0_min/energy_norm_energy.tsv'
+    path = '/Users/hailey/Desktop/3_V_bulk/metal/merged_norm_energy.tsv'
 
 exp_df = pd.read_csv(exp_path, delimiter='\t')
 metal_df = pd.read_csv(metal_path, delimiter='\t').iloc[:, 1:]
 oxide_df = pd.read_csv(oxide_path, delimiter='\t').iloc[:, 1:]
 df = pd.read_csv(path, delimiter='\t').iloc[:, 1:]
 
-exp_df['dH_form'] = exp_df['dH_form'] / 96.48
+# exp_df['dH_form'] = exp_df['dH_form'] / 96.48
+exp_df['dH_form'] = exp_df['dH_form'] / 23.06
 metal_df.index = list(nist.keys())
 oxide_df.index = list(nist.keys())
 df.index = metal_rows['3d']
@@ -78,25 +92,29 @@ Cp_H2 = 0.09
 
 Ref_H2 = E_H2 + ZPE_H2 + Cp_H2
 Ref_H2O = E_H2O + ZPE_H2O + Cp_H2O
-Ref_O = Ref_H2O - Ref_H2 + 2.46 # 2.506
-# print(Ref_H2O - Ref_H2)
-# print(Ref_O)
+Ref_O2 = 2*Ref_H2O - 2*Ref_H2 + 4.92
+Ref_O = Ref_H2O - Ref_H2
+print(Ref_O2/2)
+print(Ref_O)
 
 for element, data in nist.items():
-    data['H_form'] = data['H_form'] / data['M'] / 96.48
+    # data['H_form'] = data['H_form'] / data['M'] / 96.48
+    data['H_form'] = data['H_form'] / data['M'] / 23.06
     data['OtoM'] = data['O'] / data['M']
     data['E_oxide'] = oxide_df.loc[element, 'energy']
-    data['E_metal'] = data['E_oxide'] - data['H_form'] - data['OtoM'] * Ref_O
+    data['E_metal'] = data['E_oxide'] - data['H_form'] - data['OtoM'] * Ref_O2 / 2
 
 for metal in metal_rows['3d']:
     if metal in nist:
         df.loc[metal, '3d'] = nist[metal]['E_metal']
 
-if os.path.exists(root):
+if os.path.exists('/pscratch/sd/j/jiuy97/3_V_bulk/'):
     df.to_csv('/pscratch/sd/j/jiuy97/3_V_bulk/metal/corrected_norm_energy.tsv', sep='\t', float_format='%.4f')
-else:
+elif os.path.exists('/Users/jiuy97/Desktop/3_V_bulk/'):
     df.to_csv('/Users/jiuy97/Desktop/3_V_bulk/metal/corrected_norm_energy.tsv', sep='\t', float_format='%.4f')
-
+elif os.path.exists('/Users/hailey/Desktop/3_V_bulk/'):
+    df.to_csv('/Users/hailey/Desktop/3_V_bulk/metal/corrected_norm_energy.tsv', sep='\t', float_format='%.4f')
+    
 energy_path = './energy_norm_energy.tsv'
 if not os.path.exists(energy_path):
     exit(1)
@@ -106,9 +124,11 @@ formation = pd.DataFrame(index=energy_df.index, columns=energy_df.columns)
 
 for row in metal_rows:
     if metal_rows[row] == energy_df.index.tolist():
-        formation = energy_df.sub(df[row].values, axis=0) - n * Ref_O
+        formation = energy_df.sub(df[row].values, axis=0) - n * Ref_O2 / 2
         break
-
+print(n)
+print(energy_df)
+print(formation)
 formation.to_csv(tsv_filename, sep='\t', float_format='%.4f')
 print(f"Merged data saved to {tsv_filename}")
 
@@ -120,7 +140,8 @@ for j, column in enumerate(formation.columns):
     plt.plot(x, y, marker=marker, color=color, label='cal.')
 
 for i, row in exp_df.iterrows():
-    if row['row'] in metal_rows and row['Coordination'] == coordination:
+    specific_row = row['row']
+    if metal_rows[specific_row] == energy_df.index.tolist() and row['Coordination'] == coordination:
         plt.scatter(row['numb'], row['dH_form'], marker=marker, color=color, 
                     edgecolors=color, facecolors='white', label='exp.')
 

@@ -105,8 +105,10 @@ def plot_patterns_from_multiple_tsv(filenames, output, xlabel, ylabel, labels, a
         exp_path = '/pscratch/sd/j/jiuy97/3_V_bulk/oxide/monoxides.tsv'
         if not os.path.exists(exp_path):
             exp_path = '/Users/jiuy97/Desktop/3_V_bulk/oxide/monoxides.tsv'
+        if not os.path.exists(exp_path):
+            exp_path = '/Users/hailey/Desktop/3_V_bulk/oxide/monoxides.tsv'
         exp_df = pd.read_csv(exp_path, delimiter='\t')
-        exp_df['dH_form'] = exp_df['dH_form'] / 96.48
+        exp_df['dH_form'] = exp_df['dH_form'] / 23.06 # 96.48
         exp_markers = {'WZ': '>', 'ZB': '<', 'TN': 'o', 
                        'PD': 's', 'NB': 'p', 'RS': 'd', 
                        'LT': 'h', 'AQ': '^', 'AU': 'v'}

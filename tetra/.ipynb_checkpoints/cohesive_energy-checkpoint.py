@@ -11,6 +11,8 @@ Ef_oxide = pd.read_csv('./energy_norm_formation.tsv', delimiter='\t', index_col=
 sublimation_heat_path = '/pscratch/sd/j/jiuy97/3_V_bulk/6_Octahedral_RS/mendeleev_sublimation_heat.tsv'
 if not os.path.exists(sublimation_heat_path):
     sublimation_heat_path = '/Users/jiuy97/Desktop/3_V_bulk/6_Octahedral_RS/mendeleev_sublimation_heat.tsv'
+if not os.path.exists(sublimation_heat_path):
+    sublimation_heat_path = '/Users/hailey/Desktop/3_V_bulk/6_Octahedral_RS/mendeleev_sublimation_heat.tsv'
 Ec_metal = pd.read_csv(sublimation_heat_path, delimiter='\t', index_col=0)
 
 # Define the rows for different series of metals
