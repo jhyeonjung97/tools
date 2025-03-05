@@ -2,16 +2,28 @@
 
 ### section1
 
+<<<<<<< HEAD:tetra/.ipynb_checkpoints/png3-checkpoint.sh
 # for dir in /Users/hailey/Desktop/3_V_bulk/metal/*/
+=======
+# for dir in /Users/jiuy97/Desktop/3_V_bulk/metal/*/
+>>>>>>> 88c38ea121c72319d7efb5cbb47597d1f312fe1f:tetra/.ipynb_checkpoints/png9-jiuy97-checkpoint.sh
 # do
 #     cd $dir
 #     python ~/bin/tools/tetra/energy.py --save -x "Metal (M)" -y "Total energy (eV/M)" -n m
 # done
+<<<<<<< HEAD:tetra/.ipynb_checkpoints/png3-checkpoint.sh
 # cd /Users/hailey/Desktop/3_V_bulk/metal
 # python ~/bin/tools/tetra/tsv.py -l  3d 4d 5d -x "Metal (MO)" -y "Total energy (eV)" -o norm_energy *d/energy_norm_energy.tsv
 # cd /Users/hailey/Desktop/3_V_bulk/oxide/0_min
 # python ~/bin/tools/tetra/energy.py --save -x "Metal (MxOy)" -y "Total energy (eV/M)" -n m
 # cd /Users/hailey/Desktop/3_V_bulk/6_Octahedral_RS
+=======
+# cd /Users/jiuy97/Desktop/3_V_bulk/metal
+# python ~/bin/tools/tetra/tsv.py -l  3d 4d 5d -x "Metal (MO)" -y "Total energy (eV)" -o norm_energy *d/energy_norm_energy.tsv
+# cd /Users/jiuy97/Desktop/3_V_bulk/oxide/0_min
+# python ~/bin/tools/tetra/energy.py --save -x "Metal (MxOy)" -y "Total energy (eV/M)" -n m
+# cd /Users/jiuy97/Desktop/3_V_bulk/6_Octahedral_RS
+>>>>>>> 88c38ea121c72319d7efb5cbb47597d1f312fe1f:tetra/.ipynb_checkpoints/png9-jiuy97-checkpoint.sh
 # python ~/bin/tools/tetra/mendeleev2tsv.py -p \
 # group_id atomic_number atomic_volume  \
 # boiling_point melting_point \
