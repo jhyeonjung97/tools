@@ -52,16 +52,17 @@ for pattern in args.patterns:
     }
 
     df = pd.DataFrame(data).iloc[:m]
-    
-    if pattern == 'boiling_point' or pattern == 'melting_point':
+            
+    # if pattern == 'boiling_point' or pattern == 'melting_point':
+    if pattern == 'melting_point':
         for i in range(n):
             j = 13 * i + 12
-            df.loc[j, '4d'] = df.loc[j, '4d']['gray']
-    
+            df.loc[j, '4d'] = 286.35
+            
     if pattern == 'evaporation_heat':
         for i in range(n):
             j = 13 * i + 6
-            df.loc[j, '4d'] = 619.0
+            df.loc[j, '4d'] = 619.00
 
     df.index = index_pattern
 

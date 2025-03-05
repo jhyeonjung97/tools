@@ -52,16 +52,17 @@ for pattern in args.patterns:
     }
 
     df = pd.DataFrame(data).iloc[:m]
-    
-    if pattern == 'boiling_point' or pattern == 'melting_point':
+            
+    # if pattern == 'boiling_point' or pattern == 'melting_point':
+    if pattern == 'melting_point':
         for i in range(n):
             j = 13 * i + 12
-            df.loc[j, '4d'] = df.loc[j, '4d']['gray']
-    
+            df.loc[j, '4d'] = 286.35
+            
     if pattern == 'evaporation_heat':
         for i in range(n):
             j = 13 * i + 6
-            df.loc[j, '4d'] = 619.0
+            df.loc[j, '4d'] = 619.00
 
     df.index = index_pattern
 
@@ -72,7 +73,7 @@ for pattern in args.patterns:
         tsv_filename=f'concat_{filename}.tsv'
         png_filename=f'concat_{filename}.png'
     
-    df.to_csv(f'{tsv_filename}', sep='\t', index=True, float_format='%.2f')
+    df.to_csv(f'{tsv_filename}', sep='\t', index=True, float_format='%.4f')
 
     print(f"DataFrame saved as {tsv_filename}")
 

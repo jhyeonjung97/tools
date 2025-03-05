@@ -107,20 +107,20 @@ def main():
     df_combined['Predicted'] = Y_pred
     df_combined['Residuals'] = Y - Y_pred
     df_combined.to_csv(tsv_filename, sep='\t', index=False)
-
+        
     plt.figure(figsize=(8, 6), dpi=300)
     colors = ['red', 'green', 'blue']
-    markers = ['>', '<', 'o', 's', 'p', 'd']
+    markers = ['>', '<', 'o', 's', 'p', 'd', 'h', '^', 'v']
     for i, row in enumerate([3, 4, 5]):
         sub = df_combined[df_combined['Row'] == row]
-        for j, coordination in enumerate(['WZ', 'ZB', 'LT', 'TN', 'NB', 'RS']):
+        for j, coordination in enumerate(['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT', 'AQ', 'AU']):
             subset = sub[sub['Coordination'] == coordination]
             LL = subset['Metal']
             YY = subset['Formation Energy']
             YY_pred = subset['Predicted']
             plt.scatter(YY, YY_pred, alpha=0.3, color=colors[i], marker=markers[j], label=f'{row}_{coordination}')
             for (x, y, label) in zip(YY, YY_pred, LL):
-                plt.annotate(label, (x, y), fontsize=6)
+                plt.annotate(label, (x, y), fontsize=8)
             
     plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], 'r--', lw=1)
     plt.xlabel('DFT-calculated Energy (eV)')
@@ -139,15 +139,15 @@ def main():
     covariance_matrix.to_csv(covariance_matrix_filename, sep='\t')
     
     plt.figure(figsize=(8, 6), dpi=300) # Set the figure size as needed
-    ax = sns.heatmap(covariance_matrix, annot=True, fmt=".2f", annot_kws={"size": 4}, cmap='coolwarm', cbar=False)
+    ax = sns.heatmap(covariance_matrix, annot=True, fmt=".2f", annot_kws={"size": 5}, cmap='coolwarm', cbar=False)
     ax.set_xticks(np.arange(M.shape[1]) + 0.5)
-    ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=6)
+    ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=8)
     ax.set_yticks(np.arange(M.shape[1]) + 0.5)
-    ax.set_yticklabels(M.columns, rotation=0, va='center', fontsize=6)
-    # ax.xaxis.set_ticks_position('top')
-    # ax.xaxis.set_label_position('top')
+    ax.set_yticklabels(M.columns, rotation=0, va='center', fontsize=8)
+    ax.xaxis.set_ticks_position('top')
+    ax.xaxis.set_label_position('top')
     cbar = plt.colorbar(ax.collections[0], ax=ax, pad=0.02)
-    cbar.ax.tick_params(labelsize=6)
+    cbar.ax.tick_params(labelsize=8)
     cbar.outline.set_visible(False)
     plt.tight_layout()
     plt.savefig(f'covariance_matrix{str(filename)}.png', bbox_inches="tight")
@@ -157,52 +157,53 @@ def main():
     correlation_matrix.to_csv(correlation_matrix_filename, sep='\t')
     
     plt.figure(figsize=(8, 6), dpi=300) # Set the figure size as needed
-    ax = sns.heatmap(correlation_matrix, annot=True, fmt=".2f", annot_kws={"size": 4}, cmap='coolwarm', cbar=False)
-    colors = ['black', 
-              '#FFCCCC',  # light-red
-              '#FFCCCC',  # light-red
-              'red', 
-              'black',
-              '#FFCCCC',  # light-red
-              '#FFCCCC',  # light-red
-              '#81C784',  # darker light-yellow
-              '#81C784',  # darker light-yellow
-              'black',
-              'grey',
-              '#FFEB3B',  # softer light-green
-              '#81C784',  # darker light-yellow
-              '#FFEB3B',  # softer light-green
-              '#81C784',  # darker light-yellow
-              '#81C784',  # darker light-yellow
-              '#81C784',  # darker light-yellow
-              '#81C784',  # darker light-yellow
-              '#FFCCCC',  # light-red
-              '#81C784',  # darker light-yellow
-              'green',  # yellow-orange
-              '#FFC107',
-              '#81C784',  # darker light-yellow
-              '#81C784',  # darker light-yellow
-              'green',  # yellow-orange
-              '#64B5F6',  # softer light-blue
-              '#64B5F6',  # softer light-blue
-              '#64B5F6',  # softer light-blue
-              'blue',
-              '#64B5F6',  # softer light-blue
-              '#64B5F6',  # softer light-blue
-             ]
-    light_colors_indices = [1, 2, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 22, 23, 25, 26, 27, 29, 30]
-    bold_indices = [i for i, color in enumerate(colors) if color != 'grey' and i not in light_colors_indices]
+    ax = sns.heatmap(correlation_matrix, annot=True, fmt=".2f", annot_kws={"size": 5}, cmap='coolwarm', cbar=False)
+    # colors = ['black', 
+    #           '#FFCCCC',  # light-red
+    #           '#FFCCCC',  # light-red
+    #           'red', 
+    #           'black',
+    #           '#FFCCCC',  # light-red
+    #           '#FFCCCC',  # light-red
+    #           '#81C784',  # darker light-yellow
+    #           '#81C784',  # darker light-yellow
+    #           'black',
+    #           'grey',
+    #           '#FFEB3B',  # softer light-green
+    #           '#81C784',  # darker light-yellow
+    #           '#FFEB3B',  # softer light-green
+    #           '#81C784',  # darker light-yellow
+    #           '#81C784',  # darker light-yellow
+    #           '#81C784',  # darker light-yellow
+    #           '#81C784',  # darker light-yellow
+    #           '#FFCCCC',  # light-red
+    #           '#81C784',  # darker light-yellow
+    #           'green',  # yellow-orange
+    #           '#FFC107',
+    #           '#81C784',  # darker light-yellow
+    #           '#81C784',  # darker light-yellow
+    #           'green',  # yellow-orange
+    #           '#64B5F6',  # softer light-blue
+    #           '#64B5F6',  # softer light-blue
+    #           '#64B5F6',  # softer light-blue
+    #           'blue',
+    #           '#64B5F6',  # softer light-blue
+    #           '#64B5F6',  # softer light-blue
+    #          ]
+    # light_colors_indices = [1, 2, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 22, 23, 25, 26, 27, 29, 30]
+    # bold_indices = [i for i, color in enumerate(colors) if color != 'grey' and i not in light_colors_indices]
     ax.set_xticks(np.arange(M.shape[1]) + 0.5)
-    ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=6)
+    ax.set_xticklabels(M.columns, rotation=90, ha='right', fontsize=8)
     ax.set_yticks(np.arange(M.shape[1]) + 0.5)
-    for i, (tick_label, color) in enumerate(zip(ax.get_yticklabels(), colors)):
-        if i in bold_indices:
-            tick_label.set_fontproperties(FontProperties(weight='bold'))
-        tick_label.set_color(color)
-        tick_label.set_fontsize(6)
-    ax.set_yticklabels(M.columns, rotation=0, va='center')
+    # for i, (tick_label, color) in enumerate(zip(ax.get_yticklabels(), colors)):
+    #     if i in bold_indices:
+    #         tick_label.set_fontproperties(FontProperties(weight='bold'))
+    #     tick_label.set_color(color)
+    ax.set_yticklabels(M.columns, rotation=0, va='center', fontsize=8)
+    ax.xaxis.set_ticks_position('top')
+    ax.xaxis.set_label_position('top')
     cbar = plt.colorbar(ax.collections[0], ax=ax, pad=0.02)
-    cbar.ax.tick_params(labelsize=6)
+    cbar.ax.tick_params(labelsize=8)
     cbar.outline.set_visible(False)
     plt.tight_layout()
     plt.savefig(f'correlation_matrix{str(filename)}.png', bbox_inches="tight")
