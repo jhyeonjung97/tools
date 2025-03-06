@@ -72,7 +72,7 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     mask = np.isfinite(x) & np.isfinite(y)
     x, y, c = x[mask], y[mask], df['color'][mask]
     xx = np.linspace(min(x), max(x), 100)
-    plt.figure(figsize=(4, 3), dpi=300)
+    plt.figure(figsize=(5, 3), dpi=300)
     plt.scatter(x, y, c=c, s=20, zorder=4)
     for xi, yi, metal in zip(x, y, df.index):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", 
