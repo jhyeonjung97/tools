@@ -406,12 +406,12 @@ for dir in dirs:
     df.loc['vac', 'dG'] += bulk_metal
     
     if A == '1' and B == 'Fe':
-        overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
-        overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
-        overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
-        overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
-        overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
-        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
+        overpotential(['clean', 'oh', 'o', 'ooh'], df, OER, ORR)
+        overpotential(['oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh')], df, OER, ORR)
+        overpotential(['o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh')], df, OER, ORR)
+        overpotential(['oh', 'ohoh', 'oho', ('ohooh', 'oohoh')], df, OER, ORR)
+        overpotential(['ooh', ('ohooh', 'oohoh'), ('ooho', 'oooh'), ('oohooh')], df, OER, ORR)
+        overpotential(['ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh'], df, OER, ORR)
 
         overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR)
         overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR)
@@ -422,13 +422,14 @@ for dir in dirs:
         overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'o', 'oh', 'oo-oh'], df, ORR)
         overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR)
         overpotential_orr(['ohh-ooh', 'ohh-o', 'ohh-oh', 'ohh', 'ohh-oo'], df, ORR)
+
     elif A == '2' and B == 'Co':
-        overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
-        overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
-        overpotential('o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh'), df, OER, ORR)
-        overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
-        overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
-        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
+        overpotential(['clean', 'oh', 'o', 'ooh'], df, OER, ORR)
+        overpotential(['oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh')], df, OER, ORR)
+        overpotential(['o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh')], df, OER, ORR)
+        overpotential(['oh', 'ohoh', 'oho', ('ohooh', 'oohoh')], df, OER, ORR)
+        overpotential(['ooh', ('ohooh', 'oohoh'), ('ooho', 'oooh'), ('oohooh')], df, OER, ORR)
+        overpotential(['ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh'], df, OER, ORR)
 
         overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR)
         overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR)
@@ -439,8 +440,8 @@ for dir in dirs:
         overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'o', 'oh', 'oo-oh'], df, ORR)
         overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR)
     elif A == '3' and B == 'Mo':
-        overpotential('o', 'oho', 'oo', ('oooh', 'ooho'), df, OER, ORR)
-
+        overpotential(['o', 'oho', 'oo', ('oooh', 'ooho')], df, OER, ORR)
+        
     # Define surfaces with extracted E0 values
     surfs = [
         df.loc['vac', ['E', '#H', '#O', '#OH', '#OOH', '#H2O', '#O2']].tolist(),
