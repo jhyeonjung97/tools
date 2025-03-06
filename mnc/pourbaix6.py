@@ -398,7 +398,7 @@ for dir in dirs:
         overpotential(['o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh')], df, OER, ORR)
         overpotential(['oh', 'ohoh', 'oho', ('ohooh', 'oohoh')], df, OER, ORR)
         overpotential(['ooh', ('ohooh', 'oohoh'), ('ooho', 'oooh'), ('oohooh')], df, OER, ORR)
-        overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
+        overpotential(['ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh'], df, OER, ORR)
 
         overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR)
         overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR)
