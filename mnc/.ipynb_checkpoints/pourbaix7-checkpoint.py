@@ -421,14 +421,14 @@ for dir in dirs:
         overpotential_orr([('ooh-oh', 'oh-ooh'), 'ooh', 'oo-ooh', 'oo-o', 'oo-oh'], df, ORR)
         overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'o', 'oh', 'oo-oh'], df, ORR)
         overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR)
-        overpotential_orr(['ohh-ooh', 'ohh-o', 'ohh-oh', 'ohh', 'ohh-oo'], df, ORR)
+        overpotential_orr(['ohh-ooh', 'ohh-o', 'ohh-oh', 'ohh', 'oo-ohh'], df, ORR)
 
     elif A == '2' and B == 'Co':
         overpotential(['clean', 'oh', 'o', 'ooh'], df, OER, ORR)
         overpotential(['oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh')], df, OER, ORR)
         overpotential(['o', ('o-oh', 'oh-o'), 'o-o', ('ooh-o', 'o-ooh')], df, OER, ORR)
         overpotential(['oh', 'ohoh', 'oho', ('ohooh', 'oohoh')], df, OER, ORR)
-        overpotential(['ooh', ('ohooh', 'oohoh'), ('ooho', 'oooh'), ('oohooh')], df, OER, ORR)
+        overpotential(['ooh', ('ohooh', 'oohoh'), ('ooho', 'oooh'), ('oohooh')], df, OER, ORR)to
         overpotential(['ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh'], df, OER, ORR)
 
         overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR)
@@ -439,6 +439,8 @@ for dir in dirs:
         overpotential_orr([('ooh-oh', 'oh-ooh'), 'ooh', 'oo-ooh', 'oo-o', 'oo-oh'], df, ORR)
         overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'o', 'oh', 'oo-oh'], df, ORR)
         overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr(['ohh-ooh', 'ohh-o', 'ohh-oh', 'ohh', 'oo-ohh'], df, ORR)
+
     elif A == '3' and B == 'Mo':
         overpotential(['o', 'oho', 'oo', ('oooh', 'ooho')], df, OER, ORR)
         
