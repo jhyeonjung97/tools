@@ -1,20 +1,13 @@
-import sys
-import json
+import time
 import subprocess
 import numpy as np
 from os import path
-from math import sqrt
-from mendeleev import element
 from ase.io import read, write
-from ase.visualize import view
-from ase.constraints import FixAtoms
-from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
 name = 'opt_bulk8_afm'
-
-effective_length = 25
+start_time = time.time()
 
 spin_states_plus_2 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
                       'Co': 3, 'Ni': 2, 'Cu': 1, 'Zn': 1, 'Ga': 1, 'Ge': 2,
@@ -54,7 +47,7 @@ for atom in atoms:
     else:
         ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
-def get_kpoints(atoms, l=effective_length, bulk=True):
+def get_kpoints(atoms, l=25, bulk=True):
     cell = atoms.get_cell()
     nkx = int(round(l/np.linalg.norm(cell[0]),0))
     nky = int(round(l/np.linalg.norm(cell[1]),0))
@@ -64,45 +57,44 @@ def get_kpoints(atoms, l=effective_length, bulk=True):
         nkz = 1
     return((nkx, nky, nkz))
 
-kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
+kpoints = get_kpoints(atoms, l=25, bulk=True)
 
 atoms.calc = vasp_calculator.Vasp(
                     encut=600,
                     xc='PBE',
                     gga='PE',
-                    kpts=kpoints,
-                    kpar=8,
-                    npar=1,
-                    gamma=True,
-                    ismear=0,
-                    ##inimix=0,
+                    prec='Normal',
+                    #inimix=0,
                     #amix=0.05,
                     #bmix=0.0001,
                     #amix_mag=0.05,
                     #bmix_mag=0.0001,
-                    nelm=300,
+                    kpts=kpoints,
+                    # kpar=4,
+                    npar=4,
+                    gamma=True,
+                    ismear=0,
                     sigma=0.05,
+                    nelm=200,
                     algo='Normal',
-                    ibrion=2,
                     isif=8,
+                    nsw=200,
+                    ibrion=2,
+                    ediff=1e-6,
                     ediffg=-0.02,
-                    ediff=1e-4,
-                    prec='Normal',
-                    nsw=600,
-                    lvtot=False,
-                    ispin=2,
-                    setups={'base': 'recommended', 'W': '_sv'},
-                    ldau=True,
-                    ldautype=2,
-                    laechg=True,
                     lreal='False',
                     lasph=True, 
+                    lvtot=False,
+                    laechg=True,
+                    # isym=0, 
+                    ispin=2,
+                    lorbit=11,
+                    ldau=True,
+                    ldautype=2,
                     ldau_luj=ldau_luj,
                     ldauprint=2,
                     lmaxmix=lmaxmix,
-                    # isym=0, 
-                    nedos=3000,
-                    lorbit=11,
+                    setups={'base': 'recommended', 'W': '_sv'},
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
@@ -114,4 +106,14 @@ print ('Calculation Complete, storing the run + calculator to traj file')
 
 Trajectory(f'final_{name}.traj','w').write(atoms)
 subprocess.call(f'ase convert -f final_{name}.traj final_with_calculator.json', shell=True)
-subprocess.call(f'cp OUTCAR OUTCAR_{name}', shell=True)
+
+end_time = time.time()
+elapsed_time = end_time - start_time
+
+with open('time.log', 'a') as f:
+    f.write(f"Start Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))}\n")
+    f.write(f"End Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time))}\n")
+    f.write(f"Elapsed Time: {elapsed_time:.2f} seconds\n")
+    f.write("="*40 + "\n")
+
+print(f"Execution time logged in 'time.log'.")
