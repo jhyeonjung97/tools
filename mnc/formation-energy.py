@@ -1263,10 +1263,21 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                     x = filtered_df.index
                     y = filtered_df.values
                     plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), zorder=3)
-                    for xi, yi in zip(x, y):
-                        plt.annotate(f'{xi:.2f}', (float(xi), float(yi)), 
+                    if '4d_4Mo_clean_Ef.png' in png_filename:
+                        plt.annotate('0.75', (0.7462250000000008, 3.2499533100000217), 
                                      textcoords="offset points", xytext=(0, 5), 
                                      ha='center', color='black', zorder=6)
+                        plt.annotate('0.54', (0.5412800000000004, 3.1862397900000365), 
+                                     textcoords="offset points", xytext=(0, 5), 
+                                     ha='center', color='black', zorder=6)
+                        plt.annotate('0.58', (0.5766849999999994, 3.1050595300000514), 
+                                     textcoords="offset points", xytext=(0, 5), 
+                                     ha='center', color='black', zorder=6)
+                    else:
+                        for xi, yi in zip(x, y):
+                            plt.annotate(f'{xi:.2f}', (float(xi), float(yi)), 
+                                         textcoords="offset points", xytext=(0, 5), 
+                                         ha='center', color='black', zorder=6)
             if color:
                 plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
                 plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
@@ -1304,10 +1315,21 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                     x = filtered_df.index
                     y = filtered_df.values
                     plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), zorder=3)
-                    for xi, yi in zip(x, y):
-                        plt.annotate(f'{xi:.2f}', (float(xi), float(yi)), 
+                    if '4d_4Mo_clean_Ef.png' in png_filename:
+                        plt.annotate('0.75', (0.7462250000000008, 3.2499533100000217), 
                                      textcoords="offset points", xytext=(0, 5), 
                                      ha='center', color='black', zorder=6)
+                        plt.annotate('0.54', (0.5412800000000004, 3.1862397900000365), 
+                                     textcoords="offset points", xytext=(0, 5), 
+                                     ha='center', color='black', zorder=6)
+                        plt.annotate('0.58', (0.5766849999999994, 3.1050595300000514), 
+                                     textcoords="offset points", xytext=(0, 5), 
+                                     ha='center', color='black', zorder=6)
+                    else:
+                        for xi, yi in zip(x, y):
+                            plt.annotate(f'{xi:.2f}', (float(xi), float(yi)), 
+                                         textcoords="offset points", xytext=(0, 5), 
+                                         ha='center', color='black', zorder=6)
             if color:
                 plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
                 plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
