@@ -1005,15 +1005,15 @@ def main():
             # combining(df=df_rel, df_relaxed=df_relaxed_rel, tsv_filename=tsv_rel_filename)
             combining(df=df_mag, df_relaxed=df_relaxed_mag, tsv_filename=tsv_mag_filename)
             
-            plotting(metal, df=df, df_relaxed=df_relaxed, dzs=dzs, spins=spins, 
+            plotting(df=df, df_relaxed=df_relaxed, dzs=dzs, spins=spins, 
                      ylabel='Energy (eV)', png_filename=png_filename)
-            plotting(metal, df=Ef, df_relaxed=Ef_relaxed, dzs=dzs, spins=spins, 
+            plotting(df=Ef, df_relaxed=Ef_relaxed, dzs=dzs, spins=spins, 
                      ylabel=r'ΔG$_{f}$ (eV)', png_filename=png_Ef_filename)
-            plotting(metal, df=df_dz, df_relaxed=df_dz_relaxed, dzs=dzs, spins=spins, 
+            plotting(df=df_dz, df_relaxed=df_dz_relaxed, dzs=dzs, spins=spins, 
                      ylabel='Δz (Å)', png_filename=png_dz_filename)
-            # plotting(metal, df=df_rel, df_relaxed=df_relaxed_rel, dzs=dzs, spins=spins, color='black', 
+            # plotting(df=df_rel, df_relaxed=df_relaxed_rel, dzs=dzs, spins=spins, color='black', 
             #          ylabel='Spin crossover energy (eV)', png_filename=png_rel_filename)
-            plotting(metal, df=df_mag, df_relaxed=df_relaxed_mag, dzs=dzs, spins=spins, 
+            plotting(df=df_mag, df_relaxed=df_relaxed_mag, dzs=dzs, spins=spins, 
                      ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                      ylabel='Magnetic Moment (μB)', png_filename=png_mag_filename)
             
@@ -1024,16 +1024,16 @@ def main():
                 combining(df=df_O_mag, df_relaxed=df_O_relaxed_mag, tsv_filename=tsv_O_mag_filename)
                 combining(df=df_O_bond, df_relaxed=df_O_relaxed_bond, tsv_filename=tsv_O_bond_filename)
                 
-                plotting(metal, df=df_O, df_relaxed=df_O_relaxed, dzs=dzs, spins=spins, 
+                plotting(df=df_O, df_relaxed=df_O_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_O_filename)
-                plotting(metal, df=Ef_O, df_relaxed=Ef_O_relaxed, dzs=dzs, spins=spins, 
+                plotting(df=Ef_O, df_relaxed=Ef_O_relaxed, dzs=dzs, spins=spins, 
                          ylabel=r'ΔG$_{f}$ (eV)', png_filename=png_O_Ef_filename)
-                plotting(metal, df=df_O_dz, df_relaxed=df_O_relaxed_dz, dzs=dzs, spins=spins, 
+                plotting(df=df_O_dz, df_relaxed=df_O_relaxed_dz, dzs=dzs, spins=spins, 
                          ylabel='Δz (Å)', png_filename=png_O_dz_filename)
-                plotting(metal, df=df_O_mag, df_relaxed=df_O_relaxed_mag, dzs=dzs, spins=spins, 
+                plotting(df=df_O_mag, df_relaxed=df_O_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moment (μB)', png_filename=png_O_mag_filename)
-                plotting(metal, df=df_O_bond, df_relaxed=df_O_relaxed_bond, dzs=dzs, spins=spins, 
+                plotting(df=df_O_bond, df_relaxed=df_O_relaxed_bond, dzs=dzs, spins=spins, 
                          ymin=1.5, ymax=2.0, yticks = np.arange(1.5, 2.01, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_O_bond_filename)
                 
@@ -1044,16 +1044,16 @@ def main():
                 combining(df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, tsv_filename=tsv_OH_mag_filename)
                 combining(df=df_OH_bond, df_relaxed=df_OH_relaxed_bond, tsv_filename=tsv_OH_bond_filename)
                 
-                plotting(metal, df=df_OH, df_relaxed=df_OH_relaxed, dzs=dzs, spins=spins, 
+                plotting(df=df_OH, df_relaxed=df_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_OH_filename)
-                plotting(metal, df=Ef_OH, df_relaxed=Ef_OH_relaxed, dzs=dzs, spins=spins, 
+                plotting(df=Ef_OH, df_relaxed=Ef_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel=r'ΔG$_{f}$ (eV)', png_filename=png_OH_Ef_filename)
-                plotting(metal, df=df_OH_dz, df_relaxed=df_OH_relaxed_dz, dzs=dzs, spins=spins, 
+                plotting(df=df_OH_dz, df_relaxed=df_OH_relaxed_dz, dzs=dzs, spins=spins, 
                          ylabel='Δz (Å)', png_filename=png_OH_dz_filename)
-                plotting(metal, df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, dzs=dzs, spins=spins, 
+                plotting(df=df_OH_mag, df_relaxed=df_OH_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moment (μB)', png_filename=png_OH_mag_filename)
-                plotting(metal, df=df_OH_bond, df_relaxed=df_OH_relaxed_bond, dzs=dzs, spins=spins, 
+                plotting(df=df_OH_bond, df_relaxed=df_OH_relaxed_bond, dzs=dzs, spins=spins, 
                          ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.21, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_OH_bond_filename)
                 
@@ -1064,16 +1064,16 @@ def main():
                 combining(df=df_OOH_mag, df_relaxed=df_OOH_relaxed_mag, tsv_filename=tsv_OOH_mag_filename)
                 combining(df=df_OOH_bond, df_relaxed=df_OOH_relaxed_bond, tsv_filename=tsv_OOH_bond_filename)
                 
-                plotting(metal, df=df_OOH, df_relaxed=df_OOH_relaxed, dzs=dzs, spins=spins, 
+                plotting(df=df_OOH, df_relaxed=df_OOH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_OOH_filename)
-                plotting(metal, df=Ef_OOH, df_relaxed=Ef_OOH_relaxed, dzs=dzs, spins=spins, 
+                plotting(df=Ef_OOH, df_relaxed=Ef_OOH_relaxed, dzs=dzs, spins=spins, 
                          ylabel=r'ΔG$_{f}$ (eV)', png_filename=png_OOH_Ef_filename)
-                plotting(metal, df=df_OOH_dz, df_relaxed=df_OOH_relaxed_dz, dzs=dzs, spins=spins, 
+                plotting(df=df_OOH_dz, df_relaxed=df_OOH_relaxed_dz, dzs=dzs, spins=spins, 
                          ylabel='Δz (Å)', png_filename=png_OOH_dz_filename)
-                plotting(metal, df=df_OOH_mag, df_relaxed=df_OOH_relaxed_mag, dzs=dzs, spins=spins, 
+                plotting(df=df_OOH_mag, df_relaxed=df_OOH_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moment (μB)', png_filename=png_OOH_mag_filename)
-                plotting(metal, df=df_OOH_bond, df_relaxed=df_OOH_relaxed_bond, dzs=dzs, spins=spins, 
+                plotting(df=df_OOH_bond, df_relaxed=df_OOH_relaxed_bond, dzs=dzs, spins=spins, 
                          ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.21, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_OOH_bond_filename)
 
@@ -1085,19 +1085,19 @@ def main():
                 combining(df=df_O_OH_bond1, df_relaxed=df_O_OH_relaxed_bond1, tsv_filename=tsv_O_OH_bond1_filename)
                 combining(df=df_O_OH_bond2, df_relaxed=df_O_OH_relaxed_bond2, tsv_filename=tsv_O_OH_bond2_filename)
                 
-                plotting(metal, df=df_O_OH, df_relaxed=df_O_OH_relaxed, dzs=dzs, spins=spins, 
+                plotting(df=df_O_OH, df_relaxed=df_O_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_O_OH_filename)
-                plotting(metal, df=Ef_O_OH, df_relaxed=Ef_O_OH_relaxed, dzs=dzs, spins=spins, 
+                plotting(df=Ef_O_OH, df_relaxed=Ef_O_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel=r'ΔG$_{f}$ (eV)', png_filename=png_O_OH_Ef_filename)
-                plotting(metal, df=df_O_OH_dz, df_relaxed=df_O_OH_relaxed_dz, dzs=dzs, spins=spins, 
+                plotting(df=df_O_OH_dz, df_relaxed=df_O_OH_relaxed_dz, dzs=dzs, spins=spins, 
                          ylabel='Δz (Å)', png_filename=png_O_OH_dz_filename)
-                plotting(metal, df=df_O_OH_mag, df_relaxed=df_O_OH_relaxed_mag, dzs=dzs, spins=spins, 
+                plotting(df=df_O_OH_mag, df_relaxed=df_O_OH_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moment (μB)', png_filename=png_O_OH_mag_filename)
-                plotting(metal, df=df_O_OH_bond1, df_relaxed=df_O_OH_relaxed_bond1, dzs=dzs, spins=spins, 
+                plotting(df=df_O_OH_bond1, df_relaxed=df_O_OH_relaxed_bond1, dzs=dzs, spins=spins, 
                          ymin=1.6, ymax=2.1, yticks = np.arange(1.6, 2.11, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_O_OH_bond1_filename)
-                plotting(metal, df=df_O_OH_bond2, df_relaxed=df_O_OH_relaxed_bond2, dzs=dzs, spins=spins, 
+                plotting(df=df_O_OH_bond2, df_relaxed=df_O_OH_relaxed_bond2, dzs=dzs, spins=spins, 
                          ymin=1.9, ymax=2.4, yticks = np.arange(1.9, 2.41, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_O_OH_bond2_filename)
 
@@ -1109,19 +1109,19 @@ def main():
                 combining(df=df_OH_OH_bond1, df_relaxed=df_OH_OH_relaxed_bond1, tsv_filename=tsv_OH_OH_bond1_filename)
                 combining(df=df_OH_OH_bond2, df_relaxed=df_OH_OH_relaxed_bond2, tsv_filename=tsv_OH_OH_bond2_filename)
                 
-                plotting(metal, df=df_OH_OH, df_relaxed=df_OH_OH_relaxed, dzs=dzs, spins=spins, 
+                plotting(df=df_OH_OH, df_relaxed=df_OH_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel='Energy (eV)', png_filename=png_OH_OH_filename)
-                plotting(metal, df=Ef_OH_OH, df_relaxed=Ef_OH_OH_relaxed, dzs=dzs, spins=spins, 
+                plotting(df=Ef_OH_OH, df_relaxed=Ef_OH_OH_relaxed, dzs=dzs, spins=spins, 
                          ylabel=r'ΔG$_{f}$ (eV)', png_filename=png_OH_OH_Ef_filename)
-                plotting(metal, df=df_OH_OH_dz, df_relaxed=df_OH_OH_relaxed_dz, dzs=dzs, spins=spins, 
+                plotting(df=df_OH_OH_dz, df_relaxed=df_OH_OH_relaxed_dz, dzs=dzs, spins=spins, 
                          ylabel='Δz (Å)', png_filename=png_OH_OH_dz_filename)
-                plotting(metal, df=df_OH_OH_mag, df_relaxed=df_OH_OH_relaxed_mag, dzs=dzs, spins=spins, 
+                plotting(df=df_OH_OH_mag, df_relaxed=df_OH_OH_relaxed_mag, dzs=dzs, spins=spins, 
                          ymin=-0.5, ymax=5.5, yticks=np.arange(6),
                          ylabel='Magnetic Moment (μB)', png_filename=png_OH_OH_mag_filename)
-                plotting(metal, df=df_OH_OH_bond1, df_relaxed=df_OH_OH_relaxed_bond1, dzs=dzs, spins=spins, 
+                plotting(df=df_OH_OH_bond1, df_relaxed=df_OH_OH_relaxed_bond1, dzs=dzs, spins=spins, 
                          ymin=1.7, ymax=2.2, yticks = np.arange(1.7, 2.21, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_OH_OH_bond1_filename)
-                plotting(metal, df=df_OH_OH_bond2, df_relaxed=df_OH_OH_relaxed_bond2, dzs=dzs, spins=spins, 
+                plotting(df=df_OH_OH_bond2, df_relaxed=df_OH_OH_relaxed_bond2, dzs=dzs, spins=spins, 
                          ymin=1.9, ymax=2.4, yticks = np.arange(1.9, 2.41, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_OH_OH_bond2_filename)
                 
@@ -1151,7 +1151,7 @@ def plot_smooth_line(x, y, color):
         print(f"Error while creating spline: {e}")
         return pd.Series(dtype=float)
 
-def plotting(metal, df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=None, yticks=None, color=None):
+def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=None, yticks=None, color=None):
     if df.isna().all().all():
         print("df contains only NaN values, skipping plot.")
         return    
@@ -1191,12 +1191,21 @@ def plotting(metal, df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None,
             x = filtered_df.index
             y = filtered_df.values
             plt.scatter(x, y, marker='s', color=color or spins.get(column, 'black'), zorder=3)
-            for xi, yi in zip(x, y):
-                if metal == 'Mo':
-                    print(float(xi), float(yi))
-                plt.annotate(f'{xi:.2f}', (float(xi), float(yi)), 
+            if '4d_4Mo_clean_Ef.png' in png_filename:
+                plt.annotate('0.75', (0.7462250000000008, 3.2499533100000217), 
                              textcoords="offset points", xytext=(0, 5), 
                              ha='center', color='black', zorder=6)
+                plt.annotate('0.54', (0.5412800000000004, 3.1662397900000365), 
+                             textcoords="offset points", xytext=(0, 5), 
+                             ha='center', color='black', zorder=6)
+                plt.annotate('0.58', (0.5766849999999994, 3.1150595300000514), 
+                             textcoords="offset points", xytext=(0, 5), 
+                             ha='center', color='black', zorder=6)
+            else:
+                for xi, yi in zip(x, y):
+                    plt.annotate(f'{xi:.2f}', (float(xi), float(yi)), 
+                                 textcoords="offset points", xytext=(0, 5), 
+                                 ha='center', color='black', zorder=6)
     if color:
         plt.axhline(y=0.0, color='blue', linestyle='--', zorder=0)
         plt.axhline(y=0.8, color='red', linestyle='--', zorder=0)
