@@ -6,7 +6,7 @@ from ase.io import read, write
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk8_afm'
+name = 'opt_bulk3_afm'
 start_time = time.time()
 
 spin_states_plus_2 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
@@ -77,7 +77,7 @@ atoms.calc = vasp_calculator.Vasp(
                     sigma=0.05,
                     nelm=200,
                     algo='Normal',
-                    isif=8,
+                    isif=3,
                     nsw=200,
                     ibrion=2,
                     ediff=1e-6,

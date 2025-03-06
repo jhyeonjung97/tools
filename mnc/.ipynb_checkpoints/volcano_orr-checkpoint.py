@@ -30,9 +30,10 @@ def main():
     """Initialize energy data and plot the ORR volcano diagram."""
     df = pd.DataFrame(columns=["E_", "E_OH", "ΔE_OH", "ΔG_OH", "lp"])
     df.loc["haily_clean", ["E_", "E_OH"]] = [-280.17697237, -290.94763409999996]
-    df.loc["haily_antipodal", ["E_", "E_OH"]] = [-290.94763409999996, -300.6264046]
-    df.loc["haily_adjacent", ["E_", "E_OH"]] = [-290.94763409999996, -300.7382192]
-    df.loc["haily_antipodal_water", ["E_", "E_OH"]] = [-294.9692702, -305.33767781]
+    df.loc["haily_antipodal_OH", ["E_", "E_OH"]] = [-290.94763409999996, -300.6264046]
+    df.loc["haily_adjacent_OH", ["E_", "E_OH"]] = [-290.94763409999996, -300.7382192]
+    df.loc["haily_antipodal_H2O", ["E_", "E_OH"]] = [-294.9692702, -305.33767781]
+    df.loc["haily_antipodal_O2", ["E_", "E_OH"]] = [-290.615657, -300.425750]
     # df.loc["haily_antipodalO", ["E_", "E_OH"]] = [-285.94477754, -295.52658608]
     # df.loc["haily_adjacentO", ["E_", "E_OH"]] = [-285.94477754, -295.22826514]
     # df.loc["haily_antipodalOOH", ["E_", "E_OH"]] = [-295.18886945, -304.81150537999997]
@@ -51,7 +52,7 @@ def main():
     # df.loc["roman_DMC+sol(IS)", ["ΔE_OH"]] = 0.69 - 0.19
     # df.loc["roman_DMC+sol+vdw(IS)", ["ΔE_OH"]] = 0.69 - 0.19 - 0.08
     df.loc["roman_DMC", ["ΔE_OH"]] = -0.11
-    df.loc["roman_DMC+sol+vdw+antipodal", ["ΔE_OH"]] = -0.11 - 0.19 - 0.08 + 1.091891
+    df.loc["roman_DMC+sol+vdw+antipodal(guess)", ["ΔE_OH"]] = -0.11 - 0.19 - 0.08 + 1.091891
     # df.loc["zheng_0.0V(IS)", ["ΔG_OH"]] = 0.8
     df.loc["zheng_1.0V(IS)", ["ΔG_OH"]] = 0.9
     # df.loc["zheng_0.0V(HS)", ["ΔG_OH"]] = 0.4

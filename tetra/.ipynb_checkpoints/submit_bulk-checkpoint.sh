@@ -20,4 +20,5 @@ export VASP_SCRIPT=/global/homes/j/jiuy97/bin/run_vasp_gpu.py
 export VASP_PP_PATH=/global/cfs/cdirs/m2997/vasp-psp/pseudo54
 
 python ~/bin/verve/opt_bulk8_afm.py
+python ~/bin/verve/bader.py
 python ~/bin/get_restart3
