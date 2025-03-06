@@ -129,13 +129,18 @@ def volcano_orr(df):
     for i, txt in enumerate(df.index):
         x, y = df["ΔG_OH"].iloc[i], df["lp"].iloc[i]
         plt.scatter(x, y, s=20, zorder=6)
+        va = 'bottom'
         ha = "right" if x < 1 else "left"
         xtext = 5 if x >= 1 else -5
-        fontweight = "bold" if (txt == "roman_DMC+sol+vdw(IS)" or  txt == "roman_DMC+sol+vdw+antipodal") else "normal"
+        fontweight = "normal" 
+        if txt == "haily_antipodal_H2O" or  txt == "haily_antipodal_O2":
+            fontweight = "bold"
         if txt == "haily_clean":
             ha = "left"; xtext = 5
+        if txt == "haily_adjacent_OH":
+            ha = "left"; va = 'top'
         plt.annotate(txt, (x, y), xytext=(xtext, 0),
-                     textcoords="offset points", ha=ha, fontsize=8, fontweight=fontweight)
+                     textcoords="offset points", ha=ha, va=va, fontsize=8, fontweight=fontweight)
 
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)

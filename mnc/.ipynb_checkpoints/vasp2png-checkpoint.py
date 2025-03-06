@@ -12,7 +12,8 @@ main_dirs = ["clean", "mh", "nh", "oh", "o",
              "ohoh", "oh-oh", "ohooh", "oohoh", "oh-ooh", "ooh-oh",
              "ooh", "oho", "oh-o", "o-oh", "oo", "o-o",
              "oooh", "ooho", "o-ooh", "ooh-o", "oohooh", "ooh-ooh",
-             "oo", "oo-oo", "oo-o", "oo-oh", "oo-ooh"]
+             "oo", "oo-oo", "oo-ohh", "oo-o", "oo-oh", "oo-ooh",
+             "ohh", "ohh-oo", "ohh-ohh", "ohh-o", "ohh-oh", "ohh-ooh",]
 sub_dirs = ["HS1", "HS5", "IS1", "IS5", "LS1", "LS5"]
 
 # Set the regular expression pattern to find energy values
