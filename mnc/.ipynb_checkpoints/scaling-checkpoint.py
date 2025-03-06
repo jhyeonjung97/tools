@@ -90,7 +90,7 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     elif ads1 == 'OH' and ads2 == 'OOH':
         plt.plot(xx, 1.06*xx+3.16, linestyle='--', color='lightgray', zorder=0)
         plt.plot(xx, 1.05*xx+3.01, linestyle='--', color='darkgray', zorder=1)
-        plt.plot(xx, 0.84*xx+3.14, linestyle='--', color='darkgray', zorder=2)
+        plt.plot(xx, 0.84*xx+3.14, linestyle='--', color='lightblue', zorder=2)
         plt.text(0.34, 0.23, 'y = 1.06x + 3.16 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
         plt.text(0.34, 0.17, 'y = 1.05x + 3.01 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
         plt.text(0.15, 0.05, 'y = 0.84x + 3.14 ((oxi)(hydro)oxides)', transform=plt.gca().transAxes, fontsize=10, color='lightblue')
