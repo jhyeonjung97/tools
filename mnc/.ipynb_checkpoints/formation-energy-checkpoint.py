@@ -1197,7 +1197,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                 plt.annotate('0.75', (0.7462250000000008, 3.2499533100000217), 
                              textcoords="offset points", xytext=(0, 5), 
                              ha='center', color='black', zorder=6)
-                plt.annotate('0.54', (0.5412800000000004, 3.1662397900000365), 
+                plt.annotate('0.54', (0.5412800000000004, 3.1862397900000365), 
                              textcoords="offset points", xytext=(0, 5), 
                              ha='center', color='black', zorder=6)
                 plt.annotate('0.58', (0.5766849999999994, 3.1150595300000514), 
