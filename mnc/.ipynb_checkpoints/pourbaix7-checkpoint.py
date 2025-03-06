@@ -245,6 +245,68 @@ def overpotential(int1, int2, int3, int4, df, OER, ORR):
     ORR['dg12'].append(1.23-dG41+1.23); ORR['dg23'].append(1.23-dG34+1.23); ORR['dg34'].append(1.23-dG23+1.23); ORR['dg41'].append(1.23-dG12+1.23)
     ORR['overP'].append(overP_orr); ORR['onsetP'].append(onsetP_orr)
     
+def overpotential_orr(ints, df, ORR):
+    for i in range(len(ints)):
+        if isinstance(ints[i], tuple):
+            if np.isnan(df.loc[ints[i][1], 'E']):
+                ints[i] = ints[i][0]
+            elif np.isnan(df.loc[ints[i][0], 'E']):
+                ints[i] = ints[i][1]
+            elif df.loc[ints[i][0], 'E'] < df.loc[ints[i][1], 'E']:
+                ints[i] = ints[i][0]
+            else:
+                ints[i] = ints[i][1]
+        # print(df.loc[ints[i], 'dG'])
+
+    dG = [
+        df.loc[ints[1], 'dG'] - df.loc[ints[0], 'dG'],
+        df.loc[ints[2], 'dG'] - df.loc[ints[1], 'dG'],
+        df.loc[ints[3], 'dG'] - df.loc[ints[2], 'dG'],
+        df.loc[ints[4], 'dG'] - df.loc[ints[3], 'dG'],
+    ]
+    dG.append(-4.92 - sum(dG))
+    
+    # print(dG)
+    # print(ints)
+    
+    filtered_dG = []
+    filtered_ints = []
+    hidden_int = None
+    for i in range(len(ints)):
+        if hidden_int == None and (ints[i] == 'oo' or re.match(r"oo-.*", ints[i])):
+            hidden_dg = dG[i-1]
+            hidden_int = ints[i]
+        else:
+            filtered_dG.append(dG[i-1])
+            filtered_ints.append(ints[i])   
+    filtered_dG = [filtered_dG[1], filtered_dG[2], filtered_dG[3], filtered_dG[0]]
+
+    # print(hidden_dg, hidden_int)
+    # print(filtered_dG)
+    # print(filtered_ints)
+    
+    if any(np.isnan(value) for value in filtered_dG):
+        onsetP_orr = np.nan
+        overP_orr = np.nan
+    else:
+        overP_orr = max(filtered_dG)+1.23
+        onsetP_orr = 1.23 - overP_orr
+        
+    ORR['int1'].append(filtered_ints[0])
+    ORR['int2'].append(filtered_ints[1])
+    ORR['int3'].append(filtered_ints[2])
+    ORR['int4'].append(filtered_ints[3])
+    
+    ORR['dg1'].append(filtered_dG[0]+1.23)
+    ORR['dg2'].append(filtered_dG[1]+1.23)
+    ORR['dg3'].append(filtered_dG[2]+1.23)
+    ORR['dg4'].append(filtered_dG[3]+1.23)
+    
+    ORR['hidden_dg'].append(hidden_dg)
+    ORR['hidden_int'].append(hidden_int)
+    ORR['overP'].append(overP_orr)
+    ORR['onsetP'].append(onsetP_orr)
+    
 for dir in dirs:
     os.chdir(dir)
     basename = os.path.basename(os.path.normpath(dir))
@@ -333,6 +395,16 @@ for dir in dirs:
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
         overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
         overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
+
+        overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR)
+        overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR)
+        overpotential_orr(['ooh', 'oo-ooh', 'oo-o', 'oo-oh', 'oo'], df, ORR)
+        # overpotential_orr(['oo-ooh', 'oo-o', 'oo-oh', 'oo', 'oo-oo'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), 'ooh', 'o', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr([('ooh-oh', 'oh-ooh'), 'ooh', 'oo-ooh', 'oo-o', 'oo-oh'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'o', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr(['ohh-ooh', 'ohh-o', 'ohh-oh', 'ohh', 'ohh-oo'], df, ORR)
     elif A == '2' and B == 'Co':
         overpotential('clean', 'oh', 'o', 'ooh', df, OER, ORR)
         overpotential('oh', 'oh-oh', ('o-oh', 'oh-o'), ('ooh-oh', 'oh-ooh'), df, OER, ORR)
@@ -340,6 +412,15 @@ for dir in dirs:
         overpotential('oh', 'ohoh', 'oho', ('ohooh', 'oohoh'), df, OER, ORR)
         overpotential('oo', 'oo-oh', 'oo-o', 'oo-ooh', df, OER, ORR)
         overpotential('ohh', 'ohh-oh', 'ohh-o', 'ohh-ooh', df, OER, ORR)
+
+        overpotential_orr(['ooh', 'o', 'oh', 'clean', 'oo'], df, ORR)
+        overpotential_orr(['ooh', 'o', 'oh', 'oo-oh', 'oo'], df, ORR)
+        overpotential_orr(['ooh', 'oo-ooh', 'oo-o', 'oo-oh', 'oo'], df, ORR)
+        # overpotential_orr(['oo-ooh', 'oo-o', 'oo-oh', 'oo', 'oo-oo'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), 'ooh', 'o', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr([('ooh-oh', 'oh-ooh'), 'ooh', 'oo-ooh', 'oo-o', 'oo-oh'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'o', 'oh', 'oo-oh'], df, ORR)
+        overpotential_orr([('oh-ooh', 'ooh-oh'), ('o-oh', 'oh-o'), 'oh-oh', 'oh', 'oo-oh'], df, ORR)
     elif A == '3' and B == 'Mo':
         overpotential('o', 'oho', 'oo', ('oooh', 'ooho'), df, OER, ORR)
 
