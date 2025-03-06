@@ -73,23 +73,27 @@ def scaling(dG1, dG2, ads1, ads2, df): #, xmin, xmax, ymin, ymax):
     x, y, c = x[mask], y[mask], df['color'][mask]
     xx = np.linspace(min(x), max(x), 100)
     plt.figure(figsize=(4, 3), dpi=300)
-    plt.scatter(x, y, c=c, s=20, zorder=3)
+    plt.scatter(x, y, c=c, s=20, zorder=4)
     for xi, yi, metal in zip(x, y, df.index):
         plt.annotate(f'{metal}', (float(xi), float(yi)), textcoords="offset points", 
-                     xytext=(0, 5), ha='center', color='black', fontsize=8, zorder=4)
+                     xytext=(0, 5), ha='center', color='black', fontsize=8, zorder=5)
     coeffs = np.polyfit(x, y, 1)
     line = np.poly1d(coeffs)
-    plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black', zorder=2)
+    plt.plot(xx, line(xx), label=fr'$\Delta$G$_{{\sf {ads2}}}$ (trend)', linestyle='-', color='black', zorder=3)
     if ads1 == 'OH' and ads2 == 'O':
         plt.plot(xx, 2.00*xx-0.75, linestyle='--', color='lightgray', zorder=0)
         plt.plot(xx, 1.64*xx+0.95, linestyle='--', color='darkgray', zorder=1)
-        plt.text(0.32, 0.17, 'y = 2.00x - 0.75 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
-        plt.text(0.32, 0.11, 'y = 1.64x + 0.95 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
+        plt.plot(xx, 1.49*xx+1.21, linestyle='--', color='lightblue', zorder=2)
+        plt.text(0.32, 0.23, 'y = 2.00x - 0.75 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
+        plt.text(0.32, 0.17, 'y = 1.64x + 0.95 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
+        plt.text(0.32, 0.11, 'y = 1.49x + 1.21 ((oxi)(hydro)oxides)', transform=plt.gca().transAxes, fontsize=10, color='lightblue')
     elif ads1 == 'OH' and ads2 == 'OOH':
         plt.plot(xx, 1.06*xx+3.16, linestyle='--', color='lightgray', zorder=0)
         plt.plot(xx, 1.05*xx+3.01, linestyle='--', color='darkgray', zorder=1)
-        plt.text(0.32, 0.17, 'y = 1.06x + 3.16 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
-        plt.text(0.32, 0.11, 'y = 1.05x + 3.01 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
+        plt.plot(xx, 0.84*xx+3.14, linestyle='--', color='darkgray', zorder=2)
+        plt.text(0.32, 0.23, 'y = 1.06x + 3.16 (metal)', transform=plt.gca().transAxes, fontsize=10, color='lightgray')
+        plt.text(0.32, 0.17, 'y = 1.05x + 3.01 (oxide)', transform=plt.gca().transAxes, fontsize=10, color='darkgray')
+        plt.text(0.32, 0.11, 'y = 0.84x + 3.14 ((oxi)(hydro)oxides)', transform=plt.gca().transAxes, fontsize=10, color='lightblue')
     equation = f'y = {coeffs[0]:.2f}x + {coeffs[1]:.2f}'
     y_pred = line(x)
     ss_total = np.sum((y - np.mean(y))**2)
