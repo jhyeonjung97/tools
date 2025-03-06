@@ -44,7 +44,7 @@ for root_dir in root_dirs:
         most_stable_dir = 'most_stable'  # Name of the most stable directory
 
         # Define the path to the CONTcar file
-        contcar_path = os.path.join(root_dir, main_dir, most_stable_dir, 'CONTCAR')
+        contcar_path = os.path.join(root_dir, main_dir, most_stable_dir, 'final_with_calculator.json')
         
         if os.path.exists(contcar_path):
             atoms = read(contcar_path)
