@@ -1,11 +1,13 @@
+#!/bin/bash
+
 i=0
 for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/3d/*_*
 do
-    cd "$dir" || continue
     if(( i == 5 )); then
         exit
     fi
-
+    
+    cd "$dir"
     IFS='/' read -r -a path <<< $dir
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
     row=$(echo "${path[-2]}" | cut -d'_' -f1)
@@ -24,7 +26,7 @@ do
         fi
     elif [[ -d "isif8" ]]; then
         if [[ -f "DONE" ]]; then
-            mkdir isif3; mv !(isif3|isif8) isif3
+            mkdir isif3; find . -maxdepth 1 -type f -exec mv {} isif3/ \;
             cd isif3; cp CHGCAR WAVECAR restart.json submit.sh $dir
             cd $dir; sed -i -e 's/opt_bulk8/opt_bulk3/' submit.sh
             pwd; sbatch submit.sh; ((i+=1))
@@ -33,7 +35,7 @@ do
         fi
     else
         if [[ -f "DONE" ]]; then
-            mkdir isif8; mv !(isif8) isif8
+            mkdir isif8; find . -maxdepth 1 -type f -exec mv {} isif8/ \;
             cd isif8; cp CHGCAR WAVECAR restart.json submit.sh $dir
             cd $dir; sed -i -e 's/opt_bulk8/opt_bulk3/' submit.sh
             pwd; sbatch submit.sh; ((i+=1))
