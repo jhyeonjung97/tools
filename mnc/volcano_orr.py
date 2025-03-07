@@ -32,7 +32,7 @@ def main():
     df.loc["haily_clean", ["E_", "E_OH"]] = [-280.17697237, -290.94763409999996]
     df.loc["haily_antipodal_OH", ["E_", "E_OH"]] = [-290.94763409999996, -300.6264046]
     df.loc["haily_adjacent_OH", ["E_", "E_OH"]] = [-290.94763409999996, -300.7382192]
-    df.loc["haily_antipodal_H2O", ["E_", "E_OH"]] = [-294.9692702, -305.33767781]
+    df.loc["haily_antipodal_H2O", ["E_", "E_OH"]] = [-294.9692702, -305.06675363]
     df.loc["haily_antipodal_O2", ["E_", "E_OH"]] = [-290.615657, -300.425750]
     # df.loc["haily_antipodalO", ["E_", "E_OH"]] = [-285.94477754, -295.52658608]
     # df.loc["haily_adjacentO", ["E_", "E_OH"]] = [-285.94477754, -295.22826514]
