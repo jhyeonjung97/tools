@@ -17,6 +17,8 @@ do
     
     if [[ -n $(squeue --me | grep $jobname) ]]; then
         ((i+=1)); continue
+    elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
+        pwd; sbatch submit.sh; ((i+=1))
     elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'restart.json' ! -name 'submit.sh' ! -name 'WAVECAR' ! -name '.*')" ]]; then
         if [[ -d "isif2" ]] && [[ -n $(grep 'bader' submit.sh) ]]; then
             sed -i -e 's/opt_bulk3/opt_bulk2/' submit.sh
