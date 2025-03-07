@@ -2,7 +2,7 @@
 
 i=$(squeue --me | grep 'RS' | wc -l)
 
-for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/*d/*_*
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/5d/*_*
 do
     if(( i > 4 )); then
         exit
