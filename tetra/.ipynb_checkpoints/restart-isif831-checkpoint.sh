@@ -1,5 +1,5 @@
 i=0
-for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/3d/*_*
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/4d/*_*
 do
     cd "$dir" || continue
     
@@ -8,9 +8,12 @@ do
     row=$(echo "${path[-2]}" | cut -d'_' -f1)
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
 
-    echo $coord$row$numb
+    jobname=${coord}${row}${numb}
     
-    # if [[ -d "isif3" ]]; then
+    if [[ -n $(squeue --me | grep $jobname) ]]; then
+        pwd
+    fi
+    # [[ -d "isif3" ]]; then
     #     if [[ -f "DONE" ]]; then
     #         continue
     #     elif 
