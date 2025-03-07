@@ -14,7 +14,6 @@ for line in lines:
         spilling_values.append(float(match.group(1)))
 
 # Check if any spilling is greater than 5%
-print(spilling_values)
 if any(spill > 5.0 for spill in spilling_values):
     warning_msg = "\nWARNING: Charge spilling exceeds 5%! Check your basis set and projection parameters.\n"
 

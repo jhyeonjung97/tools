@@ -31,13 +31,14 @@ do
     elif [[ -d "isif3" ]]; then
         # mkdir isif2; find . -maxdepth 1 -type f -exec mv {} isif2/ \;
         # cd isif2; cp WAVECAR restart.json submit.sh $dir
-        # cd $dir; sed -i -e 's/opt_bulk2_afm/static_bulk2/' submit.sh
+        # cd $dir; sed -i -e 's/opt_bulk2_afm/static_bulk/' submit.sh
         # sed -i -e '/bader/d' submit.sh
-        # echo '~/bin/lobster-5.1.0/lobster-5.1.0' >> submit.sh
+        # echo '~/bin/lobster-5.0.0/lobster-5.0.0' >> submit.sh
         # echo 'python ~/bin/aloha/cohp.py > icohp.txt' >> submit.sh
         # echo 'python ~/bin/aloha/cobi.py > icobi.txt' >> submit.sh
-        cp ~/bin/tools/tetra/lobsterin .
-        sed -i -e "s/X/${metal}/" lobsterin
+        # echo 'python ~/bin/tools/tetra/spilling.py' >> submit.sh
+        # cp ~/bin/tools/tetra/lobsterin .
+        # sed -i -e "s/X/${metal}/" lobsterin
         # pwd; sbatch submit.sh; ((i+=1))
         continue
     elif [[ -d "isif8" ]]; then
