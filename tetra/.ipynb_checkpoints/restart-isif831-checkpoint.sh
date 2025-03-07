@@ -2,8 +2,20 @@
 
 i=0
 for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/*d/*_*
+do    
+    IFS='/' read -r -a path <<< $dir
+    coord=$(echo "${path[-3]}" | cut -d'_' -f3)
+    row=$(echo "${path[-2]}" | cut -d'_' -f1)
+    numb=$(echo "${path[-1]}" | cut -d'_' -f1)
+    metal=$(echo "${path[-1]}" | cut -d'_' -f2)
+    jobname=${coord}${row}${numb}
+    
+    if [[ -n $(squeue --me | grep $jobname) ]]; then
+        ((i+=1)); continue
+        
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/*d/*_*
 do
-    if(( i == 5 )); then
+    if(( i > 4 )); then
         exit
     fi
     
