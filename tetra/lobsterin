@@ -1,7 +1,8 @@
-COHPstartEnergy -30.0
+COHPstartEnergy -25.0
 COHPendEnergy 15.0
 userecommendedbasisfunctions
 DesityOfEnergy
 
 cohpGenerator from 1.5 to 3.0 type X type O orbitalWise around 1
 cobiGenerator from 1.5 to 3.0 type X type O orbitalWise around 1
+coopGenerator from 1.5 to 3.0 type X type O orbitalWise around 1

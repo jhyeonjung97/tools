@@ -12,6 +12,7 @@ do
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
     row=$(echo "${path[-2]}" | cut -d'_' -f1)
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
+    metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname=${coord}${row}${numb}
     
     if [[ -n $(squeue --me | grep $jobname) ]]; then
@@ -35,13 +36,15 @@ do
         # echo '~/bin/lobster-5.1.0/lobster-5.1.0' >> submit.sh
         # echo 'python ~/bin/aloha/cohp.py > icohp.txt' >> submit.sh
         # echo 'python ~/bin/aloha/cobi.py > icobi.txt' >> submit.sh
+        cp ~/bin/tools/tetra/lobsterin .
+        sed -i -e "s/X/${metal}/" lobsterin
         # pwd; sbatch submit.sh; ((i+=1))
         continue
     elif [[ -d "isif8" ]]; then
         mkdir isif3; find . -maxdepth 1 -type f -exec mv {} isif3/ \;
         cd isif3; cp WAVECAR restart.json submit.sh $dir
         cd $dir; sed -i -e 's/opt_bulk3/opt_bulk2/' submit.sh
-        echo '' submit.sh
+        echo '' >> submit.sh
         echo 'python ~/bin/verve/bader.py' >> submit.sh
         pwd; sbatch submit.sh; ((i+=1))
     else
@@ -51,12 +54,3 @@ do
         pwd; sbatch submit.sh; ((i+=1))
     fi
 done
-
-mkdir isif2; find . -maxdepth 1 -type f -exec mv {} isif2/ \;
-cd isif2; cp WAVECAR restart.json submit.sh $dir
-cd $dir; sed -i -e 's/opt_bulk2_afm/static_bulk/' submit.sh
-sed -i -e '/bader/d' submit.sh
-echo '~/bin/lobster-5.1.0/lobster-5.1.0' >> submit.sh
-echo 'python ~/bin/aloha/cohp.py > icohp.txt' >> submit.sh
-echo 'python ~/bin/aloha/cobi.py > icobi.txt' >> submit.sh
-pwd; sbatch submit.sh; ((i+=1))
