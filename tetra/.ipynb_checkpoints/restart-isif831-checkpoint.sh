@@ -20,7 +20,7 @@ do
         pwd; sbatch submit.sh; ((i+=1))
     elif [[ ! -f "DONE" ]]; then
         pwd; echo -e "\e[31mCheck this directory!\e[0m"
-    elif [[ -d "isif3" ]] && ; then
+    elif [[ -d "isif3" ]]; then
         continue
     elif [[ -d "isif8" ]]; then
         mkdir isif3; find . -maxdepth 1 -type f -exec mv {} isif3/ \;
