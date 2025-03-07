@@ -1,7 +1,7 @@
 from aloha.cobi_analysis import *
 import sys
 
-cobi=Cohpout('.')
+cobi=Cobiout('.')
 cobi.pcobi() 
 # cobi.pcobi(label=1,lm_orbital={'Fe':('d'),'O':('p')})
 # cobi.pcobi(label=1,lm_orbital={'Fe':('d')})
