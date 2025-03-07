@@ -29,16 +29,8 @@ ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
-elif path.exists('start.traj'):
-    atoms = read('start.traj')
-    for atom in atoms:
-        if atom.symbol in spin_states_plus_2:
-            if atom.index % 2 == 1: 
-                atom.magmom = spin_states_plus_2[atom.symbol]
-            else:
-                atom.magmom = -spin_states_plus_2[atom.symbol]
 else:
-    raise ValueError('Neither restart.json nor start.traj file found')
+    raise ValueError('Missing: restart.json')
 
 lmaxmix = 2
 for atom in atoms:
@@ -46,18 +38,26 @@ for atom in atoms:
         lmaxmix = 4
     else:
         ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
+        
+def get_bands(atoms):
+    nbands = 0
+    nbands_per_orbital = {'s': 1, 'p': 3, 'd': 5, 'f': 7}
+    for symbol in atoms.get_chemical_symbols():
+        if symbol == 'H':  # H is bugged
+            nbands += 1
+            continue
+        orbitals = element(symbol).ec.get_valence().to_str().split()
+        nbands += sum(nbands_per_orbital[orbital[1]] * int(orbital[2:]) for orbital in orbitals)
+    return nbands
+    
+def extract_kpoints(file_path):
+    with open(file_path, 'r') as file:
+        file_content = file.readlines()
+    nkx, nky, nkz = map(int, file_content[3].split())
+    return ((nkx, nky, nkz))
 
-def get_kpoints(atoms, l=25, bulk=True):
-    cell = atoms.get_cell()
-    nkx = int(round(l/np.linalg.norm(cell[0]),0))
-    nky = int(round(l/np.linalg.norm(cell[1]),0))
-    if bulk == True:
-        nkz = int(round(l/np.linalg.norm(cell[2]),0))
-    else:
-        nkz = 1
-    return((nkx, nky, nkz))
-
-kpoints = get_kpoints(atoms, l=25, bulk=True)
+nbands = get_bands(atoms)
+kpoints = extract_kpoints('./opt/KPOINTS')
 
 atoms.calc = vasp_calculator.Vasp(
                     encut=600,
@@ -86,7 +86,7 @@ atoms.calc = vasp_calculator.Vasp(
                     lasph=True, 
                     lvtot=False,
                     laechg=True,
-                    # isym=0, 
+                    isym=0, 
                     ispin=2,
                     lorbit=11,
                     ldau=True,
@@ -98,7 +98,7 @@ atoms.calc = vasp_calculator.Vasp(
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
-                    # nupdown=0
+                    nupdown=0
                     )
 
 energy = atoms.get_potential_energy()
