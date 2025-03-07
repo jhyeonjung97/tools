@@ -15,36 +15,22 @@ do
     jobname=${coord}${row}${numb}
     
     if [[ -n $(squeue --me | grep $jobname) ]]; then
+        ((i+=1)); continue
+    elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'CHGCAR' ! -name 'restart.json' ! -name 'submit.sh' ! -name 'WAVECAR' ! -name '.*')" ]]; then
+        pwd; sbatch submit.sh; ((i+=1))
+    elif [[ ! -f "DONE" ]]; then
+        pwd; echo -e "\e[31mCheck this directory!\e[0m"
+    elif [[ -d "isif3" ]] && ; then
         continue
-    elif [[ -d "isif3" ]]; then
-        if [[ -f "DONE" ]]; then
-            ((i+=1)); continue
-        elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'CHGCAR' ! -name 'restart.json' ! -name 'submit.sh' ! -name 'WAVECAR' ! -name '.*')" ]]; then
-            pwd; sbatch submit.sh; ((i+=1))
-        else
-            pwd; echo -e "\e[31mCheck this directory!\e[0m"
-        fi
     elif [[ -d "isif8" ]]; then
-        if [[ -f "DONE" ]]; then
-            mkdir isif3; find . -maxdepth 1 -type f -exec mv {} isif3/ \;
-            cd isif3; cp CHGCAR WAVECAR restart.json submit.sh $dir
-            cd $dir; sed -i -e 's/opt_bulk8/opt_bulk3/' submit.sh
-            pwd; sbatch submit.sh; ((i+=1))
-        elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'CHGCAR' ! -name 'restart.json' ! -name 'submit.sh' ! -name 'WAVECAR' ! -name '.*')" ]]; then
-            pwd; sbatch submit.sh; ((i+=1))
-        else
-            pwd; echo -e "\e[31mCheck this directory!\e[0m"
-        fi
+        mkdir isif3; find . -maxdepth 1 -type f -exec mv {} isif3/ \;
+        cd isif3; cp CHGCAR WAVECAR restart.json submit.sh $dir
+        cd $dir; sed -i -e 's/opt_bulk8/opt_bulk3/' submit.sh
+        pwd; sbatch submit.sh; ((i+=1))
     else
-        if [[ -f "DONE" ]]; then
-            mkdir isif8; find . -maxdepth 1 -type f -exec mv {} isif8/ \;
-            cd isif8; cp CHGCAR WAVECAR restart.json submit.sh $dir
-            cd $dir; sed -i -e 's/opt_bulk8/opt_bulk3/' submit.sh
-            pwd; sbatch submit.sh; ((i+=1))
-        elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'CHGCAR' ! -name 'restart.json' ! -name 'submit.sh' ! -name 'WAVECAR' ! -name '.*')" ]]; then
-            pwd; sbatch submit.sh; ((i+=1))
-        else
-            pwd; echo -e "\e[31mCheck this directory!\e[0m"
-        fi
+        mkdir isif8; find . -maxdepth 1 -type f -exec mv {} isif8/ \;
+        cd isif8; cp CHGCAR WAVECAR restart.json submit.sh $dir
+        cd $dir; sed -i -e 's/opt_bulk8/opt_bulk3/' submit.sh
+        pwd; sbatch submit.sh; ((i+=1))
     fi
 done
