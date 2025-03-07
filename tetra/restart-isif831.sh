@@ -20,9 +20,6 @@ do
         elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'CHGCAR' ! -name 'restart.json' ! -name 'submit.sh' ! -name 'WAVECAR' ! -name '.*')" ]]; then
             pwd; sbatch submit.sh; ((i+=1))
         else
-            echo "Other files exist."
-        fi
-        else
             pwd; echo -e "\e[31mCheck this directory!\e[0m"
         fi
     elif [[ -d "isif8" ]]; then
