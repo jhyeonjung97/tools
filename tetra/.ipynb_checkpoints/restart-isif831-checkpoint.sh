@@ -16,7 +16,7 @@ do
     
     if [[ -n $(squeue --me | grep $jobname) ]]; then
         ((i+=1)); continue
-    elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'CHGCAR' ! -name 'restart.json' ! -name 'submit.sh' ! -name 'WAVECAR' ! -name '.*')" ]]; then
+    elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'restart.json' ! -name 'submit.sh' ! -name 'WAVECAR' ! -name '.*')" ]]; then
         if [[ -d "isif2" ]] && [[ -n $(grep 'bader' submit.sh) ]]; then
             sed -i -e 's/opt_bulk3/opt_bulk2/' submit.sh
         elif [[ -d "isif3" ]] && [[ ! -n $(grep 'bader' submit.sh) ]]; then
@@ -29,21 +29,34 @@ do
     #     continue
     elif [[ -d "isif3" ]]; then
         # mkdir isif2; find . -maxdepth 1 -type f -exec mv {} isif2/ \;
-        # cd isif2; cp CHGCAR WAVECAR restart.json submit.sh $dir
-        # cd $dir; sed -i -e 's/opt_bulk2_afm/static_bulk2/' -e 's/opt_bulk2_fm/static_bulk2/' submit.sh
+        # cd isif2; cp WAVECAR restart.json submit.sh $dir
+        # cd $dir; sed -i -e 's/opt_bulk2_afm/static_bulk2/' submit.sh
         # sed -i -e '/bader/d' submit.sh
+        # echo '~/bin/lobster-5.1.0/lobster-5.1.0' >> submit.sh
+        # echo 'python ~/bin/aloha/cohp.py > icohp.txt' >> submit.sh
+        # echo 'python ~/bin/aloha/cobi.py > icobi.txt' >> submit.sh
         # pwd; sbatch submit.sh; ((i+=1))
         continue
     elif [[ -d "isif8" ]]; then
         mkdir isif3; find . -maxdepth 1 -type f -exec mv {} isif3/ \;
-        cd isif3; cp CHGCAR WAVECAR restart.json submit.sh $dir
+        cd isif3; cp WAVECAR restart.json submit.sh $dir
         cd $dir; sed -i -e 's/opt_bulk3/opt_bulk2/' submit.sh
+        echo '' submit.sh
         echo 'python ~/bin/verve/bader.py' >> submit.sh
         pwd; sbatch submit.sh; ((i+=1))
     else
         mkdir isif8; find . -maxdepth 1 -type f -exec mv {} isif8/ \;
-        cd isif8; cp CHGCAR WAVECAR restart.json submit.sh $dir
+        cd isif8; cp WAVECAR restart.json submit.sh $dir
         cd $dir; sed -i -e 's/opt_bulk8/opt_bulk3/' submit.sh
         pwd; sbatch submit.sh; ((i+=1))
     fi
 done
+
+mkdir isif2; find . -maxdepth 1 -type f -exec mv {} isif2/ \;
+cd isif2; cp WAVECAR restart.json submit.sh $dir
+cd $dir; sed -i -e 's/opt_bulk2_afm/static_bulk/' submit.sh
+sed -i -e '/bader/d' submit.sh
+echo '~/bin/lobster-5.1.0/lobster-5.1.0' >> submit.sh
+echo 'python ~/bin/aloha/cohp.py > icohp.txt' >> submit.sh
+echo 'python ~/bin/aloha/cobi.py > icobi.txt' >> submit.sh
+pwd; sbatch submit.sh; ((i+=1))
