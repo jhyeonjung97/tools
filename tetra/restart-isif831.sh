@@ -24,7 +24,9 @@ do
     IFS='/' read -r -a path <<< $dir
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     
-    if [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
+    if [[ -n $(squeue --me | grep $jobname) ]]; then
+        continue
+    elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
         pwd; sbatch submit.sh; ((i+=1))
     elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'restart.json' ! -name 'submit.sh' ! -name 'WAVECAR' ! -name 'lobsterin' ! -name '.*')" ]]; then
         pwd; sbatch submit.sh; ((i+=1))
