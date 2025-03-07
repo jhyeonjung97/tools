@@ -16,7 +16,7 @@ do
         continue
     elif [[ -d "isif3" ]]; then
         if [[ -f "DONE" ]]; then
-            continue
+            ((i+=1)); continue
         elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'CHGCAR' ! -name 'restart.json' ! -name 'submit.sh' ! -name 'WAVECAR' ! -name '.*')" ]]; then
             pwd; sbatch submit.sh; ((i+=1))
         else
