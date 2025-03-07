@@ -39,9 +39,9 @@ do
         cd $dir; sed -i -e 's/opt_bulk2_afm/static_bulk/' submit.sh
         sed -i -e '/bader/d' submit.sh
         echo '~/bin/lobster-5.0.0/lobster-5.0.0' >> submit.sh
-        echo 'python ~/bin/aloha/cohp.py > icohp.txt' >> submit.sh
-        echo 'python ~/bin/aloha/cobi.py > icobi.txt' >> submit.sh
-        echo 'python ~/bin/aloha/coop.py > icoop.txt' >> submit.sh
+        echo 'python ~/bin/tools/tetra/cohp.py > icohp.txt' >> submit.sh
+        echo 'python ~/bin/tools/tetra/cobi.py > icobi.txt' >> submit.sh
+        echo 'python ~/bin/tools/tetra/coop.py > icoop.txt' >> submit.sh
         echo 'python ~/bin/tools/tetra/spilling.py' >> submit.sh
         cp ~/bin/tools/tetra/lobsterin .
         sed -i -e "s/X/${metal}/" lobsterin
