@@ -12,6 +12,8 @@ do
     
     if [[ -n $(squeue --me | grep $jobname) ]]; then
         ((i+=1)); continue
+    fi
+done
         
 for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/*d/*_*
 do
