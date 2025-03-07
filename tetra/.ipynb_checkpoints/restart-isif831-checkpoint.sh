@@ -1,7 +1,7 @@
 #!/bin/bash
 
 i=0
-for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/3d/*_*
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/*d/*_*
 do
     if(( i == 5 )); then
         exit
