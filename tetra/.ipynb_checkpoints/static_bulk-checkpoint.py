@@ -71,6 +71,7 @@ atoms.calc = vasp_calculator.Vasp(
                     #amix_mag=0.05,
                     #bmix_mag=0.0001,
                     kpts=kpoints,
+                    nbands=nbands,
                     kpar=4,
                     npar=16,
                     gamma=True,
