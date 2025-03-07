@@ -6,7 +6,7 @@ do
     IFS='/' read -r -a path <<< $dir
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
     row=$(echo "${path[-2]}" | cut -d'_' -f1)
-    numb=$(echo "${path[-1]}" | cut -d'_' -f2)
+    numb=$(echo "${path[-1]}" | cut -d'_' -f1)
 
     echo $coord$row$numb
     
