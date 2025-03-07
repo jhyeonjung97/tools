@@ -7,7 +7,6 @@ do
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
     row=$(echo "${path[-2]}" | cut -d'_' -f1)
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
-    metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname=${coord}${row}${numb}
     
     if [[ -n $(squeue --me | grep $jobname) ]]; then
@@ -23,15 +22,9 @@ do
     
     cd "$dir"
     IFS='/' read -r -a path <<< $dir
-    coord=$(echo "${path[-3]}" | cut -d'_' -f3)
-    row=$(echo "${path[-2]}" | cut -d'_' -f1)
-    numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
-    jobname=${coord}${row}${numb}
     
-    if [[ -n $(squeue --me | grep $jobname) ]]; then
-        ((i+=1)); continue
-    elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
+    if [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
         pwd; sbatch submit.sh; ((i+=1))
     elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'restart.json' ! -name 'submit.sh' ! -name 'WAVECAR' ! -name 'lobsterin' ! -name '.*')" ]]; then
         pwd; sbatch submit.sh; ((i+=1))
