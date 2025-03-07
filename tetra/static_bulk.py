@@ -6,7 +6,7 @@ from ase.io import read, write
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk2_afm'
+name = 'static_bulk'
 start_time = time.time()
 
 spin_states_plus_2 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
@@ -57,7 +57,7 @@ def extract_kpoints(file_path):
     return ((nkx, nky, nkz))
 
 nbands = get_bands(atoms)
-kpoints = extract_kpoints('./opt/KPOINTS')
+kpoints = extract_kpoints('./isif2/KPOINTS')
 
 atoms.calc = vasp_calculator.Vasp(
                     encut=600,
@@ -78,7 +78,7 @@ atoms.calc = vasp_calculator.Vasp(
                     nelm=200,
                     algo='Normal',
                     isif=2,
-                    nsw=200,
+                    nsw=200, ## lobster
                     ibrion=2,
                     ediff=1e-6,
                     ediffg=-0.02,
@@ -86,7 +86,7 @@ atoms.calc = vasp_calculator.Vasp(
                     lasph=True, 
                     lvtot=False,
                     laechg=True,
-                    isym=0, 
+                    isym=0, ## lobster
                     ispin=2,
                     lorbit=11,
                     ldau=True,
@@ -98,7 +98,7 @@ atoms.calc = vasp_calculator.Vasp(
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
-                    nupdown=0
+                    # nupdown=0
                     )
 
 energy = atoms.get_potential_energy()
