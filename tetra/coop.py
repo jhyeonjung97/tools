@@ -1,10 +1,10 @@
-from aloha.cobi_analysis import *
+from aloha.coop_analysis import *
 import sys
 
 coop=Coopout('.')
-cobi.pcobi() 
-# cobi.pcobi(label=1,lm_orbital={'Fe':('d'),'O':('p')})
-# cobi.pcobi(label=1,lm_orbital={'Fe':('d')})
+coop.pcoop() 
+# coop.pcoop(label=1,lm_orbital={'Fe':('d'),'O':('p')})
+# coop.pcoop(label=1,lm_orbital={'Fe':('d')})
 #label=1, lm_orbital={'Ir':('dxy','dz2'),'O':('p')}), summed_spin_channels=False
 #d orbital (dxy, dyz, dz2, dxz, dx2) & p orbital (px, py, pz)
 
