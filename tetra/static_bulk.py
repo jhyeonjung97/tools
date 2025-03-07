@@ -2,6 +2,7 @@ import time
 import subprocess
 import numpy as np
 from os import path
+from mendeleev import element
 from ase.io import read, write
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
