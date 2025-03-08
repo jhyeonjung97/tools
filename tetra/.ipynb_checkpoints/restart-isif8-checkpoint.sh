@@ -1,6 +1,9 @@
 #!/bin/bash
 
-i=$(squeue --me | grep '30:00' | wc -l)
+source /etc/profile
+source ~/.bashrc
+
+i=$(squeue --me | grep 'gpu' | wc -l)
 
 for dir in /pscratch/sd/j/jiuy97/7_V_bulk/*_*_*/*d/*_*
 do
