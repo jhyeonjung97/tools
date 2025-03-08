@@ -8,7 +8,7 @@ do
         exit
     fi
     
-    cd "$dir"
+    cd "$dir"; pwd
     IFS='/' read -r -a path <<< $dir
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
     row=$(echo "${path[-2]}" | cut -d'_' -f1)
