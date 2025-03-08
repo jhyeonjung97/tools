@@ -36,7 +36,7 @@ do
     if [[ $row == '3d' ]] && [[ -f "$dir/DONE" ]] && [[ -f "$dir/restart.json" ]] && [[ ! -f "$dir_fm/start.traj" ]]; then
         cd $dir_fm
         cp $dir/CONTCAR $dir/submit.sh .
-        echo "cp CONTCAR submit.sh $dir_fm"
+        echo -e "\e[32mcp CONTCAR submit.sh $dir_fm\e[0m"
         ase convert CONTCAR start.traj; rm CONTCAR
         sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
         pwd; sbatch submit.sh
@@ -46,8 +46,10 @@ do
     if [[ -n $(squeue --me | grep "$jobname") ]] || [[ -f "$dir/DONE" ]]; then
         continue
     else
-        python ~/bin/get_restart3
-        if [[ ! -f "$dir/DONE" ]]; then
+        python ~/bin/tools/tetra/get_restart3.py
+        if [[ -f "$dir/DONE" ]]; then
+            pwd; echo -e "\e[31mCheck this directory!\e[0m"
+        else
             pwd; sbatch submit.sh
         fi
     fi
