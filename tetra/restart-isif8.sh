@@ -42,12 +42,12 @@ do
         pwd; sbatch submit.sh
     fi
     
-    cd $dir
-    if [[ -n $(squeue --me | grep "$jobname") ]]; then
-        continue
-    elif [[ -f "$dir/DONE" ]]; then
-        echo 'please'; continue
-    else
-        pwd; python ~/bin/get_restart3; sbatch submit.sh
-    fi
+    # cd $dir
+    # if [[ -n $(squeue --me | grep "$jobname") ]]; then
+    #     continue
+    # elif [[ -f "$dir/DONE" ]]; then
+    #     echo 'please'; continue
+    # else
+    #     pwd; python ~/bin/get_restart3; sbatch submit.sh
+    # fi
 done
