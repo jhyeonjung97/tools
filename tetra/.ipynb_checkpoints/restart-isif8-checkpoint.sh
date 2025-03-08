@@ -42,8 +42,10 @@ do
     fi
     
     cd $dir
-    if squeue --me | grep -q "$jobname" || [[ -s "DONE" ]]; then        
+    if [[ -n $(squeue --me | grep "$jobname") ]]; then
         continue
+    elif [[ -s "$dir/DONE" ]]; then
+        echo 'please'; continue
     else
         pwd; python ~/bin/get_restart3; sbatch submit.sh
     fi
