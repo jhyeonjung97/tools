@@ -37,6 +37,7 @@ do
         dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
         if [[ ! -f 'start.traj' ]]; then
             cp CONTCAR submit.sh $dir_fm
+            echo "cp CONTCAR submit.sh $dir_fm"
             cd $dir_fm; ase convert CONTCAR start.traj; rm CONTCAR
             sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
         fi
