@@ -32,7 +32,7 @@ do
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname="${coord}${row}${numb}"
     
-    cd "$dir" || continue  # Ensure script doesn't fail if cd is unsuccessful
+    cd $dir
     if [[ $row == '3d' ]] && [[ -f 'DONE' ]] && [[ -f 'restart.json' ]]; then
         dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
         cp CONTCAR submit.sh $dir_fm
@@ -42,12 +42,11 @@ do
             continue
         else
             pwd; sbatch submit.sh
-        fi
-        
+        fi  
     fi
     
-    cd "$dir" || continue
-    if [[ -n "$(squeue --me | grep "$jobname")" ]] || [[ -f 'DONE' ]]; then
+    cd $dir
+    if [[ -n $(squeue --me | grep "$jobname") ]] || [[ -f 'DONE' ]]; then
         continue
     else
         pwd; python ~/bin/get_restart3; sbatch submit.sh
