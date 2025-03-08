@@ -38,4 +38,9 @@ do
     elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
         pwd; python ~/bin/get_restart3; sbatch submit.sh
     fi
+    
+    if [[ $row == '3d' ]] && [[ -f 'DONE' ]] && [[ -f 'restart.json' ]]; then
+        dir_fm = "/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
+        cp ./restart.json ./submit.sh $dir_fm        
+    fi
 done
