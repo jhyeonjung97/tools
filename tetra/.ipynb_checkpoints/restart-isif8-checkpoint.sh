@@ -35,9 +35,11 @@ do
     cd $dir
     if [[ $row == '3d' ]] && [[ -f 'DONE' ]] && [[ -f 'restart.json' ]]; then
         dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
-        cp CONTCAR submit.sh $dir_fm
-        cd $dir_fm; ase convert CONTCAR start.traj; rm CONTCAR
-        sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
+        if [[ ! -f 'start.traj' ]]; then
+            cp CONTCAR submit.sh $dir_fm
+            cd $dir_fm; ase convert CONTCAR start.traj; rm CONTCAR
+            sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
+        fi
         if [[ -n "$(squeue --me | grep "${coord}fm${numb}")" ]] || [[ -f 'DONE' ]]; then
             continue
         else
