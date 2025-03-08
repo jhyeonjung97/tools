@@ -23,7 +23,7 @@
 #     fi
 # done
 
-for dir in /pscratch/sd/j/jiuy97/7_V_bulk/*_*_*/*d/*_*
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/*_*_*/*/*_*
 do    
     IFS='/' read -r -a path <<< "$dir"
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
@@ -32,24 +32,24 @@ do
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname="${coord}${row}${numb}"
     
-    cd $dir
-    if [[ $row == '3d' ]] && [[ -f 'DONE' ]] && [[ -f 'restart.json' ]]; then
-        dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
-        if [[ ! -f 'start.traj' ]]; then
-            cp CONTCAR submit.sh $dir_fm
-            echo "cp CONTCAR submit.sh $dir_fm"
-            cd $dir_fm; ase convert CONTCAR start.traj; rm CONTCAR
-            sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
-        fi
-        if [[ -n "$(squeue --me | grep "${coord}fm${numb}")" ]] || [[ -f 'DONE' ]]; then
-            continue
-        else
-            pwd; sbatch submit.sh
-        fi  
-    fi
+    # cd $dir
+    # if [[ $row == '3d' ]] && [[ -f 'DONE' ]] && [[ -f 'restart.json' ]]; then
+    #     dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
+    #     if [[ ! -f 'start.traj' ]]; then
+    #         cp CONTCAR submit.sh $dir_fm
+    #         echo "cp CONTCAR submit.sh $dir_fm"
+    #         cd $dir_fm; ase convert CONTCAR start.traj; rm CONTCAR
+    #         sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
+    #     fi
+    #     if [[ -n "$(squeue --me | grep "${coord}fm${numb}")" ]] || [[ -f 'DONE' ]]; then
+    #         continue
+    #     else
+    #         pwd; sbatch submit.sh
+    #     fi  
+    # fi
     
     cd $dir
-    if [[ -n $(squeue --me | grep "$jobname") ]] || [[ -f 'DONE' ]]; then
+    if [[ -n $(squeue --me | grep "$jobname") ]] || [[ -s "$dir/DONE" ]]; then
         continue
     else
         pwd; python ~/bin/get_restart3; sbatch submit.sh
