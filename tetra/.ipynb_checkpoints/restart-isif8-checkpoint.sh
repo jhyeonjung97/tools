@@ -33,14 +33,14 @@ do
     jobname="${coord}${row}${numb}"
     dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
     
-    # if [[ $row == '3d' ]] && [[ -f "$dir/DONE" ]] && [[ -f "$dir/restart.json" ]] && [[ ! -f "${dir_fm}/start.traj" ]]; then
-    #     cd $dir_fm
-    #     cp $dir/CONTCAR $dir/submit.sh .
-    #     echo "cp CONTCAR submit.sh $dir_fm"
-    #     ase convert CONTCAR start.traj; rm CONTCAR
-    #     sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
-    #     pwd; sbatch submit.sh
-    # fi
+    if [[ $row == '3d' ]] && [[ -f "$dir/DONE" ]] && [[ -f "$dir/restart.json" ]] && [[ ! -f "$dir_fm/start.traj" ]]; then
+        cd $dir_fm
+        cp $dir/CONTCAR $dir/submit.sh .
+        echo "cp CONTCAR submit.sh $dir_fm"
+        ase convert CONTCAR start.traj; rm CONTCAR
+        sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
+        pwd; sbatch submit.sh
+    fi
     
     cd $dir
     if [[ -n $(squeue --me | grep "$jobname") ]]; then
