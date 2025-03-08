@@ -1,8 +1,5 @@
 #!/bin/bash
 
-source /etc/profile
-source ~/.bashrc
-
 i=$(squeue --me | grep 'gpu' | wc -l)
 
 for dir in /pscratch/sd/j/jiuy97/7_V_bulk/*_*_*/*d/*_*
