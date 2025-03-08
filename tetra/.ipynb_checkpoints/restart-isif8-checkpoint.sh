@@ -25,15 +25,14 @@
 
 for dir in /pscratch/sd/j/jiuy97/7_V_bulk/*_*_*/*d/*_*
 do    
-    cd "$dir" || continue  # Ensure script doesn't fail if cd is unsuccessful
     IFS='/' read -r -a path <<< "$dir"
-    
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
     row=$(echo "${path[-2]}" | cut -d'_' -f1)
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname="${coord}${row}${numb}"
     
+    cd "$dir" || continue  # Ensure script doesn't fail if cd is unsuccessful
     if [[ $row == '3d' ]] && [[ -f 'DONE' ]] && [[ -f 'restart.json' ]]; then
         dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
         cp CONTCAR submit.sh $dir_fm
@@ -47,6 +46,7 @@ do
         
     fi
     
+    cd "$dir" || continue
     if [[ -n "$(squeue --me | grep "$jobname")" ]] || [[ -f 'DONE' ]]; then
         continue
     else
