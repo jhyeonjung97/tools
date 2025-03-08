@@ -33,17 +33,17 @@ do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname="${coord}${row}${numb}"
-
-    if [[ -n "$(squeue --me | grep "$jobname")" ]] || [[ -f 'DONE' ]]; then
-        continue
-    else
-        pwd; python ~/bin/get_restart3; sbatch submit.sh
-    fi
     
-    if [[ "$row" == '3d' ]] && [[ -f 'DONE' ]] && [[ -f 'restart.json' ]]; then
+    if [[ $row == '3d' ]] && [[ -f 'DONE' ]] && [[ -f 'restart.json' ]]; then
         dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
         mkdir -p "$dir_fm"  # Ensure destination directory exists
         cp ./restart.json ./submit.sh "$dir_fm"
-        sed -i -e 's/3d/fm/' -e 's/afm/fm/' "$dir_fm/submit.sh"
+        sed -i -e "s/${coord}3d${numb}/${coord}fm${numb}/" -e 's/afm/fm/' "$dir_fm/submit.sh"
     fi
+    
+    # if [[ -n "$(squeue --me | grep "$jobname")" ]] || [[ -f 'DONE' ]]; then
+    #     continue
+    # else
+    #     pwd; python ~/bin/get_restart3; sbatch submit.sh
+    # fi
 done
