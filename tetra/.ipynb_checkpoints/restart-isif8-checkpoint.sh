@@ -50,6 +50,7 @@ do
     else
         python ~/bin/get_restart3
         if [[ ! -f "$dir/DONE" ]]; then
-        pwd; sbatch submit.sh
+            pwd; sbatch submit.sh
+        fi
     fi
 done
