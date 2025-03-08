@@ -43,10 +43,8 @@ do
     fi
     
     cd $dir
-    if [[ -n $(squeue --me | grep "$jobname") ]]; then
+    if [[ -n $(squeue --me | grep "$jobname") ]] || [[ -f "$dir/DONE" ]]; then
         continue
-    elif [[ -f "$dir/DONE" ]]; then
-        echo 'please'; continue
     else
         python ~/bin/get_restart3
         if [[ ! -f "$dir/DONE" ]]; then
