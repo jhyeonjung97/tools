@@ -34,6 +34,7 @@ do
     dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
     
     if [[ $row == '3d' ]] && [[ -f "$dir/DONE" ]] && [[ -f "$dir/restart.json" ]] && [[ ! -f "${dir_fm}/start.traj" ]]; then
+        cd $dir_fm
         cp $dir/CONTCAR $dir/submit.sh .
         echo "cp CONTCAR submit.sh $dir_fm"
         ase convert CONTCAR start.traj; rm CONTCAR
@@ -44,7 +45,7 @@ do
     cd $dir
     if [[ -n $(squeue --me | grep "$jobname") ]]; then
         continue
-    elif [[ -s "$dir/DONE" ]]; then
+    elif [[ -f "$dir/DONE" ]]; then
         echo 'please'; continue
     else
         pwd; python ~/bin/get_restart3; sbatch submit.sh
