@@ -43,7 +43,7 @@ do
     fi
     
     cd $dir
-    if [[ -n $(squeue --me | grep "$jobname") ]] || [[ -f "$dir/DONE" ]]; then
+    if [[ -n $(squeue --me | grep "$jobname") ]] || [[ -f "$dir/DONE" ]] || [[ ! -f "$dir/start.traj" ]]; then
         continue
     else
         python ~/bin/tools/tetra/get_restart3.py
