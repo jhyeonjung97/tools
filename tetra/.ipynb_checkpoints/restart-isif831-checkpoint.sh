@@ -47,9 +47,11 @@ do
         continue
     elif [[ -d "isif3" ]]; then
         mkdir isif2; find . -maxdepth 1 -type f -exec mv {} isif2/ \;
-        cd isif2; cp WAVECAR restart.json submit.sh $dir
-        cd $dir; sed -i -e 's/opt_bulk2_afm/static_bulk/' -e 's/opt_bulk2_fm/static_bulk/' submit.sh
+        cd isif2; cp WAVECAR restart.json submit.sh $dir; cd $dir
+        sed -i -e 's/\.\/opt/~\/bin\/tools\/tetra\/opt/' submit.sh
         sed -i -e '/bader/d' submit.sh
+        sed -i -e 's/opt_bulk2_afm/static_bulk/' submit.sh
+        sed -i -e 's/opt_bulk2_fm/static_bulk/' submit.sh
         echo '~/bin/lobster-5.0.0/lobster-5.0.0' >> submit.sh
         echo 'python ~/bin/tools/tetra/cohp.py > icohp.txt' >> submit.sh
         echo 'python ~/bin/tools/tetra/cobi.py > icobi.txt' >> submit.sh
@@ -59,16 +61,18 @@ do
         sed -i -e "s/X/${metal}/" lobsterin
         pwd; sbatch submit.sh #; ((i+=1))
     elif [[ -d "isif8" ]]; then
-        mkdir isif3; find . -maxdepth 1 -type f -exec mv {} isif3/ \;
-        cd isif3; cp WAVECAR restart.json submit.sh $dir
-        cd $dir; sed -i -e 's/opt_bulk3/opt_bulk2/' submit.sh
+        mkdir isif3; find . -maxdepth 1 -type f -exec mv {} isif3/ \
+        cd isif3; cp WAVECAR restart.json submit.sh $dir; cd $dir
+        sed -i -e 's/\.\/opt/~\/bin\/tools\/tetra\/opt/' submit.sh
+        sed -i -e 's/opt_bulk3/opt_bulk2/' submit.sh
         echo '' >> submit.sh
         echo 'python ~/bin/verve/bader.py' >> submit.sh
         pwd; sbatch submit.sh #; ((i+=1))
     else
         mkdir isif8; find . -maxdepth 1 -type f -exec mv {} isif8/ \;
-        cd isif8; cp WAVECAR restart.json submit.sh $dir
-        cd $dir; sed -i -e 's/opt_bulk8/opt_bulk3/' submit.sh
+        cd isif8; cp WAVECAR restart.json submit.sh $dir; cd $dir
+        sed -i -e 's/\.\/opt/~\/bin\/tools\/tetra\/opt/' submit.sh
+        sed -i -e 's/opt_bulk8/opt_bulk3/' submit.sh
         pwd; sbatch submit.sh #; ((i+=1))
     fi
 done
