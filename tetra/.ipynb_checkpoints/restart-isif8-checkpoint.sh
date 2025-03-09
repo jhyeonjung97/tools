@@ -23,7 +23,7 @@
 #     fi
 # done
 
-for dir in /pscratch/sd/j/jiuy97/7_V_bulk/*_*_*/*/*_*
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/*_*_LT/*/*_* /pscratch/sd/j/jiuy97/7_V_bulk/*_*_A*/*/*_*
 do    
     IFS='/' read -r -a path <<< "$dir"
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
@@ -41,7 +41,6 @@ do
         sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
         pwd; sbatch submit.sh
     fi
-    
     
     if [[ -n $(squeue --me | grep "$jobname") ]] || [[ -f "$dir/DONE" ]] || [[ ! -f "$dir/start.traj" ]]; then
         continue
