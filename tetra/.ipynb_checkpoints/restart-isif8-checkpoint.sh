@@ -53,4 +53,8 @@ do
             pwd; sbatch submit.sh
         fi
     fi
+    
+    if [[ -f "$dir/DONE" ]]; then
+        ~/bin/shoulder/rm_mv "$dir"/*log
+    fi
 done
