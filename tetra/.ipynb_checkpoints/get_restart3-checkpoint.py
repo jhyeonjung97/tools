@@ -20,7 +20,7 @@ def check_vasp_convergence():
     """Checks if the VASP output file contains the convergence message."""
     try:
         result = subprocess.check_output(
-            "grep -F 'PROFILE, used timers' vasp.out", 
+            "grep -F 'reached required accuracy' vasp.out", 
             shell=True
         )
         return bool(result.strip())  # Returns True if the message is found
