@@ -34,19 +34,18 @@ do
     dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
     
     if [[ $row == '3d' ]] && [[ -f "$dir/DONE" ]] && [[ -f "$dir/restart.json" ]] && [[ ! -f "$dir_fm/start.traj" ]]; then
-        cd $dir_fm
-        cp $dir/CONTCAR $dir/submit.sh .
+        cd $dir_fm; cp $dir/CONTCAR $dir/submit.sh .
         echo -e "\e[32mcp CONTCAR submit.sh $dir_fm\e[0m"
         ase convert CONTCAR start.traj; rm CONTCAR
         sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
         pwd; sbatch submit.sh
     fi
     
-    cd $dir
+    
     if [[ -n $(squeue --me | grep "$jobname") ]] || [[ -f "$dir/DONE" ]] || [[ ! -f "$dir/start.traj" ]]; then
         continue
     else
-        python ~/bin/tools/tetra/get_restart3.py
+        cd $dir; python ~/bin/tools/tetra/get_restart3.py
         if [[ -f "$dir/DONE" ]]; then
             pwd; echo -e "\e[31mCheck this directory!\e[0m"
         else
