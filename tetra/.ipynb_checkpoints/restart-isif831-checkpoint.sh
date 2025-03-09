@@ -30,14 +30,15 @@ do
         fi
         pwd; sbatch submit.sh #; ((i+=1))
     elif [[ ! -f "DONE" ]]; then
-        if [[ -f "start.traj" ]]; then
-            python ~/bin/tools/tetra/get_restart3.py
-            if [[ -f "$dir/DONE" ]]; then
-                pwd; echo -e "\e[31mCheck this directory!\e[0m"
-            else
-                pwd; sbatch submit.sh
-            fi
-        fi
+        continue
+        # if [[ -f "start.traj" ]]; then
+        #     python ~/bin/tools/tetra/get_restart3.py
+        #     if [[ -f "$dir/DONE" ]]; then
+        #         pwd; echo -e "\e[31mCheck this directory!\e[0m"
+        #     else
+        #         pwd; sbatch submit.sh
+        #     fi
+        # fi
     elif [[ -d "isif2" ]]; then
         continue
     elif [[ -d "isif3" ]]; then
