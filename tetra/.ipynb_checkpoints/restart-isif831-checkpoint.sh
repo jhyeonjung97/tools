@@ -14,8 +14,8 @@ do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname=${coord}${row}${numb}
-
-    if [[ -n $(squeue --me | grep $jobname) ]]; then
+    
+    if [[ -n $(squeue --me | grep $jobname) ]] || [[ -z $(find . -maxdepth 1 -type f) ]]; then
         continue
     elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
         pwd; sbatch submit.sh #; ((i+=1))
@@ -30,7 +30,14 @@ do
         fi
         pwd; sbatch submit.sh #; ((i+=1))
     elif [[ ! -f "DONE" ]]; then
-        pwd; echo -e "\e[31mCheck this directory!\e[0m"
+        if [[ -f "start.traj" ]]; then
+            python ~/bin/tools/tetra/get_restart3.py
+            if [[ -f "$dir/DONE" ]]; then
+                pwd; echo -e "\e[31mCheck this directory!\e[0m"
+            else
+                pwd; sbatch submit.sh
+            fi
+        fi
     elif [[ -d "isif2" ]]; then
         continue
     elif [[ -d "isif3" ]]; then
