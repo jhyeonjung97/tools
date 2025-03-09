@@ -15,6 +15,10 @@ do
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname=${coord}${row}${numb}
     
+    if [[ -f "$dir/DONE" ]]; then
+        ~/bin/shoulder/rm_mv "$dir"/*log
+    fi
+    
     if [[ -n $(squeue --me | grep $jobname) ]] || [[ -z $(find . -maxdepth 1 -type f) ]]; then
         continue
     elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
