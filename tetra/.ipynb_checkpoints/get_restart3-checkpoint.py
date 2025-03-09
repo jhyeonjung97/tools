@@ -87,10 +87,7 @@ def main():
         # Convergence is confirmed only if both conditions are satisfied
         if force_converged and vasp_converged:
             print('CONVERGED')
-            subprocess.check_output(
-                f"echo $PWD ' : CONVERGED with ENERGY {energy:.6f} and MAX FORCE of {max_force:.3f} > DONE'",
-                shell=True
-            )
+            subprocess.check_output("echo $PWD ' : CONVERGED with ENERGY %.6f' and MAX FORCE of %.3f > DONE " %(energy, largest), shell=True)
 
 if __name__ == "__main__":
     main()
