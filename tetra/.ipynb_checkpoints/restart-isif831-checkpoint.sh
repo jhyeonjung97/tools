@@ -16,7 +16,7 @@ do
     jobname=${coord}${row}${numb}
     
     if [[ -f "$dir/DONE" ]]; then
-        ~/bin/shoulder/rm_mv "$dir"/*log
+        ~/bin/shoulder/rm_mv "$dir"/*.*.log
     fi
     
     if [[ -n $(squeue --me | grep $jobname) ]] || [[ -z $(find . -maxdepth 1 -type f) ]]; then
