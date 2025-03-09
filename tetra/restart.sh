@@ -8,14 +8,13 @@ do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname="${coord}${row}${numb}"
-    dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
     
-    if [[ -f "$dir/DONE" ]] && [[ ! -n $(grep 'PROFILE, used timers' "$dir_fm/vasp.out") ]]; then
+    if [[ -f "$dir/DONE" ]] && [[ ! -n $(grep 'PROFILE, used timers' "$dir/vasp.out") ]]; then
         cd $dir; rm DONE
         pwd; python ~/bin/tools/tetra/get_restart3.py; sbatch submit.sh
     fi
     
-    if [[ ! -f "$dir/DONE" ]] && [[ -n $(grep 'PROFILE, used timers' "$dir_fm/vasp.out") ]]; then
+    if [[ ! -f "$dir/DONE" ]] && [[ -n $(grep 'PROFILE, used timers' "$dir/vasp.out") ]]; then
         cd $dir; python ~/bin/tools/tetra/get_restart3.py
         if [[ -f "$dir/DONE" ]]; then
             pwd; squeue --me | grep --color=auto $jobname
