@@ -37,6 +37,7 @@ do
         cd $dir_fm; cp $dir/CONTCAR $dir/submit.sh .
         echo -e "\e[32mcp CONTCAR submit.sh $dir_fm\e[0m"
         ase convert CONTCAR start.traj; rm CONTCAR
+        sh ~/bin/verve/minute.sh 30
         sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
         pwd; sbatch submit.sh
     fi
