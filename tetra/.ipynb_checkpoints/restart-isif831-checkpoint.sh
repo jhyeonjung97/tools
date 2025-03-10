@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for dir in /pscratch/sd/j/jiuy97/7_V_bulk/3_SquarePlanar_TN/*/*_*
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/7_Pyramidal_LT/*/*_* /pscratch/sd/j/jiuy97/7_V_bulk/8_Tetrahedral_AQ/*/*_* /pscratch/sd/j/jiuy97/7_V_bulk/9_SquarePlanar_AU/*/*_*
 do
     cd $dir
     IFS='/' read -r -a path <<< $dir
@@ -20,8 +20,6 @@ do
     fi
     
     if [[ -n $(squeue --me | grep $jobname) ]] || [[ -z $(find . -maxdepth 1 -type f) ]]; then
-        continue
-    elif [[ $coord == 'NB' ]] || [[ $coord == 'RS' ]]; then
         continue
     elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
         pwd; sbatch submit.sh #; ((i+=1))
