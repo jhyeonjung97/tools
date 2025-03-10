@@ -148,7 +148,8 @@ def plot_by_metal_row(df, save_path):
             plt.ylabel(col.title())
             plt.legend()
             plt.tight_layout()
-            plt.savefig(f"{save_path}/bulk_{coord}_{col}.png")
+            # plt.savefig(f"{save_path}/bulk_{coord}_{col}.png")
+            plt.savefig(f"{save_path}/bulk_{coord}.png")
             plt.close()
             
 def plot_by_coordination(df, save_path):
@@ -164,7 +165,8 @@ def plot_by_coordination(df, save_path):
             plt.ylabel(col.title())
             plt.legend()
             plt.tight_layout()
-            plt.savefig(f"{save_path}/bulk_{row}_{col}.png")
+            # plt.savefig(f"{save_path}/bulk_{row}_{col}.png")
+            plt.savefig(f"{save_path}/bulk_{row}.png")
             plt.close()
             
 def parse_icohp(file_path):
