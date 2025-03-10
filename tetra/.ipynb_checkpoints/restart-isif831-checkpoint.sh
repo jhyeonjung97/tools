@@ -21,7 +21,7 @@ do
     
     if [[ -n $(squeue --me | grep $jobname) ]] || [[ -z $(find . -maxdepth 1 -type f) ]]; then
         continue
-    elif [[ $coord == 'NB' ]] || [[ $coord == 'RS' ]] || [[ -n $(grep '12:00:00' $dir/submit.sh) ]]; then
+    elif [[ $coord == 'NB' ]] || [[ $coord == 'RS' ]]; then
         continue
     elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
         pwd; sbatch submit.sh #; ((i+=1))
