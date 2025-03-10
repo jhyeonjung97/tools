@@ -167,7 +167,7 @@ def plot_by_metal_row(df, save_path):
                 if col == 'form':
                     for m, metal in enumerate(metals[row]):
                         numb = str(m).zfill(2)
-                        plt.scatter(numb, metal_df.loc[metal, 'Eform'], marker=marker,
+                        plt.scatter(m, metal_df.loc[metal, 'Eform'], marker=marker,
                                     edgecolors=color, facecolors='white', label='exp.')
                         
             plt.xticks(np.arange(len(indice)), indice)
