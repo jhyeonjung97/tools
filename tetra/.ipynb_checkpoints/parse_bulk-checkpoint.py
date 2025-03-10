@@ -136,7 +136,7 @@ def main():
     plot_by_coordination(df, save_path)
         
 def plot_by_metal_row(df, save_path):        
-    for coord in coords.keys():
+    for coord in coords.index:
         for col in df.columns:
             plt.figure(figsize=(8, 6))
             for row in metals.keys():
@@ -156,7 +156,7 @@ def plot_by_coordination(df, save_path):
     for row in metals.keys():
         for col in df.columns:
             plt.figure(figsize=(8, 6))
-            for coord in coords.keys():
+                for coord in coords.index:
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker='o', linestyle='-', label=row)
                 
