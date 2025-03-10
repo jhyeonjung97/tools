@@ -56,7 +56,10 @@ df.to_csv(f'{save_path}/mendeleev_data.csv', sep=',')
 df.to_csv(f'{save_path}/mendeleev_data.tsv', sep='\t')
 
 for column in df.columns:
-    pngname = f'mendeleev_{column}.png'
+    if column in ['row', 'numb']:
+        continue
+    pattern = next((key for key, value in patterns.items() if value == column), None)
+    pngname = f'mendeleev_{pattern}.png'
         
     plt.figure()
     plt.plot(df[df['row'] == '3d']['numb'], df[df['row'] == '3d'][column], 
@@ -66,6 +69,7 @@ for column in df.columns:
     plt.plot(df[df['row'] == '5d']['numb'], df[df['row'] == '5d'][column], 
              marker='d', color=colors[2], label='5d')
     plt.xlabel('Metal (MO)')
+    plt.ylabel(pattern.replace('_', ' ').title())
     plt.legend()
     plt.tight_layout()
     plt.savefig(f'{pngname}', bbox_inches="tight")
