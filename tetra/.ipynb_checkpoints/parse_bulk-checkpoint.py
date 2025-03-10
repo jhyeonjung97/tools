@@ -176,6 +176,7 @@ def plot_by_metal_row(df, save_path):
 def plot_by_coordination(df, save_path):        
     for coord in coords.index:
         for col in columns.index:
+            marker=coords.loc[coord, 'marker']
             base_color = coords.loc[coord, 'color']
             cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', ['white', base_color])
             colors = cmap(np.linspace(0.3, 1, 3))
@@ -183,8 +184,10 @@ def plot_by_coordination(df, save_path):
             for r, row in enumerate(['fm', '3d', '4d', '5d']):
                 color = 'lightgray' if row == 'fm' else colors[r-1]
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=color, linestyle='-', label=row)
-                
+                plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=row)
+                if pd.notna(metal_df.loc[metal, 'Eform']):
+                    plt.scatter(subset['numb'], metal_df.loc[metal, 'Eform'], marker=marker,
+                                edgecolors=color, facecolors='white', label='exp.')
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
             plt.ylabel(columns.loc[col, 'ylabel'])
