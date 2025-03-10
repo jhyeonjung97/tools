@@ -11,6 +11,8 @@ metals = {
     '4d': ['Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn'],
     '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb']
 }
+indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(metal_rows['3d'], metal_rows['4d'], metal_rows['5d'])]
+colors = plt.cm.Purples(np.linspace(0.4, 0.9, 3))
 patterns = {
     'group_id': 'group', 
     'atomic_number': 'Natom', 
@@ -57,9 +59,12 @@ for column in df.columns:
     pngname = f'mendeleev_{column}.png'
         
     plt.figure()
-    plt.plot(df[df['row'] == '3d']['numb'], df[df['row'] == '3d'][column], label='3d')
-    plt.plot(df[df['row'] == '4d']['numb'], df[df['row'] == '4d'][column], label='4d')
-    plt.plot(df[df['row'] == '5d']['numb'], df[df['row'] == '5d'][column], label='5d')
+    plt.plot(df[df['row'] == '3d']['numb'], df[df['row'] == '3d'][column], 
+             marker='d', color=colors[0], label='3d')
+    plt.plot(df[df['row'] == '4d']['numb'], df[df['row'] == '4d'][column], 
+             marker='d', color=colors[1], label='4d')
+    plt.plot(df[df['row'] == '5d']['numb'], df[df['row'] == '5d'][column], 
+             marker='d', color=colors[2], label='5d')
     plt.xlabel('Metal (MO)')
     plt.legend()
     plt.tight_layout()
