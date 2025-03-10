@@ -11,15 +11,15 @@ root = '/pscratch/sd/j/jiuy97/7_V_bulk'
 save_path = os.path.join(root, 'figures')
 
 coords_data = [
-    {'coord': 'WZ', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ',  'marker': '>', 'color': 'red',   },
-    {'coord': 'ZB', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB',  'marker': '<', 'color': 'orange',},
-    {'coord': 'TN', 'CN': 4, 'ON': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'marker': 'o', 'color': 'olive', },
-    {'coord': 'PD', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD', 'marker': 's', 'color': 'green', },
-    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'marker': 'p', 'color': 'blue',  },
-    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'marker': 'd', 'color': 'purple',},
-    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'marker': 'h', 'color': 'brown', },
-    {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'pink',  },
-    {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'cyan',  },
+    {'coord': 'WZ', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ',  'marker': '>', 'color': 'tab:red',   },
+    {'coord': 'ZB', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB',  'marker': '<', 'color': 'tab:orange',},
+    {'coord': 'TN', 'CN': 4, 'ON': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'marker': 'o', 'color': 'tab:olive', },
+    {'coord': 'PD', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD', 'marker': 's', 'color': 'tab:green', },
+    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'marker': 'p', 'color': 'tab:blue',  },
+    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'marker': 'd', 'color': 'tab:purple',},
+    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'marker': 'h', 'color': 'tab:brown', },
+    {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'tab:pink',  },
+    {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'tab:cyan',  },
 ]
 
 coords = pd.DataFrame(coords_data).set_index('coord')
@@ -67,7 +67,8 @@ def main():
     if os.path.exists(f'{save_path}/bulk_data.csv'):
         df = pd.read_csv(f'{save_path}/bulk_data.csv')
     else:
-        for coord in coords.index:
+        # for coord in coords.index:
+        for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS']:
             CN = coords.loc[coord, 'CN']
             ON = coords.loc[coord, 'ON']
             MN = coords.loc[coord, 'MN']
@@ -79,7 +80,6 @@ def main():
                     item = coord+row+numb
                     df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'ON']] = coord, row, numb, metal, CN, ON 
                     dir_path = os.path.join(root, coord_dir, row, numb+'_'+metal)
-                    print(dir_path)
                     
                     atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')                
                     if os.path.exists(atoms_path):
