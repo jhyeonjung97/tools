@@ -136,7 +136,25 @@ def main():
     print(df)
     plot_by_metal_row(df, save_path)
     plot_by_coordination(df, save_path)
-        
+    
+def plot_by_metal_row(df, save_path):
+    for row in metals.keys():
+        for col in df.columns:
+            plt.figure(figsize=(8, 6))
+            for coord in coords.index:
+                subset = df[(df['coord'] == coord) & (df['row'] == row)]
+                plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=coords.loc[coord, 'color'], linestyle='-', label=row)
+                
+            plt.xticks(np.arange(len(indice)), indice)
+            plt.xlabel("Metal Index")
+            print(columns[col])
+            plt.ylabel(columns[col])
+            plt.legend()
+            plt.tight_layout()
+            # plt.savefig(f"{save_path}/bulk_{row}_{col}.png")
+            plt.savefig(f"{save_path}/bulk_{row}.png")
+            plt.close()
+            
 def plot_by_coordination(df, save_path):        
     for coord in coords.index:
         for col in df.columns:
@@ -153,23 +171,6 @@ def plot_by_coordination(df, save_path):
             plt.tight_layout()
             # plt.savefig(f"{save_path}/bulk_{coord}_{col}.png")
             plt.savefig(f"{save_path}/bulk_{coord}.png")
-            plt.close()
-            
-def plot_by_metal_row(df, save_path):
-    for row in metals.keys():
-        for col in df.columns:
-            plt.figure(figsize=(8, 6))
-            for coord in coords.index:
-                subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=coords.loc[coord, 'color'], linestyle='-', label=row)
-                
-            plt.xticks(np.arange(len(indice)), indice)
-            plt.xlabel("Metal Index")
-            plt.ylabel(columns[col])
-            plt.legend()
-            plt.tight_layout()
-            # plt.savefig(f"{save_path}/bulk_{row}_{col}.png")
-            plt.savefig(f"{save_path}/bulk_{row}.png")
             plt.close()
             
 def parse_icohp(file_path):
