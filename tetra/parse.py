@@ -26,19 +26,32 @@ metals = {
 
 df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal', 
                            'energy', 'volume', 'chg', 'mag', 'ratio',
-                           'bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop'],
+                           'l_bond', 'n_bond', 'ICOHPm', 'ICOBIm', 'ICOOPm', 'ICOHPn', 'ICOBIn', 'ICOOPn', 'madelung', 'grosspop'],
                   dtype='object')
-float_cols = ['energy', 'volume', 'chg', 'mag', 'ratio', 'bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop']
+int_cols = ['CN', 'ON', 'n_bond']
+float_cols = ['energy', 'volume', 'chg', 'mag', 'ratio', 'l_bond', 'n_bond', 'ICOHPm', 'ICOBIm', 'ICOOPm', 'ICOHPn', 'ICOBIn', 'ICOOPn', 'madelung', 'grosspop']
 
 def main():
     for coord in coords.keys():
-        CN = 4 if coord != 'RS' else 6
-        if coord == 'AU':
-            ON = 1.5
+        if coord == 'WZ':
+            CN = 4; ON = 2; MN = 2
+        elif coord == 'ZB':
+            CN = 4; ON = 2; MN = 2
+        elif coord == 'TN':
+            CN = 4; ON = 2; MN = 4
+        elif coord == 'PD':
+            CN = 4; ON = 2; MN = 2
+        elif coord == 'NB':
+            CN = 4; ON = 2; MN = 6
+        elif coord == 'RS':
+            CN = 6; ON = 2; MN = 2
+        elif coord == 'LT':
+            CN = 4; ON = 2; MN = 2
+        elif coord == 'AU':
+            CN = 4; ON = 4; MN = 6
         elif coord == 'AQ':
-            ON = 2
-        else:
-            ON = 1
+            CN = 4; ON = 3; MN = 4
+
         for row in metals.keys():
             for m, metal in enumerate(metals[row]):
                 numb = str(m).zfill(2)
@@ -52,7 +65,7 @@ def main():
                     atoms = read(atoms_path)
                     energy = atoms.get_total_energy()
                     volume = atoms.get_volume()
-                    df.loc[item, ['energy', 'volume']] = energy, volume
+                    df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
             
                 chg_path = os.path.join(dir_path, 'isif2/atoms_bader_charge.json')
                 if os.path.exists(chg_path):
@@ -74,16 +87,19 @@ def main():
                 madelung_path = os.path.join(dir_path, 'MadelungEnergies.lobster')
                 grosspop_path = os.path.join(dir_path, 'GROSSPOP.lobster')
                 if os.path.exists(icohp_path) and os.path.getsize(icohp_path) != 0:
-                    icohp, bond = parse_icohp(icohp_path)
-                    icobi, _ = parse_icohp(icobi_path)
-                    icoop, _ = parse_icohp(icoop_path)
+                    icohp, bond, nbond = parse_icohp(icohp_path)
+                    icobi, _, _ = parse_icohp(icobi_path)
+                    icoop, _, _ = parse_icohp(icoop_path)
                     madelung = parse_madelung(madelung_path)
                     grosspop = parse_grosspop(grosspop_path, metal)
-                    df.loc[item, ['bond', 'icohp', 'icobi', 'icoop']] = bond, icohp, icobi, icoop
-                    df.loc[item, ['madelung', 'grosspop']] = madelung, grosspop
+                    df.loc[item, ['l_bond', 'n_bond', 'ICOHPn', 'ICOBIn', 'ICOOPn', 'madelung', 'grosspop']] = bond, nbond, -icohp, icobi, -icoop, madelung/MN, grosspop
+                    df.loc[item, ['ICOHPm', 'ICOBIm', 'ICOOPm']] = -icohp*nbond, icobi*nbond, -icoop*nbond
+                    if CN != nbond:
+                        print(dir_path)
 
                 save_path = os.path.join(root, 'figures')
                 df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
+                df[int_cols] = df[int_cols].astype(int)
                 df[float_cols] = df[float_cols].astype(float).round(2)
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
@@ -92,13 +108,13 @@ def parse_icohp(file_path):
     with open(file_path, 'r') as f:
         for line in f:
             parts = line.split()
-            if len(parts) < 7 or parts[0] == "label":
-                continue  
-            icohps.append(float(parts[-2]))  
-            distances.append(float(parts[-1]))
+            if len(parts) == 8 and parts[0] != 'label':
+                icohps.append(float(parts[-2]))  
+                distances.append(float(parts[-1]))
+    nbond = len(icohps) if icohps else np.nan
     avg_icohp = np.mean(icohps) if icohps else np.nan
     avg_distance = np.mean(distances) if distances else np.nan
-    return avg_icohp, avg_distance
+    return avg_icohp, avg_distance, nbond
 
 def parse_madelung(file_path):
     with open(file_path, 'r') as f:
