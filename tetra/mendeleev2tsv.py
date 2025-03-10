@@ -34,8 +34,9 @@ patterns = {
 
 df = pd.DataFrame()
 for row in metals.keys():
-    for metal in metals[row]:
+    for m, metal in enumerate(metals[row]):
         df.at[metal, 'row'] = row
+        df.at[metal, 'numb']] = m
         elem = element(metal)
         for pattern in patterns:
             column = patterns[pattern]
@@ -52,23 +53,16 @@ save_path = os.path.join(root, 'figures')
 df.to_csv(f'{save_path}/mendeleev_data.csv', sep=',')
 df.to_csv(f'{save_path}/mendeleev_data.tsv', sep='\t')
 
-# for pattern in patterns:
-#     column = patterns[pattern]
-#     if 'ionenergies' in pattern:
-#         ion_index = int(pattern.split('[')[1].strip(']'))
-#         pngname = f'mendeleev_ionenergies{i}.png'
-#     else:
-#         pngname = f'mendeleev_{pattern}.png'
+for column in df.columns:
+    pngname = f'mendeleev_{column}.png'
         
-#     plt.figure()
-#     plt.plot(df.index, df['3d'], marker='d', color=colors[0], label='3d')
-#     plt.plot(df.index, df['4d'], marker='d', color=colors[1], label='4d')
-#     plt.plot(df.index, df['5d'], marker='d', color=colors[2], label='5d')
-#     plt.xticks(np.arange(len(indice)), indice)
-#     plt.xlabel('Metal (MO)')
-#     plt.ylabel(pattern.replace('_', ' ').title())
-#     plt.legend()
-#     plt.tight_layout()
-#     plt.savefig(f'{png_filename}', bbox_inches="tight")
-#     print(f"Figure saved as {png_filename}")
-#     plt.close()
+    plt.figure()
+    plt.plot(df[df['row'] == '3d']['numb'], df[df['row'] == '3d'][column], label='3d')
+    plt.plot(df[df['row'] == '4d']['numb'], df[df['row'] == '4d'][column], label='4d')
+    plt.plot(df[df['row'] == '5d']['numb'], df[df['row'] == '5d'][column], label='5d')
+    plt.xlabel('Metal (MO)')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(f'{png_filename}', bbox_inches="tight")
+    print(f"Figure saved as {png_filename}")
+    plt.close()
