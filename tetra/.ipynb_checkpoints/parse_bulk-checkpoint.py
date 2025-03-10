@@ -119,7 +119,8 @@ def plot_by_metal_row(df, save_path):
             plt.figure(figsize=(8, 6))
             for row in metals.keys():
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                print(coord, row, subset)
+                print(coord, row)
+                print(subset)
                 plt.plot(subset.index, subset[col], marker='o', linestyle='-', label=row)
 
             plt.xlabel("Metal Index")
