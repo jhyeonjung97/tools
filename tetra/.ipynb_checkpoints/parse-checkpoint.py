@@ -83,7 +83,7 @@ def main():
 
                 save_path = os.path.join(root, 'figures')
                 df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
-                df.to_csv(f'{figure_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
+                df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
 def parse_icohp(file_path):
     distances, icohps = [], []
