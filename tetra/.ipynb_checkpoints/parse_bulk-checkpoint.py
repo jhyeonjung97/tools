@@ -87,6 +87,8 @@ def main():
                         energy = atoms.get_total_energy()
                         volume = atoms.get_volume()
                         df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
+
+                        formation = .sub(df[row].values, axis=0) - n * Ref_O2 / 2
     
                         if coord in ['WZ', 'TN', 'PD', 'LT', 'AQ']:
                             a = atoms.cell.cellpar()[0]
@@ -158,7 +160,7 @@ def plot_by_coordination(df, save_path):
             colors = cmap(np.linspace(0.6, 1, 3))
             plt.figure(figsize=(8, 6))
             for r, row in enumerate(['fm', '3d', '4d', '5d']):
-                color = 'gray' if row == 'fm' else color = colors[r]
+                color = 'gray' if row == 'fm' else colors[r]
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=color, linestyle='-', label=row)
                 
@@ -169,8 +171,6 @@ def plot_by_coordination(df, save_path):
             plt.tight_layout()
             plt.savefig(f"{save_path}/bulk_{coord}_{col}.png")
             plt.close()
-
-
 
 def parse_icohp(file_path):
     distances, icohps = [], []
