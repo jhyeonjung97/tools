@@ -9,37 +9,67 @@ import matplotlib.pyplot as plt
 root = '/pscratch/sd/j/jiuy97/7_V_bulk'
 save_path = os.path.join(root, 'figures')
 
-coords = {
-    'WZ': '1_Tetrahedral_WZ', 
-    'ZB': '2_Tetrahedral_ZB', 
-    'TN': '3_SquarePlanar_TN', 
-    'PD': '4_SquarePlanar_PD', 
-    'NB': '5_SquarePlanar_NB', 
-    'RS': '6_Octahedral_RS',
-    'LT': '7_Pyramidal_LT', 
-    'AQ': '8_Tetrahedral_AQ', 
-    'AU': '9_SquarePlanar_AU'
-}
+coords_data = [
+    {'coord': 'WZ', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ'},
+    {'coord': 'ZB', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB'},
+    {'coord': 'TN', 'CN': 4, 'ON': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN'},
+    {'coord': 'PD', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD'},
+    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB'},
+    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS'},
+    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT'},
+    {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ'},
+    {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU'}
+]
+coords = pd.DataFrame(coords_data)
+coords.set_index('coord', inplace=True)
+print(coords)
+
 metals = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
     '4d': ['Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn'],
     '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb'],
     'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
 }
+indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(metals['3d'], metals['4d'], metals['5d'])]
+
+columns={
+    'coord': 'Coordination', 
+     'row': 'Row', 
+     'numb': 'Number', 
+     'metal': 'Metal', 
+     'CN': 'Coordination Number', 
+     'ON': 'Oxidation Number', 
+     'energy': 'Energy (eV)', 
+     'volume': 'Volume (Å³)', 
+     'cell': 'Cell', 
+     'chg': 'Bader Charge (e⁻)', 
+     'mag': 'Magnetic Moments (μB),
+     'l_bond': 'Bond Length (Å), 
+     'n_bond': 'Number of Bonds per Metal', 
+     '-ICOHPm': '-ICOHP per Metal (eV)', 
+     'ICOBIm': 'ICOBI per Metal', 
+     '-ICOOPm': '-ICOOP per Metal (eV)', 
+     '-ICOHPn': '-ICOHP per Bond (eV)', 
+     'ICOBIn': 'ICOBI per Metal', 
+     '-ICOOPn': '-ICOOP per Bond (eV)', 
+     'madelung': 'Madelung Energy (Loewdin, eV),
+     'grosspop': 'Gross Population (Loewdin, e⁻),
+}
 
 df = pd.DataFrame(columns=['coord', 'row', 'numb', 'metal', 'CN', 'ON', 
                            'energy', 'volume', 'cell', 'chg', 'mag',
-                           'l_bond', 'n_bond', 'ICOHPm', 'ICOBIm', 'ICOOPm', 'ICOHPn', 'ICOBIn', 'ICOOPn', 'madelung', 'grosspop'],
+                           'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop'],
                   dtype='object')
 int_cols = ['CN', 'ON', 'n_bond']
-float_cols = ['energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', 'ICOHPm', 'ICOBIm', 'ICOOPm', 'ICOHPn', 'ICOBIn', 'ICOOPn', 'madelung', 'grosspop']
+float_cols = ['energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
 
 def main():
     for coord in coords.keys():
         if os.path.exists(f'{save_path}/bulk_data.csv'):
             df = pd.read_csv(f'{save_path}/bulk_data.csv')
             break
-            
+
+        CN = coords.loc['
         if coord == 'WZ':
             CN = 4; ON = 2; MN = 2; coord_dir = '1_Tetrahedral_WZ'
         elif coord == 'ZB':
@@ -105,8 +135,8 @@ def main():
                     icoop, _, _ = parse_icohp(icoop_path)
                     madelung = parse_madelung(madelung_path)
                     grosspop = parse_grosspop(grosspop_path, metal)
-                    df.loc[item, ['l_bond', 'n_bond', 'ICOHPn', 'ICOBIn', 'ICOOPn', 'madelung', 'grosspop']] = bond, nbond, -icohp, icobi, -icoop, madelung/MN, grosspop
-                    df.loc[item, ['ICOHPm', 'ICOBIm', 'ICOOPm']] = -icohp*nbond, icobi*nbond, -icoop*nbond
+                    df.loc[item, ['l_bond', 'n_bond', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']] = bond, nbond, icohp, icobi, icoop, madelung/MN, grosspop
+                    df.loc[item, ['-ICOHPm', 'ICOBIm', '-ICOOPm']] = icohp*nbond, icobi*nbond, icoop*nbond
                     # if CN != nbond:
                     #     print(dir_path)
 
@@ -115,7 +145,6 @@ def main():
                 df[float_cols] = df[float_cols].astype(float).round(2)
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
-    print(df)
     plot_by_metal_row(df, save_path)
     plot_by_coordination(df, save_path)
         
@@ -126,9 +155,10 @@ def plot_by_metal_row(df, save_path):
             for row in metals.keys():
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker='o', linestyle='-', label=row)
-
+                
+            plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
-            plt.ylabel(col)
+            plt.ylabel(col.title())
             plt.legend()
             plt.tight_layout()
             plt.savefig(f"{save_path}/bulk_{coord}_{col}.png")
@@ -141,9 +171,10 @@ def plot_by_coordination(df, save_path):
             for coord in coords.keys():
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker='o', linestyle='-', label=row)
-
+                
+            plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
-            plt.ylabel(col)
+            plt.ylabel(col.title())
             plt.legend()
             plt.tight_layout()
             plt.savefig(f"{save_path}/bulk_{row}_{col}.png")
