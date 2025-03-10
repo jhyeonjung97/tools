@@ -42,7 +42,7 @@ for row in metals.keys():
                 df.loc[metal, name] = elem.ionenergies.get(ion_index, np.nan)
             else:
                 value = getattr(elem, pattern)
-                if isinstance(value, float):
+                if isinstance(value, int) or isinstance(value, float):
                     df.at[metal, name] = value
                 else:
                     print(metal, name, value)
