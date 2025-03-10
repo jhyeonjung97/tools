@@ -88,21 +88,15 @@ def main():
     
 def parse_icohp(file_path):
     distances, icohps = [], []
-
     with open(file_path, 'r') as f:
         for line in f:
             parts = line.split()
             if len(parts) < 7 or parts[0] == "label":
                 continue  
-            try:
-                icohps.append(float(parts[-2]))  
-                distances.append(float(parts[-1]))  
-            except ValueError:
-                continue  
-
+            icohps.append(float(parts[-2]))  
+            distances.append(float(parts[-1]))
     avg_icohp = np.mean(icohps) if icohps else None
     avg_distance = np.mean(distances) if distances else None
-
     return avg_icohp, avg_distance
 
 def parse_madelung(file_path):
@@ -112,22 +106,20 @@ def parse_madelung(file_path):
             if len(parts) == 3 and parts[0].replace('.', '', 1).isdigit():
                 madelung = float(parts[2])  # Third column is Loewdin energy
                 return madelung
-    return None  # Return None if no valid values found
+    return None
                                       
 def parse_grosspop(file_path, metal):
-    loewdin_totals = []
-    try:
-        with open(file_path, 'r') as f:
-            for line in f:
-                parts = line.split()
-                if len(parts) >= 3 and parts[1] == metal and parts[2] == 'total':  
-                    loewdin_gp = float(parts[-1])  # Last column is Loewdin GP total
-                    loewdin_totals.append(loewdin_gp)
-    except (FileNotFoundError, ValueError, IndexError):
-        return None
-
-    return sum(loewdin_totals) / len(loewdin_totals) if loewdin_totals else None
-
+    elements, loewdin_totals = [], []
+    with open(file_path, 'r') as f:
+        for line in f:
+            parts = line.split()
+            if len(parts) == 5 and (parts[1] == metal or parts[1] == 'O'):
+                elements += parts[1]
+            if len(parts) == 3 and parts[1] == 'total':
+                loewdin_totals += float(parts[-1])
+    loewdin_gp = np.mean([loewdin_totals[i] for i in range(len(elements)) if elements[i] == metal])
+    return sum(loewdin_gp) / len(loewdin_gp) if loewdin_gp else None
+    return None
     
 if __name__ == "__main__":
     main()
