@@ -160,8 +160,10 @@ def plot_by_metal_row(df, save_path):
         for col in columns.index:
             plt.figure(figsize=(8, 6))
             for coord in coords.index:
+                marker=coords.loc[coord, 'marker']
+                color=coords.loc[coord, 'color']
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=coords.loc[coord, 'color'], linestyle='-', label=coord)
+                plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=coord)
                 for metal in metals[row]:
                     if pd.notna(metal_df.loc[metal, 'Eform']):
                         plt.scatter(subset['numb'], metal_df.loc[metal, 'Eform'], marker=marker,
