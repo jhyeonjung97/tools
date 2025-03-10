@@ -29,7 +29,7 @@ metals = {
 # df = df.astype({'coord': 'string', 'row': 'string', 'metal': 'string', 'CN': 'float64', 'ON': 'float64'})
 df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal', 
                            'energy', 'volume', 'chg', 'mag', 
-                           'icohp', 'icobi', 'icoop'],
+                           'bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop'],
                   dtype='object')
 
 def main():
@@ -87,29 +87,21 @@ def main():
                     print(madelung, grosspop)
     
 def parse_icohp(file_path):
-    distances = []
-    icohps = []
+    distances, icohps = [], []
 
     with open(file_path, 'r') as f:
         for line in f:
             parts = line.split()
-            if len(parts) < 7 or parts[0] == "label":  
-                # Skip header and invalid lines
+            if len(parts) < 7 or parts[0] == "label":
+                continue  
+            try:
+                icohps.append(float(parts[-2]))  
+                distances.append(float(parts[-1]))  
+            except ValueError:
                 continue  
 
-            try:
-                icohp = float(parts[-2])  # -ICOHP is the second last value
-                distance = float(parts[-1])  # Distance is the last value
-                icohps.append(icohp)
-                distances.append(distance)
-            except ValueError:
-                continue  # Skip lines that can't be converted to float
-
-    if icohps and distances:
-        avg_icohp = np.mean(icohps)
-        avg_distance = np.mean(distances)
-    else:
-        avg_icohp = avg_distance = None  # Return None if no valid data
+    avg_icohp = np.mean(icohps) if icohps else None
+    avg_distance = np.mean(distances) if distances else None
 
     return avg_icohp, avg_distance
 
@@ -124,16 +116,17 @@ def parse_madelung(file_path):
                                       
 def parse_grosspop(file_path, metal):
     loewdin_totals = []
-    with open(file_path, 'r') as f:
-        lines = f.readlines()
-    for i in range(len(lines)):
-        parts = lines[i].split()
-        if len(parts) >= 3 and parts[1] == metal and parts[2] == 'total':  
-            loewdin_gp = float(parts[-1])  # Last column is Loewdin GP total
-            loewdin_totals.append(loewdin_gp)
-    if loewdin_totals:
-        return sum(loewdin_totals) / len(loewdin_totals)  # Compute the average
-    return None  # Return None if no valid values found
+    try:
+        with open(file_path, 'r') as f:
+            for line in f:
+                parts = line.split()
+                if len(parts) >= 3 and parts[1] == metal and parts[2] == 'total':  
+                    loewdin_gp = float(parts[-1])  # Last column is Loewdin GP total
+                    loewdin_totals.append(loewdin_gp)
+    except (FileNotFoundError, ValueError, IndexError):
+        return None
+
+    return sum(loewdin_totals) / len(loewdin_totals) if loewdin_totals else None
 
     
 if __name__ == "__main__":
