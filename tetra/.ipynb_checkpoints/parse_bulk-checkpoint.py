@@ -111,22 +111,7 @@ def main():
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
                 plot_by_metal_row(df, save_path)
-
-# def plot_by_coordination(df, save_path):
-#     for col in df.columns:
-#         plt.figure(figsize=(8, 6))
-#         for row in metal_rows.keys():
-#             subset = df[df['row'] == row]
-#             plt.plot(subset['coord'], subset[col], marker='o', linestyle='-', label=row)
-
-#         plt.xlabel("Coordination")
-#         plt.ylabel(col)
-#         plt.title(f"{col} vs. Coordination")
-#         plt.legend()
-#         plt.xticks(rotation=45)
-#         plt.tight_layout()
-#         plt.savefig(f"{save_path}/{col}_by_coordination.png")
-#         plt.close()
+                plot_by_coordination(df, save_path)
         
 def plot_by_metal_row(df, save_path):        
     for coord in coords.keys():
@@ -134,7 +119,7 @@ def plot_by_metal_row(df, save_path):
             plt.figure(figsize=(8, 6))
             for row in metals.keys():
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                print(subset)
+                print(coord, row, subset)
                 plt.plot(subset.index, subset[col], marker='o', linestyle='-', label=row)
 
             plt.xlabel("Metal Index")
@@ -143,7 +128,22 @@ def plot_by_metal_row(df, save_path):
             plt.tight_layout()
             plt.savefig(f"{save_path}/bulk_{coord}_{col}.png")
             plt.close()
-        
+            
+def plot_by_coordination(df, save_path):
+    for row in metals.keys():
+        for col in df.columns:
+            plt.figure(figsize=(8, 6))
+            for coord in coords.keys():
+                subset = df[(df['coord'] == coord) & (df['row'] == row)]
+                plt.plot(subset.index, subset[col], marker='o', linestyle='-', label=row)
+
+            plt.xlabel("Metal Index")
+            plt.ylabel(col)
+            plt.legend()
+            plt.tight_layout()
+            plt.savefig(f"{save_path}/bulk_{row}_{col}.png")
+            plt.close()
+            
 def parse_icohp(file_path):
     distances, icohps = [], []
     with open(file_path, 'r') as f:
