@@ -25,11 +25,11 @@ metals = {
 }
 
 df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal', 
-                           'energy', 'volume', 'chg', 'mag', 'ratio',
+                           'energy', 'volume', 'cell', 'chg', 'mag',
                            'l_bond', 'n_bond', 'ICOHPm', 'ICOBIm', 'ICOOPm', 'ICOHPn', 'ICOBIn', 'ICOOPn', 'madelung', 'grosspop'],
                   dtype='object')
 int_cols = ['CN', 'ON', 'n_bond']
-float_cols = ['energy', 'volume', 'chg', 'mag', 'ratio', 'l_bond', 'n_bond', 'ICOHPm', 'ICOBIm', 'ICOOPm', 'ICOHPn', 'ICOBIn', 'ICOOPn', 'madelung', 'grosspop']
+float_cols = ['energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', 'ICOHPm', 'ICOBIm', 'ICOOPm', 'ICOHPn', 'ICOBIn', 'ICOOPn', 'madelung', 'grosspop']
 
 def main():
     for coord in coords.keys():
@@ -66,7 +66,14 @@ def main():
                     energy = atoms.get_total_energy()
                     volume = atoms.get_volume()
                     df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
-            
+
+                    if CN in ['WZ', 'TN', 'PD', 'LT', 'AQ',]:
+                        a = atoms.cell.cellpar()[0]
+                        c = atoms.cell.cellpar()[2]
+                        df.loc[item, cell] = c/a
+                    elif CN in ['ZB', 'NB', 'RS']:
+                        df.loc[item, cell] = atoms.cell.cellpar()[3]
+                
                 chg_path = os.path.join(dir_path, 'isif2/atoms_bader_charge.json')
                 if os.path.exists(chg_path):
                     atoms = read(chg_path)
