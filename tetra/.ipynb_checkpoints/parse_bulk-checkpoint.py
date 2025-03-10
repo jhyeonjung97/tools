@@ -20,11 +20,8 @@ coords_data = [
     {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ'},
     {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU'}
 ]
-coords = pd.DataFrame(coords_data)
-coords.set_index('coord', inplace=True)
+coords = pd.DataFrame(coords_data).set_index('coord')
 coords.index.name = None
-
-print(coords)
 
 metals = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
@@ -71,25 +68,10 @@ def main():
             df = pd.read_csv(f'{save_path}/bulk_data.csv')
             break
 
-        # CN = coords.loc['
-        if coord == 'WZ':
-            CN = 4; ON = 2; MN = 2; coord_dir = '1_Tetrahedral_WZ'
-        elif coord == 'ZB':
-            CN = 4; ON = 2; MN = 2; coord_dir = '2_Tetrahedral_ZB'
-        elif coord == 'TN':
-            CN = 4; ON = 2; MN = 4; coord_dir = '3_SquarePlanar_TN'
-        elif coord == 'PD':
-            CN = 4; ON = 2; MN = 2; coord_dir = '4_SquarePlanar_PD'
-        elif coord == 'NB':
-            CN = 4; ON = 2; MN = 6; coord_dir = '5_SquarePlanar_NB'
-        elif coord == 'RS':
-            CN = 6; ON = 2; MN = 2; coord_dir = '6_Octahedral_RS'
-        elif coord == 'LT':
-            CN = 4; ON = 2; MN = 2; coord_dir = '7_Pyramidal_LT'
-        elif coord == 'AQ':
-            CN = 4; ON = 4; MN = 6; coord_dir = '8_Tetrahedral_AQ'
-        elif coord == 'AU':
-            CN = 4; ON = 3; MN = 4; coord_dir = '9_SquarePlanar_AU'
+        CN = coords.loc[coord, 'CN']
+        ON = coords.loc[coord, 'ON']
+        MN = coords.loc[coord, 'MN']
+        coord_dir = coords.loc[coord, 'coord_dir']
 
         for row in metals.keys():
             for m, metal in enumerate(metals[row]):
