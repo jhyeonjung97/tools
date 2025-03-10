@@ -80,6 +80,7 @@ def main():
                 item = coord+row+numb
                 df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'ON']] = coord, row, numb, metal, CN, ON 
                 dir_path = os.path.join(root, coord_dir, row, numb+'_'+metal)
+                print(dir_path)
                 
                 atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')                
                 if os.path.exists(atoms_path):
