@@ -169,8 +169,9 @@ def plot_by_metal_row(df, save_path):
             plt.legend()
             plt.tight_layout()
             png_name = f"bulk_{row}_{columns.loc[col, 'png_name']}.png"
-            plt.savefig(f"{save_path}/{png_name}.png")
+            plt.savefig(f"{save_path}/{png_name}")
             plt.close()
+            print(f"Figure saved as {png_name}")
             
 def plot_by_coordination(df, save_path):        
     for coord in coords.index:
@@ -190,8 +191,9 @@ def plot_by_coordination(df, save_path):
             plt.legend()
             plt.tight_layout()
             png_name = f"bulk_{coord}_{columns.loc[col, 'png_name']}.png"
-            plt.savefig(f"{save_path}/{png_name}.png")
+            plt.savefig(f"{save_path}/{png_name}")
             plt.close()
+            print(f"Figure saved as {png_name}")
 
 def parse_icohp(file_path):
     distances, icohps = [], []
