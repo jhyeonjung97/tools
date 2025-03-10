@@ -108,18 +108,20 @@ def parse_madelung(file_path):
                 return madelung
     return None
                                       
+import numpy as np
+
 def parse_grosspop(file_path, metal):
     elements, loewdin_totals = [], []
     with open(file_path, 'r') as f:
         for line in f:
             parts = line.split()
             if len(parts) == 5 and (parts[1] == metal or parts[1] == 'O'):
-                elements += parts[1]
+                elements.append(parts[1])  
             if len(parts) == 3 and parts[1] == 'total':
-                loewdin_totals += float(parts[-1])
-    loewdin_gp = np.mean([loewdin_totals[i] for i in range(len(elements)) if elements[i] == metal])
-    return sum(loewdin_gp) / len(loewdin_gp) if loewdin_gp else None
-    return None
+                loewdin_totals.append(float(parts[-1]))  
+    loewdin_gp = [loewdin_totals[i] for i in range(len(elements)) if elements[i] == metal]
+    return np.mean(loewdin_gp) if loewdin_gp else None
+
     
 if __name__ == "__main__":
     main()
