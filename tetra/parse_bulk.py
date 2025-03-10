@@ -63,7 +63,7 @@ int_cols = ['CN', 'ON', 'n_bond']
 float_cols = ['energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
 
 def main():
-    global df, coords
+    global df
     
     for coord in coords.index:
         CN = coords.loc[coord, 'CN']
@@ -132,8 +132,8 @@ def main():
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
                 
     print(df)
-    plot_by_metal_row(df, coords, save_path)
-    plot_by_coordination(df, coords, save_path)
+    plot_by_metal_row(df, save_path)
+    plot_by_coordination(df, save_path)
         
 def plot_by_metal_row(df, save_path):        
     for coord in coords.index:
@@ -156,7 +156,7 @@ def plot_by_coordination(df, save_path):
     for row in metals.keys():
         for col in df.columns:
             plt.figure(figsize=(8, 6))
-                for coord in coords.index:
+            for coord in coords.index:
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker='o', linestyle='-', label=row)
                 
