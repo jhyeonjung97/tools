@@ -21,7 +21,6 @@ coords_data = [
     {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'tab:pink',  },
     {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'tab:cyan',  },
 ]
-
 coords = pd.DataFrame(coords_data).set_index('coord')
 coords.index.name = None
 
@@ -33,32 +32,34 @@ metals = {
 }
 indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(metals['3d'], metals['4d'], metals['5d'])]
 
-columns={
-    'coord': 'Coordination', 
-    'row': 'Row', 
-    'numb': 'Number', 
-    'metal': 'Metal', 
-    'CN': 'Coordination Number', 
-    'ON': 'Oxidation Number', 
-    'energy': 'Energy (eV)', 
-    'form': 'Formation Energy (eV)', 
-    'volume': 'Volume (Å³)', 
-    'cell': 'Cell', 
-    'chg': 'Bader Charge (e⁻)', 
-    'mag': 'Magnetic Moments (μB)',
-    'l_bond': 'Bond Length (Å)', 
-    'n_bond': 'Number of Bonds per Metal', 
-    '-ICOHPm': '-ICOHP per Metal (eV)', 
-    'ICOBIm': 'ICOBI per Metal', 
-    '-ICOOPm': '-ICOOP per Metal (eV)', 
-    '-ICOHPn': '-ICOHP per Bond (eV)', 
-    'ICOBIn': 'ICOBI per Metal', 
-    '-ICOOPn': '-ICOOP per Bond (eV)', 
-    'madelung': 'Madelung Energy (Loewdin, eV)',
-    'grosspop': 'Gross Population (Loewdin, e⁻)',
-}
+columns_data = [
+    {'column': 'coord',    'png_tag': 'coordination',        'ylabel': 'Coordination'},
+    {'column': 'row',      'png_tag': 'row',                 'ylabel': 'Row'},
+    {'column': 'numb',     'png_tag': 'number',              'ylabel': 'Number'},
+    {'column': 'metal',    'png_tag': 'metal',               'ylabel': 'Metal'},
+    {'column': 'CN',       'png_tag': 'coordination_number', 'ylabel': 'Coordination Number'},
+    {'column': 'ON',       'png_tag': 'oxidation_number',    'ylabel': 'Oxidation Number'},
+    {'column': 'energy',   'png_tag': 'energy',              'ylabel': 'Energy (eV)'},
+    {'column': 'form',     'png_tag': 'formation_energy',    'ylabel': 'Formation Energy (eV)'},
+    {'column': 'volume',   'png_tag': 'volume',              'ylabel': 'Volume (Å³)'},
+    {'column': 'cell',     'png_tag': 'cell',                'ylabel': 'Cell'},
+    {'column': 'chg',      'png_tag': 'bader_charge',        'ylabel': 'Bader Charge (e⁻)'},
+    {'column': 'mag',      'png_tag': 'magnetic_moments',    'ylabel': 'Magnetic Moments (μB)'},
+    {'column': 'l_bond',   'png_tag': 'bond_length',         'ylabel': 'Bond Length (Å)'},
+    {'column': 'n_bond',   'png_tag': 'number_of_bonds',     'ylabel': 'Number of Bonds per Metal'},
+    {'column': '-ICOHPm',  'png_tag': 'icohp_per_metal',     'ylabel': '-ICOHP per Metal (eV)'},
+    {'column': 'ICOBIm',   'png_tag': 'icobi_per_metal',     'ylabel': 'ICOBI per Metal'},
+    {'column': '-ICOOPm',  'png_tag': 'icoop_per_metal',     'ylabel': '-ICOOP per Metal (eV)'},
+    {'column': '-ICOHPn',  'png_tag': 'icohp_per_bond',      'ylabel': '-ICOHP per Bond (eV)'},
+    {'column': 'ICOBIn',   'png_tag': 'icobi_per_bond',      'ylabel': 'ICOBI per Bond'},
+    {'column': '-ICOOPn',  'png_tag': 'icoop_per_bond',      'ylabel': '-ICOOP per Bond (eV)'},
+    {'column': 'madelung', 'png_tag': 'madelung',            'ylabel': 'Madelung Energy (Loewdin, eV)'},
+    {'column': 'grosspop', 'png_tag': 'gross_population',    'ylabel': 'Gross Population (Loewdin, e⁻)'},
+]
+columns = pd.DataFrame(columns_data).set_index('column')
+columns.index.name = None
 
-df = pd.DataFrame(columns=columns.keys(), dtype='object')
+df = pd.DataFrame(columns=columns.index, dtype='object')
 int_cols = ['CN', 'ON', 'n_bond']
 float_cols = ['energy', 'form', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
 
@@ -156,7 +157,7 @@ def main():
     
 def plot_by_metal_row(df, save_path):
     for row in metals.keys():
-        for col in columns.keys():
+        for col in columns.index:
             plt.figure(figsize=(8, 6))
             for coord in coords.index:
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
@@ -164,15 +165,16 @@ def plot_by_metal_row(df, save_path):
                 
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
-            plt.ylabel(columns[col])
+            plt.ylabel(columns.loc[col, 'ylabel'])
             plt.legend()
             plt.tight_layout()
-            plt.savefig(f"{save_path}/bulk_{row}_{col}.png")
+            png_name = f"bulk_{row}_{columns.loc[col, 'png_name']}.png"
+            plt.savefig(f"{save_path}/{png_name}.png")
             plt.close()
             
 def plot_by_coordination(df, save_path):        
     for coord in coords.index:
-        for col in columns.keys():
+        for col in columns.index:
             base_color = coords.loc[coord, 'color']
             cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', ['white', base_color])
             colors = cmap(np.linspace(0.3, 1, 3))
@@ -184,10 +186,11 @@ def plot_by_coordination(df, save_path):
                 
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
-            plt.ylabel(columns[col])
+            plt.ylabel(columns.loc[col, 'ylabel'])
             plt.legend()
             plt.tight_layout()
-            plt.savefig(f"{save_path}/bulk_{coord}_{col}.png")
+            png_name = f"bulk_{coord}_{columns.loc[col, 'png_name']}.png"
+            plt.savefig(f"{save_path}/{png_name}.png")
             plt.close()
 
 def parse_icohp(file_path):
