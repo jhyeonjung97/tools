@@ -88,7 +88,7 @@ def main():
                         volume = atoms.get_volume()
                         df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
 
-                        formation = .sub(df[row].values, axis=0) - n * Ref_O2 / 2
+                        # formation = .sub(df[row].values, axis=0) - n * Ref_O2 / 2
     
                         if coord in ['WZ', 'TN', 'PD', 'LT', 'AQ']:
                             a = atoms.cell.cellpar()[0]
