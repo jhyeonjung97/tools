@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # i=$(squeue --me | grep 'RS' | wc -l)
-for dir in /pscratch/sd/j/jiuy97/7_V_bulk/7_Pyramidal_LT/*/*_*
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/*_*_*/*/*_*
 do
     # if(( i > 4 )); then
     #     exit
@@ -20,6 +20,8 @@ do
     # fi
     
     if [[ -n $(squeue --me | grep $jobname) ]] || [[ -z $(find . -maxdepth 1 -type f) ]]; then
+        continue
+    elif [[ $coord == 'NB' ]] || [[ $coord == 'RS' ]] || [[ -n $(grep '12:00:00' $dir/submit.sh) ]]; then
         continue
     elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
         pwd; sbatch submit.sh #; ((i+=1))
