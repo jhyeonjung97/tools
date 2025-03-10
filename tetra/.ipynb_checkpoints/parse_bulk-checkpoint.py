@@ -70,9 +70,9 @@ def main():
                     if coord in ['WZ', 'TN', 'PD', 'LT', 'AQ']:
                         a = atoms.cell.cellpar()[0]
                         c = atoms.cell.cellpar()[2]
-                        df.loc[item, cell] = c/a
+                        df.loc[item, 'cell'] = c/a
                     elif coord in ['ZB', 'NB', 'RS']:
-                        df.loc[item, cell] = atoms.cell.cellpar()[3]
+                        df.loc[item, 'cell'] = atoms.cell.cellpar()[3]
                 
                 chg_path = os.path.join(dir_path, 'isif2/atoms_bader_charge.json')
                 if os.path.exists(chg_path):
