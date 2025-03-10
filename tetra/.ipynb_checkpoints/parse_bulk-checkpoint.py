@@ -164,10 +164,10 @@ def plot_by_metal_row(df, save_path):
                 color=coords.loc[coord, 'color']
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=coord)
-                for metal in metals[row]:
-                    if pd.notna(metal_df.loc[metal, 'Eform']):
-                        plt.scatter(subset.loc[metal, 'numb'], metal_df.loc[metal, 'Eform'], marker=marker,
-                                    edgecolors=color, facecolors='white', label='exp.')
+                for m, metal in enumerate(metals[row]):
+                    numb = str(m).zfill(2)
+                    plt.scatter(numb, metal_df.loc[metal, 'Eform'], marker=marker,
+                                edgecolors=color, facecolors='white', label='exp.')
                         
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
@@ -191,10 +191,10 @@ def plot_by_coordination(df, save_path):
                 color = 'lightgray' if row == 'fm' else colors[r-1]
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=row)
-                for metal in metals[row]:
-                    if pd.notna(metal_df.loc[metal, 'Eform']):
-                        plt.scatter(subset.loc[metal, 'numb'], metal_df.loc[metal, 'Eform'], marker=marker,
-                                    edgecolors=color, facecolors='white', label='exp.')
+                for m, metal in enumerate(metals[row]):
+                    numb = str(m).zfill(2)
+                    plt.scatter(numb, metal_df.loc[metal, 'Eform'], marker=marker,
+                                edgecolors=color, facecolors='white', label='exp.')
                         
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
