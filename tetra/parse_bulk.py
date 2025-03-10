@@ -7,6 +7,8 @@ from ase.io import read, write
 import matplotlib.pyplot as plt
 
 root = '/pscratch/sd/j/jiuy97/7_V_bulk'
+save_path = os.path.join(root, 'figures')
+
 coords = {
     'WZ': '1_Tetrahedral_WZ', 
     'ZB': '2_Tetrahedral_ZB', 
@@ -34,6 +36,10 @@ float_cols = ['energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', 'ICO
 
 def main():
     for coord in coords.keys():
+        if os.path.exist(f'{save_path}/bulk_data.csv'):
+            df = read_csv(f'{root}/figures/bulk_data.csv')
+            break
+            
         if coord == 'WZ':
             CN = 4; ON = 2; MN = 2; coord_dir = '1_Tetrahedral_WZ'
         elif coord == 'ZB':
@@ -104,12 +110,12 @@ def main():
                     # if CN != nbond:
                     #     print(dir_path)
 
-                save_path = os.path.join(root, 'figures')
                 df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
                 # df[int_cols] = df[int_cols].astype(int)
                 df[float_cols] = df[float_cols].astype(float).round(2)
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
+    print(df)
     plot_by_metal_row(df, save_path)
     plot_by_coordination(df, save_path)
         
