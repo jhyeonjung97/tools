@@ -156,7 +156,7 @@ def main():
     plot_by_coordination(df, save_path)
     
 def plot_by_metal_row(df, save_path):
-    for row in metals.keys():
+    for row in ['fm', '3d', '4d', '5d']:
         for col in columns.index:
             plt.figure(figsize=(8, 6))
             # for coord in coords.index:
