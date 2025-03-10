@@ -63,15 +63,15 @@ int_cols = ['CN', 'ON', 'n_bond']
 float_cols = ['energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
 
 def main():
-    for coord in coords.keys():
-        if os.path.exists(f'{save_path}/bulk_data.csv'):
-            df = pd.read_csv(f'{save_path}/bulk_data.csv')
-            break
-
+    for coord in coords.index:
         CN = coords.loc[coord, 'CN']
         ON = coords.loc[coord, 'ON']
         MN = coords.loc[coord, 'MN']
         coord_dir = coords.loc[coord, 'coord_dir']
+
+        if os.path.exists(f'{save_path}/bulk_data.csv'):
+            df = pd.read_csv(f'{save_path}/bulk_data.csv')
+            break
 
         for row in metals.keys():
             for m, metal in enumerate(metals[row]):
