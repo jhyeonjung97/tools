@@ -43,8 +43,8 @@ columns={
      'volume': 'Volume (Å³)', 
      'cell': 'Cell', 
      'chg': 'Bader Charge (e⁻)', 
-     'mag': 'Magnetic Moments (μB),
-     'l_bond': 'Bond Length (Å), 
+     'mag': 'Magnetic Moments (μB)',
+     'l_bond': 'Bond Length (Å)', 
      'n_bond': 'Number of Bonds per Metal', 
      '-ICOHPm': '-ICOHP per Metal (eV)', 
      'ICOBIm': 'ICOBI per Metal', 
@@ -52,8 +52,8 @@ columns={
      '-ICOHPn': '-ICOHP per Bond (eV)', 
      'ICOBIn': 'ICOBI per Metal', 
      '-ICOOPn': '-ICOOP per Bond (eV)', 
-     'madelung': 'Madelung Energy (Loewdin, eV),
-     'grosspop': 'Gross Population (Loewdin, e⁻),
+     'madelung': 'Madelung Energy (Loewdin, eV)',
+     'grosspop': 'Gross Population (Loewdin, e⁻)',
 }
 
 df = pd.DataFrame(columns=['coord', 'row', 'numb', 'metal', 'CN', 'ON', 
