@@ -81,7 +81,8 @@ def main():
                     icoop = parse_icohp(icoop_path)
                     madelung = parse_madelung(madelung_path)
                     grosspop = parse_madelung(grosspop_path)
-                    df.loc[item, ['bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop']] = bond, icohp, icobi, icoop, madelung, grosspop
+                    df.loc[item, ['bond', 'icohp', 'icobi', 'icoop']] = bond, icohp, icobi, icoop
+                    df.loc[item, ['madelung', 'grosspop']] = madelung, grosspop
                     print(dir_path)
                     print(madelung, grosspop)
     
