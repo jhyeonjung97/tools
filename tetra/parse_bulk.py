@@ -63,7 +63,7 @@ int_cols = ['CN', 'ON', 'n_bond']
 float_cols = ['energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
 
 def main():
-    global df
+    global df, coords
     
     for coord in coords.index:
         CN = coords.loc[coord, 'CN']
@@ -132,8 +132,8 @@ def main():
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
                 
     print(df)
-    plot_by_metal_row(df, save_path)
-    plot_by_coordination(df, save_path)
+    plot_by_metal_row(df, coords, save_path)
+    plot_by_coordination(df, coords, save_path)
         
 def plot_by_metal_row(df, save_path):        
     for coord in coords.index:
