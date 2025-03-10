@@ -166,8 +166,9 @@ def plot_by_metal_row(df, save_path):
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=coord)
                 if col == 'form':
                     for m, metal in enumerate(metals[row]):
-                        plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, marker=marker, edgecolors=color, facecolors='white')
-                        
+                        if coord == metal_df.loc[metal, 'coord']:
+                            plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, marker=marker, edgecolors=color, facecolors='white')
+                            
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
             plt.ylabel(columns.loc[col, 'ylabel'])
@@ -192,7 +193,8 @@ def plot_by_coordination(df, save_path):
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=row)
                 if col == 'form':
                     for m, metal in enumerate(metals[row]):
-                        plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, marker=marker, edgecolors=color, facecolors='white')
+                        if coord == metal_df.loc[metal, 'coord']:
+                            plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, marker=marker, edgecolors=color, facecolors='white')
                     
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
