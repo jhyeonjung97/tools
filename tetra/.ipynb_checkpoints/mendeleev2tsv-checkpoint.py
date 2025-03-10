@@ -42,7 +42,8 @@ for row in metals.keys():
                 ion_index = int(pattern.split('[')[1].strip(']'))
                 df.loc[metal, name] = elem.ionenergies.get(ion_index, None)
             else:
-                df.loc[metal, name] = getattr(elem, pattern, None) if hasattr(elem, pattern) else None
+                value = getattr(elem, pattern, None) if hasattr(elem, pattern) else None
+                df.at[metal, name] = value
                 
 print(df.head())
             
