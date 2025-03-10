@@ -12,17 +12,16 @@ do
     
     dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
     if [[ $row == '3d' ]] && [[ -f "$dir/isif8/DONE" ]] && [[ -f "$dir/isif8/restart.json" ]] && [[ ! -f "$dir_fm/start.traj" ]] && [[ ! -d "$dir_fm/isif8" ]]; then
-        cd $dir_fm; # cp $dir/isif8/CONTCAR $dir/isif8/submit.sh .
-        # echo -e "\e[32mcp CONTCAR submit.sh $dir_fm\e[0m"
-        # ase convert CONTCAR start.traj; rm CONTCAR
-        # sh ~/bin/verve/minute.sh 30
-        # sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
-        pwd; # sbatch submit.sh
+        cd $dir_fm; cp $dir/isif8/CONTCAR $dir/isif8/submit.sh .
+        echo -e "\e[32mcp CONTCAR submit.sh $dir_fm\e[0m"
+        ase convert CONTCAR start.traj; rm CONTCAR
+        sh ~/bin/verve/minute.sh 30
+        sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
     fi
     
     if [[ -n $(squeue --me | grep $jobname) ]] || [[ -z $(find . -maxdepth 1 -type f) ]]; then
         continue
-    elif [[ $coord == 'RS' ]] || [[ -n $(grep '12:00:00' $dir/submit.sh) ]]; then
+    elif [[ $coord == 'NB' ]] || [[ $coord == 'RS' ]] || [[ -n $(grep '12:00:00' $dir/submit.sh) ]]; then
         continue
     elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
         pwd; sbatch submit.sh #; ((i+=1))
