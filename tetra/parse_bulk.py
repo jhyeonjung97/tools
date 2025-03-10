@@ -4,6 +4,7 @@ import os
 import numpy as np
 import pandas as pd
 from ase.io import read, write
+import matplotlib.pyplot as plt
 
 root = '/pscratch/sd/j/jiuy97/7_V_bulk'
 coords = {
@@ -24,7 +25,7 @@ metals = {
     'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
 }
 
-df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal', 
+df = pd.DataFrame(columns=['coord', 'row', 'numb', 'metal', 'CN', 'ON', 
                            'energy', 'volume', 'cell', 'chg', 'mag',
                            'l_bond', 'n_bond', 'ICOHPm', 'ICOBIm', 'ICOOPm', 'ICOHPn', 'ICOBIn', 'ICOOPn', 'madelung', 'grosspop'],
                   dtype='object')
@@ -34,31 +35,30 @@ float_cols = ['energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', 'ICO
 def main():
     for coord in coords.keys():
         if coord == 'WZ':
-            CN = 4; ON = 2; MN = 2
+            CN = 4; ON = 2; MN = 2; coord_dir = '1_Tetrahedral_WZ'
         elif coord == 'ZB':
-            CN = 4; ON = 2; MN = 2
+            CN = 4; ON = 2; MN = 2; coord_dir = '2_Tetrahedral_ZB'
         elif coord == 'TN':
-            CN = 4; ON = 2; MN = 4
+            CN = 4; ON = 2; MN = 4; coord_dir = '3_SquarePlanar_TN'
         elif coord == 'PD':
-            CN = 4; ON = 2; MN = 2
+            CN = 4; ON = 2; MN = 2; coord_dir = '4_SquarePlanar_PD'
         elif coord == 'NB':
-            CN = 4; ON = 2; MN = 6
+            CN = 4; ON = 2; MN = 6; coord_dir = '5_SquarePlanar_NB'
         elif coord == 'RS':
-            CN = 6; ON = 2; MN = 2
+            CN = 6; ON = 2; MN = 2; coord_dir = '6_Octahedral_RS'
         elif coord == 'LT':
-            CN = 4; ON = 2; MN = 2
+            CN = 4; ON = 2; MN = 2; coord_dir = '7_Pyramidal_LT'
         elif coord == 'AU':
-            CN = 4; ON = 4; MN = 6
+            CN = 4; ON = 4; MN = 6; coord_dir = '8_Tetrahedral_AQ'
         elif coord == 'AQ':
-            CN = 4; ON = 3; MN = 4
+            CN = 4; ON = 3; MN = 4; coord_dir = '9_SquarePlanar_AU'
 
         for row in metals.keys():
             for m, metal in enumerate(metals[row]):
                 numb = str(m).zfill(2)
                 item = coord+row+numb
-                df.loc[item, ['coord', 'CN', 'ON', 'row', 'metal']] = coord, CN, ON, row, metal
-                
-                dir_path = os.path.join(root, coords[coord], row, numb+'_'+metal)
+                df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'ON']] = coord, row, numb, metal, CN, ON 
+                dir_path = os.path.join(root, coord_dir, row, numb+'_'+metal)
                 
                 atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')                
                 if os.path.exists(atoms_path):
@@ -110,6 +110,39 @@ def main():
                 df[float_cols] = df[float_cols].astype(float).round(2)
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
+                plot_by_metal_row(df, save_path)
+
+# def plot_by_coordination(df, save_path):
+#     for col in df.columns:
+#         plt.figure(figsize=(8, 6))
+#         for row in metal_rows.keys():
+#             subset = df[df['row'] == row]
+#             plt.plot(subset['coord'], subset[col], marker='o', linestyle='-', label=row)
+
+#         plt.xlabel("Coordination")
+#         plt.ylabel(col)
+#         plt.title(f"{col} vs. Coordination")
+#         plt.legend()
+#         plt.xticks(rotation=45)
+#         plt.tight_layout()
+#         plt.savefig(f"{save_path}/{col}_by_coordination.png")
+#         plt.close()
+        
+def plot_by_metal_row(df, save_path):        
+    for coord in coords.keys():
+        for col in df.columns:
+            plt.figure(figsize=(8, 6))
+            for row in metals.keys():
+                subset = df[(df['coord'] == coord) & (df['row'] == row)]
+                plt.plot(subset.index, subset[col], marker='o', linestyle='-', label=row)
+
+            plt.xlabel("Metal Index")
+            plt.ylabel(col)
+            plt.legend()
+            plt.tight_layout()
+            plt.savefig(f"{save_path}/bulk_{coord}_{col}.png")
+            plt.close()
+        
 def parse_icohp(file_path):
     distances, icohps = [], []
     with open(file_path, 'r') as f:
