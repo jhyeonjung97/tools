@@ -105,7 +105,7 @@ def main():
                         volume = atoms.get_volume()
                         df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
 
-                        formation = energy - metal_df.loc[metal, 'E'] - (Ref_O2 / 2) * (ON /2)
+                        formation = energy/MN - metal_df.loc[metal, 'E'] - (Ref_O2 / 2) * (ON /2)
                         df.loc[item, 'form'] = formation
 
                         if coord in ['WZ', 'TN', 'PD', 'LT', 'AQ']:
