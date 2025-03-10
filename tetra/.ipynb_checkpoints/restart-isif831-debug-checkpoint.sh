@@ -16,8 +16,8 @@ do
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname=${coord}${row}${numb}
     
-    sed -i "/#SBATCH -t/c\#SBATCH -t 00:30:00" submit.sh
-    sed -i "/#SBATCH -q/c\#SBATCH -q debug" submit.sh
+    # sed -i "/#SBATCH -t/c\#SBATCH -t 00:30:00" submit.sh
+    # sed -i "/#SBATCH -q/c\#SBATCH -q debug" submit.sh
 
     if [[ -n $(squeue --me | grep $jobname) ]] || [[ -z $(find . -maxdepth 1 -type f) ]]; then
         continue
