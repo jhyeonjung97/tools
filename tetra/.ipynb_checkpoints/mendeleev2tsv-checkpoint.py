@@ -47,7 +47,7 @@ for row in metals.keys():
                 else:
                     df.at[metal, name] = np.nan
                 
-print(df.head())
+print(df)
             
     # # if pattern == 'boiling_point' or pattern == 'melting_point':
     # if pattern == 'melting_point':
