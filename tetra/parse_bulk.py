@@ -41,6 +41,7 @@ columns={
     'CN': 'Coordination Number', 
     'ON': 'Oxidation Number', 
     'energy': 'Energy (eV)', 
+    'form': 'Formation Energy (eV)', 
     'volume': 'Volume (Å³)', 
     'cell': 'Cell', 
     'chg': 'Bader Charge (e⁻)', 
@@ -59,10 +60,12 @@ columns={
 
 df = pd.DataFrame(columns=columns.keys(), dtype='object')
 int_cols = ['CN', 'ON', 'n_bond']
-float_cols = ['energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
+float_cols = ['energy', 'form', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
+
+metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t')
 
 def main():
-    global df
+    # global df
     
     if os.path.exists(f'{save_path}/bulk_data.csv'):
         df = pd.read_csv(f'{save_path}/bulk_data.csv')
@@ -88,8 +91,9 @@ def main():
                         volume = atoms.get_volume()
                         df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
 
-                        # formation = .sub(df[row].values, axis=0) - n * Ref_O2 / 2
-    
+                        formation = energy - metal_df.loc[metal, 'E'] - (Ref_O2 / 2) * (ON /2)
+                        df.loc[item, 'form'] = formation
+
                         if coord in ['WZ', 'TN', 'PD', 'LT', 'AQ']:
                             a = atoms.cell.cellpar()[0]
                             c = atoms.cell.cellpar()[2]
