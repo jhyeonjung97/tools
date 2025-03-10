@@ -41,9 +41,9 @@ for row in metals.keys():
                 ion_index = int(pattern.split('[')[1].strip(']'))
                 df.at[metal, name] = elem.ionenergies.get(ion_index, np.nan)
             elif metal == 'Sn' and (pattern == 'boiling_point' or pattern == 'melting_point'):
-                value = getattr(elem, pattern)['gray']
+                df.at[metal, name] = getattr(elem, pattern)['gray']
             else:
-                value = getattr(elem, pattern)
+                df.at[metal, name] = getattr(elem, pattern)
                 
 print(df)
             
