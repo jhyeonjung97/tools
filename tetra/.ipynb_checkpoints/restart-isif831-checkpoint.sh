@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # i=$(squeue --me | grep 'RS' | wc -l)
-for dir in /pscratch/sd/j/jiuy97/7_V_bulk/*_*_*/*/*_*
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/7_Pyramidal_LT/*/*_*
 do
     # if(( i > 4 )); then
     #     exit
