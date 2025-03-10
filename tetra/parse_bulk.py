@@ -65,7 +65,7 @@ float_cols = ['energy', 'form', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bon
 metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t')
 
 def main():
-    # global df
+    global df
     
     if os.path.exists(f'{save_path}/bulk_data.csv'):
         df = pd.read_csv(f'{save_path}/bulk_data.csv')
