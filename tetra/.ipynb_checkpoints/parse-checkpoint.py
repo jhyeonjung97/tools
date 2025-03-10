@@ -94,8 +94,8 @@ def parse_icohp(file_path):
                 continue  
             icohps.append(float(parts[-2]))  
             distances.append(float(parts[-1]))
-    avg_icohp = np.mean(icohps) if icohps else None
-    avg_distance = np.mean(distances) if distances else None
+    avg_icohp = np.mean(icohps) if icohps else np.nan
+    avg_distance = np.mean(distances) if distances else np.nan
     return avg_icohp, avg_distance
 
 def parse_madelung(file_path):
@@ -105,7 +105,7 @@ def parse_madelung(file_path):
             if len(parts) == 3 and parts[0].replace('.', '', 1).isdigit():
                 madelung = float(parts[2])  # Third column is Loewdin energy
                 return madelung
-    return None
+    return np.nan
                                       
 import numpy as np
 
@@ -119,7 +119,7 @@ def parse_grosspop(file_path, metal):
             if len(parts) == 3 and parts[0] == 'total':
                 loewdin_totals.append(float(parts[-1]))
     loewdin_gp = [loewdin_totals[i] for i in range(len(elements)) if elements[i] == metal]
-    return np.mean(loewdin_gp) if loewdin_gp else None
+    return np.mean(loewdin_gp) if loewdin_gp else np.nan
 
     
 if __name__ == "__main__":
