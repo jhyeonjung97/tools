@@ -1,14 +1,15 @@
-import matplotlib.pyplot as plt
-from mendeleev import element
-import pandas as pd
 import numpy as np
+import pandas as pd
+from mendeleev import element
+import matplotlib.pyplot as plt
+
+root = '/pscratch/sd/j/jiuy97/7_V_bulk'
 
 metals = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
     '4d': ['Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn'],
     '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb']
 }
-
 patterns = {
     'group_id': 'group', 
     'atomic_number': 'Natom', 
@@ -31,7 +32,6 @@ patterns = {
 }
 
 df = pd.DataFrame()
-
 for row in metals.keys():
     for metal in metals[row]:
         elem = element(metal)
@@ -45,8 +45,10 @@ for row in metals.keys():
             else:
                 df.at[metal, name] = getattr(elem, pattern)
                 
-print(df)
-            
+save_path = os.path.join(root, 'figures')
+df.to_csv(f'{save_path}/mendeleev_data.csv', sep=',')
+df.to_csv(f'{save_path}/mendeleev_data.tsv', sep='\t')
+                
     # # if pattern == 'boiling_point' or pattern == 'melting_point':
     # if pattern == 'melting_point':
     #     for i in range(n):
