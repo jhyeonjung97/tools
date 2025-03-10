@@ -42,6 +42,7 @@ do
         mkdir isif2; find . -maxdepth 1 -type f -exec mv {} isif2/ \;
         cd isif2; cp WAVECAR restart.json submit.sh $dir; cd $dir
         sed -i -e 's/\.\/opt/~\/bin\/tools\/tetra\/opt/' submit.sh
+        sed -i -e 's/_symprec.py/.py/' submit.sh
         sed -i -e '/bader/d' submit.sh
         sed -i -e 's/opt_bulk2_afm/static_bulk/' submit.sh
         sed -i -e 's/opt_bulk2_fm/static_bulk/' submit.sh
@@ -57,6 +58,7 @@ do
         mkdir isif3; find . -maxdepth 1 -type f -exec mv {} isif3/ \;
         cd isif3; cp WAVECAR restart.json submit.sh $dir; cd $dir
         sed -i -e 's/\.\/opt/~\/bin\/tools\/tetra\/opt/' submit.sh
+        sed -i -e 's/_symprec.py/.py/' submit.sh
         sed -i -e 's/opt_bulk3/opt_bulk2/' submit.sh
         echo '' >> submit.sh
         echo 'python ~/bin/verve/bader.py' >> submit.sh
@@ -65,6 +67,7 @@ do
         mkdir isif8; find . -maxdepth 1 -type f -exec mv {} isif8/ \;
         cd isif8; cp WAVECAR restart.json submit.sh $dir; cd $dir
         sed -i -e 's/\.\/opt/~\/bin\/tools\/tetra\/opt/' submit.sh
+        sed -i -e 's/_symprec.py/.py/' submit.sh
         sed -i -e 's/opt_bulk8/opt_bulk3/' submit.sh
         pwd; sbatch submit.sh #; ((i+=1))
     fi
