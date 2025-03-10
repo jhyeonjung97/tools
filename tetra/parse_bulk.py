@@ -166,7 +166,7 @@ def plot_by_metal_row(df, save_path):
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=coord)
                 for m, metal in enumerate(metals[row]):
                     numb = str(m).zfill(2)
-                    print(m, metal_df.loc[metal, 'Eform'])
+                    print(numb, metal_df.loc[metal, 'Eform'])
                     # plt.scatter(m, metal_df.loc[metal, 'Eform'], marker=marker,
                     #             edgecolors=color, facecolors='white', label='exp.')
                         
@@ -194,7 +194,7 @@ def plot_by_coordination(df, save_path):
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=row)
                 for m, metal in enumerate(metals[row]):
                     numb = str(m).zfill(2)
-                    print(m, metal_df.loc[metal, 'Eform'])
+                    print(numb, metal_df.loc[metal, 'Eform'])
                     # plt.scatter(m, metal_df.loc[metal, 'Eform'], marker=marker,
                     #             edgecolors=color, facecolors='white', label='exp.')
                         
