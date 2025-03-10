@@ -140,7 +140,7 @@ def plot_by_metal_row(df, save_path):
             plt.figure(figsize=(8, 6))
             for coord in coords.index:
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=coords.loc[coord, 'color'], linestyle='-', label=row)
+                plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=coords.loc[coord, 'color'], linestyle='-', label=coord)
                 
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
@@ -153,7 +153,7 @@ def plot_by_metal_row(df, save_path):
             
 def plot_by_coordination(df, save_path):        
     for coord in coords.index:
-        for col in df.columns:
+        for col in columns.keys():
             plt.figure(figsize=(8, 6))
             for row in ['fm', '3d', '4d', '5d']:
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
@@ -161,8 +161,7 @@ def plot_by_coordination(df, save_path):
                 
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
-            # print(columns[col])
-            # plt.ylabel(columns[col])
+            plt.ylabel(columns[col])
             plt.legend()
             plt.tight_layout()
             # plt.savefig(f"{save_path}/bulk_{coord}_{col}.png")
