@@ -55,7 +55,7 @@ def main():
         for row in metals.keys():
             for m, metal in enumerate(metals[row]):
                 numb = str(m).zfill(2)
-                item = coord+row+metal
+                item = coord+row+numb
                 df.loc[item, ['coord', 'CN', 'ON', 'row', 'metal']] = coord, CN, ON, row, metal
                 
                 dir_path = os.path.join(root, coords[coord], row, numb+'_'+metal)
