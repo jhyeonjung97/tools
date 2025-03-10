@@ -24,11 +24,8 @@ metals = {
     'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
 }
 
-# df = pd.DataFrame() # Madelung, GP, hexa
-# df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal', 'energy', 'volume', 'chg', 'mag', 'icohp', 'icobi', 'icoop'])
-# df = df.astype({'coord': 'string', 'row': 'string', 'metal': 'string', 'CN': 'float64', 'ON': 'float64'})
 df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal', 
-                           'energy', 'volume', 'chg', 'mag', 
+                           'energy', 'volume', 'chg', 'mag', 'ratio'
                            'bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop'],
                   dtype='object')
 
@@ -83,8 +80,6 @@ def main():
                     grosspop = parse_grosspop(grosspop_path, metal)
                     df.loc[item, ['bond', 'icohp', 'icobi', 'icoop']] = bond, icohp, icobi, icoop
                     df.loc[item, ['madelung', 'grosspop']] = madelung, grosspop
-                    print(dir_path)
-                    print(madelung, grosspop)
     
 def parse_icohp(file_path):
     distances, icohps = [], []
@@ -119,8 +114,6 @@ def parse_grosspop(file_path, metal):
                 elements.append(parts[1])  
             if len(parts) == 3 and parts[0] == 'total':
                 loewdin_totals.append(float(parts[-1]))
-    print(elements)
-    print(loewdin_totals)
     loewdin_gp = [loewdin_totals[i] for i in range(len(elements)) if elements[i] == metal]
     return np.mean(loewdin_gp) if loewdin_gp else None
 
