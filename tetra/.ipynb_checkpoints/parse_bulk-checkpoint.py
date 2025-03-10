@@ -185,9 +185,10 @@ def plot_by_coordination(df, save_path):
                 color = 'lightgray' if row == 'fm' else colors[r-1]
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=row)
-                if pd.notna(metal_df.loc[metal, 'Eform']):
-                    plt.scatter(subset['numb'], metal_df.loc[metal, 'Eform'], marker=marker,
-                                edgecolors=color, facecolors='white', label='exp.')
+                for metal in metals[row]:
+                    if pd.notna(metal_df.loc[metal, 'Eform']):
+                        plt.scatter(subset['numb'], metal_df.loc[metal, 'Eform'], marker=marker,
+                                    edgecolors=color, facecolors='white', label='exp.')
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
             plt.ylabel(columns.loc[col, 'ylabel'])
