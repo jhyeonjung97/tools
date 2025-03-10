@@ -39,14 +39,11 @@ for row in metals.keys():
             name = patterns[pattern]
             if 'ionenergies' in pattern:
                 ion_index = int(pattern.split('[')[1].strip(']'))
-                df.loc[metal, name] = elem.ionenergies.get(ion_index, np.nan)
+                df.at[metal, name] = elem.ionenergies.get(ion_index, np.nan)
+            elif metal == 'Sn' and (pattern == 'boiling_point' or pattern == 'melting_point'):
+                value = getattr(elem, pattern)['gray']
             else:
                 value = getattr(elem, pattern)
-                if isinstance(value, int) or isinstance(value, float):
-                    df.at[metal, name] = value
-                else:
-                    print(metal, name, value)
-                    df.at[metal, name] = np.nan
                 
 print(df)
             
