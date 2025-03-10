@@ -26,9 +26,11 @@ def main():
     for coord in coords.keys():
         for row in metals.keys():
             for m, metal in enumerate(metals[row]):
-                numb = str(m).zfill(2)  # Use `m`, no need for `.index()`
-                atoms_path = os.path.join(root, coords[coord], row, numb)
-                print(atoms_path)
+                numb = str(m).zfill(2)
+                dir_path = os.path.join(root, coords[coord], row, numb+'_'+metal)
+                atoms_path = os.path.join(dir_path, 'final_with_calculator.json')
+                atoms = read(atoms_path)
+                print(dir_path)
 
 if __name__ == "__main__":
     main()
