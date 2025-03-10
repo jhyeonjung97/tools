@@ -5,21 +5,23 @@ import numpy as np
 import pandas as pd
 from ase.io import read, write
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 root = '/pscratch/sd/j/jiuy97/7_V_bulk'
 save_path = os.path.join(root, 'figures')
 
 coords_data = [
-    {'coord': 'WZ', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ'},
-    {'coord': 'ZB', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB'},
-    {'coord': 'TN', 'CN': 4, 'ON': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN'},
-    {'coord': 'PD', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD'},
-    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB'},
-    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS'},
-    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT'},
-    {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ'},
-    {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU'}
+    {'coord': 'WZ', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ',  'marker': '>', 'color': 'red',   },
+    {'coord': 'ZB', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB',  'marker': '<', 'color': 'orange',},
+    {'coord': 'TN', 'CN': 4, 'ON': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'marker': 'o', 'color': 'olive', },
+    {'coord': 'PD', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD', 'marker': 's', 'color': 'green', },
+    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'marker': 'p', 'color': 'blue',  },
+    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'marker': 'd', 'color': 'purple',},
+    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'marker': 'h', 'color': 'brown', },
+    {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'pink',  },
+    {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'cyan',  },
 ]
+
 coords = pd.DataFrame(coords_data).set_index('coord')
 coords.index.name = None
 
@@ -135,34 +137,34 @@ def main():
     plot_by_metal_row(df, save_path)
     plot_by_coordination(df, save_path)
         
-def plot_by_metal_row(df, save_path):        
+def plot_by_coordination(df, save_path):        
     for coord in coords.index:
         for col in df.columns:
             plt.figure(figsize=(8, 6))
-            for row in metals.keys():
+            for row in ['fm', '3d', '4d', '5d']:
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                plt.plot(subset['numb'], subset[col], marker='o', linestyle='-', label=row)
+                plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=coords.loc[coord, 'color'], linestyle='-', label=row)
                 
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
-            plt.ylabel(col.title())
+            plt.ylabel(columns[col])
             plt.legend()
             plt.tight_layout()
             # plt.savefig(f"{save_path}/bulk_{coord}_{col}.png")
             plt.savefig(f"{save_path}/bulk_{coord}.png")
             plt.close()
             
-def plot_by_coordination(df, save_path):
+def plot_by_metal_row(df, save_path):
     for row in metals.keys():
         for col in df.columns:
             plt.figure(figsize=(8, 6))
             for coord in coords.index:
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                plt.plot(subset['numb'], subset[col], marker='o', linestyle='-', label=row)
+                plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=coords.loc[coord, 'color'], linestyle='-', label=row)
                 
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
-            plt.ylabel(col.title())
+            plt.ylabel(columns[col])
             plt.legend()
             plt.tight_layout()
             # plt.savefig(f"{save_path}/bulk_{row}_{col}.png")
