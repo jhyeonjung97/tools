@@ -63,6 +63,6 @@ for column in df.columns:
     plt.xlabel('Metal (MO)')
     plt.legend()
     plt.tight_layout()
-    plt.savefig(f'{png_filename}', bbox_inches="tight")
-    print(f"Figure saved as {png_filename}")
+    plt.savefig(f'{pngname}', bbox_inches="tight")
+    print(f"Figure saved as {pngname}")
     plt.close()
