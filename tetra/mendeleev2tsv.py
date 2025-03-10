@@ -72,6 +72,7 @@ for column in df.columns:
              marker='d', color=colors[1], label='4d')
     plt.plot(df[df['row'] == '5d']['numb'], df[df['row'] == '5d'][column], 
              marker='d', color=colors[2], label='5d')
+    plt.xticks(np.arange(len(indice)), indice)
     plt.xlabel('Metal (MO)')
     plt.ylabel(pattern.replace('_', ' ').title())
     plt.legend()
