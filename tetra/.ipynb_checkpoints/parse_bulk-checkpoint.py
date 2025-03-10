@@ -157,10 +157,10 @@ def plot_by_coordination(df, save_path):
         for col in columns.keys():
             base_color = coords.loc[coord, 'color']
             cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', ['white', base_color])
-            colors = cmap(np.linspace(0.6, 1, 3))
+            colors = cmap(np.linspace(0.3, 1, 3))
             plt.figure(figsize=(8, 6))
             for r, row in enumerate(['fm', '3d', '4d', '5d']):
-                color = 'gray' if row == 'fm' else colors[r-1]
+                color = 'lightgray' if row == 'fm' else colors[r-1]
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=color, linestyle='-', label=row)
                 
