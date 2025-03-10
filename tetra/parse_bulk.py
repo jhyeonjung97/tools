@@ -66,7 +66,6 @@ def main():
     
     if os.path.exists(f'{save_path}/bulk_data.csv'):
         df = pd.read_csv(f'{save_path}/bulk_data.csv')
-        break
     else:
         for coord in coords.index:
             CN = coords.loc[coord, 'CN']
