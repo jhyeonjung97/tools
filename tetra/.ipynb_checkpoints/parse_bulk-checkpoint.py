@@ -62,7 +62,7 @@ df = pd.DataFrame(columns=columns.keys(), dtype='object')
 int_cols = ['CN', 'ON', 'n_bond']
 float_cols = ['energy', 'form', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
 
-metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t')
+metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t', index=0)
 print(metal_df)
 def main():
     global df
