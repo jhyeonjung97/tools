@@ -102,8 +102,8 @@ def main():
                     grosspop = parse_grosspop(grosspop_path, metal)
                     df.loc[item, ['l_bond', 'n_bond', 'ICOHPn', 'ICOBIn', 'ICOOPn', 'madelung', 'grosspop']] = bond, nbond, -icohp, icobi, -icoop, madelung/MN, grosspop
                     df.loc[item, ['ICOHPm', 'ICOBIm', 'ICOOPm']] = -icohp*nbond, icobi*nbond, -icoop*nbond
-                    if CN != nbond:
-                        print(dir_path)
+                    # if CN != nbond:
+                    #     print(dir_path)
 
                 save_path = os.path.join(root, 'figures')
                 df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
