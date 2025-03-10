@@ -85,6 +85,7 @@ def main():
                 if os.path.exists(mag_path):
                     atoms = read(mag_path)
                     mags = atoms.get_magnetic_moments()
+                    print(mags)
                     mag = np.mean([mags[atom.index] for atom in atoms if atom.symbol == metal])
                     df.loc[item, 'mag'] = mag
             
