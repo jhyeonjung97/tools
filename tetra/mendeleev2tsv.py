@@ -59,7 +59,7 @@ for column in df.columns:
     if column in ['row', 'numb']:
         continue
     elif column.startswith('ion'):
-        pattern = f'ionenergies[{column.replace("ion", "")}]'
+        pattern = f'ionenergies{column.replace("ion", "")}'
     else:
         pattern = next((key for key, value in patterns.items() if value == column), None)
     pngname = f'mendeleev_{pattern}.png'
