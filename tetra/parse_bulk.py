@@ -35,26 +35,26 @@ indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(metals['3d'], metals['4d'], metals
 
 columns={
     'coord': 'Coordination', 
-     'row': 'Row', 
-     'numb': 'Number', 
-     'metal': 'Metal', 
-     'CN': 'Coordination Number', 
-     'ON': 'Oxidation Number', 
-     'energy': 'Energy (eV)', 
-     'volume': 'Volume (Å³)', 
-     'cell': 'Cell', 
-     'chg': 'Bader Charge (e⁻)', 
-     'mag': 'Magnetic Moments (μB)',
-     'l_bond': 'Bond Length (Å)', 
-     'n_bond': 'Number of Bonds per Metal', 
-     '-ICOHPm': '-ICOHP per Metal (eV)', 
-     'ICOBIm': 'ICOBI per Metal', 
-     '-ICOOPm': '-ICOOP per Metal (eV)', 
-     '-ICOHPn': '-ICOHP per Bond (eV)', 
-     'ICOBIn': 'ICOBI per Metal', 
-     '-ICOOPn': '-ICOOP per Bond (eV)', 
-     'madelung': 'Madelung Energy (Loewdin, eV)',
-     'grosspop': 'Gross Population (Loewdin, e⁻)',
+    'row': 'Row', 
+    'numb': 'Number', 
+    'metal': 'Metal', 
+    'CN': 'Coordination Number', 
+    'ON': 'Oxidation Number', 
+    'energy': 'Energy (eV)', 
+    'volume': 'Volume (Å³)', 
+    'cell': 'Cell', 
+    'chg': 'Bader Charge (e⁻)', 
+    'mag': 'Magnetic Moments (μB)',
+    'l_bond': 'Bond Length (Å)', 
+    'n_bond': 'Number of Bonds per Metal', 
+    '-ICOHPm': '-ICOHP per Metal (eV)', 
+    'ICOBIm': 'ICOBI per Metal', 
+    '-ICOOPm': '-ICOOP per Metal (eV)', 
+    '-ICOHPn': '-ICOHP per Bond (eV)', 
+    'ICOBIn': 'ICOBI per Metal', 
+    '-ICOOPn': '-ICOOP per Bond (eV)', 
+    'madelung': 'Madelung Energy (Loewdin, eV)',
+    'grosspop': 'Gross Population (Loewdin, e⁻)',
 }
 
 df = pd.DataFrame(columns=['coord', 'row', 'numb', 'metal', 'CN', 'ON', 
@@ -147,6 +147,7 @@ def plot_by_coordination(df, save_path):
                 
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
+            print(columns[col])
             plt.ylabel(columns[col])
             plt.legend()
             plt.tight_layout()
