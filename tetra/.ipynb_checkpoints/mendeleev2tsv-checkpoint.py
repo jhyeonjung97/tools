@@ -42,8 +42,10 @@ for row in metals.keys():
                 ion_index = int(pattern.split('[')[1].strip(']'))
                 df.loc[metal, name] = elem.ionenergies.get(ion_index, None)
             else:
-                value = getattr(elem, pattern, None) if hasattr(elem, pattern) else None
-                df.at[metal, name] = value
+                if isinstance(value, (list, tuple, np.ndarray, pd.Series)):
+                    value = value[0] if len(value) > 0 else None  # Take the first element if it's a list
+                df.at[metal, name] = value  # ✅ Ensures scalar assignment
+
                 
 print(df.head())
             
