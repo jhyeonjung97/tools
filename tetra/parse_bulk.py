@@ -59,7 +59,6 @@ def main():
                 item = coord+row+numb
                 df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'ON']] = coord, row, numb, metal, CN, ON 
                 dir_path = os.path.join(root, coord_dir, row, numb+'_'+metal)
-                print(dir_path)
                 
                 atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')                
                 if os.path.exists(atoms_path):
@@ -111,8 +110,8 @@ def main():
                 df[float_cols] = df[float_cols].astype(float).round(2)
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
-                plot_by_metal_row(df, save_path)
-                plot_by_coordination(df, save_path)
+    plot_by_metal_row(df, save_path)
+    plot_by_coordination(df, save_path)
         
 def plot_by_metal_row(df, save_path):        
     for coord in coords.keys():
