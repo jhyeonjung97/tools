@@ -22,6 +22,8 @@ coords_data = [
 ]
 coords = pd.DataFrame(coords_data)
 coords.set_index('coord', inplace=True)
+coords.index.name = None
+
 print(coords)
 
 metals = {
