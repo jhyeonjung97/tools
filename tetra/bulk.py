@@ -29,7 +29,7 @@ def main():
                 numb = str(m).zfill(2)
                 dir_path = os.path.join(root, coords[coord], row, numb+'_'+metal)
                 atoms_path = os.path.join(dir_path, 'final_with_calculator.json')
-                if os.path.exist(atoms_path):
+                if os.path.exists(atoms_path):
                     atoms = read(atoms_path)
                 print(dir_path)
 
