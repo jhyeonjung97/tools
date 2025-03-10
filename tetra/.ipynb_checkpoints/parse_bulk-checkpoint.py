@@ -138,6 +138,7 @@ def main():
     plot_by_coordination(df, save_path)
     
 def plot_by_metal_row(df, save_path):
+    print(columns)
     for row in metals.keys():
         for col in df.columns:
             plt.figure(figsize=(8, 6))
@@ -147,8 +148,7 @@ def plot_by_metal_row(df, save_path):
                 
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
-            print(columns[col])
-            plt.ylabel(columns[col])
+            # plt.ylabel(columns[col])
             plt.legend()
             plt.tight_layout()
             # plt.savefig(f"{save_path}/bulk_{row}_{col}.png")
@@ -165,8 +165,8 @@ def plot_by_coordination(df, save_path):
                 
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
-            print(columns[col])
-            plt.ylabel(columns[col])
+            # print(columns[col])
+            # plt.ylabel(columns[col])
             plt.legend()
             plt.tight_layout()
             # plt.savefig(f"{save_path}/bulk_{coord}_{col}.png")
