@@ -159,7 +159,8 @@ def plot_by_metal_row(df, save_path):
     for row in metals.keys():
         for col in columns.index:
             plt.figure(figsize=(8, 6))
-            for coord in coords.index:
+            # for coord in coords.index:
+            for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS']:
                 marker=coords.loc[coord, 'marker']
                 color=coords.loc[coord, 'color']
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
@@ -181,7 +182,8 @@ def plot_by_metal_row(df, save_path):
             
 def plot_by_coordination(df, save_path):        
     for coord in coords.index:
-        for col in columns.index:
+        # for coord in coords.index:
+        for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS']:            
             marker=coords.loc[coord, 'marker']
             base_color = coords.loc[coord, 'color']
             cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', ['white', base_color])
