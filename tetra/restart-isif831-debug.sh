@@ -1,7 +1,9 @@
 #!/bin/bash
 
-i=$(squeue --me | grep 'RS' | wc -l)
-for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/*/*_*
+# i=$(squeue --me | grep 'RS' | wc -l)
+i=$(squeue --me | grep 'NB3d' | wc -l)
+# for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/*/*_*
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/5_SquarePlanar_NB/3d/*_*
 do
     if(( i > 4 )); then
         exit
@@ -14,10 +16,6 @@ do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname=${coord}${row}${numb}
-    
-    # if [[ -f "$dir/DONE" ]]; then
-    #     ~/bin/shoulder/rm_mv "$dir"/*.*.log
-    # fi
     
     sed -i "/#SBATCH -t/c\#SBATCH -t 00:30:00" submit.sh
     sed -i "/#SBATCH -q/c\#SBATCH -q debug" submit.sh
