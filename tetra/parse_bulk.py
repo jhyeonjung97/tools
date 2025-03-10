@@ -67,11 +67,11 @@ def main():
                     volume = atoms.get_volume()
                     df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
 
-                    if CN in ['WZ', 'TN', 'PD', 'LT', 'AQ',]:
+                    if coord in ['WZ', 'TN', 'PD', 'LT', 'AQ']:
                         a = atoms.cell.cellpar()[0]
                         c = atoms.cell.cellpar()[2]
                         df.loc[item, cell] = c/a
-                    elif CN in ['ZB', 'NB', 'RS']:
+                    elif coord in ['ZB', 'NB', 'RS']:
                         df.loc[item, cell] = atoms.cell.cellpar()[3]
                 
                 chg_path = os.path.join(dir_path, 'isif2/atoms_bader_charge.json')
