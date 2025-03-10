@@ -83,6 +83,7 @@ def main():
 
                 save_path = os.path.join(root, 'figures')
                 df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
+                df[['energy', 'volume', 'chg', 'mag', 'ratio', 'bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop']] = df[['energy', 'volume', 'chg', 'mag', 'ratio', 'bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop']].round(2)
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
 def parse_icohp(file_path):
