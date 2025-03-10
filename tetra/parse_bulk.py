@@ -63,6 +63,8 @@ int_cols = ['CN', 'ON', 'n_bond']
 float_cols = ['energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
 
 def main():
+    global df
+    
     for coord in coords.index:
         CN = coords.loc[coord, 'CN']
         ON = coords.loc[coord, 'ON']
