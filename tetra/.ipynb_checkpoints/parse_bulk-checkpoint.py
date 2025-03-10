@@ -37,7 +37,7 @@ float_cols = ['energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', 'ICO
 def main():
     for coord in coords.keys():
         if os.path.exists(f'{save_path}/bulk_data.csv'):
-            df = read_csv(f'{root}/figures/bulk_data.csv')
+            df = pd.read_csv(f'{save_path}/bulk_data.csv')
             break
             
         if coord == 'WZ':
