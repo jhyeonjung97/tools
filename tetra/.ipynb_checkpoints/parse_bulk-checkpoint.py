@@ -48,9 +48,9 @@ def main():
             CN = 6; ON = 2; MN = 2; coord_dir = '6_Octahedral_RS'
         elif coord == 'LT':
             CN = 4; ON = 2; MN = 2; coord_dir = '7_Pyramidal_LT'
-        elif coord == 'AU':
-            CN = 4; ON = 4; MN = 6; coord_dir = '8_Tetrahedral_AQ'
         elif coord == 'AQ':
+            CN = 4; ON = 4; MN = 6; coord_dir = '8_Tetrahedral_AQ'
+        elif coord == 'AU':
             CN = 4; ON = 3; MN = 4; coord_dir = '9_SquarePlanar_AU'
 
         for row in metals.keys():
@@ -59,6 +59,7 @@ def main():
                 item = coord+row+numb
                 df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'ON']] = coord, row, numb, metal, CN, ON 
                 dir_path = os.path.join(root, coord_dir, row, numb+'_'+metal)
+                print(dir_path)
                 
                 atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')                
                 if os.path.exists(atoms_path):
@@ -110,8 +111,8 @@ def main():
                 df[float_cols] = df[float_cols].astype(float).round(2)
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
-                plot_by_metal_row(df, save_path)
-                plot_by_coordination(df, save_path)
+                # plot_by_metal_row(df, save_path)
+                # plot_by_coordination(df, save_path)
         
 def plot_by_metal_row(df, save_path):        
     for coord in coords.keys():
