@@ -24,7 +24,12 @@ metals = {
     'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
 }
 
-df = pd.DataFrame() # Madelung, GP, hexa
+# df = pd.DataFrame() # Madelung, GP, hexa
+# df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal', 'energy', 'volume', 'chg', 'mag', 'icohp', 'icobi', 'icoop'])
+# df = df.astype({'coord': 'string', 'row': 'string', 'metal': 'string', 'CN': 'float64', 'ON': 'float64'})
+df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal', 'energy', 'volume', 'chg', 'mag', 'icohp', 'icobi', 'icoop'],
+                  dtype='object')
+
 def main():
     for coord in coords.keys():
         CN = 4 if coord != 'RS' else 6
@@ -38,7 +43,7 @@ def main():
             for m, metal in enumerate(metals[row]):
                 numb = str(m).zfill(2)
                 item = coord+row+metal
-                df.loc[item, ['coord', 'CN', 'ON', 'row', 'metal']] = str(coord), float(CN), float(ON), str(row), str(metal)
+                df.loc[item, ['coord', 'CN', 'ON', 'row', 'metal']] = coord, CN, ON, row, metal
                 
                 dir_path = os.path.join(root, coords[coord], row, numb+'_'+metal)
             
