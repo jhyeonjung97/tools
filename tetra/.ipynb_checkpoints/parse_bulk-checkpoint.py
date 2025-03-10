@@ -63,7 +63,21 @@ int_cols = ['CN', 'ON', 'n_bond']
 float_cols = ['energy', 'form', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
 
 metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t', index_col=0)
-print(metal_df)
+
+E_H2O = -14.23919983
+E_H2 = -6.77409008
+
+ZPE_H2O = 0.558
+ZPE_H2 = 0.273
+
+Cp_H2O = 0.10
+Cp_H2 = 0.09
+
+Ref_H2 = E_H2 + ZPE_H2 + Cp_H2
+Ref_H2O = E_H2O + ZPE_H2O + Cp_H2O
+Ref_O2 = 2*Ref_H2O - 2*Ref_H2 + 4.92
+Ref_O = Ref_H2O - Ref_H2
+
 def main():
     global df
     
