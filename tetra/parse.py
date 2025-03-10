@@ -74,11 +74,10 @@ def main():
                 grosspop_path = os.path.join(dir_path, 'GROSSPOP.lobster')
                 if os.path.exists(icohp_path) and os.path.getsize(icohp_path) != 0:
                     icohp, bond = parse_icohp(icohp_path)
-                    icobi = parse_icohp(icobi_path)
-                    icoop = parse_icohp(icoop_path)
+                    icobi, bond = parse_icohp(icobi_path)
+                    icoop, bond = parse_icohp(icoop_path)
                     madelung = parse_madelung(madelung_path)
                     grosspop = parse_grosspop(grosspop_path, metal)
-                    print(bond, icohp, icobi, icoop)
                     df.loc[item, ['bond', 'icohp', 'icobi', 'icoop']] = bond, icohp, icobi, icoop
                     df.loc[item, ['madelung', 'grosspop']] = madelung, grosspop
 
