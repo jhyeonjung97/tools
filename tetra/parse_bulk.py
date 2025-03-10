@@ -111,8 +111,8 @@ def main():
                 df[float_cols] = df[float_cols].astype(float).round(2)
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
-                # plot_by_metal_row(df, save_path)
-                # plot_by_coordination(df, save_path)
+                plot_by_metal_row(df, save_path)
+                plot_by_coordination(df, save_path)
         
 def plot_by_metal_row(df, save_path):        
     for coord in coords.keys():
