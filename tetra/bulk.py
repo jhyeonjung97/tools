@@ -80,7 +80,7 @@ def main():
                     icobi = parse_icohp(icobi_path)
                     icoop = parse_icohp(icoop_path)
                     madelung = parse_madelung(madelung_path)
-                    grosspop = parse_madelung(grosspop_path)
+                    grosspop = parse_madelung(grosspop_path, metal)
                     df.loc[item, ['bond', 'icohp', 'icobi', 'icoop']] = bond, icohp, icobi, icoop
                     df.loc[item, ['madelung', 'grosspop']] = madelung, grosspop
                     print(dir_path)
@@ -113,7 +113,7 @@ def parse_icohp(file_path):
 
     return avg_icohp, avg_distance
 
-def parse_madelung(file_path, metal):
+def parse_madelung(file_path):
     with open(file_path, 'r') as f:
         for line in f:
             parts = line.split()
