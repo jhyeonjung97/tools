@@ -166,7 +166,7 @@ def plot_by_metal_row(df, save_path):
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=coord)
                 for metal in metals[row]:
                     if pd.notna(metal_df.loc[metal, 'Eform']):
-                        plt.scatter(subset['numb'], metal_df.loc[metal, 'Eform'], marker=marker,
+                        plt.scatter(subset.loc[metal, 'numb'], metal_df.loc[metal, 'Eform'], marker=marker,
                                     edgecolors=color, facecolors='white', label='exp.')
                         
             plt.xticks(np.arange(len(indice)), indice)
@@ -193,7 +193,7 @@ def plot_by_coordination(df, save_path):
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=row)
                 for metal in metals[row]:
                     if pd.notna(metal_df.loc[metal, 'Eform']):
-                        plt.scatter(subset['numb'], metal_df.loc[metal, 'Eform'], marker=marker,
+                        plt.scatter(subset.loc[metal, 'numb'], metal_df.loc[metal, 'Eform'], marker=marker,
                                     edgecolors=color, facecolors='white', label='exp.')
                         
             plt.xticks(np.arange(len(indice)), indice)
