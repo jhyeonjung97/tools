@@ -36,7 +36,7 @@ df = pd.DataFrame()
 for row in metals.keys():
     for m, metal in enumerate(metals[row]):
         df.at[metal, 'row'] = row
-        df.at[metal, 'numb']] = m
+        df.at[metal, 'numb'] = m
         elem = element(metal)
         for pattern in patterns:
             column = patterns[pattern]
