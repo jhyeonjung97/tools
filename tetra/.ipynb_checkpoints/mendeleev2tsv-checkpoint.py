@@ -58,8 +58,12 @@ df.to_csv(f'{save_path}/mendeleev_data.tsv', sep='\t')
 for column in df.columns:
     if column in ['row', 'numb']:
         continue
-    pattern = next((key for key, value in patterns.items() if value == column), None)
+    elif column.startswith('ion'):
+        pattern = f'ionenergies[{column.replace("ion", "")}]'
+    else:
+        pattern = next((key for key, value in patterns.items() if value == column), None)
     pngname = f'mendeleev_{pattern}.png'
+
         
     plt.figure()
     plt.plot(df[df['row'] == '3d']['numb'], df[df['row'] == '3d'][column], 
