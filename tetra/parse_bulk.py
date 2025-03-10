@@ -96,7 +96,7 @@ def main():
                 for m, metal in enumerate(metals[row]):
                     numb = str(m).zfill(2)
                     item = coord+row+numb
-                    df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'ON']] = coord, row, numb, metal, CN, ON 
+                    df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'ON']] = coord, row, m, metal, CN, ON 
                     dir_path = os.path.join(root, coord_dir, row, numb+'_'+metal)
                     
                     atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')                
