@@ -57,10 +57,7 @@ columns={
     'grosspop': 'Gross Population (Loewdin, e⁻)',
 }
 
-df = pd.DataFrame(columns=['coord', 'row', 'numb', 'metal', 'CN', 'ON', 
-                           'energy', 'volume', 'cell', 'chg', 'mag',
-                           'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop'],
-                  dtype='object')
+df = pd.DataFrame(columns=columns.keys(), dtype='object')
 int_cols = ['CN', 'ON', 'n_bond']
 float_cols = ['energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
 
@@ -138,9 +135,8 @@ def main():
     plot_by_coordination(df, save_path)
     
 def plot_by_metal_row(df, save_path):
-    print(columns)
     for row in metals.keys():
-        for col in df.columns:
+        for col in columns.keys():
             plt.figure(figsize=(8, 6))
             for coord in coords.index:
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
@@ -148,7 +144,7 @@ def plot_by_metal_row(df, save_path):
                 
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
-            # plt.ylabel(columns[col])
+            plt.ylabel(columns[col])
             plt.legend()
             plt.tight_layout()
             # plt.savefig(f"{save_path}/bulk_{row}_{col}.png")
