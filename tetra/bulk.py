@@ -2,6 +2,7 @@
 
 import os
 import numpy as np
+import pandas as pd
 from ase.io import read, write
 
 root = '/pscratch/sd/j/jiuy97/7_V_bulk'
@@ -22,11 +23,8 @@ metals = {
     '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb'],
     'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
 }
-patterns = {'TOTEN', 'Madelung', 'ICOHP', 'ICOBI', 
-            'GP', 'bond', 'ZPE', 'TS', 'hexa',
 
-df = Dataframe()
-
+df = pd.DataFrame() # Madelung, GP, hexa
 def main():
     for coord in coords.keys():
         CN = 4 if coord != 'RS' else 6
@@ -55,14 +53,14 @@ def main():
                 if os.path.exists(chg_path):
                     atoms = read(chg_path)
                     chgs = atoms.get_charge()
-                    chg = mean([chgs[atom.index] for atom in atoms if atom.symbol == metal])
+                    chg = np.mean([chgs[atom.index] for atom in atoms if atom.symbol == metal])
                     df.loc[item, 'chg'] = chg
             
                 mag_path = os.path.join(dir_path, 'isif2/moments.json')
                 if os.path.exists(mag_path):
                     atoms = read(mag_path)
                     mags = atoms.get_magnetic_moments()
-                    mag = mean([mags[atom.index] for atom in atoms if atom.symbol == metal])
+                    mag = np.mean([mags[atom.index] for atom in atoms if atom.symbol == metal])
                     df.loc[item, 'mag'] = mag
             
                 icohp_path = os.path.join(dir_path, 'icohp.txt')
@@ -70,6 +68,8 @@ def main():
                 icoop_path = os.path.join(dir_path, 'icoop.txt')
                 if os.path.exists(icohp_path):
                     icohp, bond = parse_icohp(icohp_path)
+                    icobi, bond = parse_icohp(icobi_path)
+                    icoop, bond = parse_icohp(icoop_path)
                     print(icohp, bond)
 
 
