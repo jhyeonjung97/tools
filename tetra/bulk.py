@@ -52,7 +52,7 @@ def main():
                 chg_path = os.path.join(dir_path, 'isif2/atoms_bader_charge.json')
                 if os.path.exists(chg_path):
                     atoms = read(chg_path)
-                    chgs = atoms.get_charges()
+                    chgs = atoms.get_initial_charges()
                     chg = np.mean([chgs[atom.index] for atom in atoms if atom.symbol == metal])
                     df.loc[item, 'chg'] = chg
             
