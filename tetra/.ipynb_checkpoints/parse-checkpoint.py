@@ -28,6 +28,7 @@ df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal',
                            'energy', 'volume', 'chg', 'mag', 'ratio',
                            'bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop'],
                   dtype='object')
+float_cols = ['energy', 'volume', 'chg', 'mag', 'ratio', 'bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop']
 
 def main():
     for coord in coords.keys():
@@ -74,8 +75,8 @@ def main():
                 grosspop_path = os.path.join(dir_path, 'GROSSPOP.lobster')
                 if os.path.exists(icohp_path) and os.path.getsize(icohp_path) != 0:
                     icohp, bond = parse_icohp(icohp_path)
-                    icobi, bond = parse_icohp(icobi_path)
-                    icoop, bond = parse_icohp(icoop_path)
+                    icobi, _ = parse_icohp(icobi_path)
+                    icoop, _ = parse_icohp(icoop_path)
                     madelung = parse_madelung(madelung_path)
                     grosspop = parse_grosspop(grosspop_path, metal)
                     df.loc[item, ['bond', 'icohp', 'icobi', 'icoop']] = bond, icohp, icobi, icoop
@@ -83,7 +84,7 @@ def main():
 
                 save_path = os.path.join(root, 'figures')
                 df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
-                df[['energy', 'volume', 'chg', 'mag', 'ratio', 'bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop']] = df[['energy', 'volume', 'chg', 'mag', 'ratio', 'bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop']].round(2)
+                df[float_cols] = df[float_cols].astype(float).round(2)
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
 def parse_icohp(file_path):
@@ -108,8 +109,6 @@ def parse_madelung(file_path):
                 return madelung
     return np.nan
                                       
-import numpy as np
-
 def parse_grosspop(file_path, metal):
     elements, loewdin_totals = [], []
     with open(file_path, 'r') as f:
