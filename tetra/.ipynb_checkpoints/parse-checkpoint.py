@@ -25,7 +25,7 @@ metals = {
 }
 
 df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal', 
-                           'energy', 'volume', 'chg', 'mag', 'ratio'
+                           'energy', 'volume', 'chg', 'mag', 'ratio',
                            'bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop'],
                   dtype='object')
 
