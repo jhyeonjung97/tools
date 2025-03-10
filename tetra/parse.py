@@ -80,7 +80,11 @@ def main():
                     grosspop = parse_grosspop(grosspop_path, metal)
                     df.loc[item, ['bond', 'icohp', 'icobi', 'icoop']] = bond, icohp, icobi, icoop
                     df.loc[item, ['madelung', 'grosspop']] = madelung, grosspop
-    
+
+                save_path = os.path.join(root, 'figures')
+                df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
+                df.to_csv(f'{figure_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
+
 def parse_icohp(file_path):
     distances, icohps = [], []
     with open(file_path, 'r') as f:
