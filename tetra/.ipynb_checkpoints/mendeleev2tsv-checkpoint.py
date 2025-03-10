@@ -40,14 +40,12 @@ for row in metals.keys():
 
             if 'ionenergies' in pattern:
                 ion_index = int(pattern.split('[')[1].strip(']'))
-                df.loc[metal, name] = elem.ionenergies.get(ion_index, None)
+                # df.loc[metal, name] = elem.ionenergies.get(ion_index, None)
             else:
-                value = getattr(elem, pattern, None) if hasattr(elem, pattern) else None
-                if isinstance(value, (list, tuple, np.ndarray, pd.Series)):
-                    value = value[0] if len(value) > 0 else None  # Take the first element if it's a list
-                df.at[metal, name] = value  # ✅ Ensures scalar assignment
+                print(metal, pattern, getattr(elem, pattern))
+                # df.at[metal, name] = getattr(elem, pattern, None)
                 
-print(df.head())
+# print(df.head())
             
     # # if pattern == 'boiling_point' or pattern == 'melting_point':
     # if pattern == 'melting_point':
