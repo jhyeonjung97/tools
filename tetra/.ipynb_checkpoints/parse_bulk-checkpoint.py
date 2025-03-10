@@ -85,8 +85,7 @@ def main():
                 if os.path.exists(mag_path):
                     atoms = read(mag_path)
                     mags = atoms.get_magnetic_moments()
-                    print(mag_path, mags)
-                    mag = np.mean([mags[atom.index] for atom in atoms if atom.symbol == metal])
+                    mag = np.mean([abs(mags[atom.index]) for atom in atoms if atom.symbol == metal])
                     df.loc[item, 'mag'] = mag
             
                 icohp_path = os.path.join(dir_path, 'icohp.txt')
