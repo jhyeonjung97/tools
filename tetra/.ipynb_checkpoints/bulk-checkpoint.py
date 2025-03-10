@@ -117,7 +117,7 @@ def parse_grosspop(file_path, metal):
             parts = line.split()
             if len(parts) == 5 and (parts[1] == metal or parts[1] == 'O'):
                 elements.append(parts[1])  
-            if len(parts) == 3 and parts[1] == 'total':
+            if len(parts) == 5 and parts[2] == 'total':
                 loewdin_totals.append(float(parts[-1]))
     print(elements)
     print(loewdin_totals)
