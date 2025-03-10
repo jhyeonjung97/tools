@@ -99,7 +99,7 @@ def main():
 
                 save_path = os.path.join(root, 'figures')
                 df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
-                df[int_cols] = df[int_cols].astype(int)
+                df[int_cols] = df[int_cols].apply(pd.to_numeric, errors='coerce').astype('Int64')
                 df[float_cols] = df[float_cols].astype(float).round(2)
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
