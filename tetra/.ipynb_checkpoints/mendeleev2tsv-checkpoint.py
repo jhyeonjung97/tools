@@ -45,6 +45,7 @@ for row in metals.keys():
                 if isinstance(value, float):
                     df.at[metal, name] = value
                 else:
+                    print(metal, name, value)
                     df.at[metal, name] = np.nan
                 
 print(df)
