@@ -8,6 +8,7 @@ metals = {
     '4d': ['Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn'],
     '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb']
 }
+
 patterns = {
     'group_id': 'group', 
     'atomic_number': 'Natom', 
@@ -30,20 +31,20 @@ patterns = {
 }
 
 df = pd.DataFrame()
-for row in metals.key():
-    for metal in row:
-        for pattern in patterns:
-        df.loc[metal, 
-    
-def get_data(element_symbol, atomic_property):
-    try:
-        elem = element(element_symbol)
-        if 'ionenergies' in atomic_property:
-            ion_index = int(atomic_property.split('[')[1].strip(']'))
-            return elem.ionenergies.get(ion_index, None)  # Prevent KeyError
-        else:
-            return getattr(elem, atomic_property, None)
 
+for row in metals.keys():
+    for metal in metals[row]:
+        elem = element(metal)
+        for pattern in patterns:
+            name = patterns[pattern]
+
+            if 'ionenergies' in pattern:
+                ion_index = int(pattern.split('[')[1].strip(']'))
+                df.loc[metal, name] = elem.ionenergies.get(ion_index, None)
+            else:
+                df.loc[metal, name] = getattr(elem, pattern, None) if hasattr(elem, pattern) else None
+                
+print(df.head())
             
     # # if pattern == 'boiling_point' or pattern == 'melting_point':
     # if pattern == 'melting_point':
