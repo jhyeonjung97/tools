@@ -27,7 +27,9 @@ metals = {
 # df = pd.DataFrame() # Madelung, GP, hexa
 # df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal', 'energy', 'volume', 'chg', 'mag', 'icohp', 'icobi', 'icoop'])
 # df = df.astype({'coord': 'string', 'row': 'string', 'metal': 'string', 'CN': 'float64', 'ON': 'float64'})
-df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal', 'energy', 'volume', 'chg', 'mag', 'icohp', 'icobi', 'icoop'],
+df = pd.DataFrame(columns=['coord', 'CN', 'ON', 'row', 'metal', 
+                           'energy', 'volume', 'chg', 'mag', 
+                           'icohp', 'icobi', 'icoop'],
                   dtype='object')
 
 def main():
@@ -46,8 +48,8 @@ def main():
                 df.loc[item, ['coord', 'CN', 'ON', 'row', 'metal']] = coord, CN, ON, row, metal
                 
                 dir_path = os.path.join(root, coords[coord], row, numb+'_'+metal)
-            
-                atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')
+                
+                atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')                
                 if os.path.exists(atoms_path):
                     atoms = read(atoms_path)
                     energy = atoms.get_total_energy()
@@ -71,13 +73,18 @@ def main():
                 icohp_path = os.path.join(dir_path, 'icohp.txt')
                 icobi_path = os.path.join(dir_path, 'icobi.txt')
                 icoop_path = os.path.join(dir_path, 'icoop.txt')
-                if os.path.exists(icohp_path):
+                madelung_path = os.path.join(dir_path, 'MadelungEnergies.lobster')
+                grosspop_path = os.path.join(dir_path, 'GROSSPOP.lobster')
+                if os.path.exists(icohp_path) and os.path.getsize(icohp_path) != 0:
                     icohp, bond = parse_icohp(icohp_path)
-                    icobi, bond = parse_icohp(icobi_path)
-                    icoop, bond = parse_icohp(icoop_path)
-                    print(icohp, bond)
-
-
+                    icobi = parse_icohp(icobi_path)
+                    icoop = parse_icohp(icoop_path)
+                    madelung = parse_madelung(madelung_path)
+                    grosspop = parse_madelung(grosspop_path)
+                    df.loc[item, ['bond', 'icohp', 'icobi', 'icoop', 'madelung', 'grosspop']] = bond, icohp, icobi, icoop, madelung, grosspop
+                    print(dir_path)
+                    print(madelung, grosspop)
+    
 def parse_icohp(file_path):
     distances = []
     icohps = []
@@ -105,6 +112,28 @@ def parse_icohp(file_path):
 
     return avg_icohp, avg_distance
 
-            
+def parse_madelung(file_path, metal):
+    with open(file_path, 'r') as f:
+        for line in f:
+            parts = line.split()
+            if len(parts) == 3 and parts[0].replace('.', '', 1).isdigit():
+                madelung = float(parts[2])  # Third column is Loewdin energy
+                return madelung
+    return None  # Return None if no valid values found
+                                      
+def parse_grosspop(file_path, metal):
+    loewdin_totals = []
+    with open(file_path, 'r') as f:
+        lines = f.readlines()
+    for i in range(len(lines)):
+        parts = lines[i].split()
+        if len(parts) >= 3 and parts[1] == metal and parts[2] == 'total':  
+            loewdin_gp = float(parts[-1])  # Last column is Loewdin GP total
+            loewdin_totals.append(loewdin_gp)
+    if loewdin_totals:
+        return sum(loewdin_totals) / len(loewdin_totals)  # Compute the average
+    return None  # Return None if no valid values found
+
+    
 if __name__ == "__main__":
     main()
