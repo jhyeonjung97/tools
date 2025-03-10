@@ -119,9 +119,7 @@ def plot_by_metal_row(df, save_path):
             plt.figure(figsize=(8, 6))
             for row in metals.keys():
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                print(coord, row)
-                print(subset)
-                plt.plot(subset.index, subset[col], marker='o', linestyle='-', label=row)
+                plt.plot(subset['numb'], subset[col], marker='o', linestyle='-', label=row)
 
             plt.xlabel("Metal Index")
             plt.ylabel(col)
@@ -136,7 +134,7 @@ def plot_by_coordination(df, save_path):
             plt.figure(figsize=(8, 6))
             for coord in coords.keys():
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                plt.plot(subset.index, subset[col], marker='o', linestyle='-', label=row)
+                plt.plot(subset['numb'], subset[col], marker='o', linestyle='-', label=row)
 
             plt.xlabel("Metal Index")
             plt.ylabel(col)
