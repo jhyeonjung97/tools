@@ -69,7 +69,7 @@ def main():
             df = pd.read_csv(f'{save_path}/bulk_data.csv')
             break
 
-        CN = coords.loc['
+        # CN = coords.loc['
         if coord == 'WZ':
             CN = 4; ON = 2; MN = 2; coord_dir = '1_Tetrahedral_WZ'
         elif coord == 'ZB':
