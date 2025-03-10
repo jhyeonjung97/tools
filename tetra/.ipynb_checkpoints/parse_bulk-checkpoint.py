@@ -121,7 +121,7 @@ def parse_madelung(file_path):
         for line in f:
             parts = line.split()
             if len(parts) == 3 and parts[0].replace('.', '', 1).isdigit():
-                madelung = float(parts[2])  # Third column is Loewdin energy
+                madelung = float(parts[2])
                 return madelung
     return np.nan
                                       

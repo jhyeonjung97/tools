@@ -53,7 +53,7 @@ for row in metals.keys():
 df['ion12'] = df['ion1'] + df['ion2']
 save_path = os.path.join(root, 'figures')
 df.to_csv(f'{save_path}/mendeleev_data.csv', sep=',')
-df.to_csv(f'{save_path}/mendeleev_data.tsv', sep='\t')
+df.to_csv(f'{save_path}/mendeleev_data.tsv', sep='\t', float_format='%.2f')
 
 for column in df.columns:
     if column in ['row', 'numb']:
