@@ -1,12 +1,7 @@
 #!/bin/bash
 
-# i=$(squeue --me | grep 'RS' | wc -l)
 for dir in /pscratch/sd/j/jiuy97/7_V_bulk/*_*_*/*/*_*
 do
-    # if(( i > 4 )); then
-    #     exit
-    # fi
-    
     cd $dir
     IFS='/' read -r -a path <<< $dir
     coord=$(echo "${path[-3]}" | cut -d'_' -f3)
@@ -15,13 +10,9 @@ do
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname=${coord}${row}${numb}
     
-    # if [[ -f "$dir/DONE" ]]; then
-    #     ~/bin/shoulder/rm_mv "$dir"/*.*.log
-    # fi
-    
     if [[ -n $(squeue --me | grep $jobname) ]] || [[ -z $(find . -maxdepth 1 -type f) ]]; then
         continue
-    elif [[ $coord == 'NB' ]] || [[ $coord == 'RS' ]] || [[ -n $(grep '12:00:00' $dir/submit.sh) ]]; then
+    elif [[ $coord == 'RS' ]] || [[ -n $(grep '12:00:00' $dir/submit.sh) ]]; then
         continue
     elif [[ -z "$(find . -maxdepth 1 -type f ! -name 'start.traj' ! -name 'submit.sh' ! -name '.*')" ]]; then
         pwd; sbatch submit.sh #; ((i+=1))
