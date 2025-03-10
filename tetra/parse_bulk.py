@@ -153,10 +153,14 @@ def plot_by_metal_row(df, save_path):
 def plot_by_coordination(df, save_path):        
     for coord in coords.index:
         for col in columns.keys():
+            base_color = coords.loc[coord, 'color']
+            cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', ['white', base_color])
+            colors = cmap(np.linspace(0.6, 1, 3))
             plt.figure(figsize=(8, 6))
-            for row in ['fm', '3d', '4d', '5d']:
+            for r, row in enumerate(['fm', '3d', '4d', '5d']):
+                color = 'gray' if row == 'fm' else color = colors[r]
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=coords.loc[coord, 'color'], linestyle='-', label=row)
+                plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=color, linestyle='-', label=row)
                 
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
@@ -165,7 +169,9 @@ def plot_by_coordination(df, save_path):
             plt.tight_layout()
             plt.savefig(f"{save_path}/bulk_{coord}_{col}.png")
             plt.close()
-            
+
+
+
 def parse_icohp(file_path):
     distances, icohps = [], []
     with open(file_path, 'r') as f:
