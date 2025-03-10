@@ -8,13 +8,33 @@ metals = {
     '4d': ['Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn'],
     '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb']
 }
-patterns = [
-    'group_id', 'atomic_number', 'atomic_volume', 'boiling_point', 'melting_point',
-    'mass', 'density', 'dipole_polarizability', 'en_pauling', 'covalent_radius',
-    'metallic_radius', 'vdw_radius', 'evaporation_heat', 'fusion_heat',
-    'heat_of_formation', 'ionenergies[1]', 'ionenergies[2]', 'ionenergies[3]'
-]
+patterns = {
+    'group_id': 'group', 
+    'atomic_number': 'Natom', 
+    'atomic_volume': 'Vatom', 
+    'boiling_point': 'Tboil', 
+    'melting_point': 'Tmelt',
+    'mass': 'mass', 
+    'density': 'density', 
+    'dipole_polarizability': 'dipole', 
+    'en_pauling': 'pauling', 
+    'covalent_radius': 'Rcoval',
+    'metallic_radius': 'Rmetal', 
+    'vdw_radius': 'Rvdw', 
+    'evaporation_heat': 'Hevap', 
+    'fusion_heat': 'Hfus',
+    'heat_of_formation': 'Hform', 
+    'ionenergies[1]': 'ion1', 
+    'ionenergies[2]': 'ion2', 
+    'ionenergies[3]': 'ion3',
+}
 
+df = pd.DataFrame()
+for row in metals.key():
+    for metal in row:
+        for pattern in patterns:
+        df.loc[metal, 
+    
 def get_data(element_symbol, atomic_property):
     try:
         elem = element(element_symbol)
@@ -23,21 +43,6 @@ def get_data(element_symbol, atomic_property):
             return elem.ionenergies.get(ion_index, None)  # Prevent KeyError
         else:
             return getattr(elem, atomic_property, None)
-    except AttributeError:
-        return None
-    except (KeyError, IndexError):
-        return None
-
-for pattern in patterns:
-    data = {
-        '3d': [get_data(e, pattern) for e in metals['3d']],
-        '4d': [get_data(e, pattern) for e in metals['4d']],
-        '5d': [get_data(e, pattern) for e in metals['5d']],
-    }
-
-    df = pd.DataFrame(data).apply(pd.to_numeric, errors='coerce')  # Convert all to numeric safely
-    print(f"\nProperty: {pattern}")
-    print(df.head())  # Show first few rows for debugging
 
             
     # # if pattern == 'boiling_point' or pattern == 'melting_point':
