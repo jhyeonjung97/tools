@@ -162,7 +162,11 @@ def plot_by_metal_row(df, save_path):
             for coord in coords.index:
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker=coords.loc[coord, 'marker'], color=coords.loc[coord, 'color'], linestyle='-', label=coord)
-                
+                for metal in metals[row]:
+                    if pd.notna(metal_df.loc[metal, 'Eform']):
+                        plt.scatter(subset['numb'], metal_df.loc[metal, 'Eform'], marker=marker,
+                                    edgecolors=color, facecolors='white', label='exp.')
+                        
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
             plt.ylabel(columns.loc[col, 'ylabel'])
@@ -189,6 +193,7 @@ def plot_by_coordination(df, save_path):
                     if pd.notna(metal_df.loc[metal, 'Eform']):
                         plt.scatter(subset['numb'], metal_df.loc[metal, 'Eform'], marker=marker,
                                     edgecolors=color, facecolors='white', label='exp.')
+                        
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
             plt.ylabel(columns.loc[col, 'ylabel'])
