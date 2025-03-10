@@ -2,9 +2,9 @@
 
 # i=$(squeue --me | grep 'RS' | wc -l)
 i=$(squeue --me | grep 'NB3d' | wc -l)
-((i+=2))
-# for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/*/*_*
-for dir in /pscratch/sd/j/jiuy97/7_V_bulk/5_SquarePlanar_NB/3d/*_*
+# ((i+=2))
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/6_Octahedral_RS/*/*_*
+# for dir in /pscratch/sd/j/jiuy97/7_V_bulk/5_SquarePlanar_NB/3d/*_*
 do
     if(( i > 4 )); then
         exit
