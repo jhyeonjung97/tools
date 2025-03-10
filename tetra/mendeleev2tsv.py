@@ -65,7 +65,7 @@ for column in df.columns:
     pngname = f'mendeleev_{pattern}.png'
 
         
-    plt.figure(figsize=(4, 3), dpi=200)
+    plt.figure(figsize=(8, 6), dpi=100)
     plt.plot(df[df['row'] == '3d']['numb'], df[df['row'] == '3d'][column], 
              marker='d', color=colors[0], label='3d')
     plt.plot(df[df['row'] == '4d']['numb'], df[df['row'] == '4d'][column], 
