@@ -241,8 +241,17 @@ ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
 pH, U = np.meshgrid(pHrange, Urange)
-print(lowest_surfaces)
-plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap='RdYlBu', alpha=0.85, vmin=0, vmax=nsurfs-1)
+colors = plt.cm.tab20.colors
+
+for k in range(nsurfs):
+    if k in lowest_surfaces:
+        label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
+        plt.plot([], [], color=colors[k], linewidth=5, label=label)
+        
+unique_surfs = np.unique(lowest_surfaces)
+selected_colors = [colors[int(k) % len(colors)] for k in unique_surfs]
+lowest_cmap = mcolors.ListedColormap(selected_colors)
+plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=lowest_cmap, alpha=0.85, vmin=0, vmax=len(unique_surfs)-1)
 
 # for k in range(nsurfs):
 #     if k in lowest_surfaces:
