@@ -199,15 +199,15 @@ cmap = plt.get_cmap(cmapName, nsurfs+1)
 
 for k in range(nsurfs): 
     label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][1], surfs[k][2], surfs[k][3], surfs[k][4])
-    plot([], [], color=cmap(k), linewidth=5, label=label)
+    plt.plot([], [], color=cmap(k), linewidth=5, label=label)
 
 legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
        fontsize='x-small', handlelength=3, edgecolor='black')
 
-plot(pHrange, 1.23-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
+plt.plot(pHrange, 1.23-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, 0.95, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$',
         color='blue', rotation=-14, fontsize=10)
-plot(pHrange, 0-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
+plt.plot(pHrange, 0-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, -0.2 , r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$',
         color='blue', rotation=-14, fontsize=10)
 
