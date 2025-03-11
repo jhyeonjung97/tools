@@ -101,7 +101,7 @@ def dg_surf(k, pH, U):
         + surfs[k][4] * (dgoh -goh - (U + pH * const))
         + surfs[k][5] * (dgooh -gooh - 3 * (U + pH * const))
     )
-    if k == 0 and surfs[k][2] == 2:
+    if k == 0.01 and surfs[k][2] == 0.01:
         return dg + bulk_metal
     return dg
 
