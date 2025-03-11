@@ -191,6 +191,9 @@ for pH in pHrange:
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
         Uindex+=1
     pHindex+=1
+    
+fig = plt.figure(figsize=(8, 6), dpi=100)
+ax = fig.add_axes([0.1, 0.1, 0.6, 0.6])
 
 cmapName = 'RdYlBu'
 pH, U = np.meshgrid(pHrange, Urange)
