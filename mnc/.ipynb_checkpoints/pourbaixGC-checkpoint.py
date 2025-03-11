@@ -106,13 +106,13 @@ def dg(k, pH, U):
 
 def dg_ion(k, pH, U):
     dg = (
-        ions[k][0]
+        surfs[k][0]
         - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
-        + ions[k][2] * (1 * (U + pH * const))
-        + ions[k][3] * (-2 * (U + pH * const))
-        + ions[k][4] * (-1 * (U + pH * const))
-        + ions[k][5] * (-3 * (U + pH * const))
-        - ions[k][1] * U
+        + surfs[k][2] * (1 * (U + pH * const))
+        + surfs[k][3] * (-2 * (U + pH * const))
+        + surfs[k][4] * (-1 * (U + pH * const))
+        + surfs[k][5] * (-3 * (U + pH * const))
+        - surfs[k][1] * U
     )
     return dg
 
@@ -189,46 +189,29 @@ surfs = [
     # df.loc['ooh-o', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     # df.loc['oohooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     # df.loc['ooh-ooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
-]
-surfs = [surf for surf in surfs if not any(pd.isna(x) for x in surf)]
-nsurfs = len(surfs)
-
-lowest_surfaces = np.ones((len(Urange),len(pHrange)))*-1
-    
-# Loop find the coverage with the lowest dG at each value of pH, voltage
-pHindex = 0
-for pH in pHrange:
-    Uindex = 0
-    for U in Urange:
-        values = []
-        for k in range(nsurfs):
-            values.append(dg(k, pH, U))
-        print(values)
-        sorted_values = sorted(range(len(values)), key=lambda k: values[k])
-        lowest_surfaces[Uindex][pHindex] = sorted_values[0]
-        Uindex+=1
-    pHindex+=1
-    
-ions = [
     df.loc['Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
     df.loc['HFeO²⁻', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #1
     df.loc['Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
     df.loc['FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
     df.loc['Fe(OH)₂⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #4
 ]
-nions = len(ions)
+surfs = [surf for surf in surfs if not any(pd.isna(x) for x in surf)]
+nsurfs = len(surfs)
 
-# Loop find the coverage with the lowest dG at each value of pH, voltage
+lowest_surfaces = np.ones((len(Urange),len(pHrange)))*-1
+    
 pHindex = 0
 for pH in pHrange:
     Uindex = 0
     for U in Urange:
         values = []
-        for k in range(nions):
-            values.append(dg_ion(k, pH, U))
+        for k, surf in enumerate(surfs):
+            if 'Fe' in surf.index:
+                values.append(dg_ion(k, pH, U))
+            else:
+                values.append(dg(k, pH, U))
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
-        # print(sorted_values)
         Uindex+=1
     pHindex+=1
     
