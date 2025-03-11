@@ -98,7 +98,7 @@ def dg(k, pH, U):
         + surfs[k][3] * (dgo -go - 2 * (U + pH * const))
         + surfs[k][4] * (dgoh -goh - (U + pH * const))
         + surfs[k][5] * (dgooh -gooh - 3 * (U + pH * const))
-        - water * (surfs[k][3] + surfs[k][4] + surfs[k][5]*2)
+        # - water * (surfs[k][3] + surfs[k][4] + surfs[k][5]*2)
     )
     if k == 0 and surfs[k][2] == 2:
         return dg + bulk_metal
