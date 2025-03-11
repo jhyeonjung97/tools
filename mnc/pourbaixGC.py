@@ -20,6 +20,7 @@ main_dirs = ["clean", "mh", "nh", "oh", "o",
 kbt = 0.0256 
 const = kbt * np.log(10)
 kjmol = 96.485
+calmol = 23.061
 pHrange = np.arange(0, 14.01, 0.01)
 Umin, Umax = -1.0, 2.5 + 0.06 * 14
 Urange = np.arange(Umin, Umax, 0.01)
@@ -86,37 +87,57 @@ def get_energy(main_dir):
     return None
     
 def addH(pH, U):
-    return -gh + dgh + 1 * (U + pH * const)
+    return -gh + 1 * (U + pH * const)
     
 def addO(pH, U):
-    return -go + dgo - 2 * (U + pH * const)
+    return -go - 2 * (U + pH * const)
 
 def addOH(pH, U):
-    return -goh + dgoh - (U + pH * const)
+    return -goh - (U + pH * const)
 
 def addOOH(pH, U):
-    return -gooh + dgooh - 3 * (U + pH * const)
+    return -gooh - 3 * (U + pH * const)
 
-def dg(i, pH, U):
-    if surfs[i][0] is None:
+def dg(k, pH, U):
+    if surfs[k][0] is None:
         return None
     dg = (
-        (surfs[i][5]*(U**2) + surfs[i][6]*U + surfs[i][7])
-        - (surfs[0][5]*(U**2) + surfs[0][6]*U + surfs[0][7])
-        + surfs[i][1] * addH(pH, U) 
-        + surfs[i][2] * addO(pH, U) 
-        + surfs[i][3] * addOH(pH, U) 
-        + surfs[i][4] * addOOH(pH, U)
+        (surfs[k][6]*(U**2) + surfs[k][7]*U + surfs[k][8])
+        - (surfs.at['vac', 6]*(U**2) + surfs.at['vac', 7]*U + surfs.at['vac', 8])
+        + surfs[k][2] * (addH(pH, U) + dgh)
+        + surfs[k][3] * (addO(pH, U) + dgo)
+        + surfs[k][4] * (addOH(pH, U) + dgoh)
+        + surfs[k][5] * (addOOH(pH, U) + dgooh)
     )
-    if i == 0 and surfs[i][1] == 2:
+    if i == 0 and surfs[k][2] == 2:
         return dg + bulk_metal
     return dg
-    
+
+def dg_ion(k, pH, U):
+    dg = (
+        surfs[k][0]
+        - (surfs.at['vac', 6]*(U**2) + surfs.at['vac', 7]*U + surfs.at['vac', 8])
+        + surfs[k][2] * addH(pH, U)
+        + surfs[k][3] * addO(pH, U)
+        + surfs[k][4] * addOH(pH, U)
+        + surfs[k][5] * addOOH(pH, U)
+        - surfs[k][1] * U
+    )
+    return dg
+
 df = pd.DataFrame()
 json_path = f'{root}/empty/2_/final_with_calculator.json'
 atoms = read(json_path)
-df.loc['vac', 'E'] = atoms.get_potential_energy()
+vac = atoms.get_potential_energy()
 
+df.loc['Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-20.300/calmol, +2, 0, 0, 0, 0, 0, 0, 0]
+df.loc['HFeO²⁻', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-90.627/calmol, -2, 1, 1, 0, 0, 0, 0, 0]
+df.loc['Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-2.530/calmol, +3, 0, 0, 0, 0, 0, 0, 0]
+df.loc['FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-55.910/calmol, +2, 1, 1, 0, 0, 0, 0, 0]
+df.loc['Fe(OH)₂⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-106.200/calmol, +1, 2, 2, 0, 0, 0, 0, 0]
+df['H'] += 2
+
+df.loc['vac', 'E'] = vac
 for main_dir in main_dirs:
     min_e0 = get_energy(main_dir)
     if min_e0 is None:
@@ -124,63 +145,64 @@ for main_dir in main_dirs:
     else:
         df.loc[main_dir, 'E'] = min_e0
 
-df.loc['vac', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [2, 0, 0, 0, -0.3342, -0.1079, 0]
-df.loc['clean', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, -0.3660, 0.0665, 0]
-df.loc['mh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [1, 0, 0, 0, -0.3714, 0.2173, 0]
-df.loc['nh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [1, 0, 0, 0, -0.3438, -0.3362, 0]
-df.loc['o', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 0, 0, -0.3608, -0.6948, 0]
-df.loc['oh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 0, -0.8300, -0.4206, 0]
-df.loc['ohoh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 2, 0, -0.7036, 0.3162, 0]
-df.loc['oh-oh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 2, 0, -0.7214, 0.3152, 0]
-df.loc['ohooh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 1, -0.9681, -0.9980, 0]
-df.loc['oohoh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 1, -0.9971, -1.1225, 0]
-df.loc['oh-ooh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 1, -0.8134, 0.0605, 0]
-df.loc['ooh-oh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 1, -0.9297, -0.7491, 0]
-df.loc['ooh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 1, -0.8300, -0.4206, 0]
-df.loc['oho', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 1, 0, -0.8385, -0.6094, 0]
-df.loc['oh-o', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 1, 0, -0.7100, 0.1638, 0]
-df.loc['o-oh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 1, 0, -0.7247, 1.7570, 0]
-df.loc['oo', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 2, 0, 0, -0.6536, 2.1095, 0]
-df.loc['o-o', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 2, 0, 0, -0.6429, 2.1679, 0]
-df.loc['oooh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 0, 1, -0.6918, 1.3097, 0]
-df.loc['ooho', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 0, 1, -0.7158, 0.8580, 0]
-df.loc['o-ooh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 0, 1, -0.7384, 2.0032, 0]
-df.loc['ooh-o', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 0, 1, -0.6788, 1.2123, 0]
-df.loc['oohooh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 2, -0.6258, 1.0597, 0]
-df.loc['ooh-ooh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 2, -0.5632, 1.0037, 0]
+df.loc['vac', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 2, 0, 0, 0, -0.3342, -0.1079, 0]
+df.loc['clean', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 0, -0.3660, 0.0665, 0]
+df.loc['mh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 0, 0, 0, -0.3714, 0.2173, 0]
+df.loc['nh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 0, 0, 0, -0.3438, -0.3362, 0]
+df.loc['o', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 0, 0, -0.3608, -0.6948, 0]
+df.loc['oh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 1, 0, -0.8300, -0.4206, 0]
+df.loc['ohoh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 2, 0, -0.7036, 0.3162, 0]
+df.loc['oh-oh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 2, 0, -0.7214, 0.3152, 0]
+df.loc['ohooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 1, 1, -0.9681, -0.9980, 0]
+df.loc['oohoh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 1, 1, -0.9971, -1.1225, 0]
+df.loc['oh-ooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 1, 1, -0.8134, 0.0605, 0]
+df.loc['ooh-oh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 1, 1, -0.9297, -0.7491, 0]
+df.loc['ooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 1, -0.8300, -0.4206, 0]
+df.loc['oho', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 1, 0, -0.8385, -0.6094, 0]
+df.loc['oh-o', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 1, 0, -0.7100, 0.1638, 0]
+df.loc['o-oh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 1, 0, -0.7247, 1.7570, 0]
+df.loc['oo', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 2, 0, 0, -0.6536, 2.1095, 0]
+df.loc['o-o', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 2, 0, 0, -0.6429, 2.1679, 0]
+df.loc['oooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 0, 1, -0.6918, 1.3097, 0]
+df.loc['ooho', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 0, 1, -0.7158, 0.8580, 0]
+df.loc['o-ooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 0, 1, -0.7384, 2.0032, 0]
+df.loc['ooh-o', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 0, 1, -0.6788, 1.2123, 0]
+df.loc['oohooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 2, -0.6258, 1.0597, 0]
+df.loc['ooh-ooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 2, -0.5632, 1.0037, 0]
 df['C'] = df['E']
-# df[['A', 'B']] = 0
+df[['A', 'B']] = 0
 
 surfs = [
-    df.loc['vac', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
-    df.loc['clean', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #1
-    df.loc['mh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
-    df.loc['nh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
-    df.loc['oh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #4
-    df.loc['oh-oh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #5
-    df.loc['o-oh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #6
-    df.loc['o-o', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #7
-    df.loc['o', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #8
-    df.loc['ohoh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #9
-    # df.loc['ohooh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
-    # df.loc['oohoh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
-    # df.loc['oh-ooh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
-    # df.loc['ooh-oh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
-    # df.loc['ooh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
-    df.loc['oho', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #10
-    # df.loc['oh-o', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
-    # df.loc['oo', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
-    # df.loc['oooh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
-    # df.loc['ooho', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
-    # df.loc['o-ooh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
-    # df.loc['ooh-o', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
-    # df.loc['oohooh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
-    # df.loc['ooh-ooh', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
+    df.loc['vac', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
+    df.loc['clean', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #1
+    df.loc['mh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
+    df.loc['nh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
+    df.loc['oh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #4
+    df.loc['oh-oh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #5
+    df.loc['o-oh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #6
+    df.loc['o-o', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #7
+    df.loc['o', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #8
+    df.loc['ohoh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #9
+    # df.loc['ohooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
+    # df.loc['oohoh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
+    # df.loc['oh-ooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
+    # df.loc['ooh-oh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
+    # df.loc['ooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
+    df.loc['oho', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #10
+    # df.loc['oh-o', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
+    # df.loc['oo', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
+    # df.loc['oooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
+    # df.loc['ooho', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
+    # df.loc['o-ooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
+    # df.loc['ooh-o', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
+    # df.loc['oohooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
+    # df.loc['ooh-ooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
 ]
 surfs = [surf for surf in surfs if not any(pd.isna(x) for x in surf)]
 nsurfs = len(surfs)
-lowest_surfaces = np.ones((len(Urange),len(pHrange)))*-1
 
+lowest_surfaces = np.ones((len(Urange),len(pHrange)))*-1
+    
 # Loop find the coverage with the lowest dG at each value of pH, voltage
 pHindex = 0
 for pH in pHrange:
@@ -189,6 +211,28 @@ for pH in pHrange:
         values = []
         for k in range(nsurfs):
             values.append(dg(k, pH, U))
+        sorted_values = sorted(range(len(values)), key=lambda k: values[k])
+        lowest_surfaces[Uindex][pHindex] = sorted_values[0]
+        Uindex+=1
+    pHindex+=1
+    
+ions = [
+    df.loc['Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
+    df.loc['HFeO²⁻', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #1
+    df.loc['Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
+    df.loc['FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
+    df.loc['Fe(OH)₂⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #4
+]
+nions = len(ions)
+
+# Loop find the coverage with the lowest dG at each value of pH, voltage
+pHindex = 0
+for pH in pHrange:
+    Uindex = 0
+    for U in Urange:
+        values = []
+        for k in range(nions):
+            values.append(dg_ion(k, pH, U))
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
         Uindex+=1
