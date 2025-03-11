@@ -107,7 +107,7 @@ def dg_ion(k, pH, U):
     dg = (
         surfs[k][0]
         - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
-        # + 2 * (dgh -gh + 1 * (U + pH * const))
+        + 2 * (dgh -gh + 1 * (U + pH * const))
         + surfs[k][2] * (1 * (U + pH * const))
         + surfs[k][3] * (-2 * (U + pH * const))
         + surfs[k][4] * (-1 * (U + pH * const))
@@ -171,8 +171,6 @@ df.loc['ooh-ooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 
 df.at['vac', 'E'] += bulk_metal
 df['C'] = df['E']
 df[['A', 'B']] = 0
-
-print(df)
 
 surfs = [
     df.loc['vac', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
