@@ -262,7 +262,7 @@ for k in range(nsurfs):
 # # print(selected_surfaces)
 # print(unique_surfaces)
 
-plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=cmap, vmin=1, vmax=nsurfs)
+plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=cmap)
 
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
        fontsize='x-small', handlelength=3, edgecolor='black')
