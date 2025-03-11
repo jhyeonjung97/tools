@@ -199,7 +199,6 @@ surfs = [
     # df.loc['ooh-o', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     # df.loc['oohooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     # df.loc['ooh-ooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
-    
     df.loc['Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
     # df.loc['HFeO²⁻', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #1
     # df.loc['Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
@@ -247,7 +246,8 @@ cmap = mcolors.ListedColormap(colors)
 for k in range(nsurfs):
     label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
     plt.plot([], [], color=colors[k], linewidth=5, label=label)
-
+    
+unique_surfaces = np.unique(lowest_surfaces)
 # selected_surfaces = []
 # for i in lowest_surfaces.flatten(order='C'):
 #     selected_surfaces.append(i)
@@ -262,7 +262,7 @@ for k in range(nsurfs):
 # # print(selected_surfaces)
 # print(unique_surfaces)
 
-plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=cmap)
+plt.pcolormesh(pH, U, lowest_surfaces, cmap=cmap)
 
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
        fontsize='x-small', handlelength=3, edgecolor='black')
