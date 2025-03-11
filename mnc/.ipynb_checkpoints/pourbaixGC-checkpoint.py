@@ -6,6 +6,7 @@ import pandas as pd
 from ase.io import read
 from matplotlib import rc
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 from matplotlib.ticker import FormatStrFormatter
 
 root = '/pscratch/sd/j/jiuy97/6_MNC'
@@ -245,29 +246,21 @@ ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
-colors = ['darkgray', ##
-         'cornflowerblue', ## 
-         'yellowgreen', 
-         'teal', 
-         'tan', ##
-         'salmon', ##
-         'forestgreen', 
-         'lightsteelblue', ##
-         'orange', 
-         'gold', 
-         'pink', ##
-         'plum', ##
-         'navy']
+cmap = mcolors.ListedColormap([
+    'darkgray', 'cornflowerblue', 'yellowgreen', 'teal', 'tan', 
+    'salmon', 'forestgreen', 'lightsteelblue', 'orange', 'gold', 
+    'pink', 'plum', 'navy'
+])
 
 cmapName = 'RdYlBu'
 pH, U = np.meshgrid(pHrange, Urange)
+plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', norm=None, cmap=cmap, alpha=0.85, vmin=0, vmax=nsurfs)
 # plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', norm=None, cmap=cmapName, alpha=0.85, vmin=0, vmax=nsurfs)
-plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', norm=None, c=colors, alpha=0.85, vmin=0, vmax=nsurfs)
-cmap = plt.get_cmap(cmapName, nsurfs+1)
+# cmap = plt.get_cmap(cmapName, nsurfs+1)
 
 for k in range(nsurfs): 
-    # color=cmap(k)
-    color=colors[k]
+    color=cmap(k)
+    # color=colors[k]
     label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
     plt.plot([], [], color=color, linewidth=5, label=label)
 
