@@ -149,8 +149,7 @@ df.loc['ooh-o', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 0, 1, -0.67
 df.loc['oohooh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 2, -0.6258, 1.0597, 0]
 df.loc['ooh-ooh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 2, -0.5632, 1.0037, 0]
 df['C'] = df['E']
-df['A'] = 0
-df['B'] = 0
+# df[['A', 'B']] = 0
 
 surfs = [
     df.loc['vac', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
@@ -198,6 +197,12 @@ for pH in pHrange:
 fig = plt.figure(figsize=(8, 6), dpi=100)
 ax = fig.add_axes([0.1, 0.1, 0.6, 0.6])
 
+# Set Axes Limits and Labels
+ax.axis([0, 14, Emin, Emax])
+ax.set_xlabel('pH', labelpad=0)
+ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
+ax.tick_params(right=True, direction="in")
+
 cmapName = 'RdYlBu'
 pH, U = np.meshgrid(pHrange, Urange)
 plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', norm=None, cmap=cmapName, alpha=0.85, vmin=0, vmax=nsurfs)
@@ -216,11 +221,5 @@ ax.text(0.2, 0.95, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$',
 plt.plot(pHrange, 0-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, -0.2 , r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$',
         color='blue', rotation=-14, fontsize=10)
-
-# Set Axes Limits and Labels
-ax.axis([0, 14, Emin, Emax])
-ax.set_xlabel('pH', labelpad=0)
-ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
-ax.tick_params(right=True, direction="in")
 
 fig.savefig(f'{root}/figures/pourbaixGC.png', bbox_inches='tight') 
