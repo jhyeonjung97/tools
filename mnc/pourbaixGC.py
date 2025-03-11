@@ -258,6 +258,7 @@ for pH in pHrange:
     for U in Urange:
         values = []
         for k, surf in enumerate(surfs):
+            print(k)
             if k in {12, 13, 14}:
                 dg = dg_ion1(k, pH, U, concentration=1e-6)
                 values.append(dg_ion1(k, pH, U, concentration=1e-6))
