@@ -104,11 +104,25 @@ def dg_surf(k, pH, U):
         print(surfs[k][6], surfs[k][7], surfs[k][8], surfs[0][6], surfs[0][7], surfs[0][8])
     return dg
 
-def dg_ion(k, pH, U, concentration):
+def dg_ion1(k, pH, U, concentration):
     dg = (
         surfs[k][0]
         - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
         + 2 * (dgh -gh) # + 1 * (U + pH * const))
+        + surfs[k][2] * (1 * (U + pH * const))
+        + surfs[k][3] * (-2 * (U + pH * const))
+        + surfs[k][4] * (-1 * (U + pH * const))
+        + surfs[k][5] * (-3 * (U + pH * const))
+        - surfs[k][1] * U
+        + 0.05917 * log10(concentration)
+    )
+    return dg
+
+def dg_ion2(k, pH, U, concentration):
+    dg = (
+        surfs[k][0]
+        - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
+        # + 2 * (dgh -gh) # + 1 * (U + pH * const))
         + surfs[k][2] * (1 * (U + pH * const))
         + surfs[k][3] * (-2 * (U + pH * const))
         + surfs[k][4] * (-1 * (U + pH * const))
@@ -123,20 +137,28 @@ json_path = f'{root}/empty/2_/final_with_calculator.json'
 atoms = read(json_path)
 vac = atoms.get_potential_energy()
 
-df.loc['Fe', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-df.loc['Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-20.300/calmol, +2, 0, 0, 0, 0, 0, 0, 0]
-df.loc['HFeO²⁻', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-90.627/calmol, -2, 1, 1, 0, 0, 0, 0, 0]
-df.loc['Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-2.530/calmol, +3, 0, 0, 0, 0, 0, 0, 0]
-df.loc['FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-55.910/calmol, +2, 1, 1, 0, 0, 0, 0, 0]
-df.loc['Fe(OH)₂⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-106.200/calmol, +1, 2, 2, 0, 0, 0, 0, 0]
-df.loc['FeO', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-58.880/calmol, 0, 0, 1, 0, 0, 0, 0, 0]
-# df.loc['Fe₃O₄', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-242.400/calmol, 0, 0, 0, 0, 0, 0, 0, 0]
-# df.loc['Fe₂O₃', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-177.100/calmol, 0, 0, 0, 0, 0, 0, 0, 0]
-df.loc['Fe(OH)₂', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-115.570/calmol, 0, 2, 2, 0, 0, 0, 0, 0]
-df.loc['Fe(OH)₃', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-166.000/calmol, 0, 3, 3, 0, 0, 0, 0, 0]
-        
-df['E'] += vac + bulk_metal + water * df['#O']
-df['#H'] += 2
+# df.loc['Fe', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+df.loc['S₀+Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-20.300/calmol, +2, 0, 0, 0, 0, 0, 0, 0]
+df.loc['S₀+Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-2.530/calmol, +3, 0, 0, 0, 0, 0, 0, 0]
+df.loc['S₀+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-55.910/calmol, +2, 1, 1, 0, 0, 0, 0, 0]
+df.loc['Sᵥ+Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-20.300/calmol, +2, 0, 0, 0, 0, 0, 0, 0]
+df.loc['Sᵥ+Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-2.530/calmol, +3, 0, 0, 0, 0, 0, 0, 0]
+df.loc['Sᵥ+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-55.910/calmol, +2, 1, 1, 0, 0, 0, 0, 0]
+# df.loc['HFeO²⁻', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-90.627/calmol, -2, 1, 1, 0, 0, 0, 0, 0]
+# df.loc['Fe(OH)₂⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-106.200/calmol, +1, 2, 2, 0, 0, 0, 0, 0]
+# df.loc['FeO', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-58.880/calmol, 0, 0, 1, 0, 0, 0, 0, 0]
+# # df.loc['Fe₃O₄', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-242.400/calmol, 0, 0, 0, 0, 0, 0, 0, 0]
+# # df.loc['Fe₂O₃', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-177.100/calmol, 0, 0, 0, 0, 0, 0, 0, 0]
+# df.loc['Fe(OH)₂', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-115.570/calmol, 0, 2, 2, 0, 0, 0, 0, 0]
+# df.loc['Fe(OH)₃', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-166.000/calmol, 0, 3, 3, 0, 0, 0, 0, 0]
+for index in df.index:
+    if 'S₀' in index:
+        df.loc[index, 'E'] += vac + bulk_metal + water * df.loc[index, '#O']
+        df.loc[index, '#H'] += 2
+    elif 'Sᵥ' in index:
+        df.loc[index, 'E'] += -271.95317 + bulk_metal + water * df.loc[index, '#O']
+        # df['#e'] -= 2
+
 
 df.loc['vac', 'E'] = vac
 df.loc['emtpy', 'E'] = -271.95317
@@ -201,10 +223,13 @@ surfs = [
     # df.loc['ooh-o', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     # df.loc['oohooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     # df.loc['ooh-ooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
-    df.loc['Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
+    df.loc['S₀+Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
+    df.loc['S₀+Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
+    df.loc['S₀+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
+    df.loc['Sᵥ+Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
+    df.loc['Sᵥ+Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
+    df.loc['Sᵥ+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
     # df.loc['HFeO²⁻', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #1
-    df.loc['Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
-    df.loc['FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
     # df.loc['Fe(OH)₂⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #4
     # df.loc['FeO', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
     # # df.loc['Fe₃O₄', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
@@ -223,8 +248,10 @@ for pH in pHrange:
     for U in Urange:
         values = []
         for k, surf in enumerate(surfs):
-            if surf[1] != 0:
-                values.append(dg_ion(k, pH, U, concentration=1e-6))
+            if surf[1] != 0 and surf[2] == 2:
+                values.append(dg_ion1(k, pH, U, concentration=1e-6))
+            elif surf[1] != 0:
+                values.append(dg_ion2(k, pH, U, concentration=1e-6))
             else:
                 values.append(dg_surf(k, pH, U))
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
