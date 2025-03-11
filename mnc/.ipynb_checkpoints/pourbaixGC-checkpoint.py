@@ -108,7 +108,8 @@ def dg_ion(k, pH, U, concentration):
     dg = (
         surfs[k][0]
         - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
-        # + 2 * (dgh -gh) # + 1 * (U + pH * const))
+        # + 2 * (dgh -gh) 
+        + 2 * (U + pH * const))
         + surfs[k][2] * (dgh -gh + 1 * (U + pH * const))
         + surfs[k][3] * (dgo -go-2 * (U + pH * const))
         + surfs[k][4] * (dgoh -goh-1 * (U + pH * const))
@@ -143,7 +144,7 @@ for index in df.index:
         df.loc[index, '#H'] += 2
     elif 'Sᵥ' in index:
         df.loc[index, 'E'] += -271.95317 + bulk_metal + water * df.loc[index, '#O']
-        # df['#e'] -= 2
+        # df.loc[index, '#H'] += 2
 
 df.loc['vac', 'E'] = vac
 df.loc['emtpy', 'E'] = -271.95317
