@@ -217,9 +217,9 @@ plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
 
 plt.plot(pHrange, 1.23-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, 0.95, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$',
-        color='blue', rotation=-14, fontsize=10)
+        color='blue', rotation=-7, fontsize=10)
 plt.plot(pHrange, 0-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, -0.2 , r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$',
-        color='blue', rotation=-14, fontsize=10)
+        color='blue', rotation=-7, fontsize=10)
 
 fig.savefig(f'{root}/figures/pourbaixGC.png', bbox_inches='tight') 
