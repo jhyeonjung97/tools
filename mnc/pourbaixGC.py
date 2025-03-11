@@ -101,7 +101,6 @@ def dg(k, pH, U):
     )
     if k == 0 and surfs[k][2] == 2:
         return dg + bulk_metal
-    print('surf:', dg)
     return dg
 
 def dg_ion(k, pH, U):
@@ -115,7 +114,6 @@ def dg_ion(k, pH, U):
         - surfs[k][1] * U
         # + water * (surfs[k][3] + surfs[k][4] + surfs[k][5]*2)
     )
-    print('ion:', dg)
     return dg
 
 df = pd.DataFrame()
@@ -209,9 +207,12 @@ for pH in pHrange:
         values = []
         for k, surf in enumerate(surfs):
             if 'Fe' in surf:
-                values.append(dg_ion(k, pH, U))
+                dg = dg_ion(k, pH, U)
             else:
-                values.append(dg(k, pH, U))
+                dg = dg(k, pH, U)
+            values.append(dg)
+            if U == 0:
+                print(surf, dg)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
         Uindex+=1
