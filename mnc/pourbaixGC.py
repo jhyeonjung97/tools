@@ -25,8 +25,6 @@ pHrange = np.arange(0, 14.01, 0.01)
 Umin, Umax = -1.0, 3.0 + 0.06 * 14
 Urange = np.arange(Umin, Umax, 0.01)
 
-print(pHrange, Urange)
-
 # gas
 h2 = -6.77149190
 h2o = -14.23091949
@@ -213,8 +211,8 @@ for pH in pHrange:
             else:
                 dg = dg_surf(k, pH, U)
             values.append(dg)
-            if U == 0 and pH == 0:
-                print(surf, dg)
+            if -0.02 < U < 0.02 and -0.02 < pH < 0.02:
+                print(U, pH, surf, dg)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
         Uindex+=1
