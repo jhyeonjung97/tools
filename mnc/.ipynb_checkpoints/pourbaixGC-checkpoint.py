@@ -99,8 +99,8 @@ def dg_surf(k, pH, U):
         + surfs[k][4] * (dgoh -goh - (U + pH * const))
         + surfs[k][5] * (dgooh -gooh - 3 * (U + pH * const))
     )
-    if 0 in (surfs[k][6], surfs[k][7], surfs[0][6], surfs[0][7]):
-        print(surfs[k][6], surfs[k][7], surfs[0][6], surfs[0][7])
+    if all(x != 0 for x in [surfs[k][6], surfs[k][7], surfs[k][8], surfs[0][6], surfs[0][7], surfs[0][8]]):
+        print(surfs[k][6], surfs[k][7], surfs[k][8], surfs[0][6], surfs[0][7], surfs[0][8])
     return dg
 
 def dg_ion(k, pH, U):
