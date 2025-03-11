@@ -249,7 +249,7 @@ for k in range(nsurfs):
         label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
         plt.plot([], [], color=colors[k], linewidth=5, label=label)
         
-plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=cmap, vmin=0, vmax=nsurf-1)
+plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=cmap, vmin=0, vmax=nsurfs-1)
 
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
        fontsize='x-small', handlelength=3, edgecolor='black')
