@@ -249,8 +249,9 @@ for k in range(nsurfs):
         plt.plot([], [], color=colors[k], linewidth=5, label=label)
         
 unique_surfs = np.unique(lowest_surfaces)
-print(unique_surfs)
 selected_colors = [colors[int(k) % len(colors)] for k in unique_surfs]
+print(colors)
+print(selected_colors)
 lowest_cmap = mcolors.ListedColormap(selected_colors)
 plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=lowest_cmap, alpha=0.85, vmin=0, vmax=len(unique_surfs)-1)
 
