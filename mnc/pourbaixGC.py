@@ -20,9 +20,9 @@ main_dirs = ["clean", "mh", "nh", "oh", "o",
 kbt = 0.0256 
 const = kbt * np.log(10)
 kjmol = 96.485
-pHrange = np.arange(0, 14.001, 0.001)
+pHrange = np.arange(0, 14.005, 0.005)
 Umin, Umax = -1.0, 2.5 + 0.06 * 14
-Urange = np.arange(Umin, Umax, 0.001)
+Urange = np.arange(Umin, Umax, 0.005)
 
 # gas
 h2 = -6.77149190
@@ -149,6 +149,8 @@ df.loc['ooh-o', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 0, 1, -0.67
 df.loc['oohooh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 2, -0.6258, 1.0597, 0]
 df.loc['ooh-ooh', ['#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 2, -0.5632, 1.0037, 0]
 df['C'] = df['E']
+df['A'] = 0
+df['B'] = 0
 
 surfs = [
     df.loc['vac', ['E', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
