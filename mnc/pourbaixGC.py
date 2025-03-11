@@ -109,7 +109,7 @@ def dg(k, pH, U):
         + surfs[k][4] * (addOH(pH, U) + dgoh)
         + surfs[k][5] * (addOOH(pH, U) + dgooh)
     )
-    if i == 0 and surfs[k][2] == 2:
+    if k == 0 and surfs[k][2] == 2:
         return dg + bulk_metal
     return dg
 
