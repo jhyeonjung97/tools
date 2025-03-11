@@ -211,7 +211,7 @@ for pH in pHrange:
             else:
                 dg = dg_surf(k, pH, U)
             values.append(dg)
-            if surf[1] != 0:
+            if -0.01 < U < 0.01 and -0.01 < pH < 0.01 and surf[1] != 0:
                 print(surf, dg)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
