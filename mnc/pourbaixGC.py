@@ -63,6 +63,8 @@ dgoh = zpeoh + cvoh - tsoh
 dgooh = zpeooh + cvooh - tsooh
 dgh = dgoh - dgo
 
+water = 2.4583 # the standard Gibbs free energy of formation of water
+
 figure_path = f'{root}/figures/pourbaix'
 metal_path = '~/bin/tools/mnc/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
@@ -96,6 +98,7 @@ def dg(k, pH, U):
         + surfs[k][3] * (dgo -go - 2 * (U + pH * const))
         + surfs[k][4] * (dgoh -goh - (U + pH * const))
         + surfs[k][5] * (dgooh -gooh - 3 * (U + pH * const))
+        - water * (surfs[k][3] + surfs[k][4] + surfs[k][5]*2)
     )
     if k == 0 and surfs[k][2] == 2:
         return dg + bulk_metal
