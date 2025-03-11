@@ -80,7 +80,7 @@ def get_energy(main_dir):
     elif main_dir == 'ooh':
         most_stable_dir = f"{root}/3_OOH/2_Fe/most_stable/relaxed"
     else:
-        most_stable_dir = os.path.join(main_dir, "most_stable")
+        most_stable_dir = f"{root}/pourbaix/1_Fe/{main_dir}/most_stable"
     done_path = os.path.join(most_stable_dir, "DONE")
     json_path = os.path.join(most_stable_dir, "final_with_calculator.json")
     if os.path.isfile(done_path) and os.path.isfile(json_path):
@@ -172,6 +172,7 @@ surfs = [
     df.loc['nh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
     df.loc['oh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #4
     df.loc['oh-oh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #5
+    df.loc['oh-o', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     df.loc['o-oh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #6
     df.loc['o-o', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #7
     df.loc['o', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #8
@@ -182,7 +183,6 @@ surfs = [
     # df.loc['ooh-oh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     # df.loc['ooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
     df.loc['oho', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #10
-    # df.loc['oh-o', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     # df.loc['oo', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     # df.loc['oooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     # df.loc['ooho', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
