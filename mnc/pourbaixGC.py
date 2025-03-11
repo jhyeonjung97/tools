@@ -103,7 +103,7 @@ def dg_surf(k, pH, U):
         print(surfs[k][6], surfs[k][7], surfs[k][8], surfs[0][6], surfs[0][7], surfs[0][8])
     return dg
 
-def dg_ion(k, pH, U):
+def dg_ion(k, pH, U, concentration):
     dg = (
         surfs[k][0]
         - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
@@ -113,6 +113,7 @@ def dg_ion(k, pH, U):
         + surfs[k][4] * (-1 * (U + pH * const))
         + surfs[k][5] * (-3 * (U + pH * const))
         - surfs[k][1] * U
+        - 0.05917 * log10(concentration)
     )
     return dg
 
@@ -220,7 +221,7 @@ for pH in pHrange:
         values = []
         for k, surf in enumerate(surfs):
             if surf[1] != 0:
-                values.append(dg_ion(k, pH, U))
+                values.append(dg_ion(k, pH, U, concentration=1e-6))
             else:
                 values.append(dg_surf(k, pH, U))
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
