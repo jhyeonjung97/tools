@@ -101,7 +101,7 @@ def dg(k, pH, U):
     )
     if k == 0 and surfs[k][2] == 2:
         return dg + bulk_metal
-    print('bulk: dg')
+    print('surf:', dg)
     return dg
 
 def dg_ion(k, pH, U):
@@ -115,7 +115,7 @@ def dg_ion(k, pH, U):
         - surfs[k][1] * U
         # + water * (surfs[k][3] + surfs[k][4] + surfs[k][5]*2)
     )
-    print('ion: dg')
+    print('ion:', dg)
     return dg
 
 df = pd.DataFrame()
