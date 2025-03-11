@@ -195,7 +195,6 @@ df.loc['ooh-o', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 0,
 df.loc['oohooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 2, -0.6258, 1.0597, 0]
 df.loc['ooh-ooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 2, -0.5632, 1.0037, 0]
 df.at['vac', 'E'] += bulk_metal
-df['C'] = df['E']
 for index in df.index:
     if 'S₀' in index:
         df.loc[index, 'E'] += vac + bulk_metal + water * df.loc[index, '#O']
@@ -204,6 +203,7 @@ for index in df.index:
     else:
         df.loc[index, ['A', 'B']] = 0 #####
         # continue
+df['C'] = df['E']
 
 print(df)
 surfs = [
