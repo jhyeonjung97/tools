@@ -245,16 +245,16 @@ ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
-
 cmapName = 'tab20'
-norm = mcolors.Normalize(vmin=0, vmax=nsurfs-1)
-pH, U = np.meshgrid(pHrange, Urange)
-cmap = plt.get_cmap(cmapName, nsurfs)
-plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=cmap, alpha=0.85, vmin=0, vmax=nsurfs-1)
 
-for k in range(nsurfs): 
-    label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
-    plt.plot([], [], color=cmap(norm(k)), linewidth=5, label=label)
+pH, U = np.meshgrid(pHrange, Urange)
+plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=cmapName, alpha=0.85, vmin=0, vmax=nsurfs)
+cmap = plt.get_cmap(cmapName, nsurfs+1)
+
+for k in range(nsurfs):
+    if k in lowest_surfaces:
+        label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
+        plt.plot([], [], color=cmap(k), linewidth=5, label=label)
 
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
        fontsize='x-small', handlelength=3, edgecolor='black')
