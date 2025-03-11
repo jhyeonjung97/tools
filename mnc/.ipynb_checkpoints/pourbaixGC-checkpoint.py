@@ -22,8 +22,8 @@ kbt = 0.0256
 const = kbt * np.log(10)
 kjmol = 96.485
 calmol = 23.061
-tick = 0.05
-pHrange = np.arange(0, 14.1, tick) #####
+tick = 0.01
+pHrange = np.arange(0, 14.1, tick)
 Umin, Umax = -1.0, 3.0
 Urange = np.arange(Umin, Umax + 0.06 * 14, tick)
 
