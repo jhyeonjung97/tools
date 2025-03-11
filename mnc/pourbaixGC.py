@@ -144,9 +144,9 @@ vac = atoms.get_potential_energy()
 df.loc['S₀+Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-20.300/calmol, +2, 0, 0, 0, 0, 0, 0, 0]
 df.loc['S₀+Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-2.530/calmol, +3, 0, 0, 0, 0, 0, 0, 0]
 df.loc['S₀+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-55.910/calmol, +2, 1, 1, 0, 0, 0, 0, 0]
-df.loc['Sᵥ+Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-20.300/calmol, +2, 0, 0, 0, 0, 0, 0, 0]
-df.loc['Sᵥ+Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-2.530/calmol, +3, 0, 0, 0, 0, 0, 0, 0]
-df.loc['Sᵥ+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-55.910/calmol, +2, 1, 1, 0, 0, 0, 0, 0]
+df.loc['Sᵥ+Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-20.300/calmol, +2, 0, 0, 0, 0, 0, 1, 0]
+df.loc['Sᵥ+Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-2.530/calmol, +3, 0, 0, 0, 0, 0, 1, 0]
+df.loc['Sᵥ+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-55.910/calmol, +2, 1, 1, 0, 0, 0, 1, 0]
 # df.loc['HFeO²⁻', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-90.627/calmol, -2, 1, 1, 0, 0, 0, 0, 0]
 # df.loc['Fe(OH)₂⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-106.200/calmol, +1, 2, 2, 0, 0, 0, 0, 0]
 # df.loc['FeO', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-58.880/calmol, 0, 0, 1, 0, 0, 0, 0, 0]
@@ -196,7 +196,14 @@ df.loc['oohooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0
 df.loc['ooh-ooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 2, -0.5632, 1.0037, 0]
 df.at['vac', 'E'] += bulk_metal
 df['C'] = df['E']
-df[['A', 'B']] = 0 #####
+for index in df.index:
+    if 'S₀' in index:
+        df.loc[index, 'E'] += vac + bulk_metal + water * df.loc[index, '#O']
+    elif 'Sᵥ' in index:
+        df.loc[index, 'E'] += -271.95317 + bulk_metal + water * df.loc[index, '#O']
+    else:
+        df.loc[index, ['A', 'B']] = 0 #####
+        # continue
 
 print(df)
 surfs = [
@@ -252,7 +259,7 @@ for pH in pHrange:
     for U in Urange:
         values = []
         for k, surf in enumerate(surfs):
-            if surf[1] != 0 and surf[2] == 2:
+            if surf[1] != 0 and surf[7] == 0:
                 dg = dg_ion1(k, pH, U, concentration=1e-6)
                 values.append(dg_ion1(k, pH, U, concentration=1e-6))
             elif surf[1] != 0:
