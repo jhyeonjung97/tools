@@ -95,35 +95,36 @@ dgh = dgoh - dgo
 dgo2 = dgooh - dgh
 dgh2o = dgoh + dgh
 
-color = ['darkgray', ##
-         'cornflowerblue', ## 
-         'yellowgreen', 
-         'teal', 
-         'tan', ##
-         'salmon', ##
-         'forestgreen', 
-         'lightsteelblue', ##
-         'orange', 
-         'gold', 
-         'pink', ##
-         'plum', ##
-         'navy',
-         'darkgray', ##
-         'cornflowerblue', ## 
-         'yellowgreen', 
-         'teal', 
-         'tan', ##
-         'salmon', ##
-         'forestgreen', 
-         'lightsteelblue', ##
-         'orange', 
-         'gold', 
-         'pink', ##
-         'plum', ##
-         'navy',
-         'darkgray', ##
-         'cornflowerblue', ## 
-        ]
+color = [
+    'darkgray', ##
+     'cornflowerblue', ## 
+     'yellowgreen', 
+     'teal', 
+     'tan', ##
+     'salmon', ##
+     'forestgreen', 
+     'lightsteelblue', ##
+     'orange', 
+     'gold', 
+     'pink', ##
+     'plum', ##
+     'navy',
+     'darkgray', ##
+     'cornflowerblue', ## 
+     'yellowgreen', 
+     'teal', 
+     'tan', ##
+     'salmon', ##
+     'forestgreen', 
+     'lightsteelblue', ##
+     'orange', 
+     'gold', 
+     'pink', ##
+     'plum', ##
+     'navy',
+     'darkgray', ##
+     'cornflowerblue', ## 
+]
 pH2 = np.arange(0, 14.01, 0.01)
 
 figure_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/pourbaix'
