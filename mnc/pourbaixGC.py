@@ -105,7 +105,22 @@ def dg_surf(k, pH, U):
         print(surfs[k][6], surfs[k][7], surfs[k][8], surfs[0][6], surfs[0][7], surfs[0][8])
     return dg
 
-def dg_ion(k, pH, U, concentration):
+def dg_ion1(k, pH, U, concentration):
+    dg = (
+        surfs[k][0]
+        - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
+        # + 2 * (dgh -gh) 
+        - 2 * (U + pH * const)
+        + surfs[k][2] * (1 * (U + pH * const))
+        + surfs[k][3] * (-2 * (U + pH * const))
+        + surfs[k][4] * (-1 * (U + pH * const))
+        + surfs[k][5] * (-3 * (U + pH * const))
+        - surfs[k][1] * U
+        + 0.05917 * log10(concentration)
+    )
+    return dg
+
+def dg_ion2(k, pH, U, concentration):
     dg = (
         surfs[k][0]
         - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
@@ -142,7 +157,7 @@ df.loc['Sᵥ+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] 
 for index in df.index:
     if 'S₀' in index:
         df.loc[index, 'E'] += vac + bulk_metal + water * df.loc[index, '#O']
-        df.loc[index, '#H'] += 2
+        # df.loc[index, '#H'] += 2
     elif 'Sᵥ' in index:
         df.loc[index, 'E'] += -271.95317 + bulk_metal + water * df.loc[index, '#O']
         # df.loc[index, '#H'] += 2
@@ -239,9 +254,12 @@ for pH in pHrange:
     for U in Urange:
         values = []
         for k, surf in enumerate(surfs):
-            if surf[1] != 0:
-                dg = dg_ion(k, pH, U, concentration=1e-6)
-                values.append(dg_ion(k, pH, U, concentration=1e-6))
+            if surf[1] != 0 and surf[2] == 2:
+                dg = dg_ion1(k, pH, U, concentration=1e-6)
+                values.append(dg_ion1(k, pH, U, concentration=1e-6))
+            elif surf[1] != 0:
+                dg = dg_ion2(k, pH, U, concentration=1e-6)
+                values.append(dg_ion2(k, pH, U, concentration=1e-6))
             else:
                 dg = dg_surf(k, pH, U)
                 values.append(dg_surf(k, pH, U))
