@@ -254,7 +254,7 @@ selected_colors = [colors[int(k) % len(colors)] for k in unique_surfs]
 lowest_cmap = mcolors.ListedColormap(selected_colors)
 
 selected_surfaces = []
-for i in lowest_surfaces.flatten(order='F'):
+for i in lowest_surfaces.flatten(order='C'):
     selected_surfaces.append(i)
 unique_surfaces, indices = np.unique(selected_surfaces, return_index=True)
 unique_surfaces = unique_surfaces[np.argsort(indices)]
