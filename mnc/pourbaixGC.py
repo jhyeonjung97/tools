@@ -248,9 +248,7 @@ for k in range(nsurfs):
     if k in lowest_surfaces:
         label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
         plt.plot([], [], color=colors[k], linewidth=5, label=label)
-
-
-
+        
 unique_surfs = np.unique(lowest_surfaces)
 selected_colors = [colors[int(k) % len(colors)] for k in unique_surfs]  
 lowest_cmap = mcolors.ListedColormap(selected_colors)
@@ -259,10 +257,17 @@ print(surfs)
 print(lowest_surfaces)
 print(unique_surfs)
 
-plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=cmap, vmin=0, vmax=nsurfs-1)
+selected_surfaces = []
+for i in lowest_surfaces.flatten():
+    selected_surfaces.append(i)
+unique_surfaces = np.unique(selected_surfaces)
+selected_colors = [colors[int(k) % len(colors)] for k in unique_surfaces]  
+lowest_cmap = mcolors.ListedColormap(selected_colors)
 
-# plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
-#        fontsize='x-small', handlelength=3, edgecolor='black')
+plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=lowest_cmap, vmin=0, vmax=nsurfs-1)
+
+plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
+       fontsize='x-small', handlelength=3, edgecolor='black')
 
 plt.plot(pHrange, 1.23-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, 1.00, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$',
