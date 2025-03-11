@@ -85,18 +85,6 @@ def get_energy(main_dir):
         atoms = read(json_path)
         return atoms.get_potential_energy()
     return None
-    
-def addH(pH, U):
-    return -gh + 1 * (U + pH * const)
-    
-def addO(pH, U):
-    return -go - 2 * (U + pH * const)
-
-def addOH(pH, U):
-    return -goh - (U + pH * const)
-
-def addOOH(pH, U):
-    return -gooh - 3 * (U + pH * const)
 
 def dg(k, pH, U):
     if surfs[k][0] is None:
@@ -104,10 +92,10 @@ def dg(k, pH, U):
     dg = (
         (surfs[k][6]*(U**2) + surfs[k][7]*U + surfs[k][8])
         - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
-        + surfs[k][2] * (addH(pH, U) + dgh)
-        + surfs[k][3] * (addO(pH, U) + dgo)
-        + surfs[k][4] * (addOH(pH, U) + dgoh)
-        + surfs[k][5] * (addOOH(pH, U) + dgooh)
+        + surfs[k][2] * (dgh -gh + 1 * (U + pH * const))
+        + surfs[k][3] * (dgo -go - 2 * (U + pH * const))
+        + surfs[k][4] * (dgoh -goh - (U + pH * const))
+        + surfs[k][5] * (dgooh -gooh - 3 * (U + pH * const))
     )
     if k == 0 and surfs[k][2] == 2:
         return dg + bulk_metal
@@ -117,10 +105,10 @@ def dg_ion(k, pH, U):
     dg = (
         ions[k][0]
         - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
-        + ions[k][2] * addH(pH, U)
-        + ions[k][3] * addO(pH, U)
-        + ions[k][4] * addOH(pH, U)
-        + ions[k][5] * addOOH(pH, U)
+        + ions[k][2] * (1 * (U + pH * const))
+        + ions[k][3] * (-2 * (U + pH * const))
+        + ions[k][4] * (-1 * (U + pH * const))
+        + ions[k][5] * (-3 * (U + pH * const))
         - ions[k][1] * U
     )
     return dg
