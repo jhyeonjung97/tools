@@ -21,9 +21,9 @@ kbt = 0.0256
 const = kbt * np.log(10)
 kjmol = 96.485
 calmol = 23.061
-pHrange = np.arange(0, 14.01, 0.01)
+pHrange = np.arange(0, 14.1, 0.1)
 Umin, Umax = -1.0, 2.5 + 0.06 * 14
-Urange = np.arange(Umin, Umax, 0.01)
+Urange = np.arange(Umin, Umax, 0.1)
 
 # gas
 h2 = -6.77149190
