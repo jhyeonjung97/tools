@@ -124,7 +124,7 @@ df.loc['HFeO²⁻', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-9
 df.loc['Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-2.530/calmol, +3, 0, 0, 0, 0, 0, 0, 0]
 df.loc['FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-55.910/calmol, +2, 1, 1, 0, 0, 0, 0, 0]
 df.loc['Fe(OH)₂⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-106.200/calmol, +1, 2, 2, 0, 0, 0, 0, 0]
-df['E'] += vac
+df['E'] += vac + bulk_metal
 df['#H'] += 2
 
 df.loc['vac', 'E'] = vac
