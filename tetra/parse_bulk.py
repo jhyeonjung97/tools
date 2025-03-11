@@ -181,9 +181,9 @@ def plot_by_metal_row(df, save_path):
             print(f"Figure saved as {png_name}")
             
 def plot_by_coordination(df, save_path):        
-    for coord in coords.index:
-        # for coord in coords.index:
-        for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS']:            
+    # for coord in coords.index:
+    for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS']:            
+        for col in columns.index:
             marker=coords.loc[coord, 'marker']
             base_color = coords.loc[coord, 'color']
             cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', ['white', base_color])
