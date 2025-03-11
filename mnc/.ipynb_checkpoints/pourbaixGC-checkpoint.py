@@ -254,6 +254,7 @@ colors = [
 cmap = mcolors.ListedColormap(colors)
 norm = mcolors.Normalize(vmin=0, vmax=nsurfs-1)
 
+print(cmap)
 pH, U = np.meshgrid(pHrange, Urange)
 plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=cmap, alpha=0.85, vmin=0, vmax=nsurfs)
 
