@@ -198,7 +198,7 @@ fig = plt.figure(figsize=(8, 6), dpi=100)
 ax = fig.add_axes([0.1, 0.1, 0.6, 0.6])
 
 # Set Axes Limits and Labels
-ax.axis([0, 14, Emin, Emax])
+ax.axis([0, 14, Umin, Umax])
 ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
