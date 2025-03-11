@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 from ase.io import read
 import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
 from matplotlib.ticker import FormatStrFormatter
 
 root = '/pscratch/sd/j/jiuy97/6_MNC'
@@ -246,23 +245,20 @@ ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
 cmapName = 'RdYlBu'
-cmap = plt.get_cmap(cmapName, nsurfs)  # nsurfs 개수만큼 색상 생성
-norm = mcolors.Normalize(vmin=0, vmax=nsurfs-1)  # 정규화
-# pH와 U 그리드 생성
+cmap = plt.get_cmap(cmapName, nsurfs)
+norm = mcolors.Normalize(vmin=0, vmax=nsurfs-1)
+
 pH, U = np.meshgrid(pHrange, Urange)
 
-# pcolormesh 생성
-plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=cmap, alpha=0.85, vmin=0, vmax=nsurfs-1)
+for k in range(nsurfs):
+    if k in lowest_surfaces:
+        label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
+        plt.plot([], [], color=cmap(norm(k)), linewidth=5, label=label)
 
-
-# ✅ lowest_surfaces에서 실제 사용된 값들만 가져옴 (범례와 일치하도록)
-unique_surfs = np.unique(lowest_surfaces)  # 실제 사용된 표면 인덱스 찾기
-
-# 범례 (Legend) 추가
-for k in unique_surfs:  # lowest_surfaces에서 실제 사용된 값만 순회
-    k = int(k)  # 정수 변환 (numpy.float64 방지)
-    label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
-    plt.plot([], [], color=cmap(norm(k)), linewidth=5, label=label)  # 🔥 Normalize 적용하여 색상 일치
+unique_surfs = np.unique(lowest_surfaces)
+selected_colors = [cmap(int(k) / (nsurfs-1)) for k in unique_surfs]
+lowest_cmap = mcolors.ListedColormap(selected_colors)
+plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=lowest_cmap, alpha=0.85, vmin=0, vmax=len(unique_surfs)-1)
 
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
        fontsize='x-small', handlelength=3, edgecolor='black')
