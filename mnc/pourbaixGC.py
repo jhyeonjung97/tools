@@ -25,6 +25,8 @@ pHrange = np.arange(0, 14.01, 0.01)
 Umin, Umax = -1.0, 3.0 + 0.06 * 14
 Urange = np.arange(Umin, Umax, 0.01)
 
+print(pHrange, Urange)
+
 # gas
 h2 = -6.77149190
 h2o = -14.23091949
@@ -112,7 +114,7 @@ def dg_ion(k, pH, U):
         + surfs[k][4] * (-1 * (U + pH * const))
         + surfs[k][5] * (-3 * (U + pH * const))
         - surfs[k][1] * U
-        # + water * (surfs[k][3] + surfs[k][4] + surfs[k][5]*2)
+        + water * (surfs[k][3] + surfs[k][4] + surfs[k][5]*2)
     )
     return dg
 
