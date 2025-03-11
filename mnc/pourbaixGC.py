@@ -201,7 +201,7 @@ for k in range(nsurfs):
     label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][1], surfs[k][2], surfs[k][3], surfs[k][4])
     plt.plot([], [], color=cmap(k), linewidth=5, label=label)
 
-legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
+plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
        fontsize='x-small', handlelength=3, edgecolor='black')
 
 plt.plot(pHrange, 1.23-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
