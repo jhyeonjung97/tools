@@ -208,7 +208,7 @@ for pH in pHrange:
         Uindex+=1
     pHindex+=1
     
-print(lowest_surfaces)
+print(sorted_values)
 
 ions = [
     df.loc['Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
