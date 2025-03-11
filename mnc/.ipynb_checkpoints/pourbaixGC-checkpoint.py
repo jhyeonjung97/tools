@@ -216,7 +216,7 @@ plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
        fontsize='x-small', handlelength=3, edgecolor='black')
 
 plt.plot(pHrange, 1.23-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
-ax.text(0.2, 0.90, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$',
+ax.text(0.2, 1.00, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$',
         color='blue', rotation=-8, fontsize=10)
 plt.plot(pHrange, 0-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, -0.15 , r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$',
