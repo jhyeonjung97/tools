@@ -250,9 +250,25 @@ pH, U = np.meshgrid(pHrange, Urange)
 plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', norm=None, cmap=cmapName, alpha=0.85, vmin=0, vmax=nsurfs)
 cmap = plt.get_cmap(cmapName, nsurfs+1)
 
+colors = ['darkgray', ##
+         'cornflowerblue', ## 
+         'yellowgreen', 
+         'teal', 
+         'tan', ##
+         'salmon', ##
+         'forestgreen', 
+         'lightsteelblue', ##
+         'orange', 
+         'gold', 
+         'pink', ##
+         'plum', ##
+         'navy']
+
 for k in range(nsurfs): 
+    # color=cmap(k)
+    color=colors[k]
     label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
-    plt.plot([], [], color=cmap(k), linewidth=5, label=label)
+    plt.plot([], [], color=color, linewidth=5, label=label)
 
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
        fontsize='x-small', handlelength=3, edgecolor='black')
