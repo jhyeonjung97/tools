@@ -98,7 +98,6 @@ def dg(k, pH, U):
         + surfs[k][3] * (dgo -go - 2 * (U + pH * const))
         + surfs[k][4] * (dgoh -goh - (U + pH * const))
         + surfs[k][5] * (dgooh -gooh - 3 * (U + pH * const))
-        # - water * (surfs[k][3] + surfs[k][4] + surfs[k][5]*2)
     )
     if k == 0 and surfs[k][2] == 2:
         return dg + bulk_metal
@@ -113,6 +112,8 @@ def dg_ion(k, pH, U):
         + surfs[k][4] * (-1 * (U + pH * const))
         + surfs[k][5] * (-3 * (U + pH * const))
         + surfs[k][1] * U
+        # - water * (surfs[k][3] + surfs[k][4] + surfs[k][5]*2)
+
     )
     return dg
 
@@ -230,7 +231,7 @@ plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', norm=None, cmap=cmapName,
 cmap = plt.get_cmap(cmapName, nsurfs+1)
 
 for k in range(nsurfs): 
-    label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][1], surfs[k][2], surfs[k][3], surfs[k][4])
+    label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
     plt.plot([], [], color=cmap(k), linewidth=5, label=label)
 
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
