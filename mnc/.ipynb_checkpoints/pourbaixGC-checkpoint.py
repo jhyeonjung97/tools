@@ -177,7 +177,7 @@ surfs = [
 ]
 surfs = [surf for surf in surfs if not any(pd.isna(x) for x in surf)]
 nsurfs = len(surfs)
-lowest_surfaces = np.ones((len(E),len(pH)))
+lowest_surfaces = np.ones((len(Urange),len(pHrange)))
 
 # Loop find the coverage with the lowest dG at each value of pH, voltage
 pHindex = 0
