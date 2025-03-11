@@ -111,7 +111,6 @@ def dg_ion(k, pH, U):
         + surfs[k][4] * (-1 * (U + pH * const))
         + surfs[k][5] * (-3 * (U + pH * const))
         - surfs[k][1] * U
-        + water * (surfs[k][3] + surfs[k][4] + surfs[k][5]*2)
     )
     return dg
 
@@ -120,12 +119,19 @@ json_path = f'{root}/empty/2_/final_with_calculator.json'
 atoms = read(json_path)
 vac = atoms.get_potential_energy()
 
+df.loc['Fe', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 df.loc['Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-20.300/calmol, +2, 0, 0, 0, 0, 0, 0, 0]
 df.loc['HFeO²⁻', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-90.627/calmol, -2, 1, 1, 0, 0, 0, 0, 0]
 df.loc['Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-2.530/calmol, +3, 0, 0, 0, 0, 0, 0, 0]
 df.loc['FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-55.910/calmol, +2, 1, 1, 0, 0, 0, 0, 0]
 df.loc['Fe(OH)₂⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-106.200/calmol, +1, 2, 2, 0, 0, 0, 0, 0]
-df['E'] += vac + bulk_metal
+df.loc['FeO', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-58.880/calmol, 0, 0, 1, 0, 0, 0, 0, 0]
+# df.loc['Fe₃O₄', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-242.400/calmol, 0, 0, 0, 0, 0, 0, 0, 0]
+# df.loc['Fe₂O₃', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-177.100/calmol, 0, 0, 0, 0, 0, 0, 0, 0]
+df.loc['Fe(OH)₂', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-115.570/calmol, 0, 2, 2, 0, 0, 0, 0, 0]
+df.loc['Fe(OH)₃', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-166.000/calmol, 0, 3, 3, 0, 0, 0, 0, 0]
+        
+df['E'] += vac + bulk_metal + water * df['#O']
 df['#H'] += 2
 
 df.loc['vac', 'E'] = vac
@@ -163,6 +169,8 @@ df.loc['ooh-ooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 
 df.at['vac', 'E'] += bulk_metal
 df['C'] = df['E']
 df[['A', 'B']] = 0
+
+print(df)
 
 surfs = [
     df.loc['vac', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
