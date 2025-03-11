@@ -245,17 +245,13 @@ colors = plt.cm.tab20.colors
 cmap = mcolors.ListedColormap(colors)
 
 for k in range(nsurfs):
-    # if k in lowest_surfaces:
-    label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
-    plt.plot([], [], color=colors[k], linewidth=5, label=label)
+    if k in lowest_surfaces:
+        label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
+        plt.plot([], [], color=colors[k], linewidth=5, label=label)
         
 unique_surfs = np.unique(lowest_surfaces)
 selected_colors = [colors[int(k) % len(colors)] for k in unique_surfs]  
 lowest_cmap = mcolors.ListedColormap(selected_colors)
-
-print(surfs)
-print(lowest_surfaces)
-print(unique_surfs)
 
 selected_surfaces = []
 for i in lowest_surfaces.flatten():
@@ -263,6 +259,11 @@ for i in lowest_surfaces.flatten():
 unique_surfaces = np.unique(selected_surfaces)
 selected_colors = [colors[int(k) % len(colors)] for k in unique_surfaces]  
 lowest_cmap = mcolors.ListedColormap(selected_colors)
+
+print(surfs)
+print(lowest_surfaces)
+print(selected_surfaces)
+print(unique_surfaces)
 
 plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=lowest_cmap, vmin=0, vmax=nsurfs-1)
 
