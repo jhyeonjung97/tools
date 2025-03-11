@@ -203,8 +203,8 @@ for pH in pHrange:
         values = []
         for k in range(nsurfs):
             values.append(dg(k, pH, U))
-            print(values)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
+        print(sorted_values)
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
         Uindex+=1
     pHindex+=1
@@ -226,9 +226,9 @@ for pH in pHrange:
         values = []
         for k in range(nions):
             values.append(dg_ion(k, pH, U))
-            print(values)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
+        # print(sorted_values)
         Uindex+=1
     pHindex+=1
     
