@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from ase.io import read
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 from matplotlib.ticker import FormatStrFormatter
 
 root = '/pscratch/sd/j/jiuy97/6_MNC'
