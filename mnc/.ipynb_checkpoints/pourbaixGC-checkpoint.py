@@ -245,10 +245,8 @@ ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
-cmapName = 'RdYlBu'
 pH, U = np.meshgrid(pHrange, Urange)
-
-plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=lowest_cmap, alpha=0.85, vmin=0, vmax=len(unique_surfs)-1)
+plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap='RdYlBu', alpha=0.85, vmin=0, vmax=nsurfs-1)
 
 # for k in range(nsurfs):
 #     if k in lowest_surfaces:
