@@ -139,6 +139,7 @@ df['E'] += vac + bulk_metal + water * df['#O']
 df['#H'] += 2
 
 df.loc['vac', 'E'] = vac
+df.loc['emtpy', 'E'] = -271.95317
 for main_dir in main_dirs:
     min_e0 = get_energy(main_dir)
     if min_e0 is None:
@@ -147,6 +148,7 @@ for main_dir in main_dirs:
         df.loc[main_dir, 'E'] = min_e0
 
 df.loc['vac', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 2, 0, 0, 0, -0.3342, -0.1079, 0]
+df.loc['empty', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 0, -0.3442, -0.1279, 0]
 df.loc['clean', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 0, -0.3660, 0.0665, 0]
 df.loc['mh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 0, 0, 0, -0.3714, 0.2173, 0]
 df.loc['nh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 1, 0, 0, 0, -0.3438, -0.3362, 0]
@@ -201,8 +203,8 @@ surfs = [
     # df.loc['ooh-ooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     df.loc['Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
     # df.loc['HFeO²⁻', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #1
-    # df.loc['Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
-    # df.loc['FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
+    df.loc['Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
+    df.loc['FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
     # df.loc['Fe(OH)₂⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #4
     # df.loc['FeO', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
     # # df.loc['Fe₃O₄', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
