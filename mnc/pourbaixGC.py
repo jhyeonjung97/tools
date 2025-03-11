@@ -224,7 +224,7 @@ surfs = [
 ]
 surfs = [surf for surf in surfs if not any(pd.isna(x) for x in surf)]
 nsurfs = len(surfs)
-
+print(nsurfs)
 lowest_surfaces = np.ones((len(Urange),len(pHrange)))*-1
     
 pHindex = 0
