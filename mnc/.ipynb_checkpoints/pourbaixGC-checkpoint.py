@@ -110,7 +110,7 @@ def dg_ion1(k, pH, U, concentration):
         surfs[k][0]
         - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
         + 2 * (dgh -gh) 
-        - 2 * (U + pH * const)
+        # - 2 * (U + pH * const)
         + surfs[k][2] * (1 * (U + pH * const))
         + surfs[k][3] * (-2 * (U + pH * const))
         + surfs[k][4] * (-1 * (U + pH * const))
