@@ -240,29 +240,16 @@ ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
 pH, U = np.meshgrid(pHrange, Urange)
-colors = plt.cm.tab20.colors
+colors = plt.cm.tab20.colors[:nsurfs]
 cmap = mcolors.ListedColormap(colors)
+bounds = np.arange(nsurfs + 1) - 0.5  # discrete 구분을 위해 설정
+norm = mcolors.BoundaryNorm(bounds, cmap.N)
 
 for k in range(nsurfs):
     label = r"S$_{%i}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][2], surfs[k][3], surfs[k][4], surfs[k][5])
     plt.plot([], [], color=colors[k], linewidth=5, label=label)
     
-unique_surfaces = np.unique(lowest_surfaces)
-# selected_surfaces = []
-# for i in lowest_surfaces.flatten(order='C'):
-#     selected_surfaces.append(i)
-# unique_surfaces, indices = np.unique(selected_surfaces, return_index=True)
-# unique_surfaces = unique_surfaces[np.argsort(indices)]
-# selected_colors = [colors[int(k) % len(colors)] for k in unique_surfaces]  
-# lowest_cmap = mcolors.ListedColormap(selected_colors)
-
-# print(surfs)
-# print(surfs)
-# print(lowest_surfaces)
-# # print(selected_surfaces)
-# print(unique_surfaces)
-
-plt.pcolormesh(pH, U, lowest_surfaces, cmap=cmap)
+plt.pcolormesh(pH, U, lowest_surfaces, cmap=cmap, norm=norm)
 
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
        fontsize='x-small', handlelength=3, edgecolor='black')
