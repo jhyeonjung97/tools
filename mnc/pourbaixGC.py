@@ -250,6 +250,7 @@ cmap = mcolors.ListedColormap(colors)
 #         plt.plot([], [], color=colors[k], linewidth=5, label=label)
 
 print(surfs)
+print(lowest_surfaces)
 plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', cmap=cmap, vmin=0, vmax=nsurfs-1)
 
 # plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
