@@ -88,7 +88,7 @@ def get_energy(main_dir):
         return atoms.get_potential_energy()
     return None
 
-def dg(k, pH, U):
+def dg_surf(k, pH, U):
     if surfs[k][0] is None:
         return None
     dg = (
@@ -209,7 +209,7 @@ for pH in pHrange:
             if 'Fe' in surf:
                 dg = dg_ion(k, pH, U)
             else:
-                dg = dg(k, pH, U)
+                dg = dg_surf(k, pH, U)
             values.append(dg)
             if U == 0 and pH == 0:
                 print(surf, dg)
