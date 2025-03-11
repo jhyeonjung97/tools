@@ -21,9 +21,9 @@ kbt = 0.0256
 const = kbt * np.log(10)
 kjmol = 96.485
 calmol = 23.061
-pHrange = np.arange(0, 14.01, 0.01)
+pHrange = np.arange(0, 14.1, 0.05)
 Umin, Umax = -1.0, 3.0
-Urange = np.arange(Umin, Umax + 0.06 * 14, 0.01)
+Urange = np.arange(Umin, Umax + 0.06 * 14, 0.05)
 
 # gas
 h2 = -6.77149190
@@ -245,11 +245,6 @@ ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
-cmapName = 'RdYlBu'
-pH, U = np.meshgrid(pHrange, Urange)
-plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', norm=None, cmap=cmapName, alpha=0.85, vmin=0, vmax=nsurfs)
-cmap = plt.get_cmap(cmapName, nsurfs+1)
-
 colors = ['darkgray', ##
          'cornflowerblue', ## 
          'yellowgreen', 
@@ -263,6 +258,12 @@ colors = ['darkgray', ##
          'pink', ##
          'plum', ##
          'navy']
+
+cmapName = 'RdYlBu'
+pH, U = np.meshgrid(pHrange, Urange)
+# plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', norm=None, cmap=cmapName, alpha=0.85, vmin=0, vmax=nsurfs)
+plt.pcolormesh(pH, U, lowest_surfaces, shading='auto', norm=None, c=colors, alpha=0.85, vmin=0, vmax=nsurfs)
+cmap = plt.get_cmap(cmapName, nsurfs+1)
 
 for k in range(nsurfs): 
     # color=cmap(k)
