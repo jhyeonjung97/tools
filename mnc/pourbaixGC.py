@@ -99,8 +99,6 @@ def dg_surf(k, pH, U):
         + surfs[k][4] * (dgoh -goh - (U + pH * const))
         + surfs[k][5] * (dgooh -gooh - 3 * (U + pH * const))
     )
-    if k == 0.01 and surfs[k][2] == 0.01:
-        return dg + bulk_metal
     return dg
 
 def dg_ion(k, pH, U):
@@ -112,7 +110,7 @@ def dg_ion(k, pH, U):
         + surfs[k][4] * (-1 * (U + pH * const))
         + surfs[k][5] * (-3 * (U + pH * const))
         - surfs[k][1] * U
-        - water * (surfs[k][3] + surfs[k][4] + surfs[k][5]*2)
+        + water * (surfs[k][3] + surfs[k][4] + surfs[k][5]*2)
     )
     return dg
 
@@ -161,6 +159,7 @@ df.loc['o-ooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 0,
 df.loc['ooh-o', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 1, 0, 1, -0.6788, 1.2123, 0]
 df.loc['oohooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 2, -0.6258, 1.0597, 0]
 df.loc['ooh-ooh', ['#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [0, 0, 0, 0, 2, -0.5632, 1.0037, 0]
+df.at['vac', 'E'] += bulk_metal
 df['C'] = df['E']
 df[['A', 'B']] = 0
 
@@ -211,7 +210,7 @@ for pH in pHrange:
             else:
                 dg = dg_surf(k, pH, U)
             values.append(dg)
-            if -0.01 < U < 0.01 and -0.01 < pH < 0.01:
+            if U == 0 and pH == 0:
                 print(surf, dg)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
