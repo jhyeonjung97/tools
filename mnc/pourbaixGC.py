@@ -22,9 +22,10 @@ kbt = 0.0256
 const = kbt * np.log(10)
 kjmol = 96.485
 calmol = 23.061
-pHrange = np.arange(0, 14.1, 0.05) #####
+tick = 0.05
+pHrange = np.arange(0, 14.1, tick) #####
 Umin, Umax = -1.0, 3.0
-Urange = np.arange(Umin, Umax + 0.06 * 14, 0.05)
+Urange = np.arange(Umin, Umax + 0.06 * 14, tick)
 
 # gas
 h2 = -6.77149190
@@ -239,9 +240,13 @@ for pH in pHrange:
         values = []
         for k, surf in enumerate(surfs):
             if surf[1] != 0:
+                dg = dg_ion(k, pH, U, concentration=1e-6)
                 values.append(dg_ion(k, pH, U, concentration=1e-6))
             else:
+                dg = dg_surf(k, pH, U)
                 values.append(dg_surf(k, pH, U))
+        if -tick < U < tick and -tick < pH < tick:
+            print(surf, dg)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
         Uindex+=1
