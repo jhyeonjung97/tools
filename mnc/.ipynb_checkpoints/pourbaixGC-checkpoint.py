@@ -154,11 +154,11 @@ df.loc['Sᵥ+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] 
 # # df.loc['Fe₂O₃', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-177.100/calmol, 0, 0, 0, 0, 0, 0, 0, 0]
 # df.loc['Fe(OH)₂', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-115.570/calmol, 0, 2, 2, 0, 0, 0, 0, 0]
 # df.loc['Fe(OH)₃', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']] = [-166.000/calmol, 0, 3, 3, 0, 0, 0, 0, 0]
-for index in df.index:
-    if 'S₀' in index:
-        df.loc[index, 'E'] += vac + bulk_metal + water * df.loc[index, '#O']
-    elif 'Sᵥ' in index:
-        df.loc[index, 'E'] += -271.95317 + bulk_metal + water * df.loc[index, '#O']
+# for index in df.index:
+#     if 'S₀' in index:
+#         df.loc[index, 'E'] += vac + bulk_metal + water * df.loc[index, '#O']
+#     elif 'Sᵥ' in index:
+#         df.loc[index, 'E'] += -271.95317 + bulk_metal + water * df.loc[index, '#O']
 
 df.loc['vac', 'E'] = vac
 df.loc['emtpy', 'E'] = -271.95317
