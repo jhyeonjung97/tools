@@ -183,6 +183,7 @@ df.at['vac', 'E'] += bulk_metal
 df['C'] = df['E']
 df[['A', 'B']] = 0
 
+print(df)
 surfs = [
     # df.loc['vac', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
     # df.loc['clean', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
