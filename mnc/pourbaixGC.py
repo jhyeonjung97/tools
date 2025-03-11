@@ -103,7 +103,7 @@ def dg(k, pH, U):
         return None
     dg = (
         (surfs[k][6]*(U**2) + surfs[k][7]*U + surfs[k][8])
-        - (surfs[0, 6]*(U**2) + surfs[0, 7]*U + surfs[0, 8])
+        - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
         + surfs[k][2] * (addH(pH, U) + dgh)
         + surfs[k][3] * (addO(pH, U) + dgo)
         + surfs[k][4] * (addOH(pH, U) + dgoh)
@@ -116,7 +116,7 @@ def dg(k, pH, U):
 def dg_ion(k, pH, U):
     dg = (
         ions[k][0]
-        - (surfs[0, 6]*(U**2) + surfs[0, 7]*U + surfs[0, 8])
+        - (surfs[0][6]*(U**2) + surfs[0][7]*U + surfs[0][8])
         + ions[k][2] * addH(pH, U)
         + ions[k][3] * addO(pH, U)
         + ions[k][4] * addOH(pH, U)
