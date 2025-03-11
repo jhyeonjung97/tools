@@ -3,6 +3,7 @@ import re
 import glob
 import numpy as np
 import pandas as pd
+from math import log10
 from ase.io import read
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
