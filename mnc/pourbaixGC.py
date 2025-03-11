@@ -101,7 +101,7 @@ def dg(i, pH, U):
     if surfs[i][0] is None:
         return None
     dg = (
-        (surfs[i][5]*(y**2) + surfs[i][6]*y + surfs[i][7])
+        (surfs[i][5]*(U**2) + surfs[i][6]*U + surfs[i][7])
         - (surfs[0][5]*(U**2) + surfs[0][6]*U + surfs[0][7])
         + surfs[i][1] * addH(pH, U) 
         + surfs[i][2] * addO(pH, U) 
