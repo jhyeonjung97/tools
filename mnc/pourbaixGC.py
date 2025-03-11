@@ -67,7 +67,7 @@ metal_path = '~/bin/tools/mnc/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 bulk_metal = metal_df.at['Fe', 'energy']
 
-def get_energy(main_dir, sub_dirs):
+def get_energy(main_dir):
     if main_dir == 'clean':
         most_stable_dir = f"{root}/0_clean/3d/6_Fe/most_stable/relaxed"
     elif main_dir == 'o':
@@ -118,7 +118,7 @@ atoms = read(json_path)
 df.loc['vac', 'E'] = atoms.get_potential_energy()
 
 for main_dir in main_dirs:
-    min_e0 = get_energy(main_dir, sub_dirs)
+    min_e0 = get_energy(main_dir)
     if min_e0 is None:
         df.loc[main_dir, 'E'] = np.nan
     else:
@@ -211,4 +211,4 @@ plot(pHrange, 0-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, -0.2 , r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$',
         color='blue', rotation=-14, fontsize=10)
 
-fig.savefig('pourbaixGC.png', bbox_inches='tight') 
+fig.savefig(f'{root}/figures/pourbaixGC.png', bbox_inches='tight') 
