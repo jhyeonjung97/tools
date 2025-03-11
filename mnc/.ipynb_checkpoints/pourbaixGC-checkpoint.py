@@ -217,4 +217,10 @@ plt.plot(pHrange, 0-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, -0.2 , r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$',
         color='blue', rotation=-14, fontsize=10)
 
+# Set Axes Limits and Labels
+ax.axis([0, 14, Emin, Emax])
+ax.set_xlabel('pH', labelpad=0)
+ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
+ax.tick_params(right=True, direction="in")
+
 fig.savefig(f'{root}/figures/pourbaixGC.png', bbox_inches='tight') 
