@@ -206,7 +206,7 @@ for pH in pHrange:
     for U in Urange:
         values = []
         for k, surf in enumerate(surfs):
-            if 'Fe' in surf.index:
+            if 'Fe' in surf:
                 values.append(dg_ion(k, pH, U))
             else:
                 values.append(dg(k, pH, U))
