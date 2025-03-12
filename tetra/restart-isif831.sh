@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for dir in /pscratch/sd/j/jiuy97/7_V_bulk/7_Pyramidal_LT/*/*_* /pscratch/sd/j/jiuy97/7_V_bulk/8_Tetrahedral_AQ/*/*_* /pscratch/sd/j/jiuy97/7_V_bulk/9_SquarePlanar_AU/*/*_*
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/7_Pyramidal_LT/*/*_*
 do
     cd $dir
     IFS='/' read -r -a path <<< $dir
