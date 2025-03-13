@@ -67,9 +67,10 @@ dgoh = zpeoh + cvoh - tsoh
 dgooh = zpeooh + cvooh - tsooh
 dgh = dgoh - dgo
 
-metal_path = '~/bin/tools/mnc/metals.tsv'
+metal_path = '~/bin/tools/tetra/metal-data.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
-gm = metal_df.loc['Fe', 'energy']
+gm = -5.665132
+print(gm)
 
 df = pd.read_csv(f'{filename}_energies.tsv', delimiter='\t', index_col=0)
 df_oer = pd.read_csv(f'{filename}_oer.tsv', delimiter='\t', index_col=0)
@@ -207,24 +208,32 @@ def plot_pourbaix(entries, png_name):
 
     vac_entries = [entry for entry in stable_entries if 'XFe' not in entry.name]
     sac_entries = [entry for entry in stable_entries if 'XFe' in entry.name]
-    vac_colors = [plt.cm.Greys(i) for i in np.linspace(0.1, 0.3, len(vac_entries))]
-    sac_colors = [plt.cm.Oranges(i) for i in np.linspace(0.05, 0.35, len(sac_entries))]
+    vac_colors = [plt.cm.Greys(i) for i in np.linspace(0.1, 0.3, 10)]
+    sac_colors = [plt.cm.Oranges(i) for i in np.linspace(0.05, 0.35, 5)]
     
     vac_mapping = {
-        'XH2(s) + Fe(s)': 0,
-        'XH2(s) + Fe[+2]': 1,
-        'XH2(s) + Fe[+3]': 2,
-        'X(s) + Fe[+3]': 3,
-        'X(s) + FeOH[+2]': 4,
-        'X(s) + Fe2O3(s)': 4,
-        'Fe(s) + XH2(s)': 0,
-        'Fe[+2] + XH2(s)': 1,
-        'Fe[+3] + XH2(s)': 2,
-        'Fe[+3] + X(s)': 3,
-        'FeOH[+2] + X(s)': 4,
-        'Fe2O3(s) + X(s)': 4,
+        'X(s) + Fe[+3]': 0,
+        'X(s) + FeOH[+2]': 1,
+        'X(s) + Fe2O3(s)': 2,
+        'XH2(s) + Fe(s)': 3,
+        'XH2(s) + Fe[+2]': 4,
+        'XH2(s) + Fe[+3]': 5,
+        'XH2(s) + FeOH[+2]': 6,
+        'XH2(s) + Fe2O3(s)': 7,
+        'XH2(s) + Fe3O4(s)': 8,
+        'XH2(s) + FeHO2[-1]': 9,
+        'Fe[+3] + X(s)': 0,
+        'FeOH[+2] + X(s)': 1,
+        'Fe2O3(s) + X(s)': 2,
+        'Fe(s) + XH2(s)': 3,
+        'Fe[+2] + XH2(s)': 4,
+        'Fe[+3] + XH2(s)': 5,
+        'FeOH[+2] + XH2(s)': 6,
+        'Fe2O3(s) + XH2(s)': 7,
+        'Fe3O4(s) + XH2(s)': 8,
+        'FeHO2[-1] + XH2(s)': 9,
     }
-
+    
     sac_mapping = {
         'XFe(s)': 0,
         'XFeHO(s)': 1,
@@ -234,6 +243,9 @@ def plot_pourbaix(entries, png_name):
     }
 
     for i, entry in enumerate(sac_entries):
+        print(entry.name)
+        
+    for i, entry in enumerate(vac_entries):
         print(entry.name)
         
     for i, entry in enumerate(vac_entries):
@@ -292,8 +304,8 @@ def main():
     all_entries = ref_entries + sac_entries + solid_entries + ion_entries
     print("\nTotal Entries:", len(all_entries))
     
-    # all_entries = ref_entries + sac_entries
-    # plot_pourbaix(all_entries, f'{filename}_pourbaix_sac_left.png')
+    all_entries = ref_entries + sac_entries
+    plot_pourbaix(all_entries, f'{filename}_pourbaix_sac_left.png')
     
     # plot_pourbaix(solid_entries, f'{filename}_pourbaix_solid.png')
     # plot_pourbaix(ion_entries, f'{filename}_pourbaix_ion.png')

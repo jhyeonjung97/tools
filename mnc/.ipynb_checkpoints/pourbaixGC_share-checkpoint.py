@@ -75,35 +75,35 @@ def dg(k, pH, U, concentration):
     return dg
     
 ions = [
-    # # ['Ef', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
-    # [-20.300/calmol,  1, +2, 0, 0, 0, 0, 0, 0, 0, 'Fe²⁺(aq)'],
-    # [-90.627/calmol,  1, -1, 1, 0, 2, 0, 0, 0, 0, 'HFeO₂⁻(aq)'],
-    # [-2.530/calmol,   1, +3, 0, 0, 0, 0, 0, 0, 0, 'Fe³⁺(aq)'],
-    # [-55.910/calmol,  1, +2, 1, 0, 1, 0, 0, 0, 0, 'FeOH²⁺(aq)'],
-    # [-106.200/calmol, 1, +1, 2, 0, 2, 0, 0, 0, 0, 'Fe(OH)₂⁺(aq)'],
+    # ['Ef', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
+    [-20.300/calmol,  1, +2, 0, 0, 0, 0, 0, 0, 0, 'Fe²⁺(aq)'],
+    [-90.627/calmol,  1, -1, 1, 0, 2, 0, 0, 0, 0, 'HFeO₂⁻(aq)'],
+    [-2.530/calmol,   1, +3, 0, 0, 0, 0, 0, 0, 0, 'Fe³⁺(aq)'],
+    [-55.910/calmol,  1, +2, 0, 1, 0, 0, 0, 0, 0, 'FeOH²⁺(aq)'],
+    [-106.200/calmol, 1, +1, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂⁺(aq)'],
 ]
 
 solids = [
     # ['Ef', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
-    # [0,               1, +0, 0, 0, 0, 0, 0, 0, 0, 'Fe(s)'],
-    # [-58.880/calmol,  1, +0, 0, 0, 1, 0, 0, 0, 0, 'FeO'],
-    # # [-242.400/calmol, 3, +0, 0, 0, 4, 0, 0, 0, 0, 'Fe₃O₄'],
-    # # [-177.100/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
-    # # [-161.930/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
-    # [-115.570/calmol, 1, +0, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂'],
-    # [-166.000/calmol, 1, +0, 0, 3, 0, 0, 0, 0, 0, 'Fe(OH)₃'],
+    [0,               1, +0, 0, 0, 0, 0, 0, 0, 0, 'Fe(s)'],
+    [-58.880/calmol,  1, +0, 0, 0, 1, 0, 0, 0, 0, 'FeO'],
+    [-242.400/calmol, 3, +0, 0, 0, 4, 0, 0, 0, 0, 'Fe₃O₄'],
+    # [-177.100/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
+    [-161.930/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
+    [-115.570/calmol, 1, +0, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂'],
+    [-166.000/calmol, 1, +0, 0, 3, 0, 0, 0, 0, 0, 'Fe(OH)₃'],
 ]
 
 nions, nsolids = len(ions), len(solids)
 for i in range(nions):
+    ions[i][0] += water * (ions[i][4] + ions[i][5] + 2*ions[i][6]) + bulk_metal * ions[i][1]
     if ions[i][1] > 1:
         ions[i] = [x / ions[i][1] if isinstance(x, (int, float)) else x for x in ions[i]]
-    ions[i][0] += (ions[i][4] + ions[i][5] + 2*ions[i][6]) * water + bulk_metal
-    
+
 for s in range(nsolids):
+    solids[s][0] += water * (solids[s][4] + solids[s][5] + 2*solids[s][6]) + bulk_metal * solids[s][1]
     if solids[s][1] > 1:
         solids[s] = [x / solids[s][1] if isinstance(x, (int, float)) else x for x in solids[s]]
-    solids[s][0] += (solids[s][4] + solids[s][5] + 2*solids[s][6]) * water + bulk_metal
 
 surfs = [
     # ['E', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
@@ -155,9 +155,7 @@ surfs.extend(new_surfs)  # Add new surfaces after looping
 nsurfs = len(surfs)  # Update length
 
 lowest_surfaces = np.full((len(Urange), len(pHrange)), np.nan)
-
-for surf in surfs:
-    print(surf)
+    
 pHindex = 0
 for pH in pHrange:
     Uindex = 0
@@ -166,16 +164,13 @@ for pH in pHrange:
         for k in range(nsurfs):
             value = dg(k, pH, U, concentration=1e-6)
             values.append(value)
-            if -tick < U < tick and -tick < pH < tick:
-                print(U, k, value)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
         Uindex+=1
     pHindex+=1
 
 # Set Axes Limits and Labels
-fig = plt.figure(figsize=(8, 6), dpi=100)
-ax = fig.add_axes([0.1, 0.1, 0.6, 0.6])
+fig, ax = plt.subplots(figsize=(8, 6), dpi=100)
 ax.axis([0, 14, Umin, Umax])
 ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
@@ -204,5 +199,6 @@ plt.plot(pHrange, 0-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, -0.15 , r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$',
         color='blue', rotation=-8, fontsize=10)
 
+plt.tight_layout()
+plt.savefig(f'pourbaixGC.png', dpi=300, bbox_inches='tight')
 plt.show()
-fig.savefig(f'pourbaixGC.png', bbox_inches='tight') 

@@ -308,4 +308,5 @@ plt.plot(pHrange, 0-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, -0.15 , r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$',
         color='blue', rotation=-8, fontsize=10)
 
+plt.tight_layout()
 fig.savefig(f'{root}/figures/pourbaixGC.png', bbox_inches='tight') 

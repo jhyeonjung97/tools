@@ -91,10 +91,15 @@ df['energy'] = df['dG'] + df.loc['clean', 'G'] + gh2 - gm - H2N4C26 - 2 * dgh - 
 df = df.drop(index='vac')
 df = df.drop(index='oo')
 df = df.drop(index='ooh')
+df = df.drop(index='oooh')
+df = df.drop(index='ooho')
 df = df.drop(index='o-ooh')
 df = df.drop(index='ooh-o')
+df = df.drop(index='ohooh')
+df = df.drop(index='oohoh')
 df = df.drop(index='oh-ooh')
 df = df.drop(index='ooh-oh')
+df = df.drop(index='oohooh')
 df = df.drop(index='ooh-ooh')
 df = df.dropna()
 print(df)
@@ -204,34 +209,39 @@ def plot_pourbaix(entries, png_name):
     sac_entries = [entry for entry in stable_entries if 'XFe' in entry.name]
     vac_colors = [plt.cm.Greys(i) for i in np.linspace(0.1, 0.3, len(vac_entries))]
     sac_colors = [plt.cm.Oranges(i) for i in np.linspace(0.05, 0.35, len(sac_entries))]
-
+    
     vac_mapping = {
         'XH2(s) + Fe(s)': 0,
         'XH2(s) + Fe[+2]': 1,
         'XH2(s) + Fe[+3]': 2,
         'X(s) + Fe[+3]': 3,
         'X(s) + FeOH[+2]': 4,
+        'X(s) + Fe2O3(s)': 4,
         'Fe(s) + XH2(s)': 0,
         'Fe[+2] + XH2(s)': 1,
         'Fe[+3] + XH2(s)': 2,
         'Fe[+3] + X(s)': 3,
         'FeOH[+2] + X(s)': 4,
+        'Fe2O3(s) + X(s)': 4,
     }
 
     sac_mapping = {
         'XFe(s)': 0,
         'XFeHO(s)': 1,
         'XFeO(s)': 2,
-        'XFeHO2(s)': 3,
-        'XFeO2(s)': 4,
+        'XFeO2(s)': 3,
+        'XFeHO2(s)': 4,
     }
+
+    for i, entry in enumerate(sac_entries):
+        print(entry.name)
         
     for i, entry in enumerate(vac_entries):
         vertices = plotter.domain_vertices(entry)
         x, y = zip(*vertices)
         color = vac_colors[vac_mapping[entry.name]]
         ax.fill(x, y, color=color)
-    
+
     for i, entry in enumerate(sac_entries):
         vertices = plotter.domain_vertices(entry)
         x, y = zip(*vertices)
@@ -282,8 +292,8 @@ def main():
     all_entries = ref_entries + sac_entries + solid_entries + ion_entries
     print("\nTotal Entries:", len(all_entries))
     
-    all_entries = ref_entries + sac_entries
-    plot_pourbaix(all_entries, f'{filename}_pourbaix_sac_left.png')
+    # all_entries = ref_entries + sac_entries
+    # plot_pourbaix(all_entries, f'{filename}_pourbaix_sac_left.png')
     
     # plot_pourbaix(solid_entries, f'{filename}_pourbaix_solid.png')
     # plot_pourbaix(ion_entries, f'{filename}_pourbaix_ion.png')
