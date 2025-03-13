@@ -269,6 +269,9 @@ for pH in pHrange:
             else:
                 dg = dg_surf(k, pH, U)
                 values.append(dg_surf(k, pH, U))
+                
+            for -tick < U < tick and -tick < pH < tick:
+                print(k, dg)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
         Uindex+=1
