@@ -233,6 +233,9 @@ def plot_pourbaix(entries, png_name):
         'XFeHO2(s)': 4,
     }
 
+    for i, entry in enumerate(vac_entries):
+        print(entry.name)
+        
     for i, entry in enumerate(sac_entries):
         print(entry.name)
         
@@ -248,17 +251,17 @@ def plot_pourbaix(entries, png_name):
         color = sac_colors[sac_mapping[entry.name]]
         ax.fill(x, y, color=color)
         
-    if 'bulk' in png_name:
-        ax.text(2.6, 1.5, r"S$_{\mathbf{v}}$+FeOH$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
-        ax.text(0.2, 2.1, r"S$_{\mathbf{v}}$+Fe$^{\mathbf{3+}}$", fontsize=14, color="black", fontweight='bold')
-        ax.text(0.2, 0.8, r"S$_{\mathbf{v}}$+Fe$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
-        ax.text(0.2, -0.5, r"S$_{\mathbf{0}}$+Fe$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
-    ax.text(13.1, 2.1, r"S$_{\mathbf{7}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, 1.0, r"S$_{\mathbf{6}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, 0.68, r"S$_{\mathbf{8}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, 0.0, r"S$_{\mathbf{4}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, -0.8, r"S$_{\mathbf{1}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(0.2, -0.9, r"S$_{\mathbf{0}}$+Fe(s)", fontsize=14, color="black", fontweight='bold')
+    # if 'bulk' in png_name:
+    #     ax.text(2.6, 1.5, r"S$_{\mathbf{v}}$+FeOH$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
+    #     ax.text(0.2, 2.1, r"S$_{\mathbf{v}}$+Fe$^{\mathbf{3+}}$", fontsize=14, color="black", fontweight='bold')
+    #     ax.text(0.2, 0.8, r"S$_{\mathbf{v}}$+Fe$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
+    #     ax.text(0.2, -0.5, r"S$_{\mathbf{0}}$+Fe$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
+    # ax.text(13.1, 2.1, r"S$_{\mathbf{7}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
+    # ax.text(13.1, 1.0, r"S$_{\mathbf{6}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
+    # ax.text(13.1, 0.68, r"S$_{\mathbf{8}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
+    # ax.text(13.1, 0.0, r"S$_{\mathbf{4}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
+    # ax.text(13.1, -0.8, r"S$_{\mathbf{1}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
+    # ax.text(0.2, -0.9, r"S$_{\mathbf{0}}$+Fe(s)", fontsize=14, color="black", fontweight='bold')
 
     ax.set_xlabel("pH", fontsize=14)
     ax.set_ylabel("Potential (V vs SHE)", fontsize=14)
@@ -292,8 +295,8 @@ def main():
     all_entries = ref_entries + sac_entries + solid_entries + ion_entries
     print("\nTotal Entries:", len(all_entries))
     
-    # all_entries = ref_entries + sac_entries
-    # plot_pourbaix(all_entries, f'{filename}_pourbaix_sac_left.png')
+    all_entries = ref_entries + sac_entries
+    plot_pourbaix(all_entries, f'{filename}_pourbaix_sac_left.png')
     
     # plot_pourbaix(solid_entries, f'{filename}_pourbaix_solid.png')
     # plot_pourbaix(ion_entries, f'{filename}_pourbaix_ion.png')

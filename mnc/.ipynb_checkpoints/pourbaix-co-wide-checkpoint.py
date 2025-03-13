@@ -90,6 +90,7 @@ df['comp'] = df['comp'].str.replace('CoXNH', 'CoXH')
 df['energy'] = df['dG'] + df.loc['clean', 'G'] + gh2 - gm - H2N4C26 - 2 * dgh - water * (df['#O'] + df['#OH'] + df['#OOH']*2)
 
 df = df.drop(index='vac')
+df = df.drop(index='oo')
 df = df.drop(index='ooh')
 df = df.drop(index='o-ooh')
 df = df.drop(index='ooh-o')

@@ -15,7 +15,7 @@ from pymatgen.analysis.pourbaix_diagram import IonEntry, PDEntry, ComputedEntry
 warnings.filterwarnings('ignore')
 
 filename = '2Co'
-tag = ''
+tag = '_oxide'
 
 kbt = 0.0256 
 const = kbt * np.log(10)
@@ -97,9 +97,6 @@ df = df.drop(index='ooh-o')
 df = df.drop(index='oh-ooh')
 df = df.drop(index='ooh-oh')
 df = df.drop(index='ooh-ooh')
-# df = df.drop(index='o-o')
-# df = df.drop(index='oh-o')
-# df = df.drop(index='oh-oh')
 df = df.drop(index='ooho')
 df = df.drop(index='oohoh')
 df = df.drop(index='oohooh')
@@ -141,9 +138,9 @@ def get_solid_entries():
     solids={
         'Co': 0,
         'CoO': -52.310/calmol,
-        'CoO': -49.000/calmol,
+        # 'CoO': -49.000/calmol,
         'Co3O4': -167.835/calmol,
-        # 'Co2O3': -115.130/calmol,
+        'Co2O3': -115.130/calmol,
         'CoO2': -51.840/calmol,
         'Co(OH)2': -109.999/calmol,
         'Co(OH)3': -142.600/calmol
@@ -216,21 +213,21 @@ def plot_pourbaix(entries, png_name):
         'Co[+2]': 1,
         'Co[+3]': 2,
         'Co(HO)2(s)': 3,
-        'Co(HO)3(s)': 4,
-        'CoHO2[-1]': 5,
+        'CoHO2[-1]': 4,
+        'Co2O3(s)': 5,
         'CoO2(s)': 6,
     }
-
+    
     sac_mapping = {
         'XCo(s)': 0,
         'XCo(HO)2(s)': 1,
         'XCoO2(s)': 2,
     }
     
-    # for entry in vac_entries:
-    #     print(entry.name)
-    # for entry in sac_entries:
-    #     print(entry.name)
+    for entry in vac_entries:
+        print(entry.name)
+    for entry in sac_entries:
+        print(entry.name)
     
     for i, entry in enumerate(vac_entries):
         vertices = plotter.domain_vertices(entry)

@@ -14,7 +14,8 @@ from pymatgen.analysis.pourbaix_diagram import IonEntry, PDEntry, ComputedEntry
 
 warnings.filterwarnings('ignore')
 
-filename = '1Fe'
+filename = '3Mo'
+tag = '_oxide'
 
 kbt = 0.0256 
 const = kbt * np.log(10)
@@ -27,7 +28,7 @@ water = 2.4583 # the standard Gibbs free energy of formation of water
 h2 = -6.77149190
 h2o = -14.23091949
 
-zpeh2o = 0.560
+zpeh2o = 0.558
 cvh2o = 0.103
 tsh2o = 0.675
 
@@ -67,41 +68,40 @@ dgoh = zpeoh + cvoh - tsoh
 dgooh = zpeooh + cvooh - tsooh
 dgh = dgoh - dgo
 
-metal_path = '~/bin/tools/tetra/metal-data.tsv'
+metal_path = '~/bin/tools/mnc/metals.tsv'
 metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
-gm = -5.665132
-print(gm)
+gm = metal_df.loc['Mo', 'energy']
 
-df = pd.read_csv(f'{filename}_energies.tsv', delimiter='\t', index_col=0)
+df = pd.read_csv(f'{filename}_energies.csv', delimiter=',', index_col=0)
 df_oer = pd.read_csv(f'{filename}_oer.tsv', delimiter='\t', index_col=0)
 df_orr = pd.read_csv(f'{filename}_orr.tsv', delimiter='\t', index_col=0)
 
-df['name'] = 'FeNC(' + df.index.str.upper() + ')'
-df['comp'] = 'FeX' + df.index.str.upper().str.replace("-", "")
-df['comp'] = df['comp'].str.replace('FeXVAC', 'H2X')
-df['name'] = df['name'].str.replace('FeNC(VAC)', 'Fe⁺²+H₂NC', regex=False)
-df['comp'] = df['comp'].str.replace('FeXCLEAN', 'FeX')
-df['name'] = df['name'].str.replace('FeNC(CLEAN)', 'FeNC(clean)')
-df['comp'] = df['comp'].str.replace('FeXMH', 'FeXH')
-df['comp'] = df['comp'].str.replace('FeXNH', 'FeXH')
+df['name'] = 'MoNC(' + df.index.str.upper() + ')'
+df['comp'] = 'MoX' + df.index.str.upper().str.replace("-", "")
+df['comp'] = df['comp'].str.replace('MoXVAC', 'H2X')
+df['name'] = df['name'].str.replace('MoNC(VAC)', 'Mo⁺²+H₂NC', regex=False)
+df['comp'] = df['comp'].str.replace('MoXCLEAN', 'MoX')
+df['name'] = df['name'].str.replace('MoNC(CLEAN)', 'MoNC(clean)')
+df['comp'] = df['comp'].str.replace('MoXMH', 'MoXH')
+df['comp'] = df['comp'].str.replace('MoXNH', 'MoXH')
 
 # df['energy'] = df['dG'] + df.loc['clean', 'G'] - gm - 2 * gn2 - 26 * gc - water * (df['#O'] + df['#OH'] + df['#OOH']*2)
 # df['energy'] = df['dG'] + df.loc['clean', 'G'] - gm - N4C26 - water * (df['#O'] + df['#OH'] + df['#OOH']*2)
 df['energy'] = df['dG'] + df.loc['clean', 'G'] + gh2 - gm - H2N4C26 - 2 * dgh - water * (df['#O'] + df['#OH'] + df['#OOH']*2)
 
 df = df.drop(index='vac')
-df = df.drop(index='oo')
 df = df.drop(index='ooh')
-df = df.drop(index='oooh')
-df = df.drop(index='ooho')
 df = df.drop(index='o-ooh')
 df = df.drop(index='ooh-o')
-df = df.drop(index='ohooh')
-df = df.drop(index='oohoh')
 df = df.drop(index='oh-ooh')
 df = df.drop(index='ooh-oh')
-df = df.drop(index='oohooh')
 df = df.drop(index='ooh-ooh')
+# df = df.drop(index='o-o')
+# df = df.drop(index='oh-o')
+# df = df.drop(index='oh-oh')
+df = df.drop(index='ooho')
+df = df.drop(index='oohoh')
+df = df.drop(index='oohooh')
 df = df.dropna()
 print(df)
 
@@ -109,7 +109,7 @@ def get_ref_entries():
     ref_entries = []
     
     refs={
-        'Fe': 'Fe(s)',
+        'Mo': 'Mo(s)',
         # 'N2': 'N2(g)',
         # 'C': 'C(s)',
         # 'X': 'N4C26',
@@ -125,7 +125,7 @@ def get_ref_entries():
 def get_sac_entries():
     sac_entries = []
     
-    for index, row in df.iterrows():    
+    for index, row in df.iterrows(): 
         entry = PourbaixEntry(ComputedEntry(row['comp'], row['energy'], entry_id=row['name']))
         sac_entries.append(entry)
         
@@ -138,13 +138,10 @@ def get_sac_entries():
 def get_solid_entries():
     solid_entries = []
     solids={
-        'Fe': 0,
-        'FeO' : -58.880/calmol,
-        'Fe3O4': -242.400/calmol,
-        'Fe2O3': -177.100/calmol,
-        'Fe2O3': -161.930/calmol,
-        'Fe(OH)2': -115.570/calmol,
-        'Fe(OH)3': -166.000/calmol,
+        'Mo': 0,
+        'MoO2' : -120.000/calmol,
+        'MoO3': -227.000/calmol,
+        # 'MoO3': -161.950/calmol,
         }
     
     for solid, energy in solids.items():
@@ -156,12 +153,9 @@ def get_solid_entries():
 def get_ion_entries():
     ion_entries = []
     ions={
-        'Fe++': -20.300/calmol,
-        'HFeO2-': -90.627/calmol,
-        'Fe+++': -2.530/calmol,
-        'FeOH++': -55.910/calmol,
-        'Fe(OH)2+': -106.200/calmol,
-        # 'FeO4-': -111685/calmol,
+        'Mo+++': -13.800/calmol,
+        'HMoO4-': -213.600/calmol,
+        'MoO4--': -205.420/calmol,
         }
     
     for ion, energy in ions.items():
@@ -170,7 +164,7 @@ def get_ion_entries():
         ion_entries.append(entry)
 
     return ion_entries
-
+    
 def get_equation(a, b, c, d, df_rxn, n):
     eq = fr"S$_{{{a}}}$$\rightarrow$S$_{{{b}}}$$\rightarrow$S$_{{{c}}}$$\rightarrow$S$_{{{d}}}$: " + f"{df_rxn['overP'][n]:.2f} eV"
     return eq
@@ -179,7 +173,7 @@ def plot_pourbaix(entries, png_name):
     pourbaix = PourbaixDiagram(entries, filter_solids=False)
     plotter = PourbaixPlotter(pourbaix)
 
-    fig, ax = plt.subplots(figsize=(6, 5))    
+    fig, ax = plt.subplots(figsize=(7, 5))    
     plotter.get_pourbaix_plot(limits=[[0, 14], [-1, 3]], label_domains=False, label_fontsize=14,
                               show_water_lines=False, show_neutral_axes=False, ax=ax)
     stable_entries = pourbaix.stable_entries
@@ -190,62 +184,41 @@ def plot_pourbaix(entries, png_name):
         text.set_fontsize(14)
         text.set_color('black')
         text.set_fontweight('bold')
-        
-    pH2 = np.arange(0, 14.01, 0.01)
-    plt.plot(pH2, 1.23 - pH2 * const, color='black', lw=1.5, dashes=(5, 2))
-    plt.plot(pH2, df_oer['onsetP'][0] - pH2 * const, color='red', lw=1.5)
-    plt.plot(pH2, df_oer['onsetP'][1] - pH2 * const, color='red', lw=1.5, dashes=(5, 2))
-    plt.plot(pH2, df_orr['onsetP'][0] - pH2 * const, color='blue', lw=1.5)
 
-    if 'bulk' not in png_name:
-        ax.text(0.2, 0.29+0.34, r'2H$_2$O $\leftrightarrow$ 4H$^+$ + O$_2$ + 4e$^-$', color='black', rotation=-9.9, fontsize=13)
-        ax.text(0.2, df_oer['onsetP'][0] - 0.71+0.34, get_equation(1, 4, 5, 8, df_oer, 0),
-               color='red', rotation=-9.9, fontsize=14)
-        ax.text(0.2, df_oer['onsetP'][1] - 1.00+0.34, get_equation(4, 7, 9, 12, df_oer, 1),
-               color='red', rotation=-9.9, fontsize=14)
-        ax.text(0.2, df_orr['onsetP'][0] - 0.97+0.34, get_equation(8, 5, 4, 1, df_orr, 0),
-               color='blue', rotation=-9.9, fontsize=14)
-
-    vac_entries = [entry for entry in stable_entries if 'XFe' not in entry.name]
-    sac_entries = [entry for entry in stable_entries if 'XFe' in entry.name]
-    vac_colors = [plt.cm.Greys(i) for i in np.linspace(0.1, 0.3, 10)]
-    sac_colors = [plt.cm.Oranges(i) for i in np.linspace(0.05, 0.35, 5)]
+    if 'bulk' in png_name:
+        pH2 = np.arange(0, 14.01, 0.01)
+        plt.plot(pH2, 1.23 - pH2 * const, color='black', lw=2.0) #, dashes=(5, 2))
+        plt.plot(pH2, df_oer['onsetP'][0] - pH2 * const, color='red', lw=2.0, dashes=(5, 2))
+        plt.plot(pH2, df_orr['onsetP'][0] - pH2 * const, color='blue', lw=2.0, dashes=(5, 2))
+    
+    vac_entries = [entry for entry in stable_entries if 'XMo' not in entry.name]
+    sac_entries = [entry for entry in stable_entries if 'XMo' in entry.name]
+    vac_colors = [plt.cm.Greys(i) for i in np.linspace(0.1, 0.3, len(vac_entries))]
+    sac_colors = [plt.cm.Greens(i) for i in np.linspace(0.1, 0.3, len(sac_entries))]
     
     vac_mapping = {
-        'X(s) + Fe[+3]': 0,
-        'X(s) + FeOH[+2]': 1,
-        'X(s) + Fe2O3(s)': 2,
-        'XH2(s) + Fe(s)': 3,
-        'XH2(s) + Fe[+2]': 4,
-        'XH2(s) + Fe[+3]': 5,
-        'XH2(s) + FeOH[+2]': 6,
-        'XH2(s) + Fe2O3(s)': 7,
-        'XH2(s) + Fe3O4(s)': 8,
-        'XH2(s) + FeHO2[-1]': 9,
-        'Fe[+3] + X(s)': 0,
-        'FeOH[+2] + X(s)': 1,
-        'Fe2O3(s) + X(s)': 2,
-        'Fe(s) + XH2(s)': 3,
-        'Fe[+2] + XH2(s)': 4,
-        'Fe[+3] + XH2(s)': 5,
-        'FeOH[+2] + XH2(s)': 6,
-        'Fe2O3(s) + XH2(s)': 7,
-        'Fe3O4(s) + XH2(s)': 8,
-        'FeHO2[-1] + XH2(s)': 9,
-    }
-    
-    sac_mapping = {
-        'XFe(s)': 0,
-        'XFeHO(s)': 1,
-        'XFeO(s)': 2,
-        'XFeO2(s)': 3,
-        'XFeHO2(s)': 4,
+        'Mo(s) + XH2(s)': 0,
+        'MoO3(s) + XH2(s)': 1,
+        'Mo[+3] + XH2(s)': 2,
+        'MoO3(s) + X(s)': 3,
+        'XH2(s) + Mo(s)': 0,
+        'XH2(s) + MoO3(s)': 1,
+        'XH2(s) + Mo[+3]': 2,
+        'X(s) + MoO3(s)': 3,
+        
+        'Mo(s)': 0,
+        'Mo[+3]': 1,
+        'MoO3(s)': 2,
     }
 
-    for i, entry in enumerate(sac_entries):
+    sac_mapping = {
+        'XMoO(s)': 0,
+        'XMoO2(s)': 1,
+    }
+    
+    for entry in vac_entries:
         print(entry.name)
-        
-    for i, entry in enumerate(vac_entries):
+    for entry in sac_entries:
         print(entry.name)
         
     for i, entry in enumerate(vac_entries):
@@ -253,35 +226,23 @@ def plot_pourbaix(entries, png_name):
         x, y = zip(*vertices)
         color = vac_colors[vac_mapping[entry.name]]
         ax.fill(x, y, color=color)
-
+    
     for i, entry in enumerate(sac_entries):
         vertices = plotter.domain_vertices(entry)
         x, y = zip(*vertices)
         color = sac_colors[sac_mapping[entry.name]]
         ax.fill(x, y, color=color)
-        
-    if 'bulk' in png_name:
-        ax.text(2.6, 1.5, r"S$_{\mathbf{v}}$+FeOH$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
-        ax.text(0.2, 2.1, r"S$_{\mathbf{v}}$+Fe$^{\mathbf{3+}}$", fontsize=14, color="black", fontweight='bold')
-        ax.text(0.2, 0.8, r"S$_{\mathbf{v}}$+Fe$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
-        ax.text(0.2, -0.5, r"S$_{\mathbf{0}}$+Fe$^{\mathbf{2+}}$", fontsize=14, color="black", fontweight='bold')
-    ax.text(13.1, 2.1, r"S$_{\mathbf{7}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, 1.0, r"S$_{\mathbf{6}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, 0.68, r"S$_{\mathbf{8}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, 0.0, r"S$_{\mathbf{4}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(13.1, -0.8, r"S$_{\mathbf{1}}$", fontsize=14, color="black", fontweight='bold', ha='center', va='center')
-    ax.text(0.2, -0.9, r"S$_{\mathbf{0}}$+Fe(s)", fontsize=14, color="black", fontweight='bold')
-
+    
     ax.set_xlabel("pH", fontsize=14)
     ax.set_ylabel("Potential (V vs SHE)", fontsize=14)
     ax.tick_params(axis='both', labelsize=14)
 
     plt.tight_layout()
-    plt.savefig(png_name, dpi=300, bbox_inches='tight')
+    plt.savefig(png_name, dpi=200, bbox_inches='tight')
     plt.show()
 
 def main():
-    print('\n################## Reference Entries ##########################################\n')
+    print('\n################## ReMorence Entries ##########################################\n')
     ref_entries = get_ref_entries()
     for entry in ref_entries:
         print(entry)
@@ -305,15 +266,13 @@ def main():
     print("\nTotal Entries:", len(all_entries))
     
     all_entries = ref_entries + sac_entries
-    plot_pourbaix(all_entries, f'{filename}_pourbaix_sac_left.png')
+    plot_pourbaix(all_entries, f'{filename}_pourbaix_sac{tag}.png')
     
-    # plot_pourbaix(solid_entries, f'{filename}_pourbaix_solid.png')
-    # plot_pourbaix(ion_entries, f'{filename}_pourbaix_ion.png')
-    # all_entries = solid_entries + ion_entries
-    # plot_pourbaix(all_entries, f'{filename}_pourbaix_exp.png')
+    all_entries = solid_entries + ion_entries
+    plot_pourbaix(all_entries, f'{filename}_pourbaix_exp{tag}.png')
     
     all_entries = ref_entries + sac_entries + solid_entries + ion_entries
-    plot_pourbaix(all_entries, f'{filename}_pourbaix_bulk_left.png')
+    plot_pourbaix(all_entries, f'{filename}_pourbaix_bulk{tag}.png')
 
 
 if __name__ == "__main__":

@@ -91,6 +91,7 @@ df['comp'] = df['comp'].str.replace('FeXNH', 'FeXH')
 df['energy'] = df['dG'] + df.loc['clean', 'G'] + gh2 - gm - H2N4C26 - 2 * dgh - water * (df['#O'] + df['#OH'] + df['#OOH']*2)
 
 df = df.drop(index='vac')
+df = df.drop(index='oo')
 df = df.drop(index='ooh')
 df = df.drop(index='o-ooh')
 df = df.drop(index='ooh-o')
@@ -232,7 +233,13 @@ def plot_pourbaix(entries, png_name):
         'XFeHO2(s)': 3,
         'XFeO2(s)': 4,
     }
-            
+
+    for entry in vac_entries:
+        print(entry.name)
+        
+    for entry in sac_entries:
+        print(entry.name)
+        
     for i, entry in enumerate(vac_entries):
         vertices = plotter.domain_vertices(entry)
         x, y = zip(*vertices)
