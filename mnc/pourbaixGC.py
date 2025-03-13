@@ -200,8 +200,8 @@ for index in df.index:
         df.loc[index, 'E'] += vac + bulk_metal + water * df.loc[index, '#O']
     elif 'Sᵥ' in index:
         df.loc[index, 'E'] += -271.95317 + bulk_metal + water * df.loc[index, '#O']
-    # else:
-    #     df.loc[index, ['A', 'B']] = 0 #####
+    else:
+        df.loc[index, ['A', 'B']] = 0 #####
 df['C'] = df['E']
 
 print(df)

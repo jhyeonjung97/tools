@@ -75,12 +75,12 @@ def dg(k, pH, U, concentration):
     return dg
     
 ions = [
-    # ['Ef', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
-    [-20.300/calmol,  1, +2, 0, 0, 0, 0, 0, 0, 0, 'Fe²⁺(aq)'],
-    [-90.627/calmol,  1, -1, 1, 0, 2, 0, 0, 0, 0, 'HFeO₂⁻(aq)'],
-    [-2.530/calmol,   1, +3, 0, 0, 0, 0, 0, 0, 0, 'Fe³⁺(aq)'],
-    [-55.910/calmol,  1, +2, 1, 0, 1, 0, 0, 0, 0, 'FeOH²⁺(aq)'],
-    [-106.200/calmol, 1, +1, 2, 0, 2, 0, 0, 0, 0, 'Fe(OH)₂⁺(aq)'],
+    # # ['Ef', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
+    # [-20.300/calmol,  1, +2, 0, 0, 0, 0, 0, 0, 0, 'Fe²⁺(aq)'],
+    # [-90.627/calmol,  1, -1, 1, 0, 2, 0, 0, 0, 0, 'HFeO₂⁻(aq)'],
+    # [-2.530/calmol,   1, +3, 0, 0, 0, 0, 0, 0, 0, 'Fe³⁺(aq)'],
+    # [-55.910/calmol,  1, +2, 1, 0, 1, 0, 0, 0, 0, 'FeOH²⁺(aq)'],
+    # [-106.200/calmol, 1, +1, 2, 0, 2, 0, 0, 0, 0, 'Fe(OH)₂⁺(aq)'],
 ]
 
 solids = [
@@ -166,6 +166,8 @@ for pH in pHrange:
         for k in range(nsurfs):
             value = dg(k, pH, U, concentration=1e-6)
             values.append(value)
+            if -tick < U < tick and -tick < pH < tick:
+                print(U, k, value)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
         Uindex+=1
