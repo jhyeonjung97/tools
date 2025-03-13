@@ -232,12 +232,12 @@ surfs = [
     # df.loc['oohooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     # df.loc['ooh-ooh', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),  
     
-    df.loc['S₀+Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
-    df.loc['S₀+Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
-    df.loc['S₀+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
-    df.loc['Sᵥ+Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
-    df.loc['Sᵥ+Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
-    df.loc['Sᵥ+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
+    # df.loc['S₀+Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
+    # df.loc['S₀+Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
+    # df.loc['S₀+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
+    # df.loc['Sᵥ+Fe²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(),
+    # df.loc['Sᵥ+Fe³⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #2
+    # df.loc['Sᵥ+FeOH²⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #3
     
     # df.loc['HFeO²⁻', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #1
     # df.loc['Fe(OH)₂⁺', ['E', '#e', '#H', '#O', '#OH', '#OOH', 'A', 'B', 'C']].tolist(), #4
