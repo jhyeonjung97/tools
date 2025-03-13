@@ -11,6 +11,7 @@ bulk_metal = -5.7954 # Fe, eV
 kb = 8.617e-5 # eV/K
 T = 298.15 # K
 const = kb * T * np.log(10) # 0.0592 eV
+water = 2.4583 # the standard Gibbs free energy of formation of water
 
 # units
 kjmol = 96.485
@@ -38,7 +39,7 @@ gh2o = h2o + zpeh2o - tsh2o + cvh2o
 gh2 = h2 + zpeh2 - tsh2 + cvh2
 
 gh = gh2 / 2
-go = gh2o - gh2 - 2.46
+go = gh2o - gh2
 goh = gh2o - gh2 / 2
 gooh = 2 * gh2o - 1.5 * gh2
 
@@ -79,77 +80,92 @@ ions = [
     [-90.627/calmol,  1, -1, 1, 0, 2, 0, 0, 0, 0, 'HFeO₂⁻(aq)'],
     [-2.530/calmol,   1, +3, 0, 0, 0, 0, 0, 0, 0, 'Fe³⁺(aq)'],
     [-55.910/calmol,  1, +2, 1, 0, 1, 0, 0, 0, 0, 'FeOH²⁺(aq)'],
-    [-106.200/calmol, 1, +1, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂⁺(aq)'],
+    [-106.200/calmol, 1, +1, 2, 0, 2, 0, 0, 0, 0, 'Fe(OH)₂⁺(aq)'],
 ]
 
 solids = [
     # ['Ef', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
-    [0,               1, +0, 0, 0, 0, 0, 0, 0, 0, 'Fe(s)'],
-    [-58.880/calmol,  1, +0, 0, 0, 1, 0, 0, 0, 0, 'FeO'],
-    [-242.400/calmol, 3, +0, 0, 0, 4, 0, 0, 0, 0, 'Fe₃O₄'],
-    [-177.100/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
-    [-161.930/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
-    [-115.570/calmol, 1, +0, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂'],
-    [-166.000/calmol, 1, +0, 0, 3, 0, 0, 0, 0, 0, 'Fe(OH)₃'],
+    # [0,               1, +0, 0, 0, 0, 0, 0, 0, 0, 'Fe(s)'],
+    # [-58.880/calmol,  1, +0, 0, 0, 1, 0, 0, 0, 0, 'FeO'],
+    # # [-242.400/calmol, 3, +0, 0, 0, 4, 0, 0, 0, 0, 'Fe₃O₄'],
+    # # [-177.100/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
+    # # [-161.930/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
+    # [-115.570/calmol, 1, +0, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂'],
+    # [-166.000/calmol, 1, +0, 0, 3, 0, 0, 0, 0, 0, 'Fe(OH)₃'],
 ]
 
 nions, nsolids = len(ions), len(solids)
 for i in range(nions):
     if ions[i][1] > 1:
         ions[i] = [x / ions[i][1] if isinstance(x, (int, float)) else x for x in ions[i]]
+    ions[i][0] += (ions[i][4] + ions[i][5] + 2*ions[i][6]) * water + bulk_metal
+    
 for s in range(nsolids):
     if solids[s][1] > 1:
         solids[s] = [x / solids[s][1] if isinstance(x, (int, float)) else x for x in solids[s]]
-    
+    solids[s][0] += (solids[s][4] + solids[s][5] + 2*solids[s][6]) * water + bulk_metal
+
 surfs = [
     # ['E', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
     [-271.9532, 0, +0, 0, 0, 0, 0, -0.3442, -0.1279, 0, 'vac'],
     [-281.8361, 0, +0, 2, 0, 0, 0, -0.3342, -0.1079, 0, 'vac(H₂)'],
     [-280.1784, 1, +0, 0, 0, 0, 0, -0.3660,  0.0665, 0, 'clean'],
-    [-282.5588, 1, +0, 1, 0, 0, 0, -0.3714,  0.2173, 0, '＊H(Fe)'],
-    [-282.6377, 1, +0, 1, 0, 0, 0, -0.3438, -0.3362, 0, '＊H(N)'],
-    [-290.9780, 1, +0, 0, 1, 0, 0, -0.8300, -0.4206, 0, '＊OH'],
-    [-285.9474, 1, +0, 0, 0, 1, 0, -0.3608, -0.6948, 0, '＊O'],
-    [-300.7382, 1, +0, 0, 2, 0, 0, -0.7036,  0.3162, 0, '＊OH+＊OH(adg)'],
-    [-300.6264, 1, +0, 0, 2, 0, 0, -0.7214,  0.3152, 0, '＊OH+＊OH(anti)'],
-    [-295.2283, 1, +0, 0, 1, 1, 0, -0.8385, -0.6094, 0, '＊OH+＊O(adg)'],
-    [-295.5266, 1, +0, 0, 1, 1, 0, -0.7100,  0.1638, 0, '＊OH+＊O(anti)'],
-    [-289.6763, 1, +0, 0, 0, 2, 0, -0.6429,  2.1679, 0, '＊O+＊O(anti)'],
+    [-282.5588, 1, +0, 1, 0, 0, 0, -0.3714,  0.2173, 0, '*H(Fe)'],
+    [-282.6377, 1, +0, 1, 0, 0, 0, -0.3438, -0.3362, 0, '*H(N)'],
+    [-290.9780, 1, +0, 0, 1, 0, 0, -0.8300, -0.4206, 0, '*OH'],
+    [-285.9474, 1, +0, 0, 0, 1, 0, -0.3608, -0.6948, 0, '*O'],
+    [-300.7382, 1, +0, 0, 2, 0, 0, -0.7036,  0.3162, 0, '*OH+*OH(adg)'],
+    [-300.6264, 1, +0, 0, 2, 0, 0, -0.7214,  0.3152, 0, '*OH+*OH(anti)'],
+    [-295.2283, 1, +0, 0, 1, 1, 0, -0.8385, -0.6094, 0, '*OH+*O(adg)'],
+    [-295.5266, 1, +0, 0, 1, 1, 0, -0.7100,  0.1638, 0, '*OH+*O(anti)'],
+    [-289.6763, 1, +0, 0, 0, 2, 0, -0.6429,  2.1679, 0, '*O+*O(anti)'],
 ]
-surfs[9] = surfs[0] ## remove this if you have GCDFT data
 
 nsurfs = len(surfs)
+surface_reference = surfs[0][0]
 for k in range(nsurfs):
+    surfs[k][9] = surfs[k][0] ## remove this if you have GCDFT data
     formation_energy_corr = (
-        - surfs[0][0] # surface_ref(vac)
+        - surface_reference
         - surfs[k][3] * (gh - dgh) # H
-        - surfs[k][4] * (go - dgo) # O
-        - surfs[k][5] * (goh - dgoh) # OH
+        - surfs[k][4] * (goh - dgoh) # OH
+        - surfs[k][5] * (go - dgo) # O
         - surfs[k][6] * (gooh - dgooh) # OOH
     )
     surfs[k][0] += formation_energy_corr # E
     surfs[k][9] += formation_energy_corr # C
-            
+    
 new_surfs = []
 for k in range(nsurfs):
     if surfs[k][1] == 0:
         for i in range(nions):
-            new_surfs.append(surfs[k] + ions[i])
+            new_surf = []
+            for j in range(10):
+                new_surf.append(surfs[k][j] + ions[i][j])
+            new_surf.append(surfs[k][10] + '+' + ions[i][10])
+            new_surfs.append(new_surf)
         for s in range(nsolids):
-            new_surfs.append(surfs[k] + solids[s])
+            new_surf = []
+            for j in range(10):
+                new_surf.append(surfs[k][j] + solids[s][j])
+            new_surf.append(surfs[k][10] + '+' + solids[s][10])
+            new_surfs.append(new_surf)
 
 surfs.extend(new_surfs)  # Add new surfaces after looping
 nsurfs = len(surfs)  # Update length
 
 lowest_surfaces = np.full((len(Urange), len(pHrange)), np.nan)
 
+for surf in surfs:
+    print(surf)
 pHindex = 0
 for pH in pHrange:
     Uindex = 0
     for U in Urange:
         values = []
         for k in range(nsurfs):
-            values.append(dg(k, pH, U, concentration=1e-6))
+            value = dg(k, pH, U, concentration=1e-6)
+            values.append(value)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
         Uindex+=1
@@ -163,7 +179,7 @@ ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
-colors = plt.cm.tab20.colors[:nsurfs]
+colors = plt.cm.get_cmap("tab20", nsurfs).colors
 cmap = mcolors.ListedColormap(colors)
 bounds = np.arange(nsurfs + 1) - 0.5
 norm = mcolors.BoundaryNorm(bounds, cmap.N)
@@ -186,4 +202,5 @@ plt.plot(pHrange, 0-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, -0.15 , r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$',
         color='blue', rotation=-8, fontsize=10)
 
+plt.show()
 fig.savefig(f'pourbaixGC.png', bbox_inches='tight') 
