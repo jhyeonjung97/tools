@@ -145,7 +145,7 @@ def get_solid_entries():
         'Fe3O4': -242.400/calmol,
         'Fe2O3': -177.100/calmol,
         # 'Fe2O3': -161.930/calmol, # wrong one
-        # 'FeOOH': google it!
+        'FeOOH': -478.1/kJmol,
         'Fe(OH)2': -115.570/calmol,
         'Fe(OH)3': -166.000/calmol,
         }
@@ -164,7 +164,7 @@ def get_ion_entries():
         'Fe+++': -2.530/calmol,
         'FeOH++': -55.910/calmol,
         'Fe(OH)2+': -106.200/calmol,
-        # 'FeO4-': -111685/calmol,
+        'FeO4-': -111.685/calmol,
         }
     
     for ion, energy in ions.items():
@@ -183,7 +183,7 @@ def plot_pourbaix(entries, png_name):
     plotter = PourbaixPlotter(pourbaix)
 
     fig, ax = plt.subplots(figsize=(7, 5))    
-    plotter.get_pourbaix_plot(limits=[[0, 14], [-1, 3]], label_domains=False, label_fontsize=14,
+    plotter.get_pourbaix_plot(limits=[[0, 14], [-1, 3]], label_domains=True, label_fontsize=14,
                               show_water_lines=False, show_neutral_axes=False, ax=ax)
     stable_entries = pourbaix.stable_entries
 
@@ -221,10 +221,10 @@ def plot_pourbaix(entries, png_name):
         'Fe(s)': 0,
         'Fe[+2]': 1,
         'Fe[+3]': 2, 
-        'FeOH[+2]': 3, 
-        'FeHO2[-1]': 4, 
-        'Fe2O3(s)': 5,
-        'Fe3O4(s)': 6,
+        # 'FeOH[+2]': 3, 
+        'FeHO2[-1]': 3, 
+        'Fe2O3(s)': 4,
+        'Fe3O4(s)': 5,
     }
 
     sac_mapping = {
@@ -241,17 +241,17 @@ def plot_pourbaix(entries, png_name):
     for entry in sac_entries:
         print(entry.name)
         
-    for i, entry in enumerate(vac_entries):
-        vertices = plotter.domain_vertices(entry)
-        x, y = zip(*vertices)
-        color = vac_colors[vac_mapping[entry.name]]
-        ax.fill(x, y, color=color)
+    # for i, entry in enumerate(vac_entries):
+    #     vertices = plotter.domain_vertices(entry)
+    #     x, y = zip(*vertices)
+    #     color = vac_colors[vac_mapping[entry.name]]
+    #     ax.fill(x, y, color=color)
     
-    for i, entry in enumerate(sac_entries):
-        vertices = plotter.domain_vertices(entry)
-        x, y = zip(*vertices)
-        color = sac_colors[sac_mapping[entry.name]]
-        ax.fill(x, y, color=color)
+    # for i, entry in enumerate(sac_entries):
+    #     vertices = plotter.domain_vertices(entry)
+    #     x, y = zip(*vertices)
+    #     color = sac_colors[sac_mapping[entry.name]]
+    #     ax.fill(x, y, color=color)
 
     ax.set_xlabel("pH", fontsize=14)
     ax.set_ylabel("Potential (V vs SHE)", fontsize=14)
