@@ -53,6 +53,7 @@ def main():
     # df.loc["roman_DMC+sol+vdw(IS)", ["ΔE_OH"]] = 0.69 - 0.19 - 0.08
     df.loc["roman_DMC", ["ΔE_OH"]] = -0.11
     df.loc["roman_DMC+sol+vdw+antipodal(guess)", ["ΔE_OH"]] = -0.11 - 0.19 - 0.08 + 1.091891
+    df.loc["roman_PBE+U4.3_antipodal_OH", ["ΔE_OH"]] = 1.7
     # df.loc["zheng_0.0V(IS)", ["ΔG_OH"]] = 0.8
     df.loc["zheng_1.0V(IS)", ["ΔG_OH"]] = 0.9
     # df.loc["zheng_0.0V(HS)", ["ΔG_OH"]] = 0.4
@@ -133,12 +134,14 @@ def volcano_orr(df):
         ha = "right" if x < 1 else "left"
         xtext = 5 if x >= 1 else -5
         fontweight = "normal" 
-        if txt == "haily_antipodal_H2O" or  txt == "haily_antipodal_O2":
+        if txt == "haily_antipodal_H2O":
             fontweight = "bold"
         if txt == "haily_clean":
             ha = "left"; xtext = 5
         if txt == "haily_adjacent_OH":
             ha = "left"; va = 'top'
+        if txt == "roman_PBE+U4.3_antipodal_OH":
+            ha = "right"; xtext = -5; fontweight = "bold"
         plt.annotate(txt, (x, y), xytext=(xtext, 0),
                      textcoords="offset points", ha=ha, va=va, fontsize=8, fontweight=fontweight)
 
@@ -148,7 +151,7 @@ def volcano_orr(df):
     plt.yticks(np.arange(ymin, ymax+ytick, ytick), fontsize=8) 
     plt.xlabel(r"$\mathrm{\Delta G_{OH}}$ (eV)")
     plt.ylabel("Limiting Potential (V)")
-    plt.legend(loc="lower center", bbox_to_anchor=(0.5, 0.02), fontsize=8, ncol=4, columnspacing=1.0)
+    plt.legend(loc="upper left", bbox_to_anchor=(0.02, 0.98), fontsize=8, ncol=1, columnspacing=1.0)
     plt.tight_layout()
     plt.savefig('volcano_orr.png')
     plt.show()

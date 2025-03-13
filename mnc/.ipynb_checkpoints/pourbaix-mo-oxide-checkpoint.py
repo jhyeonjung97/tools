@@ -174,7 +174,7 @@ def plot_pourbaix(entries, png_name):
     plotter = PourbaixPlotter(pourbaix)
 
     fig, ax = plt.subplots(figsize=(7, 5))    
-    plotter.get_pourbaix_plot(limits=[[0, 14], [-1, 3]], label_domains=False, label_fontsize=14,
+    plotter.get_pourbaix_plot(limits=[[0, 14], [-1, 3]], label_domains=True, label_fontsize=14,
                               show_water_lines=False, show_neutral_axes=False, ax=ax)
     stable_entries = pourbaix.stable_entries
 
