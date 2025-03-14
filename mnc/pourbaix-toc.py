@@ -144,7 +144,7 @@ def get_solid_entries():
         'FeO' : -58.880/calmol,
         'Fe3O4': -242.400/calmol,
         'Fe2O3': -177.100/calmol,
-        'Fe2O3': -161.930/calmol,
+        # 'Fe2O3': -161.930/calmol,
         'Fe(OH)2': -115.570/calmol,
         'Fe(OH)3': -166.000/calmol,
         }
@@ -163,7 +163,7 @@ def get_ion_entries():
         'Fe+++': -2.530/calmol,
         'FeOH++': -55.910/calmol,
         'Fe(OH)2+': -106.200/calmol,
-        # 'FeO4-': -111685/calmol,
+        'FeO4-': -111.685/calmol,
         }
     
     for ion, energy in ions.items():
@@ -207,32 +207,38 @@ def plot_pourbaix(entries, png_name):
         'XH2(s) + Fe(s)': 0,
         'XH2(s) + Fe[+2]': 1,
         'XH2(s) + Fe[+3]': 2,
-        'X(s) + Fe[+3]': 3,
-        'X(s) + FeOH[+2]': 4,
-        'X(s) + Fe2O3(s)': 5,
+        'XH2(s) + FeO4[-1]': 3,
+        'X(s) + Fe[+3]': 4,
+        'X(s) + FeO4[-1]': 5,
+        
         'Fe(s) + XH2(s)': 0,
         'Fe[+2] + XH2(s)': 1,
         'Fe[+3] + XH2(s)': 2,
-        'Fe[+3] + X(s)': 3,
-        'FeOH[+2] + X(s)': 4,
-        'Fe2O3(s) + X(s)': 5,
+        'FeO4[-1] + XH2(s)': 3,
+        'Fe[+3] + X(s)': 4,
+        'FeO4[-1] + X(s)': 5,
         
         'Fe(s)': 0,
         'Fe[+2]': 1,
         'Fe[+3]': 2, 
-        'FeOH[+2]': 3, 
-        'FeHO2[-1]': 4, 
-        'Fe2O3(s)': 5,
-        'Fe3O4(s)': 6,
+        # 'FeOH[+2]': 3, 
+        'FeHO2[-1]': 3, 
+        'Fe2O3(s)': 4,
+        'Fe3O4(s)': 5,
     }
-    
+
     sac_mapping = {
         'XFe(s)': 0,
         'XFeHO(s)': 1,
         'XFeO(s)': 2,
+        'XFeHO2(s)': 3,
+        'XFeO2(s)': 4,
     }
-    
-    for i, entry in enumerate(sac_entries):
+
+    for entry in vac_entries:
+        print(entry.name)
+        
+    for entry in sac_entries:
         print(entry.name)
         
     for i, entry in enumerate(vac_entries):
@@ -283,7 +289,6 @@ def main():
     all_entries = ref_entries + sac_entries + solid_entries + ion_entries
     print("\nTotal Entries:", len(all_entries))
     plot_pourbaix(all_entries, f'{filename}_pourbaix_toc.png')
-
 
 if __name__ == "__main__":
     main()

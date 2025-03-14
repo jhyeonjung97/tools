@@ -188,8 +188,8 @@ def plot_pourbaix(entries, png_name):
     if 'bulk' in png_name:
         pH2 = np.arange(0, 14.01, 0.01)
         plt.plot(pH2, 1.23 - pH2 * const, color='black', lw=2.0) #, dashes=(5, 2))
-        plt.plot(pH2, df_oer['onsetP'][0] - pH2 * const, color='red', lw=2.0, dashes=(5, 2))
-        plt.plot(pH2, df_orr['onsetP'][0] - pH2 * const, color='blue', lw=2.0, dashes=(5, 2))
+        # plt.plot(pH2, df_oer['onsetP'][0] - pH2 * const, color='red', lw=2.0, dashes=(5, 2))
+        # plt.plot(pH2, df_orr['onsetP'][0] - pH2 * const, color='blue', lw=2.0, dashes=(5, 2))
     
     vac_entries = [entry for entry in stable_entries if 'XMo' not in entry.name]
     sac_entries = [entry for entry in stable_entries if 'XMo' in entry.name]
