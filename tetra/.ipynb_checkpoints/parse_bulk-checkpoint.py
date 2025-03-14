@@ -170,7 +170,7 @@ def plot_by_metal_row(df, save_path):
                         if coord == metal_df.loc[metal, 'coord']:
                             plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, marker=marker, edgecolors=color, facecolors='white')
                             
-            plt.xticks(np.arange(len(indice)), indice)
+            plt.xticks(np.arange(len(metals[row])), metals[row])
             plt.xlabel("Metal Index")
             plt.ylabel(columns.loc[col, 'ylabel'])
             plt.legend()
