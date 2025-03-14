@@ -1,12 +1,17 @@
 from ase.io import read, write
-import numpy as np
 
-atoms=read('final_with_calculator.json')
+# Read atomic structure from CONTCAR
+atoms = read('CONTCAR')
+
+# Modify z-coordinate for N and Co atoms
 for atom in atoms:
-    if atom.symbol not in ['N', 'C', 'O', 'H']:
-        if atom.index < len(atoms) - 1:
-            next_atom = atoms[atom.index + 1]
-            print(atom.symbol, atom.position)
-            print(next_atom.symbol, next_atom.position)
-            bond = np.linalg.norm(atom.position - next_atom.position)
-            print(bond)
+    if atom.symbol == 'N':
+        atom.position[2] = 10.0  # Modify z-coordinate
+    elif atom.symbol == 'Co':
+        dz = 10.0 - atom.position[2]
+        atom.position[2] = 10.0  # Modify z-coordinate
+    elif atom.symbol in ['O', 'H']:
+        atom.position[2] += dz
+        
+# Write the modified structure to POSCAR
+write('POSCAR', atoms)
