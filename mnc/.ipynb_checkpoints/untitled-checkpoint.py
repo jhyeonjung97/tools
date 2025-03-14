@@ -1,7 +1,7 @@
 from ase.io import read, write
 
 # Read atomic structure from CONTCAR
-atoms = read('CONTCAR')
+atoms = read('POSCAR')
 
 n = 0
 # Modify z-coordinate for N and Co atoms
@@ -15,4 +15,4 @@ for atom in atoms:
         atom.position[2] += dz
         
 # Write the modified structure to POSCAR
-write('POSCAR', atoms)
+write('start.traj', atoms)
