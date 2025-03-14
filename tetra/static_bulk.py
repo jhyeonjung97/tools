@@ -52,6 +52,8 @@ def get_bands(atoms):
     return nbands
     
 def extract_kpoints(file_path):
+    if not os.path.exists(file_path):
+        file_path = 'KPOINTS'
     with open(file_path, 'r') as file:
         file_content = file.readlines()
     nkx, nky, nkz = map(int, file_content[3].split())
