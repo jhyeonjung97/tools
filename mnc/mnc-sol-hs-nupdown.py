@@ -72,7 +72,7 @@ count_n = len([atom for atom in atoms if atom.symbol == 'N'])
 count_o = len([atom for atom in atoms if atom.symbol == 'O'])
 count_h = len([atom for atom in atoms if atom.symbol == 'H'])
 oxi = count_n / 2 + count_o * 2 - count_h
-
+print(oxi)
 if count_c == 1 or oxi == 2:
     spin_states = spin_states_plus_2
 elif oxi == 1:
