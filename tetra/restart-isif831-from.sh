@@ -58,4 +58,5 @@ do
         echo '' >> submit.sh
         echo 'python ~/bin/verve/bader.py' >> submit.sh
         pwd; sbatch submit.sh #; ((i+=1))
+    fi
 done
