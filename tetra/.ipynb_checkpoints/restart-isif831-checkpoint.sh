@@ -4,10 +4,10 @@ for dir in /pscratch/sd/j/jiuy97/7_V_bulk/*_*_*/*/*_*/from_*
 do
     cd $dir
     IFS='/' read -r -a path <<< $dir
-    coord=$(echo "${path[-3]}" | cut -d'_' -f3)
-    row=$(echo "${path[-2]}" | cut -d'_' -f1)
-    numb=$(echo "${path[-1]}" | cut -d'_' -f1)
-    metal=$(echo "${path[-1]}" | cut -d'_' -f2)
+    coord=$(echo "${path[-4]}" | cut -d'_' -f3)
+    row=$(echo "${path[-3]}" | cut -d'_' -f1)
+    numb=$(echo "${path[-2]}" | cut -d'_' -f1)
+    metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     jobname=${coord}${row}${numb}
     
     if [[ -n $(squeue --me | grep $jobname) ]] || [[ -z $(find . -maxdepth 1 -type f) ]]; then
