@@ -118,7 +118,6 @@ calc = Vasp(
 #     sys.exit("Calculation not completed.")
     
 total_electrons = calc.get_number_of_electrons() 
-# total_electrons = 124
 
 # Create a directory for each charge state
 parent_dir = os.getcwd()
