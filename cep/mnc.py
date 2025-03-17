@@ -120,7 +120,7 @@ if not os.path.exists('DONE'):
 total_electrons = calc.get_number_of_electrons() 
 
 # Create a directory for each charge state
-parent_dir = os.path.getcwd()
+parent_dir = os.getcwd()
 restart_path = os.path.join(parent_dir, 'restart.json')
 wavecar_path = os.path.join(parent_dir, 'WAVECAR')
 
