@@ -105,7 +105,7 @@ calc = Vasp(
 )
 
 # Run calculation
-atoms.calc = calc
+# atoms.calc = calc
 # atoms.get_potential_energy()
 # atoms.get_forces()
 
@@ -117,7 +117,8 @@ atoms.calc = calc
 if not os.path.exists('DONE'):
     sys.exit("Calculation not completed.")
     
-total_electrons = calc.get_number_of_electrons() 
+# total_electrons = calc.get_number_of_electrons() 
+total_electrons = 124
 
 # Create a directory for each charge state
 parent_dir = os.getcwd()
