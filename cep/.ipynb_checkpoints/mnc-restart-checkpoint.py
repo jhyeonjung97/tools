@@ -6,47 +6,47 @@ import numpy as np
 from ase.io import read, Trajectory
 from ase.calculators.vasp import Vasp
 
-basename = os.path.basename(os.getcwd())
+# basename = os.path.basename(os.getcwd())
 
-# Load atomic structure from available file
-if os.path.exists('restart.json'):
-    atoms = read('restart.json')
-elif os.path.exists('start.traj'):
-    atoms = read('start.traj')
-else:
-    raise ValueError("Neither restart.json nor start.traj file found")
+# # Load atomic structure from available file
+# if os.path.exists('restart.json'):
+#     atoms = read('restart.json')
+# elif os.path.exists('start.traj'):
+#     atoms = read('start.traj')
+# else:
+#     raise ValueError("Neither restart.json nor start.traj file found")
 
-# Define d-electron counts for transition metals
-d_electrons = {
-    'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 6, 'Co': 7, 'Ni': 8, 'Cu': 9, 'Zn': 10,
-    'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 6, 'Rh': 7, 'Pd': 8, 'Ag': 9, 'Cd': 10,
-    'La': 1, 'Hf': 2, 'Ta': 3, 'W': 4, 'Re': 5, 'Os': 6, 'Ir': 7, 'Pt': 8, 'Au': 9, 'Hg': 10,
-}
+# # Define d-electron counts for transition metals
+# d_electrons = {
+#     'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 6, 'Co': 7, 'Ni': 8, 'Cu': 9, 'Zn': 10,
+#     'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 6, 'Rh': 7, 'Pd': 8, 'Ag': 9, 'Cd': 10,
+#     'La': 1, 'Hf': 2, 'Ta': 3, 'W': 4, 'Re': 5, 'Os': 6, 'Ir': 7, 'Pt': 8, 'Au': 9, 'Hg': 10,
+# }
 
-# Determine oxidation state (assuming MN4C system)
-count_o = len([atom for atom in atoms if atom.symbol == 'O'])
-count_h = len([atom for atom in atoms if atom.symbol == 'H'])
-oxi = count_o * 2 - count_h + 2
+# # Determine oxidation state (assuming MN4C system)
+# count_o = len([atom for atom in atoms if atom.symbol == 'O'])
+# count_h = len([atom for atom in atoms if atom.symbol == 'H'])
+# oxi = count_o * 2 - count_h + 2
 
-# Assign magnetic moments based on d-electron count
-for atom in atoms:
-    if atom.symbol in d_electrons:
-        d_electron = d_electrons[atom.symbol] - oxi
-        if basename.lower() == 'ls':  # Low spin state
-            if d_electron < 0 or d_electron > 10:
-                sys.exit(f"Error: Unexpected d_electron value ({d_electron}) for {atom.symbol} in LS state.")
-            spin = 1 if d_electron % 2 == 1 else 0
-        elif basename.lower() == 'is':  # Intermediate spin state
-            if d_electron not in {4, 5, 6}:
-                sys.exit(f"Error: Unexpected d_electron value ({d_electron}) for {atom.symbol} in IS state.")
-            spin = 3 if d_electron == 5 else 2
-        elif basename.lower() == 'hs':  # High spin state
-            if d_electron not in {2, 3, 4, 5, 6, 7, 8}:
-                sys.exit(f"Error: Unexpected d_electron value ({d_electron}) for {atom.symbol} in HS state.")
-            spin = d_electron if d_electron < 5 else 10 - d_electron
-        else:
-            sys.exit(f"Error: Invalid spin state. Choose from 'ls', 'is', or 'hs'.")
-        atom.magmom = spin
+# # Assign magnetic moments based on d-electron count
+# for atom in atoms:
+#     if atom.symbol in d_electrons:
+#         d_electron = d_electrons[atom.symbol] - oxi
+#         if basename.lower() == 'ls':  # Low spin state
+#             if d_electron < 0 or d_electron > 10:
+#                 sys.exit(f"Error: Unexpected d_electron value ({d_electron}) for {atom.symbol} in LS state.")
+#             spin = 1 if d_electron % 2 == 1 else 0
+#         elif basename.lower() == 'is':  # Intermediate spin state
+#             if d_electron not in {4, 5, 6}:
+#                 sys.exit(f"Error: Unexpected d_electron value ({d_electron}) for {atom.symbol} in IS state.")
+#             spin = 3 if d_electron == 5 else 2
+#         elif basename.lower() == 'hs':  # High spin state
+#             if d_electron not in {2, 3, 4, 5, 6, 7, 8}:
+#                 sys.exit(f"Error: Unexpected d_electron value ({d_electron}) for {atom.symbol} in HS state.")
+#             spin = d_electron if d_electron < 5 else 10 - d_electron
+#         else:
+#             sys.exit(f"Error: Invalid spin state. Choose from 'ls', 'is', or 'hs'.")
+#         atom.magmom = spin
 
 # Set up VASP calculator
 calc = Vasp(
@@ -104,7 +104,7 @@ calc = Vasp(
     lvtot=False,           # Do not write total potential
 )
 
-# Run calculation
+# # Run calculation
 # atoms.calc = calc
 # atoms.get_potential_energy()
 # atoms.get_forces()
@@ -114,11 +114,11 @@ calc = Vasp(
 # subprocess.call('ase convert -f final_with_calculator.traj final_with_calculator.json', shell=True)
 # subprocess.call('~/bin/get_restart3', shell=True)
 
-if not os.path.exists('DONE'):
-    sys.exit("Calculation not completed.")
+# if not os.path.exists('DONE'):
+#     sys.exit("Calculation not completed.")
     
-# total_electrons = calc.get_number_of_electrons() 
-total_electrons = 124
+total_electrons = calc.get_number_of_electrons() 
+# total_electrons = 124
 
 # Create a directory for each charge state
 parent_dir = os.getcwd()
