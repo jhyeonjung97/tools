@@ -56,8 +56,7 @@ do
         sed -i -e 's/\.\/opt/~\/bin\/tools\/tetra\/opt/' submit.sh
         sed -i -e 's/_symprec.py/.py/' submit.sh
         sed -i -e 's/opt_bulk3/opt_bulk2/' submit.sh
-        echo '' >> submit.sh
-        echo 'python ~/bin/verve/bader.py' >> submit.sh
+        echo '\npython ~/bin/verve/bader.py' >> submit.sh
         pwd; sbatch submit.sh #; ((i+=1))
     fi
 done
