@@ -50,13 +50,13 @@ do
         cp ~/bin/tools/tetra/lobsterin .
         sed -i -e "s/X/${metal}/" lobsterin
         pwd; sbatch submit.sh #; ((i+=1))
-    else
-        mkdir isif3; find . -maxdepth 1 -type f -exec mv {} isif3/ \;
-        cd isif3; cp WAVECAR restart.json submit.sh $dir; cd $dir
-        sed -i -e 's/\.\/opt/~\/bin\/tools\/tetra\/opt/' submit.sh
-        sed -i -e 's/_symprec.py/.py/' submit.sh
-        sed -i -e 's/opt_bulk3/opt_bulk2/' submit.sh
-        echo '\npython ~/bin/verve/bader.py' >> submit.sh
-        pwd; sbatch submit.sh #; ((i+=1))
+    # else
+    #     mkdir isif3; find . -maxdepth 1 -type f -exec mv {} isif3/ \;
+    #     cd isif3; cp WAVECAR restart.json submit.sh $dir; cd $dir
+    #     sed -i -e 's/\.\/opt/~\/bin\/tools\/tetra\/opt/' submit.sh
+    #     sed -i -e 's/_symprec.py/.py/' submit.sh
+    #     sed -i -e 's/opt_bulk3/opt_bulk2/' submit.sh
+    #     echo '\npython ~/bin/verve/bader.py' >> submit.sh
+    #     pwd; sbatch submit.sh #; ((i+=1))
     fi
 done
