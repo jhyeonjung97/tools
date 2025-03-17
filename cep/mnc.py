@@ -108,8 +108,8 @@ calc = Vasp(
 atoms.set_calculator(calc)
 
 # Run calculation
-total_energy = atoms.get_potential_energy()
-forces = atoms.get_forces()
+atoms.get_potential_energy()
+atoms.get_forces()
 
 # Save results
 Trajectory('final_with_calculator.traj', 'w').write(atoms)

@@ -19,5 +19,3 @@ export VASP_SCRIPT=/global/homes/j/jiuy97/bin/run_vasp_cpu.py
 export VASP_PP_PATH=/global/cfs/cdirs/m2997/vasp-psp/pseudo54
 
 python ~/bin/tools/cep/mnc.py
-python ~/bin/get_restart3.py
-python ~/bin/verve/bader.py
