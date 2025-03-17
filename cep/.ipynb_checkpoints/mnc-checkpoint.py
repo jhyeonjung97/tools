@@ -104,10 +104,8 @@ calc = Vasp(
     lvtot=False,           # Do not write total potential
 )
 
-# Assign calculator to atoms
-atoms.set_calculator(calc)
-
 # Run calculation
+atoms.calc = calc
 atoms.get_potential_energy()
 atoms.get_forces()
 
@@ -148,7 +146,7 @@ for fraction in fraction_charges:
     
     # Run the charged calculation
     calc.set(nelect=nelect)
-    new_atoms.set_calculator(calc)
+    new_atoms.calc = calc
     new_atoms.get_potential_energy()
     new_atoms.get_forces()
     
