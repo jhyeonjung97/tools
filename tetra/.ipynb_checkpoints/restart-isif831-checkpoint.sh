@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for dir in /pscratch/sd/j/jiuy97/7_V_bulk/7_Pyramidal_LT/*/*_*
+for dir in /pscratch/sd/j/jiuy97/7_V_bulk/*_*_*/*/*_*/from_*
 do
     cd $dir
     IFS='/' read -r -a path <<< $dir
@@ -9,14 +9,6 @@ do
     numb=$(echo "${path[-1]}" | cut -d'_' -f1)
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname=${coord}${row}${numb}
-    
-    dir_fm="/pscratch/sd/j/jiuy97/7_V_bulk/${path[-3]}/fm/${path[-1]}"
-    if [[ $row == '3d' ]] && [[ -f "$dir/isif8/DONE" ]] && [[ -f "$dir/isif8/restart.json" ]] && [[ ! -f "$dir_fm/start.traj" ]] && [[ ! -d "$dir_fm/isif8" ]]; then
-        cd $dir_fm; cp $dir/isif8/CONTCAR $dir/isif8/submit.sh .
-        echo -e "\e[32mcp CONTCAR submit.sh $dir_fm\e[0m"
-        ase convert CONTCAR start.traj; rm CONTCAR
-        sed -i -e "s/$jobname/${coord}fm${numb}/" -e 's/afm/fm/' submit.sh
-    fi
     
     if [[ -n $(squeue --me | grep $jobname) ]] || [[ -z $(find . -maxdepth 1 -type f) ]]; then
         continue
@@ -33,12 +25,13 @@ do
         fi
         pwd; sbatch submit.sh #; ((i+=1))
     elif [[ ! -f "DONE" ]]; then
-        python ~/bin/tools/tetra/get_restart3.py
-        if [[ -f "$dir/DONE" ]]; then
-            pwd; echo -e "\e[31mCheck this directory!\e[0m"
-        else
-            pwd; sbatch submit.sh
-        fi
+        pwd; echo -e "\e[31mCheck this directory!\e[0m"
+        # python ~/bin/tools/tetra/get_restart3.py
+        # if [[ -f "$dir/DONE" ]]; then
+        #     pwd; echo -e "\e[31mCheck this directory!\e[0m"
+        # else
+        #     pwd; sbatch submit.sh
+        # fi
     elif [[ -d "isif2" ]]; then
         continue
     elif [[ -d "isif3" ]]; then
@@ -57,7 +50,7 @@ do
         cp ~/bin/tools/tetra/lobsterin .
         sed -i -e "s/X/${metal}/" lobsterin
         pwd; sbatch submit.sh #; ((i+=1))
-    elif [[ -d "isif8" ]]; then
+    else
         mkdir isif3; find . -maxdepth 1 -type f -exec mv {} isif3/ \;
         cd isif3; cp WAVECAR restart.json submit.sh $dir; cd $dir
         sed -i -e 's/\.\/opt/~\/bin\/tools\/tetra\/opt/' submit.sh
@@ -65,13 +58,6 @@ do
         sed -i -e 's/opt_bulk3/opt_bulk2/' submit.sh
         echo '' >> submit.sh
         echo 'python ~/bin/verve/bader.py' >> submit.sh
-        pwd; sbatch submit.sh #; ((i+=1))
-    else
-        mkdir isif8; find . -maxdepth 1 -type f -exec mv {} isif8/ \;
-        cd isif8; cp WAVECAR restart.json submit.sh $dir; cd $dir
-        sed -i -e 's/\.\/opt/~\/bin\/tools\/tetra\/opt/' submit.sh
-        sed -i -e 's/_symprec.py/.py/' submit.sh
-        sed -i -e 's/opt_bulk8/opt_bulk3/' submit.sh
         pwd; sbatch submit.sh #; ((i+=1))
     fi
 done
