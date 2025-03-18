@@ -30,7 +30,7 @@ oxi = count_o * 2 - count_h + 2
 
 # Assign magnetic moments based on d-electron count
 for atom in atoms:
-    if atom.symbol in d_electrons:
+    if not os.path.exists('restart.json') and atom.symbol in d_electrons:
         d_electron = d_electrons[atom.symbol] - oxi
         if basename.lower() == 'ls':  # Low spin state
             if d_electron < 0 or d_electron > 10:
