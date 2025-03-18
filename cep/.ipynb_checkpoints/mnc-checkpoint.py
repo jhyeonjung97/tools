@@ -6,7 +6,8 @@ import numpy as np
 from ase.io import read, Trajectory
 from ase.calculators.vasp import Vasp
 
-basename = os.path.basename(os.getcwd())
+root = os.getcwd()
+basename = os.path.basename(root)
 
 # Load atomic structure from available file
 if os.path.exists('restart.json'):
@@ -120,12 +121,11 @@ if not os.path.exists('DONE'):
 total_electrons = calc.get_number_of_electrons() 
 
 # Create a directory for each charge state
-parent_dir = os.getcwd()
-restart_path = os.path.join(parent_dir, 'restart.json')
-wavecar_path = os.path.join(parent_dir, 'WAVECAR')
+restart_path = os.path.join(root, 'restart.json')
+wavecar_path = os.path.join(root, 'WAVECAR')
 
 # Specify the charge states
-fraction_charges = [-0.5, -1.0, -1.5, -2.0, -2.5, -3.0] ## Change this to the desired charge states
+fraction_charges = [+1.0, +0.5, -0.5, -1.0, -1.5, -2.0] ## Change this to the desired charge states
 
 # Perform the calculations for each charge state
 for fraction in fraction_charges:
@@ -135,7 +135,7 @@ for fraction in fraction_charges:
     
     # Create a directory for the charge state and copy the necessary files
     folder_name = f'nelect_{nelect}'
-    folder_path = os.path.join(parent_dir, folder_name)
+    folder_path = os.path.join(root, folder_name)
     os.makedirs(folder_path)
     shutil.copy2(restart_path, folder_path)  
     shutil.copy2(wavecar_path, folder_path)
@@ -157,12 +157,12 @@ for fraction in fraction_charges:
 
 # Create a directory for the uncharged calculation and copy the OUTCAR file
 folder_name = 'nelect_{}'.format(total_electrons)
-folder_path = os.path.join(parent_dir, folder_name)
+folder_path = os.path.join(root, folder_name)
 os.makedirs(folder_path)
 
-# Copy all files from parent_dir to folder_path
-for file_name in os.listdir(parent_dir):
-    src_file = os.path.join(parent_dir, file_name)
+# Copy all files from root to folder_path
+for file_name in os.listdir(root):
+    src_file = os.path.join(root, file_name)
     dest_file = os.path.join(folder_path, file_name)
 
     # Only copy files, skip directories
