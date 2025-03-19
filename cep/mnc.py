@@ -27,7 +27,7 @@ d_electrons = {
 # Determine oxidation state (assuming MN4C system)
 count_o = len([atom for atom in atoms if atom.symbol == 'O'])
 count_h = len([atom for atom in atoms if atom.symbol == 'H'])
-oxi = count_o * 2 - count_h + 2
+oxi = count_o * 2 - count_h # assuming MN4C system
 
 # Assign magnetic moments based on d-electron count
 for atom in atoms:

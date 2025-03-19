@@ -7,7 +7,7 @@ from ase.io import read, write
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
-root = '/pscratch/sd/j/jiuy97/7_V_bulk'
+# root = '/pscratch/sd/j/jiuy97/7_V_bulk'
 save_path = os.path.join(root, 'figures')
 
 coords_data = [
@@ -86,7 +86,7 @@ def main():
         df = pd.read_csv(f'{save_path}/bulk_data.csv')
     else:
         # for coord in coords.index:
-        for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS']:
+        for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']:
             CN = coords.loc[coord, 'CN']
             ON = coords.loc[coord, 'ON']
             MN = coords.loc[coord, 'MN']
