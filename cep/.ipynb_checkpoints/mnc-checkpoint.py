@@ -30,6 +30,7 @@ count_h = len([atom for atom in atoms if atom.symbol == 'H'])
 oxi = count_o * 2 - count_h # assuming MN4C system
 
 # Assign magnetic moments based on d-electron count
+spin = 0
 for atom in atoms:
     if atom.symbol in d_electrons:
         d_electron = d_electrons[atom.symbol] - oxi
