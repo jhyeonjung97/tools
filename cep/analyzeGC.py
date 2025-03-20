@@ -44,7 +44,7 @@ folders =[]
 for numElectrons in num_electrons:
     folders+=["nelect_"+str(neutral_electrons+numElectrons)]
 
-print(folders)
+# print(folders)
 
 ## Empty lists to store the data
 nelects= []   # Number of electrons in the slab
@@ -95,8 +95,8 @@ for folder in folders:
     aLat = float(outcar.split(' length of vectors')[-1].split()[0])
     bLat = float(outcar.split(' length of vectors')[-1].split()[1])
     latticeParams.append(aLat*bLat)
-    print(aLat)
-    print(bLat)
+    # print(aLat)
+    # print(bLat)
 
 ## Fit the data quadratically
 p1, risid1, rank1, sing1, rcon1 = np.polyfit(charges, energies, 2, full=True)
@@ -124,9 +124,11 @@ y2_fit_GCEnVPot = a2*x**2 + b2*x + c2
 y3_fit_ChgVPot = a3*x**2 + b3*x + c3
 y4_fit_CapVPot = (2*a3*x + b3)*-1*e_chg/(aLat*bLat*(10**-8)**2)*10**6
 
+print(y4_fit_CapVPot)
+
 ## Plot DFT energy vs. charge
 plt.figure(figsize=(8,5))
-plt.plot(charges,energies, 'ro', label='data')
+plt.plot(charges, energies, 'ro', label='data')
 plt.plot(x_charge, y1_fit_EnVChg, label='quadratic fitting')
 plt.xlabel("Number of Extra Electrons")
 plt.ylabel("DFT_energy, eV")
@@ -160,7 +162,7 @@ plt.close()
 
 ## Plot charge vs. applied potential (vs. SHE)
 plt.figure(figsize=(8,5))
-plt.plot(applied_potentials,charges, 'ro', label = 'data')
+plt.plot(applied_potentials, charges, 'ro', label = 'data')
 plt.plot(x, y3_fit_ChgVPot, label = 'quadratic fitting')
 plt.legend()
 plt.xlabel("Potential vs. SHE")
