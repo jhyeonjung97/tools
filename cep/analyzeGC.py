@@ -8,11 +8,11 @@
 ### This script runs GCDFT calculations ###
 
 ### Imports ###
-from ase.io import *
 import os
-import matplotlib.pyplot as plt
-from ase.visualize import *
 import numpy as np
+from ase.io import *
+from ase.visualize import *
+import matplotlib.pyplot as plt
 
 # Read the OUTCAR file
 outcar_path = os.path.join(os.getcwd(), 'OUTCAR')
@@ -20,12 +20,12 @@ vaspout_path = os.path.join(os.getcwd(), 'vasp.out')
 
 # Extract the # of electrons
 with open(outcar_path, 'r') as f:
-  outcar = f.read()
+    outcar = f.read()
 neutral_electrons = float(outcar.split('NELECT =')[1].split()[0]) # Number of electrons in the uncharged slab
 
 # Extract the Fermi energy
 with open(vaspout_path, 'r') as f:
-  vaspout = f.read()
+    vaspout = f.read()
 fermi_shift = float(vaspout.split('FERMI_SHIFT =')[-1].split()[0]) # Fermi shift from VaspSol (eV)
 
 ## Constants
@@ -58,45 +58,45 @@ latticeParams = [] # Lattice parameters of the slab
 ## Loop over the directories and extract the data
 for folder in folders:
    
-   # Read the OUTCAR file
-   outcar_path = os.path.join(folder, 'OUTCAR')
-   with open(outcar_path, 'r') as f:
-      outcar = f.read()
+    # Read the OUTCAR file
+    outcar_path = os.path.join(folder, 'OUTCAR')
+    with open(outcar_path, 'r') as f:
+        outcar = f.read()
 
-   # Extract the # of electrons
-   nelect = float(outcar.split('NELECT =')[1].split()[0])
-   print(nelect)
-   nelects.append(nelect)
+    # Extract the # of electrons
+    nelect = float(outcar.split('NELECT =')[1].split()[0])
+    # print(nelect)
+    nelects.append(nelect)
 
-   # Extract the charge
-   charge = nelect-neutral_electrons
-   print(charge)
-   charges.append(charge)
+    # Extract the charge
+    charge = nelect-neutral_electrons
+    # print(charge)
+    charges.append(charge)
 
-   # Extract the Fermi energy
-   fermi_energy = float(outcar.split('E-fermi :')[-1].split()[0])
-   print(fermi_energy)
-   fermi_energies.append(fermi_energy)
+    # Extract the Fermi energy
+    fermi_energy = float(outcar.split('E-fermi :')[-1].split()[0])
+    # print(fermi_energy)
+    fermi_energies.append(fermi_energy)
 
-   # Calculate the applied potential (vs. SHE)
-   applied_potential = (fermi_shift-fermi_energy)-WF_SHE 
-   print(applied_potential)
-   applied_potentials.append(applied_potential)
+    # Calculate the applied potential (vs. SHE)
+    applied_potential = (fermi_shift-fermi_energy)-WF_SHE 
+    # print(applied_potential)
+    applied_potentials.append(applied_potential)
 
-   # Extract the DFT energy
-   energy = float(outcar.split('energy  without entropy=')[-1].split()[0])
-   print(energy)
-   energies.append(energy)
+    # Extract the DFT energy
+    energy = float(outcar.split('energy  without entropy=')[-1].split()[0])
+    # print(energy)
+    energies.append(energy)
 
-   # Calculate the GC free energy
-   gc_free_energies.append(energy-charge*fermi_energy) 
-   
-   # Extract the lattice parameters
-   aLat = float(outcar.split(' length of vectors')[-1].split()[0])
-   bLat = float(outcar.split(' length of vectors')[-1].split()[1])
-   latticeParams.append(aLat*bLat)
-   print(aLat)
-   print(bLat)
+    # Calculate the GC free energy
+    gc_free_energies.append(energy-charge*fermi_energy) 
+
+    # Extract the lattice parameters
+    aLat = float(outcar.split(' length of vectors')[-1].split()[0])
+    bLat = float(outcar.split(' length of vectors')[-1].split()[1])
+    latticeParams.append(aLat*bLat)
+    print(aLat)
+    print(bLat)
 
 ## Fit the data quadratically
 p1, risid1, rank1, sing1, rcon1 = np.polyfit(charges, energies, 2, full=True)
