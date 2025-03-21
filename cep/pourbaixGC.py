@@ -209,12 +209,13 @@ for idx, surf_id in enumerate(unique_ids):
 
 min_coords = {}
 
-# Loop over each grid point
-for i in range(lowest_surfaces.shape[0]):
-    for j in range(lowest_surfaces.shape[1]):
-        sid = int(lowest_surfaces[i, j])  # Ensure integer surface ID
-        x = pH[i, j]
-        y = U[i, j]
+n_rows, n_cols = lowest_surfaces.shape
+
+for i in range(n_rows):       # loop over U (rows)
+    for j in range(n_cols):   # loop over pH (columns)
+        sid = int(lowest_surfaces[i, j])
+        x = pH[j]   # pH varies along columns (x-axis)
+        y = U[i]    # U varies along rows    (y-axis)
 
         if sid not in min_coords:
             min_coords[sid] = (x, y)
@@ -223,7 +224,7 @@ for i in range(lowest_surfaces.shape[0]):
             if x < current_x or (x == current_x and y < current_y):
                 min_coords[sid] = (x, y)
 
-# Print the minimum (x, y) coordinates for each surface
+# Print the results
 for sid in sorted(min_coords):
     x, y = min_coords[sid]
     print(f"Surface {sid}: x = {x}, y = {y}")
