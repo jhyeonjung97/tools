@@ -207,6 +207,11 @@ for idx, surf_id in enumerate(unique_ids):
     plt.plot([], [], color=colors[idx], linewidth=5, label=label)
 
 
+print(type(pH), pH.shape)
+print(type(U), U.shape)
+print(type(lowest_surfaces), lowest_surfaces.shape)
+
+
 min_coords = {}
 
 n_rows, n_cols = lowest_surfaces.shape
