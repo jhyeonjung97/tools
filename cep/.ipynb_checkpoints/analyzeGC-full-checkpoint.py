@@ -131,7 +131,7 @@ plt.plot(x_charge, y1_fit_EnVChg, label='quadratic fitting')
 plt.xlabel("Number of Extra Electrons")
 plt.ylabel("DFT_energy, eV")
 plt.legend()
-plt.text(1,c1-1,r'RSS=%.2f, ' % (risid1) + 'R$^{\sf 2}$ = %.2f' % (1-risid1/sstot1)) # Fit statistics
+plt.text(0.1, 0.1, r'RSS=%.2f, ' % (risid1.item()) + 'R$^{\sf 2}$ = %.2f' % (1-risid1.item()/sstot1.item()), transform=plt.gca().transAxes) # Fit statistics
 
 ## Save and display the DFT energy vs. charge plot
 if FULL:
@@ -148,7 +148,7 @@ plt.plot(x, y2_fit_GCEnVPot, label='quadratic fitting')
 plt.xlabel("Potential vs. SHE")
 plt.ylabel("Free Energy, eV")
 plt.legend()
-plt.text(1,c2-1,r'RSS=%.2f, ' % (risid2) + 'R$^{\sf 2}$ = %.2f' % (1-risid2/sstot2)) # Fit statistics
+plt.text(0.1, 0.1, r'RSS=%.2f, ' % (risid2.item()) + 'R$^{\sf 2}$ = %.2f' % (1-risid2.item()/sstot2.item()), transform=plt.gca().transAxes) # Fit statistics
 
 ## Save and display the GC free energy vs. applied potential plot
 if FULL:
@@ -165,7 +165,7 @@ plt.plot(x, y3_fit_ChgVPot, label = 'quadratic fitting')
 plt.legend()
 plt.xlabel("Potential vs. SHE")
 plt.ylabel("Number of Extra Electrons")
-plt.text(0.5,-1.5,r'RSS=%.2f, ' % (risid3) + 'R$^{\sf 2}$ = %.2f' % (1-risid3/sstot3)) # Fit statistics
+plt.text(0.1, 0.1, r'RSS=%.2f, ' % (risid3.item()) + 'R$^{\sf 2}$ = %.2f' % (1-risid3.item()/sstot3.item()), transform=plt.gca().transAxes) # Fit statistics
 
 ## Save and display the charge vs. applied potential plot
 if FULL:
