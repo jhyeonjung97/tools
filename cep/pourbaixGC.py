@@ -207,34 +207,32 @@ for idx, surf_id in enumerate(unique_ids):
     plt.plot([], [], color=colors[idx], linewidth=5, label=label)
 
 
-# Assume pH and U are 2D arrays from meshgrid with shape matching lowest_surfaces
-nrows, ncols = lowest_surfaces.shape
+import numpy as np
 
-# Flatten all arrays to 1D for easy indexing
-x_flat = pH.flatten()
-y_flat = U.flatten()
-surf_flat = lowest_surfaces.flatten()
+# Assume pH, U, and lowest_surfaces are 2D arrays of same shape (from meshgrid)
+assert pH.shape == U.shape == lowest_surfaces.shape
 
-# Combine into a list of (surface_id, x, y)
-data = list(zip(surf_flat, x_flat, y_flat))
-
-# Dictionary to store minimum (x, y) per surface
 min_coords = {}
 
-for sid, x, y in data:
-    sid = int(sid)  # Ensure integer surface ID
-    if sid not in min_coords:
-        min_coords[sid] = (x, y)
-    else:
-        current_x, current_y = min_coords[sid]
-        # Update if smaller x, or same x but smaller y
-        if x < current_x or (x == current_x and y < current_y):
+# Loop over all grid points
+for i in range(pH.shape[0]):
+    for j in range(pH.shape[1]):
+        sid = int(lowest_surfaces[i, j])  # ensure surface ID is int
+        x = pH[i, j]
+        y = U[i, j]
+
+        if sid not in min_coords:
             min_coords[sid] = (x, y)
+        else:
+            current_x, current_y = min_coords[sid]
+            if x < current_x or (x == current_x and y < current_y):
+                min_coords[sid] = (x, y)
 
 # Print results
 for sid in sorted(min_coords):
     x, y = min_coords[sid]
     print(f"Surface {sid}: x = {x}, y = {y}")
+
 
 
 
