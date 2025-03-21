@@ -207,8 +207,8 @@ for idx, surf_id in enumerate(unique_ids):
     plt.plot([], [], color=colors[idx], linewidth=5, label=label)
 
 
-print(type(pH), pH.shape)
-print(type(U), U.shape)
+print(type(pHrange), pHrange.shape)
+print(type(Urange), Urange.shape)
 print(type(lowest_surfaces), lowest_surfaces.shape)
 
 
@@ -219,8 +219,8 @@ n_rows, n_cols = lowest_surfaces.shape
 for i in range(n_rows):       # loop over U (rows)
     for j in range(n_cols):   # loop over pH (columns)
         sid = int(lowest_surfaces[i, j])
-        x = pH[i]   # pH varies along columns (x-axis)
-        y = U[j]    # U varies along rows    (y-axis)
+        x = pHrange[i]   # pH varies along columns (x-axis)
+        y = Urange[j]    # U varies along rows    (y-axis)
 
         if sid not in min_coords:
             min_coords[sid] = (x, y)
