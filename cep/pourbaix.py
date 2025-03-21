@@ -180,19 +180,34 @@ ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
-# colors = list(plt.cm.get_cmap("tab20c").colors) + list(plt.cm.get_cmap("tab20b").colors)
+# 색상 정의
 colors = list(colormaps["tab20c"].colors) + list(colormaps["tab20b"].colors)
-cmap = mcolors.ListedColormap(colors)
+
+# lowest_surfaces가 실제로 어떤 값들로 되어 있는지 확인하고, 고유값 리스트 생성
+unique_ids = np.unique(lowest_surfaces)
+nsurfs = len(unique_ids)
+
+# 색상 수보다 surface 수가 많으면 에러 방지
+if nsurfs > len(colors):
+    raise ValueError("Surface 종류가 너무 많아 색상 부족!")
+
+# 고유 surface ID를 0부터 차례로 다시 매핑 (ex: {10:0, 15:1, 30:2, ...})
+id_map = {val: idx for idx, val in enumerate(unique_ids)}
+mapped_surfaces = np.vectorize(id_map.get)(lowest_surfaces)
+
+# 컬러맵과 정규화 설정
+cmap = mcolors.ListedColormap(colors[:nsurfs])
 bounds = np.arange(nsurfs + 1) - 0.5
 norm = mcolors.BoundaryNorm(bounds, cmap.N)
 
-for k in range(nsurfs):
-    label = surfs[k][10]
-    # label = r"S$_{%k}$(H-%i O-%i OH-%i OOH-%i)" % (k, surfs[k][3], surfs[k][4], surfs[k][5], surfs[k][6])
-    plt.plot([], [], color=colors[k], linewidth=5, label=label)
+# legend 생성 - 고유 surface ID 순서에 따라
+for idx, surf_id in enumerate(unique_ids):
+    label = surfs[surf_id][10]  # 또는 너가 원하는 다른 포맷
+    plt.plot([], [], color=colors[idx], linewidth=5, label=label)
 
+# pcolormesh
 pH, U = np.meshgrid(pHrange, Urange)
-plt.pcolormesh(pH, U, lowest_surfaces, cmap=cmap, norm=norm)
+plt.pcolormesh(pH, U, mapped_surfaces, cmap=cmap, norm=norm)
 
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
        fontsize='x-small', handlelength=3, edgecolor='black')
