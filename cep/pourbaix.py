@@ -7,7 +7,7 @@ from math import log10
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
-GCDFT = True
+GCDFT = False
 bulk_metal = -5.041720865 # Fe, eV
 
 # constants

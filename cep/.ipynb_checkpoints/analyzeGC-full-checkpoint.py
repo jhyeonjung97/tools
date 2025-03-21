@@ -89,7 +89,8 @@ for folder in folders:
     energies.append(energy)
 
     # Calculate the GC free energy
-    gc_free_energies.append(energy-charge*(fermi_energy-fermi_shift)) 
+    gc_free_energies.append(energy-charge*(fermi_energy))
+    # gc_free_energies.append(energy-charge*(fermi_energy-fermi_shift)) 
 
     # Extract the lattice parameters
     aLat = float(outcar.split(' length of vectors')[-1].split()[0])
