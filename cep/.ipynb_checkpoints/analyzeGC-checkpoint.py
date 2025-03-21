@@ -37,7 +37,8 @@ FULL = False
 # FULL = True
 
 ## Charge states to analyze
-num_electrons = [+1.0, +0.5, 0.0, -0.5, -1.0, -1.5, -2.0]
+# num_electrons = [+1.0, +0.5, 0.0, -0.5, -1.0, -1.5, -2.0]
+num_electrons = [+0.5, 0.0, -0.5, -1.0, -1.5]
 
 folders =[]
 

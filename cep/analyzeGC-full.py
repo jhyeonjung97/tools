@@ -33,12 +33,11 @@ WF_SHE = 4.4 # Experimental WF of SHE (eV)
 e_chg = 1.602e-19 # Elementary Charge (Coulombs)
 
 ## Are all charge states used for the fitting?
-FULL = False
-# FULL = True
+# FULL = False
+FULL = True
 
 ## Charge states to analyze
-# num_electrons = [+1.0, +0.5, 0.0, -0.5, -1.0, -1.5, -2.0]
-num_electrons = [+0.5, 0.0, -0.5, -1.0, -1.5]
+num_electrons = [+1.0, +0.5, 0.0, -0.5, -1.0, -1.5, -2.0]
 
 folders =[]
 
