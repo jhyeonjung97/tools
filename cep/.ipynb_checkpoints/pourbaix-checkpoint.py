@@ -4,6 +4,7 @@
 import os
 import numpy as np
 from math import log10
+from matplotlib import colormaps
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
@@ -179,7 +180,8 @@ ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
-colors = list(plt.cm.get_cmap("tab20c").colors) + list(plt.cm.get_cmap("tab20b").colors)
+# colors = list(plt.cm.get_cmap("tab20c").colors) + list(plt.cm.get_cmap("tab20b").colors)
+colors = list(colormaps["tab20c"].colors) + list(colormaps["tab20b"].colors)
 cmap = mcolors.ListedColormap(colors)
 bounds = np.arange(nsurfs + 1) - 0.5
 norm = mcolors.BoundaryNorm(bounds, cmap.N)
