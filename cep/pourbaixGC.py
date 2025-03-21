@@ -219,8 +219,8 @@ n_rows, n_cols = lowest_surfaces.shape
 for i in range(n_rows):       # loop over U (rows)
     for j in range(n_cols):   # loop over pH (columns)
         sid = int(lowest_surfaces[i, j])
-        x = pHrange[i]   # pH varies along columns (x-axis)
-        y = Urange[j]    # U varies along rows    (y-axis)
+        x = pHrange[j]   # pH varies along columns (x-axis)
+        y = Urange[i]    # U varies along rows    (y-axis)
 
         if sid not in min_coords:
             min_coords[sid] = (x, y)
