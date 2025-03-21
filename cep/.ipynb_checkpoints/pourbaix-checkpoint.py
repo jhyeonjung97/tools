@@ -203,7 +203,7 @@ norm = mcolors.BoundaryNorm(bounds, cmap.N)
 # legend 생성 - 고유 surface ID 순서에 따라
 print(unique_ids)
 for idx, surf_id in enumerate(unique_ids):
-    label = surfs[surf_id][10]  # 또는 너가 원하는 다른 포맷
+    label = surfs[int(surf_id)][10]
     plt.plot([], [], color=colors[idx], linewidth=5, label=label)
 
 # pcolormesh
