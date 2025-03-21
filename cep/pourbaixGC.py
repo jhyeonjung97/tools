@@ -113,7 +113,7 @@ surfs = [
     # ['E', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
     [-269.569746, 0, +0, 0, 0, 0, 0, -0.3655405668135691, 0.45552073788487135, -269.645443005364, 'vac'],
     [-279.340765, 0, +0, 2, 0, 0, 0, -0.4310220085501212, -0.18813647315805954, -279.27741924851745, 'vac(H₂)'],
-    # [-280.1784, 1, +0, 0, 0, 0, 0, -0.3714,  0.2173, -1.96, 'clean'],
+    # [-280.1784, 1, +0, 0, 0, 0, 0, -0.3714,  0.2173, -1.96, 'clean(HS)'],
     [-277.546212, 1, +0, 0, 0, 0, 0, -0.423357238170348, -0.18029803360057767, -277.46155128048673, 'clean(IS)'],
     [-275.904061, 1, +0, 0, 0, 0, 0, -0.423198992129675, -0.023209968264605602, -275.8141779964752, 'clean(LS)'],
     # [-282.5588, 1, +0, 1, 0, 0, 0, -0.3438, -0.3362, -0.89, '*H(Fe)'],
@@ -230,8 +230,8 @@ for idx, surf_id in enumerate(unique_ids):
 pH, U = np.meshgrid(pHrange, Urange)
 plt.pcolormesh(pH, U, mapped_surfaces, cmap=cmap, norm=norm)
 
-plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=1,
-       fontsize='x-small', handlelength=3, edgecolor='black')
+plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., 
+           fontsize='small', ncol=1, handlelength=3, edgecolor='black') 
 
 plt.plot(pHrange, 1.23-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
 ax.text(0.2, 1.00, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$',

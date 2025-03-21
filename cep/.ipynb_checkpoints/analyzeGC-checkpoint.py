@@ -140,7 +140,7 @@ if FULL:
     plt.savefig('energy4p4FULL.png')
 else:
     plt.savefig('energy4p4.png')
-plt.show()
+# plt.show()
 plt.close()
 
 ## Plot GC free energy vs. applied potential (vs. SHE)
@@ -157,7 +157,7 @@ if FULL:
     plt.savefig('Free_energy4p4FULL.png')
 else:
     plt.savefig('Free_energy4p4.png')
-plt.show()
+# plt.show()
 plt.close()
 
 ## Plot charge vs. applied potential (vs. SHE)
@@ -174,7 +174,7 @@ if FULL:
     plt.savefig('Charge4p4FULL.png')
 else:
     plt.savefig('Charge4p4.png')
-plt.show()
+# plt.show()
 plt.close()
 
 ## Plot Fermi energy vs. applied potential (vs. SHE) 
@@ -188,7 +188,7 @@ if FULL:
     plt.savefig('Fermi_energy4p4FULL.png')
 else:
     plt.savefig('Fermi_energy4p4.png')
-plt.show()
+# plt.show()
 plt.close()
 
 ## Plot capacitance vs. applied potential (vs. SHE)
@@ -203,7 +203,7 @@ if FULL:
     plt.savefig('Capacitance4p4FULL.png')
 else:
     plt.savefig('Capacitance4p4.png')
-plt.show()
+# plt.show()
 plt.close()
 
 ## Save the GC Free Energy Fit and Data Points 
