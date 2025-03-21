@@ -89,7 +89,7 @@ for folder in folders:
     energies.append(energy)
 
     # Calculate the GC free energy
-    gc_free_energies.append(energy-charge*fermi_energy) 
+    gc_free_energies.append(energy-charge*(fermi_energy-fermi_shift)) 
 
     # Extract the lattice parameters
     aLat = float(outcar.split(' length of vectors')[-1].split()[0])
@@ -123,8 +123,6 @@ y1_fit_EnVChg = a1*x_charge**2 + b1*x_charge + c1
 y2_fit_GCEnVPot = a2*x**2 + b2*x + c2
 y3_fit_ChgVPot = a3*x**2 + b3*x + c3
 y4_fit_CapVPot = (2*a3*x + b3)*-1*e_chg/(aLat*bLat*(10**-8)**2)*10**6
-
-print(y4_fit_CapVPot)
 
 ## Plot DFT energy vs. charge
 plt.figure(figsize=(8,5))
