@@ -207,17 +207,12 @@ for idx, surf_id in enumerate(unique_ids):
     plt.plot([], [], color=colors[idx], linewidth=5, label=label)
 
 
-import numpy as np
-
-# Assume pH, U, and lowest_surfaces are 2D arrays of same shape (from meshgrid)
-assert pH.shape == U.shape == lowest_surfaces.shape
-
 min_coords = {}
 
-# Loop over all grid points
-for i in range(pH.shape[0]):
-    for j in range(pH.shape[1]):
-        sid = int(lowest_surfaces[i, j])  # ensure surface ID is int
+# Loop over each grid point
+for i in range(lowest_surfaces.shape[0]):
+    for j in range(lowest_surfaces.shape[1]):
+        sid = int(lowest_surfaces[i, j])  # Ensure integer surface ID
         x = pH[i, j]
         y = U[i, j]
 
@@ -228,10 +223,11 @@ for i in range(pH.shape[0]):
             if x < current_x or (x == current_x and y < current_y):
                 min_coords[sid] = (x, y)
 
-# Print results
+# Print the minimum (x, y) coordinates for each surface
 for sid in sorted(min_coords):
     x, y = min_coords[sid]
     print(f"Surface {sid}: x = {x}, y = {y}")
+
 
 
 
