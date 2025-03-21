@@ -13,15 +13,15 @@ root = '/Users/hailey/Desktop/7_V_bulk'
 save_path = os.path.join(root, 'figures')
 
 coords_data = [
-    {'coord': 'WZ', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ',  'marker': '>', 'color': 'tab:red',   },
-    {'coord': 'ZB', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB',  'marker': '<', 'color': 'tab:orange',},
-    # {'coord': 'TN', 'CN': 4, 'ON': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'marker': 'o', 'color': 'tab:olive', },
-    {'coord': 'PD', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '3_SquarePlanar_PD', 'marker': 's', 'color': 'tab:green', },
-    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '4_SquarePlanar_NB', 'marker': 'p', 'color': 'tab:blue',  },
-    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '5_Octahedral_RS',   'marker': 'd', 'color': 'tab:purple',},
-    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '6_Pyramidal_LT',    'marker': 'h', 'color': 'tab:brown', },
-    # {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'tab:pink',  },
-    # {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'tab:cyan',  },
+    {'coord': 'WZ', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ',  'zorder': 7, 'marker': '>', 'color': 'darkorange',},
+    {'coord': 'ZB', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB',  'zorder': 6, 'marker': '<', 'color': 'gold',},
+    {'coord': 'TN', 'CN': 4, 'ON': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'zorder': 5, 'marker': 'p', 'color': 'blue',},
+    {'coord': 'PD', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD', 'zorder': 4, 'marker': 'o', 'color': 'deepskyblue',},
+    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'zorder': 3, 'marker': 's', 'color': 'limegreen',},
+    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'zorder': 2, 'marker': 'd', 'color': 'orchid',},
+    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'zorder': 1, 'marker': 'h', 'color': 'silver',},
+    # {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'pink',},
+    # {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'cyan',},
 ]
 coords = pd.DataFrame(coords_data).set_index('coord')
 coords.index.name = None
@@ -170,12 +170,13 @@ def plot_by_metal_row(df, save_path):
                 continue
             plt.figure(figsize=(8, 6))
             # for coord in coords.index:
-            for c, coord in enumerate(['WZ', 'ZB', 'PD', 'TN', 'NB', 'RS']):
+            for c, coord in enumerate(['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']):
+                zorder=coords.loc[coord, 'zorder']
                 marker=coords.loc[coord, 'marker']
                 color=coords.loc[coord, 'color']
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, 
-                         linestyle='-', label=coord, zorder=c)                
+                         linestyle='-', label=coord, zorder=zorder)                
                 # for m, metal in enumerate(metals[row]):
                 #     numb = str(m).zfill(2)
                 #     item = coord+row+numb
@@ -188,7 +189,8 @@ def plot_by_metal_row(df, save_path):
                 if col == 'form':
                     for m, metal in enumerate(metals[row]):
                         if coord == metal_df.loc[metal, 'coord']:
-                            plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, marker=marker, edgecolors=color, facecolors='white', zorder=c)
+                            plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, 
+                                        marker=marker, edgecolors=color, facecolors='white', zorder=zorder)
                             
             plt.xticks(np.arange(len(metals[row])), metals[row])
             plt.xlabel("Metal Index")
@@ -202,7 +204,7 @@ def plot_by_metal_row(df, save_path):
             
 def plot_by_coordination(df, save_path):        
     # for coord in coords.index:
-    for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS']:            
+    for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']:            
         for col in columns.index:
             marker=coords.loc[coord, 'marker']
             base_color = coords.loc[coord, 'color']
