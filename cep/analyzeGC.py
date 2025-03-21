@@ -37,8 +37,8 @@ FULL = False
 # FULL = True
 
 ## Charge states to analyze
-# num_electrons = [+1.0, +0.5, 0.0, -0.5, -1.0, -1.5, -2.0]
-num_electrons = [+0.5, 0.0, -0.5, -1.0, -1.5]
+num_electrons = [+1.0, +0.5, 0.0, -0.5, -1.0, -1.5, -2.0]
+# num_electrons = [+0.5, 0.0, -0.5, -1.0, -1.5]
 
 folders =[]
 
@@ -90,7 +90,7 @@ for folder in folders:
     energies.append(energy)
 
     # Calculate the GC free energy
-    gc_free_energies.append(energy-charge*(fermi_energy-fermi_shift)) 
+    gc_free_energies.append(energy-charge*(fermi_energy)) 
 
     # Extract the lattice parameters
     aLat = float(outcar.split(' length of vectors')[-1].split()[0])
