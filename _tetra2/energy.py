@@ -484,13 +484,15 @@ def plot_separately(values_dict, dir_names, xlabel, ylabel, save, filenam, marke
             print(f"No values found for pattern: {pattern}")
             continue
         plt.figure(figsize=(8, 6), dpi=300)
-        # x = []
-        # filtered_values = []
-        # for i, v in enumerate(values):
-        #     if not np.isnan(v): 
-        #         x.append(i)
-        #         filtered_values.append(v)
-        # plt.plot(x, values, marker=marker, color=color)
+        
+        x = []
+        filtered_values = []
+        for i, v in enumerate(values):
+            if not np.isnan(v): 
+                x.append(i)
+                filtered_values.append(v)
+        plt.plot(x, values, marker=marker, color=color)
+        
         plt.plot(range(len(values)), values, marker=marker, color=color)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)

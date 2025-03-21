@@ -2,6 +2,7 @@
 
 import os
 import numpy as np
+import numpy.ma as ma
 import pandas as pd
 from ase.io import read, write
 import matplotlib.pyplot as plt
@@ -48,6 +49,7 @@ columns_data = [
     {'column': 'mag',      'png_name': 'magnetic_moments',    'ylabel': 'Magnetic Moments (μB)'},
     {'column': 'l_bond',   'png_name': 'bond_length',         'ylabel': 'Bond Length (Å)'},
     {'column': 'n_bond',   'png_name': 'number_of_bonds',     'ylabel': 'Number of Bonds per Metal'},
+    {'column': 'match',    'png_name': 'match',               'ylabel': 'Bulk Structure Maintain'},
     {'column': '-ICOHPm',  'png_name': 'icohp_per_metal',     'ylabel': '-ICOHP per Metal (eV)'},
     {'column': 'ICOBIm',   'png_name': 'icobi_per_metal',     'ylabel': 'ICOBI per Metal'},
     {'column': '-ICOOPm',  'png_name': 'icoop_per_metal',     'ylabel': '-ICOOP per Metal (eV)'},
@@ -61,8 +63,10 @@ columns = pd.DataFrame(columns_data).set_index('column')
 columns.index.name = None
 
 df = pd.DataFrame(columns=columns.index, dtype='object')
+bool_cols = ['match']
 int_cols = ['CN', 'ON', 'n_bond']
-float_cols = ['energy', 'form', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
+str_cols = ['coord', 'row', 'numb', 'metal']
+float_cols = ['energy', 'form', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
 
 metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t', index_col=0)
 
@@ -83,75 +87,77 @@ Ref_O = Ref_H2O - Ref_H2
 def main():
     global df
     
-    if os.path.exists(f'{save_path}/bulk_data.csv'):
-        df = pd.read_csv(f'{save_path}/bulk_data.csv')
-    else:
-        # for coord in coords.index:
-        for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']:
-            CN = coords.loc[coord, 'CN']
-            ON = coords.loc[coord, 'ON']
-            MN = coords.loc[coord, 'MN']
-            coord_dir = coords.loc[coord, 'coord_dir']
-            
-            for row in metals.keys():
-                for m, metal in enumerate(metals[row]):
-                    numb = str(m).zfill(2)
-                    item = coord+row+numb
-                    df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'ON']] = coord, row, m, metal, CN, ON 
-                    dir_path = os.path.join(root, coord_dir, row, numb+'_'+metal)
-                    
-                    atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')                
-                    if os.path.exists(atoms_path):
-                        atoms = read(atoms_path)
-                        energy = atoms.get_total_energy()
-                        volume = atoms.get_volume()
-                        df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
-
-                        formation = energy/MN - metal_df.loc[metal, 'E'] - (Ref_O2 / 2) * (ON /2)
-                        df.loc[item, 'form'] = formation
-
-                        if coord in ['WZ', 'TN', 'PD', 'LT', 'AQ']:
-                            a = atoms.cell.cellpar()[0]
-                            c = atoms.cell.cellpar()[2]
-                            df.loc[item, 'cell'] = c/a
-                        elif coord in ['ZB', 'NB', 'RS']:
-                            df.loc[item, 'cell'] = atoms.cell.cellpar()[3]
-                    
-                    chg_path = os.path.join(dir_path, 'isif2/atoms_bader_charge.json')
-                    if os.path.exists(chg_path):
-                        atoms = read(chg_path)
-                        chgs = atoms.get_initial_charges()
-                        chg = np.mean([chgs[atom.index] for atom in atoms if atom.symbol == metal])
-                        df.loc[item, 'chg'] = chg
-                
-                    mag_path = os.path.join(dir_path, 'isif2/moments.json')
-                    if os.path.exists(mag_path):
-                        atoms = read(mag_path)
-                        mags = atoms.get_magnetic_moments()
-                        mag = np.mean([abs(mags[atom.index]) for atom in atoms if atom.symbol == metal])
-                        df.loc[item, 'mag'] = mag
-                
-                    icohp_path = os.path.join(dir_path, 'icohp.txt')
-                    icobi_path = os.path.join(dir_path, 'icobi.txt')
-                    icoop_path = os.path.join(dir_path, 'icoop.txt')
-                    madelung_path = os.path.join(dir_path, 'MadelungEnergies.lobster')
-                    grosspop_path = os.path.join(dir_path, 'GROSSPOP.lobster')
-                    if os.path.exists(icohp_path) and os.path.getsize(icohp_path) != 0:
-                        icohp, bond, nbond = parse_icohp(icohp_path)
-                        icobi, _, _ = parse_icohp(icobi_path)
-                        icoop, _, _ = parse_icohp(icoop_path)
-                        madelung = parse_madelung(madelung_path)
-                        grosspop = parse_grosspop(grosspop_path, metal)
-                        df.loc[item, ['l_bond', 'n_bond', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']] = bond, nbond, icohp, icobi, icoop, madelung/MN, grosspop
-                        df.loc[item, ['-ICOHPm', 'ICOBIm', '-ICOOPm']] = icohp*nbond, icobi*nbond, icoop*nbond
-                        # if CN != nbond:
-                        #     print(dir_path)
+    # if os.path.exists(f'{save_path}/bulk_data.csv'):
+    #     df = pd.read_csv(f'{save_path}/bulk_data.csv')
     
-                    df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
-                    # df[int_cols] = df[int_cols].astype(int)
-                    df[float_cols] = df[float_cols].astype(float).round(2)
-                    df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
+    # for coord in coords.index:
+    for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']:
+        CN = coords.loc[coord, 'CN']
+        ON = coords.loc[coord, 'ON']
+        MN = coords.loc[coord, 'MN']
+        coord_dir = coords.loc[coord, 'coord_dir']
+        
+        for row in metals.keys():
+            for m, metal in enumerate(metals[row]):
+                numb = str(m).zfill(2)
+                item = coord+row+numb
+                df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'ON']] = coord, row, m, metal, CN, ON 
+                dir_path = os.path.join(root, coord_dir, row, numb+'_'+metal)
                 
+                atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')                
+                if os.path.exists(atoms_path):
+                    atoms = read(atoms_path)
+                    energy = atoms.get_total_energy()
+                    volume = atoms.get_volume()
+                    df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
+
+                    formation = energy/MN - metal_df.loc[metal, 'E'] - (Ref_O2 / 2) * (ON /2)
+                    df.loc[item, 'form'] = formation
+
+                    if coord in ['WZ', 'TN', 'PD', 'LT', 'AQ']:
+                        a = atoms.cell.cellpar()[0]
+                        c = atoms.cell.cellpar()[2]
+                        df.loc[item, 'cell'] = c/a
+                    elif coord in ['ZB', 'NB', 'RS']:
+                        df.loc[item, 'cell'] = atoms.cell.cellpar()[3]
+                
+                chg_path = os.path.join(dir_path, 'isif2/atoms_bader_charge.json')
+                if os.path.exists(chg_path):
+                    atoms = read(chg_path)
+                    chgs = atoms.get_initial_charges()
+                    chg = np.mean([chgs[atom.index] for atom in atoms if atom.symbol == metal])
+                    df.loc[item, 'chg'] = chg
+            
+                mag_path = os.path.join(dir_path, 'isif2/moments.json')
+                if os.path.exists(mag_path):
+                    atoms = read(mag_path)
+                    mags = atoms.get_magnetic_moments()
+                    mag = np.mean([abs(mags[atom.index]) for atom in atoms if atom.symbol == metal])
+                    df.loc[item, 'mag'] = mag
+            
+                icohp_path = os.path.join(dir_path, 'icohp.txt')
+                icobi_path = os.path.join(dir_path, 'icobi.txt')
+                icoop_path = os.path.join(dir_path, 'icoop.txt')
+                madelung_path = os.path.join(dir_path, 'MadelungEnergies.lobster')
+                grosspop_path = os.path.join(dir_path, 'GROSSPOP.lobster')
+                if os.path.exists(icohp_path) and os.path.getsize(icohp_path) != 0:
+                    icohp, bond, nbond = parse_icohp(icohp_path)
+                    icobi, _, _ = parse_icohp(icobi_path)
+                    icoop, _, _ = parse_icohp(icoop_path)
+                    madelung = parse_madelung(madelung_path)
+                    grosspop = parse_grosspop(grosspop_path, metal)
+                    df.loc[item, ['l_bond', 'n_bond', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']] = bond, nbond, icohp, icobi, icoop, madelung/MN, grosspop
+                    df.loc[item, ['-ICOHPm', 'ICOBIm', '-ICOOPm']] = icohp*nbond, icobi*nbond, icoop*nbond
+                    
+                df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
+                # df[int_cols] = df[int_cols].astype(int)
+                df[float_cols] = df[float_cols].astype(float).round(2)
+                df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
+
+                if df.loc[item, 'n_bond'] != df.loc[item, 'CN']:
+                    df.loc[item, 'match'] = False
+                    df.loc[item, float_cols] = np.nan
+    
     print(df)
     plot_by_metal_row(df, save_path)
     plot_by_coordination(df, save_path)
@@ -159,17 +165,29 @@ def main():
 def plot_by_metal_row(df, save_path):
     for row in ['fm', '3d', '4d', '5d']:
         for col in columns.index:
+            if col in str_cols or col in bool_cols:
+                continue
             plt.figure(figsize=(8, 6))
             # for coord in coords.index:
-            for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS']:
+            for c, coord in enumerate(['WZ', 'ZB', 'PD', 'TN', 'NB', 'RS']):
                 marker=coords.loc[coord, 'marker']
                 color=coords.loc[coord, 'color']
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=coord)
+                plt.plot(subset['numb'], subset[col], marker=marker, color=color, 
+                         linestyle='-', label=coord, zorder=c)                
+                # for m, metal in enumerate(metals[row]):
+                #     numb = str(m).zfill(2)
+                #     item = coord+row+numb
+                #     if subset.loc[item, 'CN'] == subset.loc[item, 'n_bond']:                    
+                #         plt.scatter(subset.loc[item, 'numb'], subset.loc[item, col], 
+                #                     marker=marker, edgecolors=color, facecolors=color, zorder=c)
+                #     else:
+                #         plt.scatter(subset.loc[item, 'numb'], subset.loc[item, col], 
+                #                     marker='x', color=color, zorder=c)
                 if col == 'form':
                     for m, metal in enumerate(metals[row]):
                         if coord == metal_df.loc[metal, 'coord']:
-                            plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, marker=marker, edgecolors=color, facecolors='white')
+                            plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, marker=marker, edgecolors=color, facecolors='white', zorder=c)
                             
             plt.xticks(np.arange(len(metals[row])), metals[row])
             plt.xlabel("Metal Index")
@@ -192,12 +210,14 @@ def plot_by_coordination(df, save_path):
             plt.figure(figsize=(8, 6))
             for r, row in enumerate(['fm', '3d', '4d', '5d']):
                 color = 'lightgray' if row == 'fm' else colors[r-1]
-                subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                plt.plot(subset['numb'], subset[col], marker=marker, color=color, linestyle='-', label=row)
+                subset = df[(df['coord'] == coord) & (df['row'] == row)]           
+                plt.plot(subset['numb'], subset[col], marker=marker, color=color, 
+                         linestyle='-', label=row)
                 if col == 'form':
                     for m, metal in enumerate(metals[row]):
                         if coord == metal_df.loc[metal, 'coord']:
-                            plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, marker=marker, edgecolors=color, facecolors='white')
+                            plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, 
+                                        marker=marker, edgecolors=color, facecolors='white')
                     
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
