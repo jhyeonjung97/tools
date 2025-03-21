@@ -15,13 +15,13 @@ save_path = os.path.join(root, 'figures')
 coords_data = [
     {'coord': 'WZ', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ',  'marker': '>', 'color': 'tab:red',   },
     {'coord': 'ZB', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB',  'marker': '<', 'color': 'tab:orange',},
-    {'coord': 'TN', 'CN': 4, 'ON': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'marker': 'o', 'color': 'tab:olive', },
-    {'coord': 'PD', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD', 'marker': 's', 'color': 'tab:green', },
-    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'marker': 'p', 'color': 'tab:blue',  },
-    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'marker': 'd', 'color': 'tab:purple',},
-    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'marker': 'h', 'color': 'tab:brown', },
-    {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'tab:pink',  },
-    {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'tab:cyan',  },
+    # {'coord': 'TN', 'CN': 4, 'ON': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'marker': 'o', 'color': 'tab:olive', },
+    {'coord': 'PD', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '3_SquarePlanar_PD', 'marker': 's', 'color': 'tab:green', },
+    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '4_SquarePlanar_NB', 'marker': 'p', 'color': 'tab:blue',  },
+    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '5_Octahedral_RS',   'marker': 'd', 'color': 'tab:purple',},
+    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '6_Pyramidal_LT',    'marker': 'h', 'color': 'tab:brown', },
+    # {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'tab:pink',  },
+    # {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'tab:cyan',  },
 ]
 coords = pd.DataFrame(coords_data).set_index('coord')
 coords.index.name = None
@@ -153,8 +153,9 @@ def main():
                 # df[int_cols] = df[int_cols].astype(int)
                 df[float_cols] = df[float_cols].astype(float).round(2)
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
-
-                if df.loc[item, 'n_bond'] != df.loc[item, 'CN']:
+                
+                match_path = os.path.join(dir_path, 'unmatched')
+                if os.path.exists(match_path) or df.loc[item, 'n_bond'] != df.loc[item, 'CN']:
                     df.loc[item, 'match'] = False
                     df.loc[item, float_cols] = np.nan
     
