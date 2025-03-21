@@ -4,6 +4,7 @@
 import os
 import numpy as np
 from math import log10
+from matplotlib import colormaps
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
