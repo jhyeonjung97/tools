@@ -180,27 +180,27 @@ ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
-# 색상 정의
+# Define colors
 colors = list(colormaps["tab20c"].colors) + list(colormaps["tab20b"].colors)
 
-# lowest_surfaces가 실제로 어떤 값들로 되어 있는지 확인하고, 고유값 리스트 생성
+# Check unique values in lowest_surfaces and create a list of unique surface IDs
 unique_ids = np.unique(lowest_surfaces)
 nsurfs = len(unique_ids)
 
-# 색상 수보다 surface 수가 많으면 에러 방지
+# Raise error if number of surfaces exceeds available colors
 if nsurfs > len(colors):
-    raise ValueError("Surface 종류가 너무 많아 색상 부족!")
+    raise ValueError("Too many surface types, not enough colors!")
 
-# 고유 surface ID를 0부터 차례로 다시 매핑 (ex: {10:0, 15:1, 30:2, ...})
+# Map unique surface IDs to sequential indices (e.g., {10:0, 15:1, 30:2, ...})
 id_map = {val: idx for idx, val in enumerate(unique_ids)}
 mapped_surfaces = np.vectorize(id_map.get)(lowest_surfaces)
 
-# 컬러맵과 정규화 설정
+# Define colormap and normalization for pcolormesh
 cmap = mcolors.ListedColormap(colors[:nsurfs])
 bounds = np.arange(nsurfs + 1) - 0.5
 norm = mcolors.BoundaryNorm(bounds, cmap.N)
 
-# legend 생성 - 고유 surface ID 순서에 따라
+# Create legend using the same surface ID mapping order
 print(unique_ids)
 for idx, surf_id in enumerate(unique_ids):
     label = surfs[int(surf_id)][10]
