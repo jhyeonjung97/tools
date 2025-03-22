@@ -7,6 +7,7 @@ from math import log10
 from matplotlib import colormaps
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from matplotlib.colors import LinearSegmentedColormap
 
 GCDFT = True
 bulk_metal = -5.041720865 # Fe, eV
@@ -113,24 +114,29 @@ surfs = [
     # ['E', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
     [-269.569746, 0, +0, 0, 0, 0, 0, -0.3655405668135691, 0.45552073788487135, -269.645443005364, 'vac'],
     [-279.340765, 0, +0, 2, 0, 0, 0, -0.4310220085501212, -0.18813647315805954, -279.27741924851745, 'vac(H₂)'],
-    # [-280.1784, 1, +0, 0, 0, 0, 0, -0.3714,  0.2173, -1.96, 'clean(HS)'],
+    # [-277.546212, 1, +0, 0, 0, 0, 0, -0.423357238170348, -0.18029803360057767, -277.46155128048673, 'clean(HS)'],
     [-277.546212, 1, +0, 0, 0, 0, 0, -0.423357238170348, -0.18029803360057767, -277.46155128048673, 'clean(IS)'],
     [-275.904061, 1, +0, 0, 0, 0, 0, -0.423198992129675, -0.023209968264605602, -275.8141779964752, 'clean(LS)'],
-    # [-282.5588, 1, +0, 1, 0, 0, 0, -0.3438, -0.3362, -0.89, '*H(Fe)'],
-    # [-282.6377, 1, +0, 1, 0, 0, 0, -0.3608, -0.6948, -0.83, '*H(N)'],
-    # [-290.9780, 1, +0, 0, 1, 0, 0, -0.8300, -0.4206, -4.45, '*OH'],
-    # [-285.9474, 1, +0, 0, 0, 1, 0, -0.7036,  0.3162, -5.73, '*O'],
-    # [-300.7382, 1, +0, 0, 2, 0, 0, -0.7214,  0.3152, -5.60, '*OH+*OH(adg)'],
-    # [-300.6264, 1, +0, 0, 2, 0, 0, -0.9681, -0.9980, -3.54, '*OH+*OH(anti)'],
-    # [-295.2283, 1, +0, 0, 1, 1, 0, -0.9971, -1.1225, -3.47, '*OH+*O(adg)'],
-    # [-295.5266, 1, +0, 0, 1, 1, 0, -0.8134,  0.0605, -4.80, '*OH+*O(anti)'],
-    # [-289.6763, 1, +0, 0, 0, 2, 0, -0.9297, -0.7491, -3.28, '*O+*O(anti)'],
+    [-288.221008, 1, +0, 0, 1, 0, 0, -0.4467206439644741, 0.04059102541473414, -288.1146816835875, '*OH(HS)'],
+    [-288.124300, 1, +0, 0, 1, 0, 0, -0.49213990645417277, 0.2598149164035292, -288.04840908267477, '*OH(IS)'],
+    [-287.563089, 1, +0, 0, 1, 0, 0, -0.4807076337804513, 0.18746381957939667, -287.4849251837713, '*OH(LS)'],
+    [-283.228986, 1, +0, 0, 0, 1, 0, -0.40383700613414103, 0.2916884347090441, -283.1526637494537, '*O(HS)'],
+    [-282.942139, 1, +0, 0, 0, 1, 0, -0.45657630964544965, 0.3430163672241705, -282.89037791515415, '*O(IS)'],
+    [-282.513697, 1, +0, 0, 0, 1, 0, -0.4407271111295996, 0.2676105696973955, -282.43318248088525, '*O(LS)'],
+    [-297.295568, 1, +0, 0, 2, 0, 0, -0.5595101320515073, 0.4931725265118078, -297.292789623116, '*OH+*OH(HS)'],
+    # [-288.124300, 1, +0, 0, 2, 0, 0, -0.49213990645417277, 0.2598149164035292, -288.04840908267477, '*OH+*OH(IS)'],
+    [-296.898685, 1, +0, 0, 2, 0, 0, -0.59572540226707, 0.5697551318500524, -297.0414929981233, '*OH+*OH(LS)'],
+    # [-297.295568, 1, +0, 0, 1, 1, 0, -0.5595101320515073, 0.4931725265118078, -297.292789623116, '*OH+*O(HS)'],
+    # [-288.124300, 1, +0, 0, 1, 1, 0, -0.49213990645417277, 0.2598149164035292, -288.04840908267477, '*OH+*O(IS)'],
+    # [-296.898685, 1, +0, 0, 1, 1, 0, -0.59572540226707, 0.5697551318500524, -297.0414929981233, '*OH+*O(LS)'],
+    # [-297.295568, 1, +0, 0, 0, 2, 0, -0.5595101320515073, 0.4931725265118078, -297.292789623116, '*O+*O(HS)'],
+    # [-288.124300, 1, +0, 0, 0, 2, 0, -0.49213990645417277, 0.2598149164035292, -288.04840908267477, '*O+*O(IS)'],
+    # [-296.898685, 1, +0, 0, 0, 2, 0, -0.59572540226707, 0.5697551318500524, -297.0414929981233, '*O+*O(LS)'],
 ]
 
 nsurfs = len(surfs)
 surface_reference = surfs[0][0]
 for k in range(nsurfs):
-    surfs[k][9] += surfs[k][0] ## remove this if you have GCDFT data
     formation_energy_corr = (
         - surface_reference
         - surfs[k][3] * (gh - dgh) # H
@@ -201,25 +207,75 @@ ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
-# Define colors
-colors = list(colormaps["tab20c"].colors) + list(colormaps["tab20b"].colors)
-
 # Check unique values in lowest_surfaces and create a list of unique surface IDs
 unique_ids = np.unique(lowest_surfaces)
 nsurfs = len(unique_ids)
 
-# Raise error if number of surfaces exceeds available colors
-if nsurfs > len(colors):
-    raise ValueError("Too many surface types, not enough colors!")
+# Define base color groups and their initial indices
+base_colors = {
+    'dodgerblue': 1,
+    'orange': 1,
+    'limegreen': 1,
+    'gold': 1,
+    'hotpink': 1,
+    'darkgoldenrod': 1,
+    'pink': 1,
+    'gray': 1,
+}
 
-# Map unique surface IDs to sequential indices (e.g., {10:0, 15:1, 30:2, ...})
+# Generate custom colormaps and shades from white → base color
+cmaps = {}
+shades = {}
+
+for base_color in base_colors:
+    cmap = LinearSegmentedColormap.from_list(f"custom_{base_color}", ["white", base_color])
+    cmaps[base_color] = cmap
+    if base_color == 'dodgerblue' or base_color == 'orange':
+        shades[base_color] = [cmap(i) for i in np.linspace(0, 1, 4)]
+    else:
+        shades[base_color] = [cmap(i) for i in np.linspace(0, 1, 4)]
+        
+# Map surface ID to corresponding color shade
+color_mapping = {}
+
+for surf_id in unique_ids:
+    name = surfs[int(surf_id)][10]
+    if 'vac(H₂)' in name:
+        color_mapping[surf_id] = shades['orange'][base_colors['orange']]
+        base_colors['orange'] += 1
+    elif 'vac' in name:
+        color_mapping[surf_id] = shades['dodgerblue'][base_colors['dodgerblue']]
+        base_colors['dodgerblue'] += 1
+    elif 'clean' in name:
+        color_mapping[surf_id] = shades['limegreen'][base_colors['limegreen']]
+        base_colors['limegreen'] += 1
+    elif '*OH+*OH' in name:
+        color_mapping[surf_id] = shades['darkgoldenrod'][base_colors['darkgoldenrod']]
+        base_colors['darkgoldenrod'] += 1
+    elif '*OH+*O' in name:
+        color_mapping[surf_id] = shades['pink'][base_colors['pink']]
+        base_colors['pink'] += 1
+    elif '*O+*O' in name:
+        color_mapping[surf_id] = shades['gray'][base_colors['gray']]
+        base_colors['gray'] += 1
+    elif '*OH' in name:
+        color_mapping[surf_id] = shades['gold'][base_colors['gold']]
+        base_colors['gold'] += 1
+    elif '*O' in name:
+        color_mapping[surf_id] = shades['hotpink'][base_colors['hotpink']]
+        base_colors['hotpink'] += 1
+    else:
+        color_mapping[surf_id] = 'white'  # fallback color
+        
+# Apply color mapping to the colormap and ID mapping
+colors = [color_mapping[sid] for sid in unique_ids]
+cmap = mcolors.ListedColormap(colors)
+bounds = np.arange(len(colors) + 1) - 0.5
+norm = mcolors.BoundaryNorm(bounds, cmap.N)
+
+# Regenerate the mapped surface data
 id_map = {val: idx for idx, val in enumerate(unique_ids)}
 mapped_surfaces = np.vectorize(id_map.get)(lowest_surfaces)
-
-# Define colormap and normalization for pcolormesh
-cmap = mcolors.ListedColormap(colors[:nsurfs])
-bounds = np.arange(nsurfs + 1) - 0.5
-norm = mcolors.BoundaryNorm(bounds, cmap.N)
 
 # Create legend using the same surface ID mapping order
 for idx, surf_id in enumerate(unique_ids):

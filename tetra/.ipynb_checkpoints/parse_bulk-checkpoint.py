@@ -13,13 +13,13 @@ root = '/Users/hailey/Desktop/7_V_bulk'
 save_path = os.path.join(root, 'figures')
 
 coords_data = [
-    {'coord': 'WZ', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ',  'zorder': 7, 'marker': '>', 'color': 'darkorange',},
-    {'coord': 'ZB', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB',  'zorder': 6, 'marker': '<', 'color': 'gold',},
-    {'coord': 'TN', 'CN': 4, 'ON': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'zorder': 5, 'marker': 'p', 'color': 'blue',},
-    {'coord': 'PD', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD', 'zorder': 4, 'marker': 'o', 'color': 'deepskyblue',},
-    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'zorder': 3, 'marker': 's', 'color': 'limegreen',},
-    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'zorder': 2, 'marker': 'd', 'color': 'orchid',},
-    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'zorder': 1, 'marker': 'h', 'color': 'silver',},
+    {'coord': 'WZ', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ',  'zorder': 5, 'marker': '>', 'color': 'darkorange',},
+    {'coord': 'ZB', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB',  'zorder': 4, 'marker': '<', 'color': 'gold',},
+    {'coord': 'TN', 'CN': 4, 'ON': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'zorder': 3, 'marker': 'o', 'color': 'dodgerblue',},
+    {'coord': 'PD', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD', 'zorder': 2, 'marker': 'o', 'color': 'deepskyblue',},
+    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'zorder': 1, 'marker': 's', 'color': 'limegreen',},
+    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'zorder': 6, 'marker': 'd', 'color': 'orchid',},
+    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'zorder': 0, 'marker': 'h', 'color': 'silver',},
     # {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'pink',},
     # {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'cyan',},
 ]
@@ -118,9 +118,11 @@ def main():
                         a = atoms.cell.cellpar()[0]
                         c = atoms.cell.cellpar()[2]
                         df.loc[item, 'cell'] = c/a
-                    elif coord in ['ZB', 'NB', 'RS']:
-                        df.loc[item, 'cell'] = atoms.cell.cellpar()[3]
-                
+                    elif coord in ['ZB', 'RS']:
+                        df.loc[item, 'cell'] = atoms.cell.cellpar()[3] / 33.33
+                    elif coord in ['NB']:
+                        df.loc[item, 'cell'] = atoms.cell.cellpar()[3] / 60.0
+                        
                 chg_path = os.path.join(dir_path, 'isif2/atoms_bader_charge.json')
                 if os.path.exists(chg_path):
                     atoms = read(chg_path)
@@ -265,7 +267,6 @@ def parse_grosspop(file_path, metal):
                 loewdin_totals.append(float(parts[-1]))
     loewdin_gp = [loewdin_totals[i] for i in range(len(elements)) if elements[i] == metal]
     return np.mean(loewdin_gp) if loewdin_gp else np.nan
-
-    
+        
 if __name__ == "__main__":
     main()
