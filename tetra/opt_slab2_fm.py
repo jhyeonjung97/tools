@@ -6,7 +6,7 @@ from ase.io import read, write
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk2_fm'
+name = 'opt_slab2_fm'
 start_time = time.time()
 
 spin_states_plus_2 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
@@ -54,7 +54,7 @@ def get_kpoints(atoms, l=25, bulk=True):
         nkz = 1
     return((nkx, nky, nkz))
 
-kpoints = get_kpoints(atoms, l=25, bulk=True)
+kpoints = get_kpoints(atoms, l=25, bulk=False)
 
 atoms.calc = vasp_calculator.Vasp(
                     encut=600,
@@ -79,7 +79,7 @@ atoms.calc = vasp_calculator.Vasp(
                     ibrion=2,
                     ediff=1e-6,
                     ediffg=-0.02,
-                    lreal='False',
+                    lreal='Auto',
                     lasph=True, 
                     lvtot=False,
                     laechg=True,

@@ -6,7 +6,7 @@ from ase.io import read, write
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk2_fm'
+name = 'opt_slab2_afm'
 start_time = time.time()
 
 spin_states_plus_2 = {'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 4,
@@ -33,7 +33,10 @@ elif path.exists('start.traj'):
     atoms = read('start.traj')
     for atom in atoms:
         if atom.symbol in spin_states_plus_2:
-            atom.magmom = spin_states_plus_2[atom.symbol]
+            if atom.index % 2 == 1: 
+                atom.magmom = spin_states_plus_2[atom.symbol]
+            else:
+                atom.magmom = -spin_states_plus_2[atom.symbol]
 else:
     raise ValueError('Neither restart.json nor start.traj file found')
 
@@ -54,8 +57,8 @@ def get_kpoints(atoms, l=25, bulk=True):
         nkz = 1
     return((nkx, nky, nkz))
 
-kpoints = get_kpoints(atoms, l=25, bulk=True)
-
+kpoints = get_kpoints(atoms, l=25, bulk=False)
+                            
 atoms.calc = vasp_calculator.Vasp(
                     encut=600,
                     xc='PBE',
@@ -69,7 +72,7 @@ atoms.calc = vasp_calculator.Vasp(
                     kpts=kpoints,
                     kpar=4,
                     npar=16,
-                    gamma=True,
+                    gamma=False,
                     ismear=0,
                     sigma=0.05,
                     nelm=200,
@@ -79,7 +82,7 @@ atoms.calc = vasp_calculator.Vasp(
                     ibrion=2,
                     ediff=1e-6,
                     ediffg=-0.02,
-                    lreal='False',
+                    lreal='Auto',
                     lasph=True, 
                     lvtot=False,
                     laechg=True,
@@ -95,7 +98,7 @@ atoms.calc = vasp_calculator.Vasp(
                     # idipol=3,
                     # dipol=(0, 0, 0.5),
                     # ldipol=True
-                    # nupdown=0
+                    nupdown=0
                     )
 
 energy = atoms.get_potential_energy()
