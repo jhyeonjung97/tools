@@ -215,10 +215,10 @@ base_colors = {
     'orange': 1,
     'limegreen': 1,
     'gold': 1,
-    'hotpink': 1,
+    'mediumslatblue': 1,
     'darkgoldenrod': 1,
     'pink': 1,
-    'gray': 1,
+    'mediumblue': 1,
 }
 
 # Generate custom colormaps and shades from white → base color
@@ -251,17 +251,17 @@ for surf_id in unique_ids:
         color_mapping[surf_id] = shades['darkgoldenrod'][base_colors['darkgoldenrod']]
         base_colors['darkgoldenrod'] += 1
     elif '*OH+*O' in name:
-        color_mapping[surf_id] = shades['pink'][base_colors['pink']]
-        base_colors['pink'] += 1
+        color_mapping[surf_id] = shades['mediumslatblue'][base_colors['mediumslatblue']]
+        base_colors['mediumslatblue'] += 1
     elif '*O+*O' in name:
-        color_mapping[surf_id] = shades['gray'][base_colors['gray']]
-        base_colors['gray'] += 1
+        color_mapping[surf_id] = shades['mediumblue'][base_colors['mediumblue']]
+        base_colors['mediumblue'] += 1
     elif '*OH' in name:
         color_mapping[surf_id] = shades['gold'][base_colors['gold']]
         base_colors['gold'] += 1
     elif '*O' in name:
-        color_mapping[surf_id] = shades['hotpink'][base_colors['hotpink']]
-        base_colors['hotpink'] += 1
+        color_mapping[surf_id] = shades['pink'][base_colors['pink']]
+        base_colors['pink'] += 1
     else:
         color_mapping[surf_id] = 'white'  # fallback color
         
