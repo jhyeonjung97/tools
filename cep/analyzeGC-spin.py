@@ -2,20 +2,33 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-# 폴더 이름과 레이블 지정
+# Folder names, labels, and colors for each spin state
 folders = ['hs', 'is', 'ls']
 labels = ['HS', 'IS', 'LS']
 colors = ['tab:purple', 'tab:blue', 'tab:orange']
 
 plt.figure(figsize=(8, 5))
 
-# 각 폴더에서 데이터 읽고 플롯
+# Read data from each folder and plot with quadratic fitting
 for folder, label, color in zip(folders, labels, colors):
     filepath = os.path.join(folder, 'GCFE_data_FULL.dat')
     data = np.loadtxt(filepath)
     potentials = data[:, 0]
     energies = data[:, 1]
-    plt.plot(potentials, energies, label=label, marker='o', color=color)
+
+    # Scatter plot of data points
+    plt.scatter(potentials, energies, color=color, label=label)
+
+    # Perform quadratic fitting
+    coeffs = np.polyfit(potentials, energies, deg=2)
+    poly = np.poly1d(coeffs)
+
+    # Generate x values for smooth fitting curve
+    x_fit = np.linspace(min(potentials), max(potentials), 200)
+    y_fit = poly(x_fit)
+
+    # Plot the fitted quadratic curve
+    plt.plot(x_fit, y_fit, color=color, linestyle='--')
 
 plt.xlabel("Potential vs. SHE")
 plt.ylabel("Free Energy, eV")
