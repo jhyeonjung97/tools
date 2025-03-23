@@ -19,5 +19,5 @@ module load vasp/6.4.3-gpu
 export VASP_SCRIPT=/global/homes/j/jiuy97/bin/run_vasp_gpu.py
 export VASP_PP_PATH=/global/cfs/cdirs/m2997/vasp-psp/pseudo54
 
-python ~/bin/verve/opt_slab2_afm.py
+python ~/bin/tools/tetra/opt_slab2_afm.py
 python ~/bin/get_restart3.py
