@@ -9,9 +9,13 @@ colors = ['tab:purple', 'tab:blue', 'tab:orange']
 
 plt.figure(figsize=(8, 5))
 
-# Read data from each folder and plot with quadratic fitting
+# Loop through each folder and plot if the data file exists
 for folder, label, color in zip(folders, labels, colors):
     filepath = os.path.join(folder, 'GCFE_data_FULL.dat')
+    if not os.path.exists(filepath):
+        print(f"File not found: {filepath}, skipping.")
+        continue
+
     data = np.loadtxt(filepath)
     potentials = data[:, 0]
     energies = data[:, 1]
@@ -28,7 +32,7 @@ for folder, label, color in zip(folders, labels, colors):
     y_fit = poly(x_fit)
 
     # Plot the fitted quadratic curve
-    plt.plot(x_fit, y_fit, color=color)
+    plt.plot(x_fit, y_fit, color=color, linestyle='--')
 
 plt.xlabel("Potential vs. SHE")
 plt.ylabel("Free Energy, eV")
