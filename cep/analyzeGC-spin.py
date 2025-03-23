@@ -4,10 +4,10 @@ import os
 
 # 폴더 이름과 레이블 지정
 folders = ['hs', 'is', 'ls']
-labels = ['High Spin', 'Intermediate Spin', 'Low Spin']
-colors = ['red', 'green', 'blue']
+labels = ['HS', 'IS', 'LS']
+colors = ['purple', 'blue', 'orange']
 
-plt.figure(figsize=(8, 6))
+plt.figure(figsize=(8, 5))
 
 # 각 폴더에서 데이터 읽고 플롯
 for folder, label, color in zip(folders, labels, colors):
@@ -17,10 +17,10 @@ for folder, label, color in zip(folders, labels, colors):
     energies = data[:, 1]
     plt.plot(potentials, energies, label=label, color=color)
 
-plt.xlabel('Applied Potential (V)')
-plt.ylabel('Gibbs Free Energy (eV)')
-plt.title('Gibbs Free Energy vs. Applied Potential')
+plt.xlabel("Potential vs. SHE")
+plt.ylabel("Free Energy, eV")
 plt.legend()
-plt.grid(True)
 plt.tight_layout()
+plt.savefig('spin.png')
 plt.show()
+plt.close()
