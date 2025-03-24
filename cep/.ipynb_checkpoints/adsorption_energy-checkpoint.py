@@ -97,7 +97,7 @@ for label, (ads_folder, ref_folder) in folders.items():
             popt, _ = curve_fit(quadratic, df_subset["U"], df_subset["corrected_ads_energy"])
             U_fit = np.linspace(df_subset["U"].min(), df_subset["U"].max(), 200)
             G_fit = quadratic(U_fit, *popt)
-            plt.plot(U_fit, G_fit, '-', linewidth=1, label=spin_label)
+            plt.plot(U_fit, G_fit, label=spin_label)
         except Exception as e:
             print(f"Final fit failed for {label} {spin_label}: {e}")
             continue
