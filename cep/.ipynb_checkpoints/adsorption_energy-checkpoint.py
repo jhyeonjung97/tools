@@ -5,12 +5,37 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from matplotlib.colors import LinearSegmentedColormap
 
-# Reference energies
+# gas
 h2 = -6.77149190
 h2o = -14.23091949
-o2 = 2 * h2o - 2 * h2 - 4.92
-delta_G_OH = h2o - 0.5 * h2
-delta_G_O = 0.5 * o2
+
+zpeh2o = 0.558
+cvh2o = 0.103
+tsh2o = 0.675
+
+zpeh2 = 0.268
+cvh2 = 0.0905
+tsh2 = 0.408
+
+gh2o = h2o + zpeh2o - tsh2o + cvh2o
+gh2 = h2 + zpeh2 - tsh2 + cvh2
+go2 = 2*gh2o - 2*gh2 - 4.92
+
+# ads
+zpeoh = 0.376
+cvoh = 0.042
+tsoh = 0.066
+
+zpeo = 0.064
+cvo = 0.034
+tso = 0.060
+
+dgo = zpeo + cvo - tso
+dgoh = zpeoh + cvoh - tsoh
+
+# Reference energies
+ref_oh = gh2o - gh2/2 - dgoh
+ref_o = go2/2 - dgo
 
 # Folder settings
 base_path = "/pscratch/sd/j/jiuy97/9_pourbaixGC"
@@ -27,12 +52,12 @@ folders = {
 }
 
 adsorption_refs = {
-    "OH_from_clean": delta_G_OH,
-    "OH_from_OH": delta_G_OH,
-    "OH_from_O": delta_G_OH,
-    "O_from_clean": delta_G_O,
-    "O_from_OH": delta_G_O,
-    "O_from_O": delta_G_O,
+    "OH_from_clean": ref_oh,
+    "OH_from_OH": ref_oh,
+    "OH_from_O": ref_oh,
+    "O_from_clean": ref_o,
+    "O_from_OH": ref_o,
+    "O_from_O": ref_o,
 }
 
 spin_states = ["hs", "is", "ls"]
