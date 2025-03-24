@@ -57,7 +57,7 @@ label_to_color = {}
 for spin, cmap in zip(["HS", "IS", "LS"], [HS_cmap, IS_cmap, LS_cmap]):
     transitions = [f"{spin}→HS", f"{spin}→IS", f"{spin}→LS"]
     for i, label in enumerate(transitions):
-        label_to_color[label] = cmap(0.2*i)
+        label_to_color[label] = cmap(0.25*i)
 
 # Fitting function
 def quadratic(x, a, b, c):
@@ -106,7 +106,7 @@ for label, (ads_folder, ref_folder) in folders.items():
     df_all.to_csv(os.path.join(output_dir, f"{label}.csv"), index=False)
 
     # Plot all transitions
-    plt.figure(figsize=(8, 5))
+    plt.figure(figsize=(8, 6))
     for label_name in plot_order:
         df_subset = df_all[df_all["label"] == label_name]
         if df_subset.empty:
