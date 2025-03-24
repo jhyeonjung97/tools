@@ -41,14 +41,10 @@ for row in rows:
         atoms.wrap()
         get_duplicate_atoms(atoms, cutoff=1.0, delete=True)
         
-        atoms.positions[:, 0] += l1/2
-        atoms.positions[:, 1] += l2/2
+        atoms.positions[:, 0] += l1/3
+        atoms.positions[:, 1] += l2/3
         atoms.wrap()
         get_duplicate_atoms(atoms, cutoff=1.0, delete=True)
-        
-        atoms.positions[:, 0] += l1/2
-        atoms.positions[:, 1] += l2/2
-        atoms.wrap()
         
         z_positions = atoms.positions[:, 2]
         min_z = z_positions.min()
@@ -65,11 +61,19 @@ for row in rows:
         sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
         indices_to_fix = [atom.index for atom in sorted_atoms[:8]]
         atoms.set_constraint(FixAtoms(indices=indices_to_fix))
-
+        
+        if sorted_atoms[0].symbol != 'O':
+            atoms.positions[:, 0] -= sorted_atoms[0].position[0]
+            atoms.positions[:, 1] -= sorted_atoms[0].position[1]
+        elif sorted_atoms[1].symbol != 'O':
+            atoms.positions[:, 0] -= sorted_atoms[1].position[0]
+            atoms.positions[:, 1] -= sorted_atoms[1].position[1]
+        atoms.wrap()
+        
         output_path = os.path.join(path, "slab.traj")
         write(output_path, atoms)
 
-        # print(f"Created slab.traj at: 2_Tetrahedral_ZB/{numb}_{metal}")
+        # print(f"Created slab.traj at: {coord}/{numb}_{metal}")
         
         if len(atoms) != 24:
             print(f"Created slab.traj at: {coord}/{numb}_{metal}")

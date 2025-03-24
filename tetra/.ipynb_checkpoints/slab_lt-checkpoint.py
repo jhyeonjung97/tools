@@ -9,7 +9,7 @@ from ase.build.tools import sort
 
 # Define root directory and search pattern
 root = "/Users/hailey/Desktop/7_V_bulk"
-coord = '1_Tetrahedral_WZ'
+coord = '7_Pyramidal_LT'
 
 rows = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
@@ -24,6 +24,10 @@ for row in rows:
         numb = str(m).zfill(2)
         path = os.path.join(root, coord, row, f'{numb}_{metal}')
         atoms_path = os.path.join(root, coord, row, f'a{numb}.vasp')
+        
+        if not os.path.exists(atoms_path):
+            continue
+            
         atoms = read(atoms_path)
         
         l1 = atoms.cell.lengths()[0]
@@ -55,7 +59,7 @@ for row in rows:
         atoms = sort(atoms)
         
         sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
-        indices_to_fix = [atom.index for atom in sorted_atoms[:8]]
+        indices_to_fix = [atom.index for atom in sorted_atoms[:4]]
         atoms.set_constraint(FixAtoms(indices=indices_to_fix))
         
         if sorted_atoms[0].symbol != 'O':
@@ -64,6 +68,9 @@ for row in rows:
         elif sorted_atoms[1].symbol != 'O':
             atoms.positions[:, 0] -= sorted_atoms[1].position[0]
             atoms.positions[:, 1] -= sorted_atoms[1].position[1]
+        elif sorted_atoms[2].symbol != 'O':
+            atoms.positions[:, 0] -= sorted_atoms[2].position[0]
+            atoms.positions[:, 1] -= sorted_atoms[2].position[1]
         atoms.wrap()
         
         output_path = os.path.join(path, "slab.traj")
@@ -71,5 +78,5 @@ for row in rows:
 
         # print(f"Created slab.traj at: {coord}/{numb}_{metal}")
         
-        if len(atoms) != 24:
-            print(f"Created slab.traj at: {coord}/{numb}_{metal}")
+        if len(atoms) != 12:
+            print(f"Created slab.traj at: {coord}/{row}/{numb}_{metal}")

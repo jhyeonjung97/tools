@@ -9,7 +9,7 @@ from ase.build.tools import sort
 
 # Define root directory and search pattern
 root = "/Users/hailey/Desktop/7_V_bulk"
-coord = '1_Tetrahedral_WZ'
+coord = "2_Tetrahedral_ZB"
 
 rows = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
@@ -32,7 +32,7 @@ for row in rows:
         a1 = atoms.cell.angles()[0]
         a2 = atoms.cell.angles()[1]
         a3 = atoms.cell.angles()[2]
-        atoms.cell = (l1, l2, l3, a1, a2, a3)
+        atoms.cell = (l1, l2/2, l3, a1, a2, a3)
         
         atoms.wrap()
         get_duplicate_atoms(atoms, cutoff=1.0, delete=True)
@@ -69,7 +69,7 @@ for row in rows:
         output_path = os.path.join(path, "slab.traj")
         write(output_path, atoms)
 
-        # print(f"Created slab.traj at: {coord}/{numb}_{metal}")
+        # print(f"Created slab.traj at: 2_Tetrahedral_ZB/{numb}_{metal}")
         
         if len(atoms) != 24:
             print(f"Created slab.traj at: {coord}/{numb}_{metal}")

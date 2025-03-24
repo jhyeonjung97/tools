@@ -41,8 +41,8 @@ for row in rows:
         atoms.wrap()
         get_duplicate_atoms(atoms, cutoff=1.0, delete=True)
         
-        atoms.positions[:, 0] += l1/2
-        atoms.positions[:, 1] += l2/2
+        atoms.positions[:, 0] += l1/3
+        atoms.positions[:, 1] += l2/3
         atoms.wrap()
         get_duplicate_atoms(atoms, cutoff=1.0, delete=True)
         

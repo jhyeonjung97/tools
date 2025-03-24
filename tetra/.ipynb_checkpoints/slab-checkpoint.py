@@ -27,7 +27,7 @@ rows = {
     'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
 }
 
-for coord in coords:
+for coord in [coords[4]]:
     coord_dir = coord['coord_dir']
     P = coord['P']
     facet = (0,0,1)
@@ -40,7 +40,7 @@ for coord in coords:
             numb = str(m).zfill(2)
             path = os.path.join(root, coord_dir, row, f'{numb}_{metal}')
             unmatched_path = os.path.join(path, 'unmatched')
-            json_path = os.path.join(path, 'isif2/final_with_calculator.json')
+            json_path = os.path.join(path, 'final_with_calculator.json')
             if os.path.exists(json_path) and not os.path.exists(unmatched_path) :
                 # Step 1: Read the original structure
                 atoms = read(json_path)
@@ -56,7 +56,7 @@ for coord in coords:
                 slab.wrap()
                 slab = sort(slab)
 
-                get_duplicate_atoms(slab, cutoff=1.0, delete=True)
+                get_duplicate_atoms(slab, cutoff=0.1, delete=True)
                 sorted_atoms = sorted(slab, key=lambda atom: atom.position[2])
                 indices_to_fix = [atom.index for atom in sorted_atoms[:fixed_atom_count]]
                 slab.set_constraint(FixAtoms(indices=indices_to_fix))
