@@ -128,7 +128,7 @@ for label, (ads_folder, ref_folder) in folders.items():
             for mu in marker_U:
                 if -1.0 <= mu <= 2.0:
                     G_marker = quadratic(mu, *popt)
-                    plt.scatter(mu, G_marker, color=color, edgecolors='none', zorder=5)
+                    plt.scatter(mu, G_marker, color=color, zorder=5)
         except Exception as e:
             print(f"Final fit failed for {label} {label_name}: {e}")
             continue
@@ -160,7 +160,7 @@ for label, (ads_folder, ref_folder) in folders.items():
             for mu in marker_U:
                 if -1.0 <= mu <= 2.0:
                     G_marker = quadratic(mu, *popt)
-                    plt.scatter(mu, G_marker, color=color, edgecolors='none', zorder=5)
+                    plt.scatter(mu, G_marker, color=color, zorder=5)
         except Exception as e:
             print(f"Main plot fit failed for {label} {label_name}: {e}")
             continue
