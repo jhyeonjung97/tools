@@ -122,7 +122,8 @@ for label, (ads_folder, ref_folder) in folders.items():
             popt, _ = curve_fit(quadratic, df_subset["U"], df_subset["corrected_ads_energy"])
             G_fit = quadratic(U_common, *popt)
             color = label_to_color[label_name]
-            plt.plot(U_common, G_fit, label=label_name, color=color)
+            plt.plot(U_common, G_fit, color=color)
+            plt.plot([], [], label=label_name, color=color, marker='o')
 
             for mu in marker_U:
                 if -1.0 <= mu <= 2.0:
@@ -153,8 +154,9 @@ for label, (ads_folder, ref_folder) in folders.items():
             popt, _ = curve_fit(quadratic, df_subset["U"], df_subset["corrected_ads_energy"])
             G_fit = quadratic(U_common, *popt)
             color = main_colors[label_name]
-            plt.plot(U_common, G_fit, label=label_name, color=color)
-    
+            plt.plot(U_common, G_fit, color=color)
+            plt.plot([], [], label=label_name, color=color, marker='o')
+
             for mu in marker_U:
                 if -1.0 <= mu <= 2.0:
                     G_marker = quadratic(mu, *popt)
