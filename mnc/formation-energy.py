@@ -1252,7 +1252,7 @@ def main():
                          ymin=1.6, ymax=2.1, yticks = np.arange(1.6, 2.11, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_O_O_bond1_filename)
                 plotting(df=df_O_O_bond2, df_relaxed=df_O_O_relaxed_bond2, dzs=dzs, spins=spins, 
-                         ymin=1.9, ymax=2.4, yticks = np.arange(1.9, 2.41, 0.1),
+                         ymin=1.9, ymax=2.4, yticks = np.arange(1.6, 2.11, 0.1),
                          ylabel='Bond Length (Å)', png_filename=png_O_O_bond2_filename)
                 
             if path_O_OH: 
