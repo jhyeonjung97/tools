@@ -32,7 +32,8 @@ for folder, label, color in zip(folders, labels, colors):
     y_fit = poly(x_fit)
 
     # Plot the fitted quadratic curve
-    plt.plot(x_fit, y_fit, color=color, label=label)
+    plt.plot(x_fit, y_fit, color=color)
+    plt.plot([], [], marker='o', color=color, label=label)
 
 plt.xlabel("Potential vs. SHE")
 plt.ylabel("Free Energy, eV")
