@@ -7,7 +7,7 @@ folders = ['hs', 'is', 'ls']
 labels = ['HS', 'IS', 'LS']
 colors = ['tab:purple', 'tab:blue', 'tab:orange']
 
-plt.figure(figsize=(6, 4))
+plt.figure(figsize=(4, 3))
 
 # Loop through each folder and plot if the data file exists
 for folder, label, color in zip(folders, labels, colors):
