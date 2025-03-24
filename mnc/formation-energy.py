@@ -329,7 +329,7 @@ def main():
                 path_OOH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/3_OOH/*_{metal}/*_{spin}'
                 matching_OOH_paths = glob.glob(path_OOH_pattern)
                 path_O_O_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/4_O_O/*_{metal}/*_{spin}'
-                matching_O_O_paths = glob.glob(path_O_OH_pattern)
+                matching_O_O_paths = glob.glob(path_O_O_pattern)
                 path_O_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/5_O_OH/*_{metal}/*_{spin}'
                 matching_O_OH_paths = glob.glob(path_O_OH_pattern)
                 path_OH_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/6_OH_OH/*_{metal}/*_{spin}'
