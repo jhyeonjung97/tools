@@ -5,7 +5,7 @@ from ase.io import read, write
 from ase.build import add_adsorbate
 
 # Define root directory and coordination type
-root = "/Users/hailey/Desktop/7_V_bulk"
+root = "/pscratch/sd/j/jiuy97/8_V_slab"
 coord = '7_Pyramidal_LT'
 
 rows = {
