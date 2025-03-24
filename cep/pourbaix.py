@@ -199,7 +199,7 @@ for sid in sorted(min_coords):
     print(f"Surface {sid}: x = {x:.2f}, y = {y:.2f}")
     
 # Set Axes Limits and Labels
-fig, ax = plt.subplots(figsize=(8, 6), dpi=100)
+fig, ax = plt.subplots(figsize=(8, 5), dpi=100)
 ax.axis([0, 14, Umin, Umax])
 ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
