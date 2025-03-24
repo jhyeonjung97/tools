@@ -113,7 +113,7 @@ for label, (ads_folder, ref_folder) in folders.items():
     df_all.to_csv(os.path.join(output_dir, f"{label}.csv"), index=False)
 
     # Plot all transitions
-    plt.figure(figsize=(6, 4))
+    plt.figure(figsize=(4.5, 3))
     for label_name in plot_order:
         df_subset = df_all[df_all["label"] == label_name]
         if df_subset.empty:
@@ -145,7 +145,7 @@ for label, (ads_folder, ref_folder) in folders.items():
     plt.savefig(os.path.join(output_dir, f"{label}.png"), bbox_inches="tight")
     plt.close()
     
-    plt.figure(figsize=(6, 4))
+    plt.figure(figsize=(4, 3))
     for label_name in main_only_labels:
         df_subset = df_all[df_all["label"] == label_name]
         if df_subset.empty:
@@ -168,7 +168,7 @@ for label, (ads_folder, ref_folder) in folders.items():
     plt.xlabel("Applied Potential (V)")
     plt.ylabel("Adsorption Energy (eV)")
     plt.xlim(-1.0, 2.0)
-    plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left", borderaxespad=0, ncol=1)
+    plt.legend()
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, f"{label}_main.png"), bbox_inches="tight")
     plt.close()
