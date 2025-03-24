@@ -56,7 +56,7 @@ LS_cmap = LinearSegmentedColormap.from_list("ls_green", ["tab:green", "white"])
 label_to_color = {}
 for spin, cmap in zip(["HS", "IS", "LS"], [HS_cmap, IS_cmap, LS_cmap]):
     transitions = [f"{spin}→HS", f"{spin}→IS", f"{spin}→LS"]
-    color_points = [0.6, 0.8, 1.0]
+    color_points = [0.0, 0.2, 0.4]
     for i, label in enumerate(transitions):
         label_to_color[label] = cmap(color_points[i])
 
