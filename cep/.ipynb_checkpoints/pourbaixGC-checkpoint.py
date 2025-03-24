@@ -217,7 +217,7 @@ base_colors = {
     'gold': 1,
     'mediumblue': 1,
     'darkgoldenrod': 1,
-    'pink': 1,
+    'hotpink': 1,
     'silver': 1,
 }
 
@@ -260,8 +260,8 @@ for surf_id in unique_ids:
         color_mapping[surf_id] = shades['gold'][base_colors['gold']]
         base_colors['gold'] += 1
     elif '*O' in name:
-        color_mapping[surf_id] = shades['pink'][base_colors['pink']]
-        base_colors['pink'] += 1
+        color_mapping[surf_id] = shades['hotpink'][base_colors['hotpink']]
+        base_colors['hotpink'] += 1
     else:
         color_mapping[surf_id] = 'white'  # fallback color
         
