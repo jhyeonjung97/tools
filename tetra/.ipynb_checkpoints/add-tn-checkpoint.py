@@ -65,14 +65,14 @@ def main():
                 os.makedirs(subdir, exist_ok=True)
                 shutil.copy(os.path.join(path, f'{name}.json'), os.path.join(subdir, 'restart.json'))
 
-            # # 4–5) Copy submit.sh and modify job names
-            # submit_path = os.path.join(path, 'submit.sh')
-            # if os.path.exists(submit_path):
-            #     for suffix in ['o1', 'o2', 'oh1', 'oh2']:
-            #         subdir = os.path.join(path, suffix)
-            #         shutil.copy(submit_path, os.path.join(subdir, 'submit.sh'))
-            #         modify_job_name(os.path.join(subdir, 'submit.sh'), suffix)
-            #         # submit_job(subdir)
+            # 4–5) Copy submit.sh and modify job names
+            submit_path = os.path.join(path, 'submit.sh')
+            if os.path.exists(submit_path):
+                for suffix in ['o1', 'o2', 'oh1', 'oh2']:
+                    subdir = os.path.join(path, suffix)
+                    shutil.copy(submit_path, os.path.join(subdir, 'submit.sh'))
+                    modify_job_name(os.path.join(subdir, 'submit.sh'), suffix)
+                    submit_job(subdir)
 
 # Update the job name in submit.sh files
 def modify_job_name(file_path, suffix):
@@ -83,7 +83,7 @@ def modify_job_name(file_path, suffix):
     with open(file_path, 'w') as f:
         for line in lines:
             if line.strip().startswith('#SBATCH -J'):
-                line = line.rstrip() + f"_{suffix}\n"
+                line = line.rstrip() + f"{suffix}\n"
             f.write(line)
 
 # Submit the job in each folder
