@@ -36,9 +36,9 @@ for folder, label, color in zip(folders, labels, colors):
 
 plt.xlabel("Potential vs. SHE")
 plt.ylabel("Free Energy, eV")
-plt.xlim(-0.5, 1.5)
 plt.legend()
 plt.tight_layout()
+plt.savefig('spin_full.png')
+plt.xlim(0.0, 1.5)
 plt.savefig('spin.png')
-plt.show()
 plt.close()
