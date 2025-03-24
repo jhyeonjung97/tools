@@ -65,9 +65,9 @@ def main():
     
                 modify_job_name(os.path.join(o_dir, 'submit.sh'), 'o')
                 modify_job_name(os.path.join(oh_dir, 'submit.sh'), 'oh')
-                
-                # submit_job(o_dir)
-                # submit_job(oh_dir)
+
+                submit_job(o_dir)
+                submit_job(oh_dir)
 
 # Update the job name in submit.sh files
 def modify_job_name(file_path, suffix):
