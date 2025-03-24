@@ -5,7 +5,7 @@ import os
 # Folder names, labels, and colors for each spin state
 folders = ['hs', 'is', 'ls']
 labels = ['HS', 'IS', 'LS']
-colors = ['tab:purple', 'tab:blue', 'tab:orange']
+colors = ['tab:orange', 'tab:blue', 'tab:green']
 
 plt.figure(figsize=(4, 3))
 

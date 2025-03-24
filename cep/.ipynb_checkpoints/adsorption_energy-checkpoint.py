@@ -73,9 +73,9 @@ marker_U = [-0.5, 0.0, 0.5, 1.0, 1.5]
 U_common = np.linspace(-1.0, 2.0, 300)
 
 # Create gradient colormaps (from tab color to white)
-HS_cmap = LinearSegmentedColormap.from_list("hs_purple", ["tab:purple", "white"])
+HS_cmap = LinearSegmentedColormap.from_list("hs_orange", ["tab:orange", "white"])
 IS_cmap = LinearSegmentedColormap.from_list("is_blue", ["tab:blue", "white"])
-LS_cmap = LinearSegmentedColormap.from_list("ls_orange", ["tab:orange", "white"])
+LS_cmap = LinearSegmentedColormap.from_list("ls_green", ["tab:green", "white"])
 
 # Generate 3 colors per spin type
 label_to_color = {}
@@ -85,9 +85,9 @@ for spin, cmap in zip(["HS", "IS", "LS"], [HS_cmap, IS_cmap, LS_cmap]):
         label_to_color[label] = cmap(0.25*i)
         
 main_colors = {
-    "HS→HS": "tab:purple",
+    "HS→HS": "tab:orange",
     "IS→IS": "tab:blue",
-    "LS→LS": "tab:orange"
+    "LS→LS": "tab:green"
 }
 main_only_labels = ["HS→HS", "IS→IS", "LS→LS"]
 
