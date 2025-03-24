@@ -190,8 +190,8 @@ for label, (ads_folder, ref_folder) in folders.items():
             print(f"Main plot fit failed for {label} {label_name}: {e}")
             continue
     
-    plt.xlabel("Applied Potential (V)")
-    plt.ylabel("Adsorption Energy (eV)")
+    plt.xlabel("Potential vs. SHE")
+    plt.ylabel("Adsorption Energy, eV")
     plt.xlim(-1.0, 2.0)
     plt.legend()
     plt.tight_layout()
