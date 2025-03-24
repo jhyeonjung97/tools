@@ -58,6 +58,13 @@ for spin, cmap in zip(["HS", "IS", "LS"], [HS_cmap, IS_cmap, LS_cmap]):
     transitions = [f"{spin}→HS", f"{spin}→IS", f"{spin}→LS"]
     for i, label in enumerate(transitions):
         label_to_color[label] = cmap(0.25*i)
+        
+main_colors = {
+    "HS→HS": "tab:blue",
+    "IS→IS": "tab:orange",
+    "LS→LS": "tab:green"
+}
+main_only_labels = ["HS→HS", "IS→IS", "LS→LS"]
 
 # Fitting function
 def quadratic(x, a, b, c):
@@ -137,3 +144,31 @@ for label, (ads_folder, ref_folder) in folders.items():
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, f"{label}.png"), bbox_inches="tight")
     plt.close()
+    
+plt.figure(figsize=(8, 6))
+for label_name in main_only_labels:
+    df_subset = df_all[df_all["label"] == label_name]
+    if df_subset.empty:
+        continue
+    try:
+        popt, _ = curve_fit(quadratic, df_subset["U"], df_subset["corrected_ads_energy"])
+        G_fit = quadratic(U_common, *popt)
+        color = main_colors[label_name]
+        plt.plot(U_common, G_fit, label=label_name, color=color)
+
+        for mu in marker_U:
+            if -1.0 <= mu <= 2.0:
+                G_marker = quadratic(mu, *popt)
+                plt.scatter(mu, G_marker, color=color, edgecolors='none', zorder=5)
+    except Exception as e:
+        print(f"Main plot fit failed for {label} {label_name}: {e}")
+        continue
+
+plt.xlabel("Applied Potential (V)")
+plt.ylabel("Corrected Adsorption Energy (eV)")
+plt.title(f"{label.replace('_', ' ')} (Main)")
+plt.xlim(-1.0, 2.0)
+plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left", borderaxespad=0, ncol=1)
+plt.tight_layout()
+plt.savefig(os.path.join(output_dir, f"{label}_main.png"), bbox_inches="tight")
+plt.close()
