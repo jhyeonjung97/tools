@@ -48,13 +48,13 @@ def main():
 
             # 2) Add H on each oxygen in o1 and o2
             atoms_oh1 = atoms_o1.copy()
-            h1_pos = pos_9 + np.array([0.0, 0.8, 0.6])
+            h1_pos = pos_9 + np.array([0.0, 1.0, 0.0])
             atoms_oh1.append('H')
             atoms_oh1.positions[-1] = h1_pos
             write(os.path.join(path, 'oh1.json'), atoms_oh1)
 
             atoms_oh2 = atoms_o2.copy()
-            h2_pos = pos_11 + np.array([0.0, -0.8, 0.6])
+            h2_pos = pos_11 + np.array([0.0, -1.0, 0.0])
             atoms_oh2.append('H')
             atoms_oh2.positions[-1] = h2_pos
             write(os.path.join(path, 'oh2.json'), atoms_oh2)
@@ -65,14 +65,14 @@ def main():
                 os.makedirs(subdir, exist_ok=True)
                 shutil.copy(os.path.join(path, f'{name}.json'), os.path.join(subdir, 'restart.json'))
 
-            # 4–5) Copy submit.sh and modify job names
-            submit_path = os.path.join(path, 'submit.sh')
-            if os.path.exists(submit_path):
-                for suffix in ['o1', 'o2', 'oh1', 'oh2']:
-                    subdir = os.path.join(path, suffix)
-                    shutil.copy(submit_path, os.path.join(subdir, 'submit.sh'))
-                    modify_job_name(os.path.join(subdir, 'submit.sh'), suffix)
-                    # submit_job(subdir)
+            # # 4–5) Copy submit.sh and modify job names
+            # submit_path = os.path.join(path, 'submit.sh')
+            # if os.path.exists(submit_path):
+            #     for suffix in ['o1', 'o2', 'oh1', 'oh2']:
+            #         subdir = os.path.join(path, suffix)
+            #         shutil.copy(submit_path, os.path.join(subdir, 'submit.sh'))
+            #         modify_job_name(os.path.join(subdir, 'submit.sh'), suffix)
+            #         # submit_job(subdir)
 
 # Update the job name in submit.sh files
 def modify_job_name(file_path, suffix):
