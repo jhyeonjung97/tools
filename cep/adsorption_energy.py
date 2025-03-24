@@ -113,7 +113,7 @@ for label, (ads_folder, ref_folder) in folders.items():
     df_all.to_csv(os.path.join(output_dir, f"{label}.csv"), index=False)
 
     # Plot all transitions
-    plt.figure(figsize=(4.5, 3))
+    plt.figure(figsize=(5, 3))
     for label_name in plot_order:
         df_subset = df_all[df_all["label"] == label_name]
         if df_subset.empty:
