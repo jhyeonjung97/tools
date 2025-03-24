@@ -2,7 +2,7 @@ from ase.io import read, write
 from ase.constraints import FixAtoms
 
 # POSCAR 파일 읽기
-atoms = read('POSCAR')
+atoms = read('restart.json')
 
 # N, Co 원소에 해당하는 원자들의 z 방향 고정
 mask = [atom.symbol in ['N', 'Co'] for atom in atoms]  # N과 Co 원소에 대해 True 설정
