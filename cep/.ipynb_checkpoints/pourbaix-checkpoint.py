@@ -287,12 +287,10 @@ plt.pcolormesh(pH, U, mapped_surfaces, cmap=cmap, norm=norm)
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., 
            fontsize='small', ncol=1, handlelength=3, edgecolor='black') 
 
-plt.plot(pHrange, 1.23-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
-ax.text(0.2, 1.00, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$',
-        color='blue', rotation=-12, fontsize=12)
-plt.plot(pHrange, 0-pHrange*const, '--', color='blue', lw=1, dashes=(3, 1))
-ax.text(0.2, -0.15 , r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$',
-        color='blue', rotation=-12, fontsize=12)
+plt.plot(pHrange, 1.23-pHrange*const, '--', color='black', lw=1)
+ax.text(0.2, 1.00, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$', rotation=-12)
+plt.plot(pHrange, 0-pHrange*const, '--', color='black', lw=1)
+ax.text(0.2, -0.15 , r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$', rotation=-12)
 
 plt.tight_layout()
 if GCDFT:
