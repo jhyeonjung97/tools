@@ -39,6 +39,7 @@ def read_energy_data(folder, spin):
     file_path = os.path.join(base_path, folder, spin, "GCFE_data_FULL.dat")
     if os.path.exists(file_path):
         df = pd.read_csv(file_path, delim_whitespace=True, header=None, names=["U", "G"])
+        print(df)
         return df
     else:
         return None
@@ -60,11 +61,9 @@ for label, (ads_folder, ref_folder) in folders.items():
                 merged["raw_ads_energy"] = merged["G_ads"] - merged["G_ref"]
                 merged["corrected_ads_energy"] = merged["raw_ads_energy"] - adsorption_refs[label]
 
-                # CSV 저장
                 csv_filename = f"{label}_{spin_ref}_to_{spin_ads}.csv"
                 merged[["U", "corrected_ads_energy"]].to_csv(os.path.join(output_dir, csv_filename), index=False)
 
-                # 그래프 및 피팅
                 try:
                     popt, _ = curve_fit(quadratic, merged["U"], merged["corrected_ads_energy"])
                     U_fit = np.linspace(merged["U"].min(), merged["U"].max(), 100)
