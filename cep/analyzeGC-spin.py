@@ -7,7 +7,7 @@ folders = ['hs', 'is', 'ls']
 labels = ['HS', 'IS', 'LS']
 colors = ['tab:purple', 'tab:blue', 'tab:orange']
 
-plt.figure(figsize=(8, 5))
+plt.figure(figsize=(6, 4))
 
 # Loop through each folder and plot if the data file exists
 for folder, label, color in zip(folders, labels, colors):
@@ -21,7 +21,7 @@ for folder, label, color in zip(folders, labels, colors):
     energies = data[:, 1]
 
     # Scatter plot of data points
-    plt.scatter(potentials, energies, color=color, label=label)
+    plt.scatter(potentials, energies, color=color)
 
     # Perform quadratic fitting
     coeffs = np.polyfit(potentials, energies, deg=2)
@@ -32,7 +32,7 @@ for folder, label, color in zip(folders, labels, colors):
     y_fit = poly(x_fit)
 
     # Plot the fitted quadratic curve
-    plt.plot(x_fit, y_fit, color=color)
+    plt.plot(x_fit, y_fit, color=color, label=label)
 
 plt.xlabel("Potential vs. SHE")
 plt.ylabel("Free Energy, eV")

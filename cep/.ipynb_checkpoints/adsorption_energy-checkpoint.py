@@ -48,9 +48,9 @@ marker_U = [-0.5, 0.0, 0.5, 1.0, 1.5]
 U_common = np.linspace(-1.0, 2.0, 300)
 
 # Create gradient colormaps (from tab color to white)
-HS_cmap = LinearSegmentedColormap.from_list("hs_blue", ["tab:blue", "white"])
-IS_cmap = LinearSegmentedColormap.from_list("is_orange", ["tab:orange", "white"])
-LS_cmap = LinearSegmentedColormap.from_list("ls_green", ["tab:green", "white"])
+HS_cmap = LinearSegmentedColormap.from_list("hs_purple", ["tab:purple", "white"])
+IS_cmap = LinearSegmentedColormap.from_list("is_blue", ["tab:blue", "white"])
+LS_cmap = LinearSegmentedColormap.from_list("ls_orange", ["tab:orange", "white"])
 
 # Generate 3 colors per spin type
 label_to_color = {}
@@ -60,9 +60,9 @@ for spin, cmap in zip(["HS", "IS", "LS"], [HS_cmap, IS_cmap, LS_cmap]):
         label_to_color[label] = cmap(0.25*i)
         
 main_colors = {
-    "HS→HS": "tab:blue",
-    "IS→IS": "tab:orange",
-    "LS→LS": "tab:green"
+    "HS→HS": "tab:purple",
+    "IS→IS": "tab:blue",
+    "LS→LS": "tab:orange"
 }
 main_only_labels = ["HS→HS", "IS→IS", "LS→LS"]
 
@@ -113,7 +113,7 @@ for label, (ads_folder, ref_folder) in folders.items():
     df_all.to_csv(os.path.join(output_dir, f"{label}.csv"), index=False)
 
     # Plot all transitions
-    plt.figure(figsize=(6, 5))
+    plt.figure(figsize=(6, 4))
     for label_name in plot_order:
         df_subset = df_all[df_all["label"] == label_name]
         if df_subset.empty:
@@ -133,7 +133,7 @@ for label, (ads_folder, ref_folder) in folders.items():
             continue
 
     plt.xlabel("Applied Potential (V)")
-    plt.ylabel("Corrected Adsorption Energy (eV)")
+    plt.ylabel("Adsorption Energy (eV)")
     plt.xlim(-1.0, 2.0)
 
     # Legend outside right
@@ -144,7 +144,7 @@ for label, (ads_folder, ref_folder) in folders.items():
     plt.savefig(os.path.join(output_dir, f"{label}.png"), bbox_inches="tight")
     plt.close()
     
-    plt.figure(figsize=(6, 5))
+    plt.figure(figsize=(6, 4))
     for label_name in main_only_labels:
         df_subset = df_all[df_all["label"] == label_name]
         if df_subset.empty:
@@ -164,7 +164,7 @@ for label, (ads_folder, ref_folder) in folders.items():
             continue
     
     plt.xlabel("Applied Potential (V)")
-    plt.ylabel("Corrected Adsorption Energy (eV)")
+    plt.ylabel("Adsorption Energy (eV)")
     plt.xlim(-1.0, 2.0)
     plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left", borderaxespad=0, ncol=1)
     plt.tight_layout()
