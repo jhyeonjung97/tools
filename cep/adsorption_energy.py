@@ -1,8 +1,34 @@
-# Update the output directory to the desired location
-output_dir = os.path.join(base_path, "figures")
-Path(output_dir).mkdir(parents=True, exist_ok=True)
+import os
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
 
-# Re-run the data processing and saving
+base_path = "/pscratch/sd/j/jiuy97/9_pourbaixGC"
+folders = {
+    "OH_from_clean": ("4_OH", "3_clean"),
+    "O_from_clean": ("5_O", "3_clean"),
+    "OH_from_OH": ("6_OH_OH", "4_OH"),
+    "O_from_OH": ("7_OH_O", "4_OH"),
+    "OH_from_O": ("7_OH_O", "5_O"),
+    "O_from_O": ("8_O_O", "5_O")
+}
+spin_states = ["hs", "is", "ls"]
+
+def read_energy_data(folder, spin):
+    file_path = os.path.join(base_path, folder, spin, "GCFE_data_FULL.dat")
+    if os.path.exists(file_path):
+        df = pd.read_csv(file_path, delim_whitespace=True, header=None, names=["U", "G"])
+        return df
+    else:
+        return None
+
+def quadratic(x, a, b, c):
+    return a * x**2 + b * x + c
+
+output_dir = os.path.join(base_path, "figures")
+os.makedirs(output_dir, exist_ok=True)
+
 for label, (ads_folder, ref_folder) in folders.items():
     for spin_ads in spin_states:
         for spin_ref in spin_states:
@@ -17,7 +43,6 @@ for label, (ads_folder, ref_folder) in folders.items():
                 csv_path = os.path.join(output_dir, csv_filename)
                 merged[["U", "ads_energy"]].to_csv(csv_path, index=False)
 
-                # Fitting and plotting
                 try:
                     popt, _ = curve_fit(quadratic, merged["U"], merged["ads_energy"])
                     U_fit = np.linspace(merged["U"].min(), merged["U"].max(), 100)
