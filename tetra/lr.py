@@ -40,7 +40,7 @@ def main():
     df_mend = pd.read_csv(os.path.join(root, 'mendeleev_data.csv'), index_col=0)
 
     df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True)
-    print(df)
+    print(df.index)
 
     if args.row:
         df = df[df['row'] == args.row]
