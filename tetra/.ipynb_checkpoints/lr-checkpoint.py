@@ -12,8 +12,8 @@ def main():
     parser = argparse.ArgumentParser(description='Linear regression using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
-        'CN', 'ON', 'energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond',
-        '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn',
+        'ON', 'energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond',
+        '-ICOHPm', '-ICOHPn', 'ICOBIm', 'ICOBIn', '-ICOOPm', '-ICOOPn',
         'madelung', 'grosspop', 'Natom', 'Vatom', 'Tboil', 'Tmelt', 'mass', 'density',
         'dipole', 'pauling', 'Rcoval', 'Rmetal', 'Rvdw', 'Hevap', 'Hfus', 'Hform',
         'ion1', 'ion2', 'ion3', 'ion12'
