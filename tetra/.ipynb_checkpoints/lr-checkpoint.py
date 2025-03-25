@@ -30,7 +30,6 @@ def main():
     df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True, suffixes=('_bulk', '_mend'))
     df = df.rename(columns={'row_bulk': 'row', 'numb_mend': 'numb'})
     df = df.drop(columns=['row_mend', 'numb_bulk'])
-    df['ON'] = df['ON'].astype(float)
     
     if args.row:
         df = df[df['row'].isin(args.row)]
@@ -40,6 +39,8 @@ def main():
     # Drop rows with NaN in any relevant column
     all_columns = args.X + [args.Y]
     df = df.dropna(subset=all_columns)
+    
+    print(df['ON'])
 
     X = df[args.X].astype(float)
     Y = df[args.Y].astype(float)
