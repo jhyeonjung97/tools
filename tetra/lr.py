@@ -77,7 +77,7 @@ def main():
     plt.savefig(f'{output_prefix}.png')
     plt.close()
 
-    print(f"Saved: {output_prefix}.log, .tsv, .png")
+    print(f"Saved: {output_prefix}.log, result.tsv, result.png")
 
 
 if __name__ == '__main__':
