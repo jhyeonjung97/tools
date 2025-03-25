@@ -46,7 +46,7 @@ def main():
     ], help='List of feature columns from bulk_data.csv and/or mendeleev_data.csv')
     parser.add_argument('--row', nargs='+', type=str, default=None, help='Filter by row: 3d, 4d, or 5d')
     parser.add_argument('--coord', nargs='+', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
-    parser.add_argument('--output', type=str, default='gp_result', help='Output filename suffix')
+    parser.add_argument('--output', type=str, default='result', help='Output filename suffix')
     args = parser.parse_args()
 
     args.X = [('-' + x if x.startswith('ICOHP') or x.startswith('ICOOP') else x) for x in args.X]
