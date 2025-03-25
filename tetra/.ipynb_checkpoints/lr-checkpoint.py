@@ -1,3 +1,4 @@
+import os
 import argparse
 import numpy as np
 import pandas as pd
@@ -5,7 +6,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
-import os
 
 ylabels = {
     'coord': 'Coordination',
@@ -23,12 +23,12 @@ ylabels = {
     'l_bond': 'Bond Length (Å)',
     'n_bond': 'Number of Bonds per Metal',
     'match': 'Bulk Structure Maintain',
-    '_ICOHPm': '_ICOHP per Metal (eV)',
+    '-ICOHPm': '-ICOHP per Metal (eV)',
     'ICOBIm': 'ICOBI per Metal',
-    '_ICOOPm': '_ICOOP per Metal (eV)',
-    '_ICOHPn': '_ICOHP per Bond (eV)',
+    '-ICOOPm': '-ICOOP per Metal (eV)',
+    '-ICOHPn': '-ICOHP per Bond (eV)',
     'ICOBIn': 'ICOBI per Bond',
-    '_ICOOPn': '_ICOOP per Bond (eV)',
+    '-ICOOPn': '-ICOOP per Bond (eV)',
     'madelung': 'Madelung Energy (Loewdin eV)',
     'grosspop': 'Gross Population (Loewdin e⁻)',
 }
@@ -38,7 +38,7 @@ def main():
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
         'chg', 'mag', 'volume', 'l_bond', 'n_bond',
-        'grosspop', 'madelung', '_ICOHPm', '_ICOHPn', 'ICOBIm', 'ICOBIn', '_ICOOPm', '_ICOOPn', 
+        'grosspop', 'madelung', 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
         'pauling', 'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
         'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
@@ -47,7 +47,10 @@ def main():
     parser.add_argument('--coord', nargs='+', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
     parser.add_argument('--output', type=str, default='result', help='Output filename suffix')
     args = parser.parse_args()
-
+    
+    # Convert feature names if they start with ICOHP or ICOOP (prepend '-')
+    args.X = [('-' + x if x.startswith('ICOHP') or x.startswith('ICOOP') else x) for x in args.X]
+    
     root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
     df_bulk = pd.read_csv(os.path.join(root, 'bulk_data.csv'), index_col=0)
     df_mend = pd.read_csv(os.path.join(root, 'mendeleev_data.csv'), index_col=0)
