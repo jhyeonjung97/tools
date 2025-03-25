@@ -78,6 +78,8 @@ def main():
     for r in df['row'].unique():
         for c in df['coord'].unique():
             subset = df[(df['row'] == r) & (df['coord'] == c)]
+            if subset.empty:
+                continue  # 건너뜀
             plt.scatter(
                 subset[args.Y],
                 model.predict(subset[args.X].astype(float)),
