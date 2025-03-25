@@ -1,6 +1,7 @@
-import pandas as pd
-import subprocess
 import os
+import subprocess
+import pandas as pd
+import matplotlib.pyplot as plt
 
 # Define the full feature list
 features = [
@@ -60,3 +61,38 @@ for i in range(len(features)):
 df_r2.to_csv('leaveout_r2.tsv', sep='\t')
 df_mae.to_csv('leaveout_mae.tsv', sep='\t')
 df_mse.to_csv('leaveout_mse.tsv', sep='\t')
+
+# Get the feature removal order from df_mae columns (i.e., by iteration)
+removal_order = []
+for col in df_mae.columns:
+    col_series = df_mae[col].dropna()
+    if not col_series.empty:
+        # The removed feature this iteration is the row with the highest MAE
+        removed = col_series.astype(float).idxmax()
+        removal_order.append(removed)
+
+# Collect the corresponding MAE and MSE values from the selected removal features
+mae_values = [df_mae.loc[feat].dropna().iloc[-1] for feat in removal_order]
+mse_values = [df_mse.loc[feat].dropna().iloc[-1] for feat in removal_order]
+
+# Plot MAE
+plt.figure(figsize=(12, 5))
+plt.plot(range(len(mae_values)), mae_values, marker='o', label='MAE')
+plt.xticks(range(len(removal_order)), removal_order, rotation=90)
+plt.ylabel('MAE')
+plt.xlabel('Removed Features (by iteration)')
+plt.title('MAE vs Feature Removal Order')
+plt.tight_layout()
+plt.savefig('leaveout_mae_plot.png')
+plt.close()
+
+# Plot MSE
+plt.figure(figsize=(12, 5))
+plt.plot(range(len(mse_values)), mse_values, marker='o', label='MSE', color='orange')
+plt.xticks(range(len(removal_order)), removal_order, rotation=90)
+plt.ylabel('MSE')
+plt.xlabel('Removed Features (by iteration)')
+plt.title('MSE vs Feature Removal Order')
+plt.tight_layout()
+plt.savefig('leaveout_mse_plot.png')
+plt.close()

@@ -1,6 +1,7 @@
-import pandas as pd
-import subprocess
 import os
+import subprocess
+import pandas as pd
+import matplotlib.pyplot as plt
 
 # Define the full feature list
 features = [
@@ -60,7 +61,42 @@ for i in range(len(features)):
     selected_features.append(next_feature)
     remaining_features.remove(next_feature)
 
-    # Save results
-    df_r2.to_csv('addon_r2.tsv', sep='\t')
-    df_mae.to_csv('addon_mae.tsv', sep='\t')
-    df_mse.to_csv('addon_mse.tsv', sep='\t')
+# Save results
+df_r2.to_csv('addon_r2.tsv', sep='\t')
+df_mae.to_csv('addon_mae.tsv', sep='\t')
+df_mse.to_csv('addon_mse.tsv', sep='\t')
+
+# Find order of selected features from df_mae (column-wise non-NaN values)
+selected_features_order = []
+for col in df_mae.columns:
+    col_series = df_mae[col].dropna()
+    if not col_series.empty:
+        # The selected feature this iteration is the row with smallest MAE
+        selected = col_series.astype(float).idxmin()
+        selected_features_order.append(selected)
+
+# Gather MAE and MSE values in order of feature addition
+mae_values = [df_mae.loc[feat].dropna().iloc[-1] for feat in selected_features_order]
+mse_values = [df_mse.loc[feat].dropna().iloc[-1] for feat in selected_features_order]
+
+# Plot MAE
+plt.figure(figsize=(12, 5))
+plt.plot(range(len(mae_values)), mae_values, marker='o', label='MAE')
+plt.xticks(range(len(selected_features_order)), selected_features_order, rotation=90)
+plt.ylabel('MAE')
+plt.xlabel('Added Features (by iteration)')
+plt.title('MAE vs Feature Addition Order')
+plt.tight_layout()
+plt.savefig('addon_mae_plot.png')
+plt.close()
+
+# Plot MSE
+plt.figure(figsize=(12, 5))
+plt.plot(range(len(mse_values)), mse_values, marker='o', label='MSE', color='orange')
+plt.xticks(range(len(selected_features_order)), selected_features_order, rotation=90)
+plt.ylabel('MSE')
+plt.xlabel('Added Features (by iteration)')
+plt.title('MSE vs Feature Addition Order')
+plt.tight_layout()
+plt.savefig('addon_mse_plot.png')
+plt.close()
