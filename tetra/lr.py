@@ -7,6 +7,31 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 import os
 
+ylabels = {
+    'coord': 'Coordination',
+    'row': 'Row',
+    'numb': 'Number',
+    'metal': 'Metal',
+    'CN': 'Coordination Number',
+    'ON': 'Oxidation Number',
+    'energy': 'Energy (eV)',
+    'form': 'Formation Energy (eV)',
+    'volume': 'Volume (Å³)',
+    'cell': 'Cell',
+    'chg': 'Bader Charge (e⁻)',
+    'mag': 'Magnetic Moments (μB)',
+    'l_bond': 'Bond Length (Å)',
+    'n_bond': 'Number of Bonds per Metal',
+    'match': 'Bulk Structure Maintain',
+    '-ICOHPm': '-ICOHP per Metal (eV)',
+    'ICOBIm': 'ICOBI per Metal',
+    '-ICOOPm': '-ICOOP per Metal (eV)',
+    '-ICOHPn': '-ICOHP per Bond (eV)',
+    'ICOBIn': 'ICOBI per Bond',
+    '-ICOOPn': '-ICOOP per Bond (eV)',
+    'madelung': 'Madelung Energy (Loewdin eV)',
+    'grosspop': 'Gross Population (Loewdin e⁻)',
+}
 
 def main():
     parser = argparse.ArgumentParser(description='Linear regression using bulk_data.csv and mendeleev_data.csv')
@@ -72,7 +97,7 @@ def main():
     row_map = {'3d': 'red', '4d': 'green', '5d': 'blue'}
     coord_map = {'WZ': '>', 'ZB': '<', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'd', 'LT': 'h'}
 
-    plt.figure(figsize=(6, 6))
+    plt.figure(figsize=(10, 8))
     for r in df['row'].unique():
         for c in df['coord'].unique():
             subset = df[(df['row'] == r) & (df['coord'] == c)]
@@ -89,10 +114,9 @@ def main():
             for _, row_data in subset.iterrows():
                 plt.annotate(row_data['metal'], (row_data[args.Y], model.predict([row_data[args.X]])[0]), fontsize=6)
 
-    plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], '--')
-    plt.xlabel('DFT-calculated')
-    plt.ylabel('Predicted')
-    plt.title(f'{args.Y} prediction')
+    plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], '--', lw=1, color='black')
+    plt.xlabel(f'DFT-calculated {ylabels[args.Y]}')
+    plt.ylabel(f'Predicted {ylabels[args.Y]}')
     plt.legend(loc='best', fontsize=6)
     plt.tight_layout()
     plt.savefig(f'lr_{output_suffix}.png')
