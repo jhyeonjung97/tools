@@ -13,7 +13,7 @@ def main():
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
         'ON', 'energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond',
-        '-ICOHPm', '-ICOHPn', 'ICOBIm', 'ICOBIn', 'madelung', '-ICOOPm', '-ICOOPn', 'grosspop', 
+        'grosspop', 'madelung', '-ICOHPm', '-ICOHPn', 'ICOBIm', 'ICOBIn', '-ICOOPm', '-ICOOPn', 
         'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
         'Vatom', 'dipole', 'pauling', 'Rcoval', 'Rmetal', 'Rvdw', 
