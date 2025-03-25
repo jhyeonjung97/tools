@@ -6,6 +6,6 @@ python ~/bin/tools/tetra/lr.py --Y form --row 4d --output form4d
 python ~/bin/tools/tetra/lr.py --Y form --row 5d --output form5d
 python ~/bin/tools/tetra/lr.py --Y form --row 4d 5d --output form4d5d
 
-python ~/bin/tools/tetra/lr.py --Y cohesive --output form
+python ~/bin/tools/tetra/lr.py --Y coh --output form
 
 python ~/bin/tools/tetra/lr.py --Y cohesive --output form

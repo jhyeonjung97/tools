@@ -71,8 +71,8 @@ str_cols = ['coord', 'row', 'numb', 'metal']
 float_cols = ['energy', 'form', 'coh', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
 
 metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t', index_col=0)
-mendeleev_df = pd.read_csv(os.path.join(save_path, 'mendeleev_data.csv'), index_col=0)
 
+print(
 h2o = -14.23919983
 h2 = -6.77409008
 
@@ -120,7 +120,7 @@ def main():
                     formation = energy/MN - metal_df.loc[metal, 'E'] - (go2 / 2) * (ON /2)
                     df.loc[item, 'form'] = formation
                     
-                    cohesive = mendeleev_df.loc[metal, 'coh'] / 96.48 + (cohesive_o2 / 2) * (ON /2) - formation
+                    cohesive = mendeleev_df.loc[metal, 'Hform'] / 96.48 + (cohesive_o2 / 2) * (ON /2) - formation
                     df.loc[item, 'coh'] = cohesive
                     
                     if coord in ['WZ', 'TN', 'PD', 'LT', 'AQ']:
