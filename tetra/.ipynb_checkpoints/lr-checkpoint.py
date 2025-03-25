@@ -48,7 +48,7 @@ def main():
     # Merge
     df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True, suffixes=('_bulk', '_mend'))
     
-    print(df.head(10))
+    print(df)
 
     # Optional filtering
     if args.row:
