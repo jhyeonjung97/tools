@@ -23,6 +23,7 @@ coords_data = [
     # {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'pink',},
     # {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'cyan',},
 ]
+    
 coords = pd.DataFrame(coords_data).set_index('coord')
 coords.index.name = None
 

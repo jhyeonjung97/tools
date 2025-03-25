@@ -69,10 +69,8 @@ def main():
     df_result.to_csv(f'lr_{output_suffix}.tsv', sep='\t', index=False)
 
     # Plot parity with color by 'row' and marker by 'coord'
-    colors = ['red', 'green', 'blue']
-    markers = ['>', '<', 'o', 's', 'p', 'd', 'h', '^', 'v']
-    row_map = {r: colors[i] for i, r in enumerate(sorted(df['row'].unique()))}
-    coord_map = {c: markers[i] for i, c in enumerate(sorted(df['coord'].unique()))}
+    row_map = {'3d': 'red', '4d': 'green', '5d': 'blue'}
+    coord_map = {'WZ': '>', 'ZB': '<', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'd', 'LT': 'h'}
 
     plt.figure(figsize=(6, 6))
     for r in df['row'].unique():
@@ -84,12 +82,14 @@ def main():
                 subset[args.Y],
                 model.predict(subset[args.X].astype(float)),
                 label=f'{r}_{c}',
-                alpha=0.7,
-                color=row_map[r],
-                marker=coord_map[c]
+                alpha=0.3,
+                color=row_map.get(r, 'gray'),
+                marker=coord_map.get(c, 'x')
             )
+            for _, row_data in subset.iterrows():
+                plt.annotate(row_data['metal'], (row_data[args.Y], model.predict([row_data[args.X]])[0]), fontsize=6)
 
-    plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], 'r--')
+    plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], '--')
     plt.xlabel('DFT-calculated')
     plt.ylabel('Predicted')
     plt.title(f'{args.Y} prediction')
@@ -107,13 +107,13 @@ def main():
     cor.to_csv(f'correlation_{output_suffix}.tsv', sep='\t')
 
     plt.figure(figsize=(10, 8))
-    sns.heatmap(cov, annot=True, fmt='.2f', cmap='coolwarm', annot_kws={"size": 5})
+    sns.heatmap(cov, annot=True, fmt='.2f', cmap='coolwarm', annot_kws={"size": 6})
     plt.tight_layout()
     plt.savefig(f'covariance_{output_suffix}.png')
     plt.close()
 
     plt.figure(figsize=(10, 8))
-    sns.heatmap(cor, annot=True, fmt='.2f', cmap='coolwarm', annot_kws={"size": 5})
+    sns.heatmap(cor, annot=True, fmt='.2f', cmap='coolwarm', annot_kws={"size": 6})
     plt.tight_layout()
     plt.savefig(f'correlation_{output_suffix}.png')
     plt.close()
