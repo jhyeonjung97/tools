@@ -14,9 +14,9 @@ def main():
     parser.add_argument('--X', nargs='+', default=[
         'ON', 'energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond',
         '-ICOHPm', '-ICOHPn', 'ICOBIm', 'ICOBIn', '-ICOOPm', '-ICOOPn',
-        'madelung', 'grosspop', 'Natom', 'Vatom', 'Tboil', 'Tmelt', 'mass', 'density',
-        'dipole', 'pauling', 'Rcoval', 'Rmetal', 'Rvdw', 'Hevap', 'Hfus', 'Hform',
-        'ion1', 'ion2', 'ion3', 'ion12'
+        'madelung', 'grosspop', 'Natom', 'mass', 'density', 'Vatom', 
+        'dipole', 'pauling', 'Rcoval', 'Rmetal', 'Rvdw', 'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
+        'ion1', 'ion2', 'ion12', 'ion3',
     ], help='List of feature columns from bulk_data.csv and/or mendeleev_data.csv')
     parser.add_argument('--row', nargs='+', type=str, default=None, help='Filter by row: 3d, 4d, or 5d')
     parser.add_argument('--coord', nargs='+', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
@@ -101,7 +101,6 @@ def main():
     print(f"Saved: {output_prefix}.log, {output_prefix}.tsv, {output_prefix}.png")
     print(f"Saved: {output_prefix}_covariance.tsv, {output_prefix}_covariance.png")
     print(f"Saved: {output_prefix}_correlation.tsv, {output_prefix}_correlation.png")
-
 
 if __name__ == '__main__':
     main()
