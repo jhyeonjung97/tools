@@ -44,6 +44,7 @@ columns_data = [
     {'column': 'ON',       'png_name': 'oxidation_number',    'ylabel': 'Oxidation Number'},
     {'column': 'energy',   'png_name': 'energy',              'ylabel': 'Energy (eV)'},
     {'column': 'form',     'png_name': 'formation_energy',    'ylabel': 'Formation Energy (eV)'},
+    {'column': 'coh',      'png_name': 'cohesive_energy',     'ylabel': 'Cohesive Energy (eV)'},
     {'column': 'volume',   'png_name': 'volume',              'ylabel': 'Volume (Å³)'},
     {'column': 'cell',     'png_name': 'cell',                'ylabel': 'Cell'},
     {'column': 'chg',      'png_name': 'bader_charge',        'ylabel': 'Bader Charge (e⁻)'},
@@ -67,23 +68,27 @@ df = pd.DataFrame(columns=columns.index, dtype='object')
 bool_cols = ['match']
 int_cols = ['CN', 'ON', 'n_bond']
 str_cols = ['coord', 'row', 'numb', 'metal']
-float_cols = ['energy', 'form', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
+float_cols = ['energy', 'form', 'coh', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
 
 metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t', index_col=0)
+mendeleev_df = pd.read_csv(os.path.join(save_path, 'mendeleev_data.csv'), index_col=0)
 
-E_H2O = -14.23919983
-E_H2 = -6.77409008
+h2o = -14.23919983
+h2 = -6.77409008
 
-ZPE_H2O = 0.558
-ZPE_H2 = 0.273
+zpeh2o = 0.558
+zpeh2 = 0.273
 
-Cp_H2O = 0.10
-Cp_H2 = 0.09
+cph2o = 0.10
+cph2 = 0.09
 
-Ref_H2 = E_H2 + ZPE_H2 + Cp_H2
-Ref_H2O = E_H2O + ZPE_H2O + Cp_H2O
-Ref_O2 = 2*Ref_H2O - 2*Ref_H2 + 4.92
-Ref_O = Ref_H2O - Ref_H2
+gh2 = h2 + zpeh2 + cph2
+gh2o = h2o + zpeh2o + cph2o
+go2 = 2*gh2o - 2*gh2 + 4.92
+go = gh2o - gh2
+
+# Fixed value for oxygen cohesive energy
+cohesive_o2 = 5.1614  # eV
 
 def main():
     global df
@@ -112,9 +117,12 @@ def main():
                     volume = atoms.get_volume()
                     df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
 
-                    formation = energy/MN - metal_df.loc[metal, 'E'] - (Ref_O2 / 2) * (ON /2)
+                    formation = energy/MN - metal_df.loc[metal, 'E'] - (go2 / 2) * (ON /2)
                     df.loc[item, 'form'] = formation
-
+                    
+                    cohesive = mendeleev_df.loc[metal, 'coh'] / 96.48 + (cohesive_o2 / 2) * (ON /2) - formation
+                    df.loc[item, 'coh'] = cohesive
+                    
                     if coord in ['WZ', 'TN', 'PD', 'LT', 'AQ']:
                         a = atoms.cell.cellpar()[0]
                         c = atoms.cell.cellpar()[2]

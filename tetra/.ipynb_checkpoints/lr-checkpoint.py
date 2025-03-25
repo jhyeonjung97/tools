@@ -16,6 +16,7 @@ ylabels = {
     'ON': 'Oxidation Number',
     'energy': 'Energy (eV)',
     'form': 'Formation Energy (eV)',
+    'coh': 'Cohesive Energy (eV)',
     'volume': 'Volume (Å³)',
     'cell': 'Cell',
     'chg': 'Bader Charge (e⁻)',
