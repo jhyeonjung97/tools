@@ -36,7 +36,7 @@ def main():
     args = parser.parse_args()
 
     root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
-    df_bulk = pd.read_csv(os.path.join(root, 'bulk_data.csv'))
+    df_bulk = pd.read_csv(os.path.join(root, 'bulk_data.csv'), index_col=0)
     df_bulk['metal'] = df_bulk['metal'].astype(str)
 
     # Keep row and coord as string for filtering
