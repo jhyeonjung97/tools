@@ -24,16 +24,14 @@ for i in range(len(features)):
     for f in remaining_features:
         test_features = [x for x in remaining_features if x != f]
         input_str = ' '.join(test_features)
-        output_name = f'seqleave_{i}_{f}'
-        log_name = f'lr_{output_name}.log'
 
         # Run the regression script with the current feature set
-        cmd = f'python ~/bin/tools/tetra/lr.py --Y form --X {input_str} --output {output_name}'
+        cmd = f'python ~/bin/tools/tetra/lr.py --Y form --X {input_str} --output leaveout'
         subprocess.run(cmd, shell=True)
 
         # Parse the log file to extract performance metrics
         r2_val = mae_val = mse_val = None
-        with open(log_name, 'r') as log_file:
+        with open('lr_leaveout.log', 'r') as log_file:
             for line in log_file:
                 if line.startswith('R2:'):
                     r2_val = float(line.split(':')[1].strip())
