@@ -27,7 +27,7 @@ rows = {
     'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
 }
 
-for coord in [coords[4]]:
+for coord in coords:
     coord_dir = coord['coord_dir']
     P = coord['P']
     facet = (0,0,1)
