@@ -13,10 +13,10 @@ def main():
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
         'ON', 'energy', 'volume', 'cell', 'chg', 'mag', 'l_bond', 'n_bond',
-        '-ICOHPm', '-ICOHPn', 'ICOBIm', 'ICOBIn', '-ICOOPm', '-ICOOPn',
-        'madelung', 'grosspop', 'Natom', 'mass', 'density', 'Vatom', 
-        'dipole', 'pauling', 'Rcoval', 'Rmetal', 'Rvdw', 'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
-        'ion1', 'ion2', 'ion12', 'ion3',
+        '-ICOHPm', '-ICOHPn', 'ICOBIm', 'ICOBIn', 'madelung', '-ICOOPm', '-ICOOPn', 'grosspop', 
+        'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
+        'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
+        'Vatom', 'dipole', 'pauling', 'Rcoval', 'Rmetal', 'Rvdw', 
     ], help='List of feature columns from bulk_data.csv and/or mendeleev_data.csv')
     parser.add_argument('--row', nargs='+', type=str, default=None, help='Filter by row: 3d, 4d, or 5d')
     parser.add_argument('--coord', nargs='+', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
