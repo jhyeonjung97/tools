@@ -112,8 +112,11 @@ def main():
                 marker=coord_map.get(c, 'x')
             )
             for _, row_data in subset.iterrows():
-                plt.annotate(row_data['metal'], (row_data[args.Y], model.predict([row_data[args.X]])[0]), fontsize=6)
+                row_features = pd.DataFrame([row_data[args.X].values], columns=args.X)
+                y_pred_single = model.predict(row_features)[0]
+                plt.annotate(row_data['metal'], (row_data[args.Y], y_pred_single), fontsize=6)
 
+    
     plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], '--', lw=1, color='black')
     plt.xlabel(f'DFT-calculated {ylabels[args.Y]}')
     plt.ylabel(f'Predicted {ylabels[args.Y]}')
