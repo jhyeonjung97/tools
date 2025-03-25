@@ -99,8 +99,8 @@ def main():
     plt.close()
 
     print(f"Saved: {output_prefix}.log, {output_prefix}.tsv, {output_prefix}.png")
-    print(f"Saved: {output_prefix}_covariance.tsv, {output_prefix}_correlation.tsv")
-    print(f"Saved: {output_prefix}_covariance.png, {output_prefix}_correlation.png")
+    print(f"Saved: {output_prefix}_covariance.tsv, {output_prefix}_covariance.png")
+    print(f"Saved: {output_prefix}_correlation.tsv, {output_prefix}_correlation.png")
 
 
 if __name__ == '__main__':
