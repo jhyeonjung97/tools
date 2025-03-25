@@ -72,7 +72,6 @@ float_cols = ['energy', 'form', 'coh', 'volume', 'cell', 'chg', 'mag', 'l_bond',
 
 metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t', index_col=0)
 
-print(
 h2o = -14.23919983
 h2 = -6.77409008
 
