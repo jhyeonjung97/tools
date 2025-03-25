@@ -66,6 +66,13 @@ df_r2.to_csv('addon_r2.tsv', sep='\t')
 df_mae.to_csv('addon_mae.tsv', sep='\t')
 df_mse.to_csv('addon_mse.tsv', sep='\t')
 
+# import pandas as pd
+# import matplotlib.pyplot as plt
+
+# # Load results
+# df_mae = pd.read_csv('addon_mae.tsv', sep='\t', index_col=0)
+# df_mse = pd.read_csv('addon_mse.tsv', sep='\t', index_col=0)
+
 # Find order of selected features from df_mae (column-wise non-NaN values)
 selected_features_order = []
 for col in df_mae.columns:

@@ -62,6 +62,13 @@ df_r2.to_csv('leaveout_r2.tsv', sep='\t')
 df_mae.to_csv('leaveout_mae.tsv', sep='\t')
 df_mse.to_csv('leaveout_mse.tsv', sep='\t')
 
+# import pandas as pd
+# import matplotlib.pyplot as plt
+
+# # Load results
+# df_mae = pd.read_csv('leaveout_mae.tsv', sep='\t', index_col=0)
+# df_mse = pd.read_csv('leaveout_mse.tsv', sep='\t', index_col=0)
+
 # Get the feature removal order from df_mae columns (i.e., by iteration)
 removal_order = []
 for col in df_mae.columns:
