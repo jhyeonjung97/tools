@@ -18,8 +18,8 @@ def main():
         'dipole', 'pauling', 'Rcoval', 'Rmetal', 'Rvdw', 'Hevap', 'Hfus', 'Hform',
         'ion1', 'ion2', 'ion3', 'ion12'
     ], help='List of feature columns from bulk_data.csv and/or mendeleev_data.csv')
-    parser.add_argument('--row', type=str, default=None, help='Filter by row: 3d, 4d, or 5d')
-    parser.add_argument('--coord', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
+    parser.add_argument('--row', nargs='+', type=str, default=None, help='Filter by row: 3d, 4d, or 5d')
+    parser.add_argument('--coord', nargs='+', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
     parser.add_argument('--output', type=str, default='result', help='Output filename prefix')
     args = parser.parse_args()
 
@@ -32,9 +32,9 @@ def main():
     df = df.drop(columns=['row_mend', 'numb_bulk'])
 
     if args.row:
-        df = df[df['row'] == args.row]
+        df = df[df['row'].isin(args.row)]
     if args.coord:
-        df = df[df['coord'] == args.coord]
+        df = df[df['coord'].isin(args.coord)]
 
     # Drop rows with NaN in any relevant column
     all_columns = args.X + [args.Y]
@@ -79,7 +79,7 @@ def main():
     plt.close()
 
     # Save covariance and correlation matrices as TSV and PNG
-    df_metrics = pd.concat([X, Y], axis=1)
+    df_metrics = pd.concat([Y, X], axis=1)  # Place Y first
     cov = df_metrics.cov()
     cor = df_metrics.corr()
 
@@ -87,15 +87,13 @@ def main():
     cor.to_csv(f'{output_prefix}_correlation.tsv', sep='\t')
 
     plt.figure(figsize=(10, 8))
-    sns.heatmap(cov, annot=True, fmt='.2f', cmap='coolwarm')
-    plt.title('Covariance Matrix')
+    sns.heatmap(cov, annot=True, fmt='.2f', cmap='coolwarm', annot_kws={"size": 5})
     plt.tight_layout()
     plt.savefig(f'{output_prefix}_covariance.png')
     plt.close()
 
     plt.figure(figsize=(10, 8))
-    sns.heatmap(cor, annot=True, fmt='.2f', cmap='coolwarm')
-    plt.title('Correlation Matrix')
+    sns.heatmap(cor, annot=True, fmt='.2f', cmap='coolwarm', annot_kws={"size": 5})
     plt.tight_layout()
     plt.savefig(f'{output_prefix}_correlation.png')
     plt.close()
