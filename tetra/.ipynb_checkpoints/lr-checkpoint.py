@@ -23,12 +23,12 @@ ylabels = {
     'l_bond': 'Bond Length (Å)',
     'n_bond': 'Number of Bonds per Metal',
     'match': 'Bulk Structure Maintain',
-    '-ICOHPm': '-ICOHP per Metal (eV)',
+    '_ICOHPm': '_ICOHP per Metal (eV)',
     'ICOBIm': 'ICOBI per Metal',
-    '-ICOOPm': '-ICOOP per Metal (eV)',
-    '-ICOHPn': '-ICOHP per Bond (eV)',
+    '_ICOOPm': '_ICOOP per Metal (eV)',
+    '_ICOHPn': '_ICOHP per Bond (eV)',
     'ICOBIn': 'ICOBI per Bond',
-    '-ICOOPn': '-ICOOP per Bond (eV)',
+    '_ICOOPn': '_ICOOP per Bond (eV)',
     'madelung': 'Madelung Energy (Loewdin eV)',
     'grosspop': 'Gross Population (Loewdin e⁻)',
 }
@@ -38,7 +38,7 @@ def main():
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
         'chg', 'mag', 'volume', 'l_bond', 'n_bond',
-        'grosspop', 'madelung', '-ICOHPm', '-ICOHPn', 'ICOBIm', 'ICOBIn', '-ICOOPm', '-ICOOPn', 
+        'grosspop', 'madelung', '_ICOHPm', '_ICOHPn', 'ICOBIm', 'ICOBIn', '_ICOOPm', '_ICOOPn', 
         'pauling', 'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
         'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',

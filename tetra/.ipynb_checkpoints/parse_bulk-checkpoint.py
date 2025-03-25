@@ -51,12 +51,12 @@ columns_data = [
     {'column': 'l_bond',   'png_name': 'bond_length',         'ylabel': 'Bond Length (Å)'},
     {'column': 'n_bond',   'png_name': 'number_of_bonds',     'ylabel': 'Number of Bonds per Metal'},
     {'column': 'match',    'png_name': 'match',               'ylabel': 'Bulk Structure Maintain'},
-    {'column': '-ICOHPm',  'png_name': 'icohp_per_metal',     'ylabel': '-ICOHP per Metal (eV)'},
+    {'column': '_ICOHPm',  'png_name': 'icohp_per_metal',     'ylabel': '_ICOHP per Metal (eV)'},
     {'column': 'ICOBIm',   'png_name': 'icobi_per_metal',     'ylabel': 'ICOBI per Metal'},
-    {'column': '-ICOOPm',  'png_name': 'icoop_per_metal',     'ylabel': '-ICOOP per Metal (eV)'},
-    {'column': '-ICOHPn',  'png_name': 'icohp_per_bond',      'ylabel': '-ICOHP per Bond (eV)'},
+    {'column': '_ICOOPm',  'png_name': 'icoop_per_metal',     'ylabel': '_ICOOP per Metal (eV)'},
+    {'column': '_ICOHPn',  'png_name': 'icohp_per_bond',      'ylabel': '_ICOHP per Bond (eV)'},
     {'column': 'ICOBIn',   'png_name': 'icobi_per_bond',      'ylabel': 'ICOBI per Bond'},
-    {'column': '-ICOOPn',  'png_name': 'icoop_per_bond',      'ylabel': '-ICOOP per Bond (eV)'},
+    {'column': '_ICOOPn',  'png_name': 'icoop_per_bond',      'ylabel': '_ICOOP per Bond (eV)'},
     {'column': 'madelung', 'png_name': 'madelung',            'ylabel': 'Madelung Energy (Loewdin, eV)'},
     {'column': 'grosspop', 'png_name': 'gross_population',    'ylabel': 'Gross Population (Loewdin, e⁻)'},
 ]
@@ -67,7 +67,7 @@ df = pd.DataFrame(columns=columns.index, dtype='object')
 bool_cols = ['match']
 int_cols = ['CN', 'ON', 'n_bond']
 str_cols = ['coord', 'row', 'numb', 'metal']
-float_cols = ['energy', 'form', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
+float_cols = ['energy', 'form', 'volume', 'cell', 'chg', 'mag', 'l_bond', '_ICOHPm', 'ICOBIm', '_ICOOPm', '_ICOHPn', 'ICOBIn', '_ICOOPn', 'madelung', 'grosspop']
 
 metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t', index_col=0)
 
@@ -149,8 +149,8 @@ def main():
                     icoop, _, _ = parse_icohp(icoop_path)
                     madelung = parse_madelung(madelung_path)
                     grosspop = parse_grosspop(grosspop_path, metal)
-                    df.loc[item, ['l_bond', 'n_bond', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']] = bond, nbond, icohp, icobi, icoop, madelung/MN, grosspop
-                    df.loc[item, ['-ICOHPm', 'ICOBIm', '-ICOOPm']] = icohp*nbond, icobi*nbond, icoop*nbond
+                    df.loc[item, ['l_bond', 'n_bond', '_ICOHPn', 'ICOBIn', '_ICOOPn', 'madelung', 'grosspop']] = bond, nbond, icohp, icobi, icoop, madelung/MN, grosspop
+                    df.loc[item, ['_ICOHPm', 'ICOBIm', '_ICOOPm']] = icohp*nbond, icobi*nbond, icoop*nbond
                     
                 df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
                 # df[int_cols] = df[int_cols].astype(int)
