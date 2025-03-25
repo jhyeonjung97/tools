@@ -30,6 +30,7 @@ def main():
     df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True, suffixes=('_bulk', '_mend'))
     df = df.rename(columns={'row_bulk': 'row', 'numb_mend': 'numb'})
     df = df.drop(columns=['row_mend', 'numb_bulk'])
+    df = df[df['coord'] != 'fm']
 
     if args.row:
         df = df[df['row'].isin(args.row)]
@@ -68,7 +69,7 @@ def main():
     df_result.to_csv(f'lr_{output_suffix}.tsv', sep='\t', index=False)
 
     # Plot parity with color by 'row' and marker by 'coord'
-    colors = ['red', 'green', 'blue', 'red']
+    colors = ['red', 'green', 'blue']
     markers = ['>', '<', 'o', 's', 'p', 'd', 'h', '^', 'v']
     row_map = {r: colors[i] for i, r in enumerate(sorted(df['row'].unique()))}
     coord_map = {c: markers[i] for i, c in enumerate(sorted(df['coord'].unique()))}
