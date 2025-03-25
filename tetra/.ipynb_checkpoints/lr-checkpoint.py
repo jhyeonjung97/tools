@@ -58,7 +58,7 @@ def main():
     df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True, suffixes=('_bulk', '_mend'))
     df = df.rename(columns={'row_bulk': 'row', 'numb_mend': 'numb'})
     df = df.drop(columns=['row_mend', 'numb_bulk'])
-    df = df[df['row'] != 'fm']
+    df = df[df['row'] != 'fm'] ##
 
     if args.row:
         df = df[df['row'].isin(args.row)]
