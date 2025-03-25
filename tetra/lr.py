@@ -39,7 +39,7 @@ def main():
     df_bulk = pd.read_csv(os.path.join(root, 'bulk_data.csv'), index_col=0)
     df_mend = pd.read_csv(os.path.join(root, 'mendeleev_data.csv'), index_col=0)
 
-    df = pd.merge(df_bulk, df_mend, left_on='metal', left_index=True)
+    df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True)
     print(df)
 
     if args.row:
