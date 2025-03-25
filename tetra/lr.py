@@ -118,9 +118,9 @@ def main():
     plt.savefig(f'correlation_{output_suffix}.png')
     plt.close()
 
-    print(f"Saved: {output_suffix}.log, {output_suffix}.tsv, {output_suffix}.png")
-    print(f"Saved: {output_suffix}_covariance.tsv, {output_suffix}_covariance.png")
-    print(f"Saved: {output_suffix}_correlation.tsv, {output_suffix}_correlation.png")
+    print(f"Saved: lr_{output_suffix}.log, lr_{output_suffix}.tsv, lr_{output_suffix}.png")
+    print(f"Saved: covariance_{output_suffix}.tsv, covariance_{output_suffix}.png")
+    print(f"Saved: correlation_{output_suffix}.tsv, correlation_{output_suffix}.png")
 
 
 if __name__ == '__main__':
