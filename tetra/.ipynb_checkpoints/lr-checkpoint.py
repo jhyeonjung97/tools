@@ -7,6 +7,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 import os
 
+
 def main():
     parser = argparse.ArgumentParser(description='Linear regression using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
@@ -77,7 +78,31 @@ def main():
     plt.savefig(f'{output_prefix}.png')
     plt.close()
 
-    print(f"Saved: {output_prefix}.log, result.tsv, result.png")
+    # Save covariance and correlation matrices as TSV and PNG
+    df_metrics = pd.concat([X, Y], axis=1)
+    cov = df_metrics.cov()
+    cor = df_metrics.corr()
+
+    cov.to_csv(f'{output_prefix}_covariance.tsv', sep='\t')
+    cor.to_csv(f'{output_prefix}_correlation.tsv', sep='\t')
+
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(cov, annot=True, fmt='.2f', cmap='coolwarm')
+    plt.title('Covariance Matrix')
+    plt.tight_layout()
+    plt.savefig(f'{output_prefix}_covariance.png')
+    plt.close()
+
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(cor, annot=True, fmt='.2f', cmap='coolwarm')
+    plt.title('Correlation Matrix')
+    plt.tight_layout()
+    plt.savefig(f'{output_prefix}_correlation.png')
+    plt.close()
+
+    print(f"Saved: {output_prefix}.log, {output_prefix}.tsv, {output_prefix}.png")
+    print(f"Saved: {output_prefix}_covariance.tsv, {output_prefix}_correlation.tsv")
+    print(f"Saved: {output_prefix}_covariance.png, {output_prefix}_correlation.png")
 
 
 if __name__ == '__main__':
