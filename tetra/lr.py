@@ -32,7 +32,7 @@ def main():
     mismatch_idx = df[
         (df['row_x'] != df['row_y']) |
         (df['numb_x'] != df['numb_y'])
-    ].index
+    ]
 
     print(mismatch_idx)
 
