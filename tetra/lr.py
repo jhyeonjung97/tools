@@ -37,9 +37,12 @@ def main():
 
     root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
     df_bulk = pd.read_csv(os.path.join(root, 'bulk_data.csv'))
-    df_mend = pd.read_csv(os.path.join(root, 'mendeleev_data.csv'))
+    df_mend = pd.read_csv(os.path.join(root, 'mendeleev_data.csv'), index_col=0)
 
-    # Merge on metal
+    # Convert 'metal' to string for safe merging
+    df_bulk['metal'] = df_bulk['metal'].astype(str)
+
+    # Merge
     df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True, suffixes=('_bulk', '_mend'))
 
     # Optional filtering
