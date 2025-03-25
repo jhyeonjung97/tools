@@ -46,7 +46,7 @@ def main():
     df_mend = pd.read_csv(os.path.join(root, 'mendeleev_data.csv'), index_col=0)
 
     # Merge
-    df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True, suffixes=('_bulk', '_mend'))
+    df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True, how='left')
     
     print(df)
 
