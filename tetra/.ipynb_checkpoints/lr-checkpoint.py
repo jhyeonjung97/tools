@@ -30,8 +30,8 @@ def main():
     df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True)
     
     mismatch = df[
-        (df['row_x'] != df['row_y']) |
-        (df['numb_x'] != df['numb_y'])
+        (df['row_x'].astype(str) != df['row_y'].astype(str)) |
+        (df['numb_x'].astype(int) != df['numb_y'].astype(int)
     ][['row_x', 'row_y', 'numb_x', 'numb_y']]
 
     print(mismatch)
