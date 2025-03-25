@@ -29,12 +29,13 @@ def main():
 
     df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True)
     
-    mismatch_idx = df[
+    mismatch = df[
         (df['row_x'] != df['row_y']) |
         (df['numb_x'] != df['numb_y'])
-    ]
+    ][['row_x', 'row_y', 'numb_x', 'numb_y']]
 
-    print(mismatch_idx)
+    print(mismatch)
+
 
     if args.row:
         df = df[df['row'] == args.row]
