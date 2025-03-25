@@ -68,7 +68,7 @@ def main():
     df_result.to_csv(f'lr_{output_suffix}.tsv', sep='\t', index=False)
 
     # Plot parity with color by 'row' and marker by 'coord'
-    colors = ['red', 'green', 'blue']
+    colors = ['red', 'green', 'blue', 'red']
     markers = ['>', '<', 'o', 's', 'p', 'd', 'h', '^', 'v']
     row_map = {r: colors[i] for i, r in enumerate(sorted(df['row'].unique()))}
     coord_map = {c: markers[i] for i, c in enumerate(sorted(df['coord'].unique()))}
