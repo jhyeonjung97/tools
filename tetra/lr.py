@@ -27,15 +27,9 @@ def main():
     df_bulk = pd.read_csv(os.path.join(root, 'bulk_data.csv'), index_col=0)
     df_mend = pd.read_csv(os.path.join(root, 'mendeleev_data.csv'), index_col=0)
 
-    df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True)
-    
-    mismatch = df[
-        (df['row_x'].astype(str) != df['row_y'].astype(str)) |
-        (df['numb_x'].astype(int) != df['numb_y'].astype(int))
-    ][['row_x', 'row_y', 'numb_x', 'numb_y']]
-
-    print(mismatch)
-
+    df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True, suffixes=('_bulk', '_mend'))
+    df = df.rename(columns={'row_bulk': 'row', 'numb_mend': 'numb'})
+    df = df.drop(columns=['row_mend', 'numb_bulk'])
 
     if args.row:
         df = df[df['row'] == args.row]
