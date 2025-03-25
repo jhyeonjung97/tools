@@ -28,7 +28,13 @@ def main():
     df_mend = pd.read_csv(os.path.join(root, 'mendeleev_data.csv'), index_col=0)
 
     df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True)
-    print(df.columns)
+    
+    mismatch_idx = df[
+        (df['row_x'] != df['row_y']) |
+        (df['numb_x'] != df['numb_y'])
+    ].index
+
+    print(mismatch_idx)
 
     if args.row:
         df = df[df['row'] == args.row]
