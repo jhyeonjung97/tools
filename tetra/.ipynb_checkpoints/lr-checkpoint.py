@@ -31,7 +31,7 @@ def main():
     
     mismatch = df[
         (df['row_x'].astype(str) != df['row_y'].astype(str)) |
-        (df['numb_x'].astype(int) != df['numb_y'].astype(int)
+        (df['numb_x'].astype(int) != df['numb_y'].astype(int))
     ][['row_x', 'row_y', 'numb_x', 'numb_y']]
 
     print(mismatch)
