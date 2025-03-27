@@ -6,9 +6,19 @@ from ase.constraints import FixAtoms
 from ase.geometry import get_duplicate_atoms
 from ase.build import make_supercell, surface
 from ase.build.tools import sort
+import socket
 
-# Define root directory and search pattern
-root = "/Users/hailey/Desktop/7_V_bulk"
+# 서버 주소 가져오기
+hostname = socket.gethostname()
+user_name = os.getlogin()
+if hostname == 'PC102616':
+    root = '/Users/jiuy97/Desktop/7_V_bulk'
+elif user_name == 'jiuy97':
+    root = '/pscratch/sd/j/jiuy97/7_V_bulk/'
+elif user_name == 'hailey':
+    root = '/Users/hailey/Desktop/7_V_bulk'
+else:
+    raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
 
 coords = [
     {'coord_dir': '1_Tetrahedral_WZ',  'P': np.array([[ 1, 0, 0],[ 0, 0,-1],[ 1, 2, 0]]), 'n_layers': 3, 'm_fix': 8},

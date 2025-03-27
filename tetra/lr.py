@@ -6,6 +6,19 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
+import socket
+
+# 서버 주소 가져오기
+hostname = socket.gethostname()
+user_name = os.getlogin()
+if hostname == 'PC102616':
+    root = '/Users/jiuy97/Desktop/7_V_bulk/figures'
+elif user_name == 'jiuy97':
+    root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
+elif user_name == 'hailey':
+    root = '/Users/hailey/Desktop/7_V_bulk/figures'
+else:
+    raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
 
 ylabels = {
     'coord': 'Coordination',
@@ -52,7 +65,6 @@ def main():
     # Convert feature names if they start with ICOHP or ICOOP (prepend '-')
     args.X = [('-' + x if x.startswith('ICOHP') or x.startswith('ICOOP') else x) for x in args.X]
     
-    root = '/Users/hailey/Desktop/7_V_bulk/figures'
     df_bulk = pd.read_csv(os.path.join(root, 'bulk_data.csv'), index_col=0)
     df_mend = pd.read_csv(os.path.join(root, 'mendeleev_data.csv'), index_col=0)
 

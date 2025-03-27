@@ -20,7 +20,7 @@ df_mse = pd.DataFrame(index=features)
 # Initialize list of remaining features
 remaining_features = features.copy()
 
-for i in range(len(features)):
+for i in range(len(features)-1):
     for f in remaining_features:
         test_features = [x for x in remaining_features if x != f]
         input_str = ' '.join(test_features)

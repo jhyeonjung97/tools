@@ -1,6 +1,7 @@
 #!/bin/env python
 
 import os
+import socket
 import numpy as np
 import numpy.ma as ma
 import pandas as pd
@@ -9,7 +10,17 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from mendeleev import element
 
-root = '/Users/hailey/Desktop/7_V_bulk'
+# 서버 주소 가져오기
+hostname = socket.gethostname()
+user_name = os.getlogin()
+if hostname == 'PC102616':
+    root = '/Users/jiuy97/Desktop/7_V_bulk'
+elif user_name == 'jiuy97':
+    root = '/pscratch/sd/j/jiuy97/7_V_bulk/'
+elif user_name == 'hailey':
+    root = '/Users/hailey/Desktop/7_V_bulk'
+else:
+    raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
 save_path = os.path.join(root, 'figures')
 
 coords_data = [
@@ -153,12 +164,19 @@ def main():
                 grosspop_path = os.path.join(dir_path, 'GROSSPOP.lobster')
                 if os.path.exists(icohp_path) and os.path.getsize(icohp_path) != 0:
                     icohp, bond, nbond = parse_icohp(icohp_path)
-                    icobi, _, _ = parse_icohp(icobi_path)
-                    icoop, _, _ = parse_icohp(icoop_path)
+                    df.loc[item, ['l_bond', 'n_bond', '-ICOHPn', '-ICOHPm']] = bond, nbond, icohp, icohp*nbond
+                if os.path.exists(icobi_path) and os.path.getsize(icobi_path) != 0:
+                    icobi, bond, nbond = parse_icohp(icobi_path)
+                    df.loc[item, ['l_bond', 'n_bond', 'ICOBIn', 'ICOBIm']] = bond, nbond, icobi, icobi*nbond
+                if os.path.exists(icoop_path) and os.path.getsize(icoop_path) != 0:
+                    icoop, bond, nbond = parse_icohp(icoop_path)
+                    df.loc[item, ['l_bond', 'n_bond', '-ICOOPn', '-ICOOPm']] = bond, nbond, icoop, icoop*nbond
+                if os.path.exists(madelung_path) and os.path.getsize(madelung_path) != 0:
                     madelung = parse_madelung(madelung_path)
+                    df.loc[item, ['madelung']] = madelung/MN
+                if os.path.exists(grosspop_path) and os.path.getsize(grosspop_path) != 0:
                     grosspop = parse_grosspop(grosspop_path, metal)
-                    df.loc[item, ['l_bond', 'n_bond', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']] = bond, nbond, icohp, icobi, icoop, madelung/MN, grosspop
-                    df.loc[item, ['-ICOHPm', 'ICOBIm', '-ICOOPm']] = icohp*nbond, icobi*nbond, icoop*nbond
+                    df.loc[item, ['grosspop']] = grosspop
                     
                 df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
                 # df[int_cols] = df[int_cols].astype(int)
@@ -187,16 +205,7 @@ def plot_by_metal_row(df, save_path):
                 color=coords.loc[coord, 'color']
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, 
-                         linestyle='-', label=coord, zorder=zorder)                
-                # for m, metal in enumerate(metals[row]):
-                #     numb = str(m).zfill(2)
-                #     item = coord+row+numb
-                #     if subset.loc[item, 'CN'] == subset.loc[item, 'n_bond']:                    
-                #         plt.scatter(subset.loc[item, 'numb'], subset.loc[item, col], 
-                #                     marker=marker, edgecolors=color, facecolors=color, zorder=c)
-                #     else:
-                #         plt.scatter(subset.loc[item, 'numb'], subset.loc[item, col], 
-                #                     marker='x', color=color, zorder=c)
+                         linestyle='-', label=coord, zorder=zorder)
                 if col == 'form':
                     for m, metal in enumerate(metals[row]):
                         if coord == metal_df.loc[metal, 'coord']:
@@ -219,11 +228,11 @@ def plot_by_coordination(df, save_path):
         for col in columns.index:
             marker=coords.loc[coord, 'marker']
             base_color = coords.loc[coord, 'color']
-            cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', ['white', base_color])
-            colors = cmap(np.linspace(0.3, 1, 3))
+            cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', [base_color, 'white'])
+            colors = cmap(np.linspace(0.0, 0.6, 3))
             plt.figure(figsize=(8, 6))
-            for r, row in enumerate(['fm', '3d', '4d', '5d']):
-                color = 'lightgray' if row == 'fm' else colors[r-1]
+            for r, row in enumerate(['3d', '4d', '5d']):
+                color = 'lightgray' if row == 'fm' else colors[r]
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]           
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, 
                          linestyle='-', label=row)

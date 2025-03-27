@@ -23,7 +23,7 @@ selected_features = []
 # Track unselected features
 remaining_features = features.copy()
 
-for i in range(len(features)):
+for i in range(len(features)-1):
     for f in remaining_features:
         test_features = selected_features + [f]
         input_str = ' '.join(test_features)
