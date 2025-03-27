@@ -1,10 +1,21 @@
 import os
+import socket
 import numpy as np
 import pandas as pd
 from mendeleev import element
 import matplotlib.pyplot as plt
 
-root = '/Users/hailey/Desktop/7_V_bulk'
+# 서버 주소 가져오기
+hostname = socket.gethostname()
+user_name = os.getlogin()
+if hostname == 'PC102616':
+    root = '/Users/jiuy97/Desktop/7_V_bulk'
+elif user_name == 'jiuy97':
+    root = '/pscratch/sd/j/jiuy97/7_V_bulk/'
+elif user_name == 'hailey':
+    root = '/Users/hailey/Desktop/7_V_bulk'
+else:
+    raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
 
 metals = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],

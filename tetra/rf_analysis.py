@@ -13,6 +13,7 @@ from sklearn.model_selection import train_test_split, KFold, cross_val_score
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score, max_error
 from skopt import BayesSearchCV
 from skopt.space import Real, Integer
+import socket
 
 # ANSI color codes
 RED = '\033[91m'
@@ -24,15 +25,17 @@ CYAN = '\033[96m'
 ENDC = '\033[0m'
 BOLD = '\033[1m'
 
-# Determine the root path based on the current user ID
+# 서버 주소 가져오기
+hostname = socket.gethostname()
 user_name = os.getlogin()
-
-if user_name == 'hailey':  # mac 사용자 아이디
-    root = '/Users/hailey/Desktop/7_V_bulk/figures'
-elif user_name == 'jiuy97':  # slac 사용자 아이디
+if hostname == 'PC102616':
     root = '/Users/jiuy97/Desktop/7_V_bulk/figures'
+elif user_name == 'jiuy97':
+    root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
+elif user_name == 'hailey':
+    root = '/Users/hailey/Desktop/7_V_bulk/figures'
 else:
-    raise ValueError("Unknown user ID. Please set the root path manually.")
+    raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
 
 ylabels = {
     'coord': 'Coordination',
