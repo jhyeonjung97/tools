@@ -2,10 +2,22 @@ import os
 import subprocess
 import pandas as pd
 import matplotlib.pyplot as plt
+import socket
+
+hostname = socket.gethostname()
+user_name = os.getlogin()
+if hostname == 'PC102616':
+    root = '/Users/jiuy97/Desktop/7_V_bulk/figures'
+elif user_name == 'jiuy97':
+    root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
+elif user_name == 'hailey':
+    root = '/Users/hailey/Desktop/7_V_bulk/figures'
+else:
+    raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
 
 # Define the full feature list
 features = [
-    'chg', 'mag', 'volume', 'l_bond', 'n_bond', 'grosspop', 'madelung', 
+    'numb', 'chg', 'mag', 'volume', 'l_bond', 'n_bond', 'grosspop', 'madelung', 
     'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
     'pauling', 'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
     'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 'Tboil', 'Tmelt', 
@@ -26,8 +38,9 @@ for i in range(len(features)-1):
         input_str = ' '.join(test_features)
 
         # Remove previous log if exists
-        if os.path.exists('lr_leaveout.log'):
-            os.remove('lr_leaveout.log')
+        log_path = os.path.join(root, 'lr_leaveout.log')
+        if os.path.exists(log_path):
+            os.remove(log_path)
 
         # Run lr.py with selected features
         cmd = f'python ~/bin/tools/tetra/lr.py --Y form --X {input_str} --output leaveout'
@@ -35,8 +48,8 @@ for i in range(len(features)-1):
 
         # Parse lr_leaveout.log
         r2_val = mae_val = mse_val = None
-        if os.path.exists('lr_leaveout.log'):
-            with open('lr_leaveout.log', 'r') as log_file:
+        if os.path.exists(log_path):
+            with open(log_path, 'r') as log_file:
                 for line in log_file:
                     if line.startswith('R2:'):
                         r2_val = float(line.split(':')[1].strip())
@@ -58,16 +71,9 @@ for i in range(len(features)-1):
     remaining_features.remove(next_feature)
 
 # Save results
-df_r2.to_csv('leaveout_r2.tsv', sep='\t')
-df_mae.to_csv('leaveout_mae.tsv', sep='\t')
-df_mse.to_csv('leaveout_mse.tsv', sep='\t')
-
-# import pandas as pd
-# import matplotlib.pyplot as plt
-
-# # Load results
-# df_mae = pd.read_csv('leaveout_mae.tsv', sep='\t', index_col=0)
-# df_mse = pd.read_csv('leaveout_mse.tsv', sep='\t', index_col=0)
+df_r2.to_csv(os.path.join(root, 'leaveout_r2.tsv'), sep='\t')
+df_mae.to_csv(os.path.join(root, 'leaveout_mae.tsv'), sep='\t')
+df_mse.to_csv(os.path.join(root, 'leaveout_mse.tsv'), sep='\t')
 
 # Get the feature removal order from df_mae columns (i.e., by iteration)
 removal_order = []
@@ -90,7 +96,7 @@ plt.ylabel('MAE')
 plt.xlabel('Removed Features (by iteration)')
 plt.title('MAE vs Feature Removal Order')
 plt.tight_layout()
-plt.savefig('leaveout_mae.png')
+plt.savefig(os.path.join(root, 'leaveout_mae.png'))
 plt.close()
 
 # Plot MSE
@@ -101,5 +107,5 @@ plt.ylabel('MSE')
 plt.xlabel('Removed Features (by iteration)')
 plt.title('MSE vs Feature Removal Order')
 plt.tight_layout()
-plt.savefig('leaveout_mse.png')
+plt.savefig(os.path.join(root, 'leaveout_mse.png'))
 plt.close()

@@ -14,6 +14,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score, m
 from sklearn.pipeline import Pipeline
 from skopt import BayesSearchCV
 from skopt.space import Real, Integer, Categorical
+import socket
 
 # ANSI color codes
 RED = '\033[91m'
@@ -24,6 +25,8 @@ MAGENTA = '\033[95m'
 CYAN = '\033[96m'
 ENDC = '\033[0m'
 BOLD = '\033[1m'
+
+os.environ['JOBLIB_START_METHOD'] = 'fork'
 
 ylabels = {
     'coord': 'Coordination',
@@ -72,13 +75,15 @@ def get_prediction_std(gbr, X, n_iterations=100):
         Standard deviation of predictions
     """
     predictions = []
-    n_estimators = gbr.n_estimators
+    n_estimators = len(gbr.estimators_)  # 수정: 올바른 estimators 개수 가져오기
+    
     for i in range(n_iterations):
         # Randomly sample estimators
         indices = np.random.choice(n_estimators, size=n_estimators//2, replace=False)
         pred = np.zeros(X.shape[0])
         for idx in indices:
-            pred += gbr.estimators_[idx, 0].predict(X)
+            # 수정: 올바른 인덱싱 사용
+            pred += gbr.estimators_[idx][0].predict(X)
         pred /= len(indices)
         predictions.append(pred)
     return np.std(predictions, axis=0)
@@ -185,7 +190,7 @@ def analyze_coordination_preference(df_bulk, df_pred, energy_threshold=0.2):
 def plot_coordination_comparison(results, output_dir, output_suffix):
     """Create visualization plots for the coordination comparison"""
     # 1. Heatmap showing matches and mismatches for specific coordinations
-    plt.figure(figsize=(6, 5))
+    plt.figure(figsize=(4, 3))
     
     # Create comparison matrix
     all_coords = ['ZB', 'WZ', 'RS', 'NB', 'PD', 'TN', 'LT']
@@ -208,12 +213,11 @@ def plot_coordination_comparison(results, output_dir, output_suffix):
     plt.xlabel('Predicted Preferred Coordination')
     plt.ylabel('DFT Preferred Coordination')
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'gbr_coord_{output_suffix}.png'), 
-                bbox_inches='tight')
+    plt.savefig(os.path.join(output_dir, f'gbr_coord_{output_suffix}.png'))
     plt.close()
 
     # 2. Heatmap showing matches and mismatches for coordination types
-    plt.figure(figsize=(6, 5))
+    plt.figure(figsize=(4, 3))
     
     # Create comparison matrix for types
     all_types = ['tetrahedral', 'squareplanar', 'octahedral', 'pyramidal']
@@ -236,8 +240,7 @@ def plot_coordination_comparison(results, output_dir, output_suffix):
     plt.xlabel('Predicted Coordination Type')
     plt.ylabel('DFT Coordination Type')
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'gbr_type_{output_suffix}.png'), 
-                bbox_inches='tight')
+    plt.savefig(os.path.join(output_dir, f'gbr_type_{output_suffix}.png'))
     plt.close()
 
 def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, output_path):
@@ -283,7 +286,7 @@ def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, out
         })
     
     # Sort features by individual MAE (worst to best)
-    sorted_features = sorted(single_feature_scores, key=lambda x: x['mae_train'], reverse=True)
+    sorted_features = sorted(single_feature_scores, key=lambda x: x['mae_train'])
     sorted_feature_names = [score['feature'] for score in sorted_features]
     
     # Calculate cumulative MAE by adding one feature at a time
@@ -347,7 +350,7 @@ def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, out
     plt.tight_layout()
     
     # Save plot
-    plt.savefig(output_path, bbox_inches='tight')
+    plt.savefig(output_path)
     plt.close()
     print(f"{BLUE}Feature importance plot saved as {output_path}{ENDC}")
 
@@ -388,7 +391,7 @@ def main():
     parser = argparse.ArgumentParser(description='Gradient Boosting Regression using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
-        'chg', 'mag', 'volume', 'l_bond', 'n_bond',
+        'numb', 'chg', 'mag', 'volume', 'l_bond', 'n_bond',
         'grosspop', 'madelung', 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
         'pauling', 'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
         'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
@@ -406,15 +409,17 @@ def main():
     # Convert feature names if they start with ICOHP or ICOOP (prepend '-')
     args.X = [('-' + x if x.startswith('ICOHP') or x.startswith('ICOOP') else x) for x in args.X]
     
-    # Determine the root path based on the current user ID
+    # 서버 주소 가져오기
+    hostname = socket.gethostname()
     user_name = os.getlogin()
-
-    if user_name == 'hailey':  # mac 사용자 아이디
-        root = '/Users/hailey/Desktop/7_V_bulk/figures'
-    elif user_name == 'jiuy97':  # slac 사용자 아이디
+    if hostname == 'PC102616':
         root = '/Users/jiuy97/Desktop/7_V_bulk/figures'
+    elif user_name == 'jiuy97':
+        root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
+    elif user_name == 'hailey':
+        root = '/Users/hailey/Desktop/7_V_bulk/figures'
     else:
-        raise ValueError("Unknown user ID. Please set the root path manually.")
+        raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
     
     # Define paths for all output files
     output_suffix = args.output
@@ -469,38 +474,49 @@ def main():
     print("Setting up GBR model...")
     model_start = time.time()
     
-    # Initial GBR model
+    # GBR 모델 설정 수정 - 예측 성능 향상 중점
     gbr = GradientBoostingRegressor(
-        n_estimators=100,
-        learning_rate=0.1,
-        max_depth=3,
+        n_estimators=200,           # 증가: 더 많은 트리로 성능 향상
+        learning_rate=0.05,         # 증가: 더 빠른 학습
+        max_depth=4,                # 증가: 더 복잡한 패턴 학습
+        min_samples_split=10,       # 감소: 더 세밀한 분할 허용
+        min_samples_leaf=5,         # 감소: 더 세밀한 리프 노드
+        subsample=0.85,            # 증가: 더 많은 데이터 활용
+        max_features=0.8,          # 증가: 더 많은 특성 활용
+        validation_fraction=0.15,   # 유지
+        n_iter_no_change=15,       # 증가: 충분한 학습 기회
+        tol=1e-5,                  # 감소: 더 엄격한 허용 오차
         random_state=args.random_state
     )
 
-    # Perform Bayesian Optimization
-    print("Performing Bayesian Optimization...")
-    grid_start = time.time()
+    # Bayesian Optimization 탐색 공간 수정
     search_space = {
-        'n_estimators': Integer(50, 500),
-        'learning_rate': Real(0.01, 0.3, prior='log-uniform'),
-        'max_depth': Integer(2, 5),
-        'min_samples_split': Integer(2, 20),
-        'min_samples_leaf': Integer(1, 10),
-        'subsample': Real(0.5, 1.0, prior='uniform'),
+        'n_estimators': Integer(150, 300),        # 범위 상향
+        'learning_rate': Real(0.03, 0.08),        # 범위 상향
+        'max_depth': Integer(3, 5),               # 범위 상향
+        'min_samples_split': Integer(8, 15),      # 범위 하향
+        'min_samples_leaf': Integer(4, 8),        # 범위 하향
+        'subsample': Real(0.8, 0.9),             # 높은 범위로 조정
+        'max_features': Real(0.7, 0.9),          # 높은 범위로 조정
     }
 
+    # Bayesian Optimization 설정 수정
+    print("Performing Bayesian Optimization...")
+    bayes_start = time.time()  # 변수명 변경
+    
+    cv = KFold(n_splits=5, shuffle=True, random_state=args.random_state)
     bayes_search = BayesSearchCV(
         gbr,
         search_space,
-        n_iter=20,
-        cv=5,
-        scoring='r2',
-        n_jobs=-1,
+        n_iter=50,                               # 증가: 더 많은 탐색
+        cv=cv,
+        scoring='neg_mean_squared_error',        # MSE 기반 최적화
+        n_jobs=1,
         random_state=args.random_state,
         verbose=1
     )
     bayes_search.fit(X_train_scaled, y_train)
-    print_time("Bayesian Optimization completed", time.time() - grid_start)
+    print_time("Bayesian Optimization completed", time.time() - bayes_start)  # 변수명 변경
     print(f"{MAGENTA}Best parameters: {bayes_search.best_params_}{ENDC}")
     
     # Use best model
@@ -719,7 +735,8 @@ def main():
             'max_depth': gbr.max_depth,
             'min_samples_split': gbr.min_samples_split,
             'min_samples_leaf': gbr.min_samples_leaf,
-            'subsample': gbr.subsample
+            'subsample': gbr.subsample,
+            'max_features': gbr.max_features
         },
         'feature_names': args.X,
         'target': args.Y,
@@ -830,7 +847,7 @@ def main():
         f.write(f"Data loading: {time.time() - load_start:.2f} seconds\n")
         f.write(f"Data preprocessing: {time.time() - preprocess_start:.2f} seconds\n")
         f.write(f"Feature scaling: {time.time() - scale_start:.2f} seconds\n")
-        f.write(f"Bayesian Optimization: {time.time() - grid_start:.2f} seconds\n")
+        f.write(f"Bayesian Optimization: {time.time() - bayes_start:.2f} seconds\n")
         f.write(f"Cross-validation: {time.time() - cv_start:.2f} seconds\n")
         f.write(f"Predictions: {time.time() - pred_start:.2f} seconds\n")
         f.write(f"Metrics calculation: {time.time() - metrics_start:.2f} seconds\n")
@@ -838,39 +855,24 @@ def main():
         f.write(f"Feature Importance Analysis: {importance.mean():.4f}\n")
         f.write(f"Results saving and plotting: {time.time() - save_start:.2f} seconds\n")
 
-    # Initialize lists to store metrics
+    # staged_predict 부분 수정
+    print("Calculating training metrics over iterations...")
     train_mae_list = []
     train_mse_list = []
     test_mae_list = []
     test_mse_list = []
 
-    # GradientBoostingRegressor의 staged_predict 사용
-    staged_train_preds = list(gbr.staged_predict(X_train_scaled))
-    
-    # Create a new model at each stage and perform predictions on the test data
-    for i, n_trees in enumerate(range(1, gbr.n_estimators + 1)):
-        # Predictions for the training data
-        y_pred_train = staged_train_preds[i]
+    # staged_predict를 list로 변환하지 않고 직접 반복문에서 사용
+    for y_pred_train in gbr.staged_predict(X_train_scaled):
+        # 학습 데이터에 대한 메트릭 계산
         train_mae = mean_absolute_error(y_train, y_pred_train)
         train_mse = mean_squared_error(y_train, y_pred_train)
         
         train_mae_list.append(train_mae)
         train_mse_list.append(train_mse)
         
-        # Create a new model corresponding to the current stage
-        stage_model = GradientBoostingRegressor(
-            n_estimators=n_trees,
-            learning_rate=gbr.learning_rate,
-            max_depth=gbr.max_depth,
-            min_samples_split=gbr.min_samples_split,
-            min_samples_leaf=gbr.min_samples_leaf,
-            subsample=gbr.subsample,
-            random_state=args.random_state
-        )
-        stage_model.fit(X_train_scaled, y_train)
-        
-        # Predictions for the test data
-        y_pred_test = stage_model.predict(X_test_scaled)
+        # 테스트 데이터에 대한 메트릭 계산
+        y_pred_test = gbr.predict(X_test_scaled)
         test_mae = mean_absolute_error(y_test, y_pred_test)
         test_mse = mean_squared_error(y_test, y_pred_test)
         

@@ -8,10 +8,41 @@ from matplotlib import colormaps
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib.colors import LinearSegmentedColormap
-
-GCDFT = True
+import argparse
+import socket
 bulk_metal = -5.041720865 # Fe, eV
 
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Generate Pourbaix diagram')
+parser.add_argument('--no-gc', action='store_false', help='Disable GCDFT mode')
+parser.add_argument('--no-bulk', action='store_false', help='Disable bulk Pourbaix mode')
+parser.add_argument('--suffix', type=str, default='', help='Suffix for output filename')
+parser.add_argument('--show', action='store_true', help='Show the plot')
+parser.add_argument('--save-dir', action='store_true', help='Save to predefined directory')
+args = parser.parse_args()
+
+GCDFT = args.no_gc
+BULK_PB = args.no_bulk
+
+if args.suffix:
+    suffix = '_' + args.suffix
+else:
+    suffix = ''
+
+if not args.save_dir:
+    save_dir = ''
+else:
+    hostname = socket.gethostname()
+    user_name = os.getlogin()
+    if hostname == 'PC102616':
+        save_dir = '/Users/jiuy97/Desktop/'
+    elif user_name == 'jiuy97':
+        save_dir = '/pscratch/sd/j/jiuy97/'
+    elif user_name == 'hailey':
+        save_dir = '/Users/hailey/Desktop/'
+    else:
+        raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
+        
 # constants
 kb = 8.617e-5 # eV/K
 T = 298.15 # K
@@ -104,11 +135,13 @@ for i in range(nions):
     ions[i][0] += water * (ions[i][4] + ions[i][5] + 2*ions[i][6]) + bulk_metal * ions[i][1]
     if ions[i][1] > 1:
         ions[i] = [x / ions[i][1] if isinstance(x, (int, float)) else x for x in ions[i]]
+    ions[i][9] = ions[i][0]
 
 for s in range(nsolids):
     solids[s][0] += water * (solids[s][4] + solids[s][5] + 2*solids[s][6]) + bulk_metal * solids[s][1]
     if solids[s][1] > 1:
         solids[s] = [x / solids[s][1] if isinstance(x, (int, float)) else x for x in solids[s]]
+    solids[s][9] = solids[s][0]
 
 surfs = [
     # ['E', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
@@ -133,39 +166,40 @@ surfs = [
 ]
 
 nsurfs = len(surfs)
-surface_reference = surfs[0][0]
+ref0 = surfs[0][0]
+ref9 = surfs[0][9]
 for k in range(nsurfs):
     formation_energy_corr = (
-        - surface_reference
         - surfs[k][3] * (gh - dgh) # H
         - surfs[k][4] * (goh - dgoh) # OH
         - surfs[k][5] * (go - dgo) # O
         - surfs[k][6] * (gooh - dgooh) # OOH
     )
-    surfs[k][0] += formation_energy_corr # E
-    surfs[k][9] += formation_energy_corr # C
-    
-new_surfs = []
-for k in range(nsurfs):
-    if surfs[k][1] == 0:
-        for i in range(nions):
-            new_surf = []
-            for j in range(10):
-                new_surf.append(surfs[k][j] + ions[i][j])
-            new_surf.append(surfs[k][10] + '+' + ions[i][10])
-            new_surfs.append(new_surf)
-        for s in range(nsolids):
-            new_surf = []
-            for j in range(10):
-                new_surf.append(surfs[k][j] + solids[s][j])
-            new_surf.append(surfs[k][10] + '+' + solids[s][10])
-            new_surfs.append(new_surf)
+    surfs[k][0] = surfs[k][0] - ref0 + formation_energy_corr 
+    surfs[k][9] = surfs[k][9] - ref9 + formation_energy_corr 
 
-surfs.extend(new_surfs)  # Add new surfaces after looping
-nsurfs = len(surfs)  # Update length
+if BULK_PB:
+    new_surfs = []
+    for k in range(nsurfs):
+        if surfs[k][1] == 0:
+            for i in range(nions):
+                new_surf = []
+                for j in range(10):
+                    new_surf.append(surfs[k][j] + ions[i][j])
+                new_surf.append(surfs[k][10] + '+' + ions[i][10])
+                new_surfs.append(new_surf)
+            for s in range(nsolids):
+                new_surf = []
+                for j in range(10):
+                    new_surf.append(surfs[k][j] + solids[s][j])
+                new_surf.append(surfs[k][10] + '+' + solids[s][10])
+                new_surfs.append(new_surf)
+
+    surfs.extend(new_surfs)  # Add new surfaces after looping
+    nsurfs = len(surfs)  # Update length again after removing first two elements
 
 lowest_surfaces = np.full((len(Urange), len(pHrange)), np.nan)
-    
+
 pHindex = 0
 for pH in pHrange:
     Uindex = 0
@@ -196,7 +230,8 @@ for j in range(n_cols):   # loop over pH (columns)
 
 for sid in sorted(min_coords):
     x, y = min_coords[sid]
-    print(f"Surface {sid}: x = {x}, y = {y}")
+    name = surfs[int(sid)][10]
+    print(f"Surface {sid}: x = {x:.2f}, y = {y:.2f}, name = {name}")
 
 # Set Axes Limits and Labels
 fig, ax = plt.subplots(figsize=(7, 6), dpi=100)
@@ -209,16 +244,27 @@ ax.tick_params(right=True, direction="in")
 unique_ids = np.unique(lowest_surfaces)
 nsurfs = len(unique_ids)
 
+# Count surfaces for each color group
+color_counts = {
+    'orange': 0,     # vac(H₂)  
+    'darkorange': 0, # vac
+    'gray': 0,       # others
+}
+
+for surf_id in unique_ids:
+    name = surfs[int(surf_id)][10]
+    if 'vac(H₂)' in name:
+        color_counts['orange'] += 1
+    elif 'vac' in name:
+        color_counts['darkorange'] += 1
+    else:
+        color_counts['gray'] += 1
+
 # Define base color groups and their initial indices
 base_colors = {
-    'dodgerblue': 1,
-    'orange': 1,
-    'limegreen': 1,
-    'gold': 1,
-    'mediumblue': 1,
-    'darkgoldenrod': 1,
-    'hotpink': 1,
-    'silver': 1,
+    'orange': 0,     # vac(H₂)  
+    'darkorange': 0, # vac
+    'gray': 0,       # others
 }
 
 # Generate custom colormaps and shades from white → base color
@@ -228,10 +274,8 @@ shades = {}
 for base_color in base_colors:
     cmap = LinearSegmentedColormap.from_list(f"custom_{base_color}", ["white", base_color])
     cmaps[base_color] = cmap
-    if base_color == 'dodgerblue' or base_color == 'orange':
-        shades[base_color] = [cmap(i) for i in np.linspace(0, 1, 4)]
-    else:
-        shades[base_color] = [cmap(i) for i in np.linspace(0, 1, 4)]
+    if color_counts[base_color] > 0:
+        shades[base_color] = [cmap(i) for i in np.linspace(0.2, 0.7, color_counts[base_color])]
         
 # Map surface ID to corresponding color shade
 color_mapping = {}
@@ -242,28 +286,11 @@ for surf_id in unique_ids:
         color_mapping[surf_id] = shades['orange'][base_colors['orange']]
         base_colors['orange'] += 1
     elif 'vac' in name:
-        color_mapping[surf_id] = shades['dodgerblue'][base_colors['dodgerblue']]
-        base_colors['dodgerblue'] += 1
-    elif 'clean' in name:
-        color_mapping[surf_id] = shades['limegreen'][base_colors['limegreen']]
-        base_colors['limegreen'] += 1
-    elif '*OH+*OH' in name:
-        color_mapping[surf_id] = shades['darkgoldenrod'][base_colors['darkgoldenrod']]
-        base_colors['darkgoldenrod'] += 1
-    elif '*OH+*O' in name:
-        color_mapping[surf_id] = shades['mediumblue'][base_colors['mediumblue']]
-        base_colors['mediumblue'] += 1
-    elif '*O+*O' in name:
-        color_mapping[surf_id] = shades['silver'][base_colors['silver']]
-        base_colors['silver'] += 1
-    elif '*OH' in name:
-        color_mapping[surf_id] = shades['gold'][base_colors['gold']]
-        base_colors['gold'] += 1
-    elif '*O' in name:
-        color_mapping[surf_id] = shades['hotpink'][base_colors['hotpink']]
-        base_colors['hotpink'] += 1
+        color_mapping[surf_id] = shades['darkorange'][base_colors['darkorange']]
+        base_colors['darkorange'] += 1
     else:
-        color_mapping[surf_id] = 'white'  # fallback color
+        color_mapping[surf_id] = shades['gray'][base_colors['gray']]
+        base_colors['gray'] += 1
         
 # Apply color mapping to the colormap and ID mapping
 colors = [color_mapping[sid] for sid in unique_ids]
@@ -287,14 +314,19 @@ plt.pcolormesh(pH, U, mapped_surfaces, cmap=cmap, norm=norm)
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., 
            fontsize='small', ncol=1, handlelength=3, edgecolor='black') 
 
-plt.plot(pHrange, 1.23-pHrange*const, '--', color='black', lw=1)
-ax.text(0.2, 1.00, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$', rotation=-12)
-plt.plot(pHrange, 0-pHrange*const, '--', color='black', lw=1)
-ax.text(0.2, -0.15 , r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$', rotation=-12)
+plt.plot(pHrange, 1.23-pHrange*const, '--', lw=1, color='mediumblue')
+ax.text(0.2, 1.23+0.12, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$', rotation=-13, color='mediumblue', ha='left', va='top')
+plt.plot(pHrange, 0-pHrange*const, '--', lw=1, color='mediumblue')
+ax.text(0.2, 0+0.12, r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$', rotation=-13, color='mediumblue', ha='left', va='top')
 
 plt.tight_layout()
-if GCDFT:
-    plt.savefig(f'pourbaixGC.png', dpi=300, bbox_inches='tight')
+png_name = 'pourbaix'
+if BULK_PB:
+    png_name += '_bulk'
 else:
-    plt.savefig(f'pourbaix.png', dpi=300, bbox_inches='tight')
-plt.show()
+    png_name += '_surf'
+if GCDFT:
+    png_name += '_gc'
+plt.savefig(f'{save_dir}{png_name}{suffix}.png', dpi=300, bbox_inches='tight')
+if args.show:
+    plt.show()

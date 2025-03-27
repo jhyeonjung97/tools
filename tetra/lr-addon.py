@@ -2,10 +2,22 @@ import os
 import subprocess
 import pandas as pd
 import matplotlib.pyplot as plt
+import socket
+
+hostname = socket.gethostname()
+user_name = os.getlogin()
+if hostname == 'PC102616':
+    root = '/Users/jiuy97/Desktop/7_V_bulk/figures'
+elif user_name == 'jiuy97':
+    root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
+elif user_name == 'hailey':
+    root = '/Users/hailey/Desktop/7_V_bulk/figures'
+else:
+    raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
 
 # Define the full feature list
 features = [
-    'chg', 'mag', 'volume', 'l_bond', 'n_bond', 'grosspop', 'madelung', 
+    'numb', 'chg', 'mag', 'volume', 'l_bond', 'n_bond', 'grosspop', 'madelung', 
     'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
     'pauling', 'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
     'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 'Tboil', 'Tmelt', 
@@ -29,8 +41,9 @@ for i in range(len(features)-1):
         input_str = ' '.join(test_features)
 
         # Remove previous log if exists
-        if os.path.exists('lr_addon.log'):
-            os.remove('lr_addon.log')
+        log_path = os.path.join(root, 'lr_addon.log')
+        if os.path.exists(log_path):
+            os.remove(log_path)
 
         # Run lr.py with selected features
         cmd = f'python ~/bin/tools/tetra/lr.py --Y form --X {input_str} --output addon'
@@ -38,8 +51,8 @@ for i in range(len(features)-1):
 
         # Parse lr_addon.log
         r2_val = mae_val = mse_val = None
-        if os.path.exists('lr_addon.log'):
-            with open('lr_addon.log', 'r') as log_file:
+        if os.path.exists(log_path):
+            with open(log_path, 'r') as log_file:
                 for line in log_file:
                     if line.startswith('R2:'):
                         r2_val = float(line.split(':')[1].strip())
@@ -62,9 +75,9 @@ for i in range(len(features)-1):
     remaining_features.remove(next_feature)
 
 # Save results
-df_r2.to_csv('addon_r2.tsv', sep='\t')
-df_mae.to_csv('addon_mae.tsv', sep='\t')
-df_mse.to_csv('addon_mse.tsv', sep='\t')
+df_r2.to_csv(os.path.join(root, 'addon_r2.tsv'), sep='\t')
+df_mae.to_csv(os.path.join(root, 'addon_mae.tsv'), sep='\t')
+df_mse.to_csv(os.path.join(root, 'addon_mse.tsv'), sep='\t')
 
 # import pandas as pd
 # import matplotlib.pyplot as plt
@@ -94,7 +107,7 @@ plt.ylabel('MAE')
 plt.xlabel('Added Features (by iteration)')
 plt.title('MAE vs Feature Addition Order')
 plt.tight_layout()
-plt.savefig('addon_mae.png')
+plt.savefig(os.path.join(root, 'addon_mae.png'))
 plt.close()
 
 # Plot MSE
@@ -105,5 +118,5 @@ plt.ylabel('MSE')
 plt.xlabel('Added Features (by iteration)')
 plt.title('MSE vs Feature Addition Order')
 plt.tight_layout()
-plt.savefig('addon_mse.png')
+plt.savefig(os.path.join(root, 'addon_mse.png'))
 plt.close()

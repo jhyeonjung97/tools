@@ -8,7 +8,6 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 import socket
 
-# 서버 주소 가져오기
 hostname = socket.gethostname()
 user_name = os.getlogin()
 if hostname == 'PC102616':
@@ -51,7 +50,7 @@ def main():
     parser = argparse.ArgumentParser(description='Linear regression using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
-        'chg', 'mag', 'volume', 'l_bond', 'n_bond',
+        'numb', 'chg', 'mag', 'volume', 'l_bond', 'n_bond',
         'grosspop', 'madelung', 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
         'pauling', 'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
         'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
@@ -96,7 +95,7 @@ def main():
     output_suffix = args.output
 
     # Save regression summary
-    with open(f'lr_{output_suffix}.log', 'w') as f:
+    with open(os.path.join(root, f'lr_{output_suffix}.log'), 'w') as f:
         f.write(f"Intercept: {model.intercept_:.4f}\n")
         for name, coef in zip(args.X, model.coef_):
             f.write(f"{name}: {coef:.4f}\n")
@@ -107,7 +106,7 @@ def main():
     df_result['Y_true'] = Y
     df_result['Y_pred'] = Y_pred
     df_result['residual'] = Y - Y_pred
-    df_result.to_csv(f'lr_{output_suffix}.tsv', sep='\t', index=False)
+    df_result.to_csv(os.path.join(root, f'lr_{output_suffix}.tsv'), sep='\t', index=False)
 
     # Plot parity with color by 'row' and marker by 'coord'
     row_map = {'3d': 'red', '4d': 'green', '5d': 'blue'}
@@ -138,27 +137,27 @@ def main():
     plt.ylabel(f'Predicted {ylabels[args.Y]}')
     plt.legend(loc='best', fontsize=8)
     plt.tight_layout()
-    plt.savefig(f'lr_{output_suffix}.png')
+    plt.savefig(os.path.join(root, f'lr_{output_suffix}.png'))
     plt.close()
 
-    # Save covariance and correlation matrices as TSV and PNG
+    # Save covariance and correlation matrices
     df_metrics = pd.concat([Y, X], axis=1)  # Place Y first
     cov = df_metrics.cov()
     cor = df_metrics.corr()
 
-    cov.to_csv(f'covariance_{output_suffix}.tsv', sep='\t')
-    cor.to_csv(f'correlation_{output_suffix}.tsv', sep='\t')
+    cov.to_csv(os.path.join(root, f'covariance_{output_suffix}.tsv'), sep='\t')
+    cor.to_csv(os.path.join(root, f'correlation_{output_suffix}.tsv'), sep='\t')
 
     plt.figure(figsize=(10, 8))
     sns.heatmap(cov, annot=True, fmt='.2f', cmap='coolwarm', annot_kws={"size": 6})
     plt.tight_layout()
-    plt.savefig(f'covariance_{output_suffix}.png')
+    plt.savefig(os.path.join(root, f'covariance_{output_suffix}.png'))
     plt.close()
 
     plt.figure(figsize=(10, 8))
     sns.heatmap(cor, annot=True, fmt='.2f', cmap='coolwarm', annot_kws={"size": 6})
     plt.tight_layout()
-    plt.savefig(f'correlation_{output_suffix}.png')
+    plt.savefig(os.path.join(root, f'correlation_{output_suffix}.png'))
     plt.close()
 
     print(f"Saved: lr_{output_suffix}.log, lr_{output_suffix}.tsv, lr_{output_suffix}.png")

@@ -104,12 +104,13 @@ for i in range(nions):
     ions[i][0] += water * (ions[i][4] + ions[i][5] + 2*ions[i][6]) + bulk_metal * ions[i][1]
     if ions[i][1] > 1:
         ions[i] = [x / ions[i][1] if isinstance(x, (int, float)) else x for x in ions[i]]
+    ions[i][9] = ions[i][0]
 
 for s in range(nsolids):
     solids[s][0] += water * (solids[s][4] + solids[s][5] + 2*solids[s][6]) + bulk_metal * solids[s][1]
     if solids[s][1] > 1:
         solids[s] = [x / solids[s][1] if isinstance(x, (int, float)) else x for x in solids[s]]
-
+    solids[s][9] = solids[s][0]
 surfs = [
     # ['E', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
     [-269.569746, 0, +0, 0, 0, 0, 0, -0.3655405668135691, 0.45552073788487135, -269.645443005364, 'vac'],
@@ -133,18 +134,18 @@ surfs = [
 ]
 
 nsurfs = len(surfs)
-surface_reference = surfs[0][0]
+ref0 = surfs[0][0]
+ref9 = surfs[0][9]
 for k in range(nsurfs):
     formation_energy_corr = (
-        - surface_reference
         - surfs[k][3] * (gh - dgh) # H
         - surfs[k][4] * (goh - dgoh) # OH
         - surfs[k][5] * (go - dgo) # O
         - surfs[k][6] * (gooh - dgooh) # OOH
     )
-    surfs[k][0] += formation_energy_corr # E
-    surfs[k][9] += formation_energy_corr # C
-    
+    surfs[k][0] = surfs[k][0] - ref0 + formation_energy_corr 
+    surfs[k][9] = surfs[k][9] - ref9 + formation_energy_corr 
+
 new_surfs = []
 for k in range(nsurfs):
     if surfs[k][1] == 0:
@@ -165,7 +166,10 @@ surfs.extend(new_surfs)  # Add new surfaces after looping
 nsurfs = len(surfs)  # Update length
 
 lowest_surfaces = np.full((len(Urange), len(pHrange)), np.nan)
-    
+
+for i in range(nsurfs):
+    print(surfs[i][10], surfs[i][0])
+
 pHindex = 0
 for pH in pHrange:
     Uindex = 0

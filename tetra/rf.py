@@ -7,15 +7,12 @@ import matplotlib.pyplot as plt
 import json
 from tqdm import tqdm
 import time
-from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import RationalQuadratic, WhiteKernel, ConstantKernel
-from sklearn.preprocessing import StandardScaler, RobustScaler
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import RobustScaler
 from sklearn.model_selection import train_test_split, KFold, cross_val_score
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score, max_error
-from sklearn.pipeline import Pipeline
 from skopt import BayesSearchCV
 from skopt.space import Real, Integer
-from sklearn.ensemble import GradientBoostingRegressor
 import socket
 
 # ANSI color codes
@@ -71,14 +68,9 @@ def print_time(message, time_value):
     """Print time-related information with color coding"""
     print(f"{BOLD}{message}: {time_value:.2f} seconds{ENDC}")
 
-def feature_importance(X, y, gpr, feature_names):
-    """Calculate feature importance"""
-    importance = []
-    for i in tqdm(range(X.shape[1]), desc="Calculating feature importance"):
-        X_permuted = X.copy()
-        X_permuted[:, i] = np.random.permutation(X_permuted[:, i])
-        score = gpr.score(X_permuted, y)
-        importance.append(1 - score)
+def feature_importance(X, y, rf, feature_names):
+    """Calculate feature importance using Random Forest's built-in feature importance"""
+    importance = rf.feature_importances_
     return pd.Series(importance, index=feature_names)
 
 def get_preferred_coordination(energies):
@@ -100,24 +92,12 @@ def get_coordination_type(coord):
     return 'unknown'
 
 def analyze_coordination_preference(df_bulk, df_pred, energy_threshold=0.2):
-    """
-    Compare DFT and predicted coordination preferences
-    
-    Args:
-        df_bulk: DataFrame with DFT results
-        df_pred: DataFrame with GPR predictions
-        energy_threshold: Energy threshold for considering multiple coordinations
-    
-    Returns:
-        DataFrame with comparison results
-    """
+    """Compare DFT and predicted coordination preferences"""
     results = []
     
-    # Group prediction data by metal and coordination
     pred_grouped = df_pred.groupby(['metal', 'coord'])['Y_pred'].mean().reset_index()
     pred_grouped = pred_grouped.pivot(index='metal', columns='coord', values='Y_pred')
     
-    # Print only essential information
     bulk_metals = set(df_bulk['metal'].unique())
     pred_metals = set(pred_grouped.index)
     missing_metals = bulk_metals - pred_metals
@@ -126,13 +106,12 @@ def analyze_coordination_preference(df_bulk, df_pred, energy_threshold=0.2):
     
     for metal in df_bulk['metal'].unique():
         try:
-            # DFT data
             dft_data = df_bulk[df_bulk['metal'] == metal]
             if len(dft_data) == 0:
                 continue
                 
             dft_energies = dict(zip(dft_data['coord'], dft_data['form']))
-            dft_energies = {k: v for k, v in dft_energies.items() if pd.notna(v)}  # Remove NaN values
+            dft_energies = {k: v for k, v in dft_energies.items() if pd.notna(v)}
             
             if not dft_energies:
                 continue
@@ -141,7 +120,6 @@ def analyze_coordination_preference(df_bulk, df_pred, energy_threshold=0.2):
             dft_preferred = get_preferred_coordination(dft_energies)
             dft_type = get_coordination_type(dft_preferred)
             
-            # Predicted data
             if metal not in pred_grouped.index:
                 continue
                 
@@ -153,7 +131,6 @@ def analyze_coordination_preference(df_bulk, df_pred, energy_threshold=0.2):
             pred_preferred = get_preferred_coordination(pred_energies)
             pred_type = get_coordination_type(pred_preferred)
             
-            # Find all coordinations within threshold
             dft_preferred_all = [coord for coord, energy in dft_energies.items() 
                                if energy <= dft_min_energy + energy_threshold]
             pred_preferred_all = [coord for coord, energy in pred_energies.items() 
@@ -180,96 +157,31 @@ def analyze_coordination_preference(df_bulk, df_pred, energy_threshold=0.2):
     
     return pd.DataFrame(results)
 
-def plot_coordination_comparison(results, output_dir, output_suffix):
-    """Create visualization plots for the coordination comparison"""
-    # 1. Heatmap showing matches and mismatches for specific coordinations
-    plt.figure(figsize=(6, 5))
-    
-    # Create comparison matrix
-    all_coords = ['ZB', 'WZ', 'RS', 'NB', 'PD', 'TN', 'LT']
-    comparison_matrix = np.zeros((len(all_coords), len(all_coords)))
-    coord_to_idx = {coord: i for i, coord in enumerate(all_coords)}
-    
-    for _, row in results.iterrows():
-        dft_idx = coord_to_idx[row['dft_preferred']]
-        pred_idx = coord_to_idx[row['pred_preferred']]
-        comparison_matrix[dft_idx, pred_idx] += 1
-    
-    # Plot heatmap
-    sns.heatmap(comparison_matrix, 
-                xticklabels=all_coords, 
-                yticklabels=all_coords,
-                annot=True, 
-                fmt='g',
-                cmap='Reds',
-                vmin=0)
-    plt.xlabel('Predicted Preferred Coordination')
-    plt.ylabel('DFT Preferred Coordination')
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'gpr_coord_{output_suffix}.png'), 
-                bbox_inches='tight')
-    plt.close()
-
-    # 2. Heatmap showing matches and mismatches for coordination types
-    plt.figure(figsize=(6, 5))
-    
-    # Create comparison matrix for types
-    all_types = ['tetrahedral', 'squareplanar', 'octahedral', 'pyramidal']
-    type_matrix = np.zeros((len(all_types), len(all_types)))
-    type_to_idx = {coord_type: i for i, coord_type in enumerate(all_types)}
-    
-    for _, row in results.iterrows():
-        dft_type_idx = type_to_idx[row['dft_type']]
-        pred_type_idx = type_to_idx[row['pred_type']]
-        type_matrix[dft_type_idx, pred_type_idx] += 1
-    
-    # Plot heatmap for types
-    sns.heatmap(type_matrix, 
-                xticklabels=all_types, 
-                yticklabels=all_types,
-                annot=True, 
-                fmt='g',
-                cmap='Reds',
-                vmin=0)
-    plt.xlabel('Predicted Coordination Type')
-    plt.ylabel('DFT Coordination Type')
-    plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'gpr_type_{output_suffix}.png'), 
-                bbox_inches='tight')
-    plt.close()
-
 def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, output_path):
     """Create a cumulative MAE plot for feature importance"""
-    # Create a cumulative MAE plot for feature importance
     single_feature_scores = []
     cumulative_scores = []  # Initialize cumulative_scores here
 
-    # Convert X_train and X_test to DataFrame if they are not already
-    if isinstance(X_train, np.ndarray):
-        X_train = pd.DataFrame(X_train, columns=feature_names)
-    if isinstance(X_test, np.ndarray):
-        X_test = pd.DataFrame(X_test, columns=feature_names)
-
-    for feature in feature_names:
-        # Select single feature using DataFrame indexing
-        X_train_selected = X_train[[feature]].copy()  # Select as DataFrame
-        X_test_selected = X_test[[feature]].copy()    # Select as DataFrame
+    for i, feature in enumerate(feature_names):
+        # Select single feature using numpy indexing
+        X_train_selected = X_train[:, i:i+1]  # Keep 2D shape
+        X_test_selected = X_test[:, i:i+1]    # Keep 2D shape
         
         # Scale the selected features
         scaler_selected = RobustScaler()
         X_train_scaled_selected = scaler_selected.fit_transform(X_train_selected)
         X_test_scaled_selected = scaler_selected.transform(X_test_selected)
         
-        # Train GBR with selected features
-        gbr_selected = GradientBoostingRegressor(
+        # Train Random Forest with selected features
+        rf_selected = RandomForestRegressor(
             n_estimators=100,
             random_state=42
         )
-        gbr_selected.fit(X_train_scaled_selected, y_train)
+        rf_selected.fit(X_train_scaled_selected, y_train)
         
         # Make predictions
-        y_pred_train = gbr_selected.predict(X_train_scaled_selected)
-        y_pred_test = gbr_selected.predict(X_test_scaled_selected)
+        y_pred_train = rf_selected.predict(X_train_scaled_selected)
+        y_pred_test = rf_selected.predict(X_test_scaled_selected)
         
         # Calculate MAE
         mae_train = mean_absolute_error(y_train, y_pred_train)
@@ -282,30 +194,31 @@ def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, out
         })
     
     # Sort features by individual MAE (worst to best)
-    sorted_features = sorted(single_feature_scores, key=lambda x: x['mae_train'], reverse=True)
+    sorted_features = sorted(single_feature_scores, key=lambda x: x['mae_train'])
     sorted_feature_names = [score['feature'] for score in sorted_features]
     
     # Calculate cumulative MAE by adding one feature at a time
     for i in range(1, len(sorted_feature_names) + 1):
-        selected_features = sorted_feature_names[:i]
-        X_train_selected = X_train[selected_features]  # Select as DataFrame
-        X_test_selected = X_test[selected_features]    # Select as DataFrame
+        # Get indices of selected features
+        selected_indices = [feature_names.index(f) for f in sorted_feature_names[:i]]
+        X_train_selected = X_train[:, selected_indices]
+        X_test_selected = X_test[:, selected_indices]
         
         # Scale the selected features
         scaler_selected = RobustScaler()
         X_train_scaled_selected = scaler_selected.fit_transform(X_train_selected)
         X_test_scaled_selected = scaler_selected.transform(X_test_selected)
         
-        # Train GBR with selected features
-        gbr_selected = GradientBoostingRegressor(
+        # Train Random Forest with selected features
+        rf_selected = RandomForestRegressor(
             n_estimators=100,
             random_state=42
         )
-        gbr_selected.fit(X_train_scaled_selected, y_train)
+        rf_selected.fit(X_train_scaled_selected, y_train)
         
         # Make predictions
-        y_pred_train = gbr_selected.predict(X_train_scaled_selected)
-        y_pred_test = gbr_selected.predict(X_test_scaled_selected)
+        y_pred_train = rf_selected.predict(X_train_scaled_selected)
+        y_pred_test = rf_selected.predict(X_test_scaled_selected)
         
         # Calculate MAE
         mae_train = mean_absolute_error(y_train, y_pred_train)
@@ -313,7 +226,7 @@ def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, out
         
         cumulative_scores.append({
             'n_features': i,
-            'features': selected_features,
+            'features': sorted_feature_names[:i],
             'mae_train': mae_train,
             'mae_test': mae_test
         })
@@ -346,20 +259,84 @@ def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, out
     plt.tight_layout()
     
     # Save plot
-    plt.savefig(output_path, bbox_inches='tight')
+    plt.savefig(output_path)
     plt.close()
-    print(f"{BLUE}Feature importance plot saved as {output_path}{ENDC}")
+    print(f"{BLUE}Feature importance plot saved as {ENDC}")
 
     return cumulative_scores  # Return cumulative_scores
 
+def plot_coordination_comparison(results, output_dir, output_suffix):
+    """Create visualization plots for the coordination comparison"""
+    # 1. Heatmap showing matches and mismatches for specific coordinations
+    plt.figure(figsize=(4, 3))
+    
+    # Create comparison matrix
+    all_coords = ['ZB', 'WZ', 'RS', 'NB', 'PD', 'TN', 'LT']
+    comparison_matrix = np.zeros((len(all_coords), len(all_coords)))
+    coord_to_idx = {coord: i for i, coord in enumerate(all_coords)}
+    
+    for _, row in results.iterrows():
+        dft_idx = coord_to_idx[row['dft_preferred']]
+        pred_idx = coord_to_idx[row['pred_preferred']]
+        comparison_matrix[dft_idx, pred_idx] += 1
+    
+    # Plot heatmap
+    sns.heatmap(comparison_matrix, 
+                xticklabels=all_coords, 
+                yticklabels=all_coords,
+                annot=True, 
+                fmt='g',
+                cmap='Reds',
+                vmin=0)
+    plt.xlabel('Predicted Preferred Coordination')
+    plt.ylabel('DFT Preferred Coordination')
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, f'rf_coord_{output_suffix}.png'))
+    plt.close()
+
+    # 2. Heatmap showing matches and mismatches for coordination types
+    plt.figure(figsize=(4, 3))
+    
+    # Create comparison matrix for types
+    all_types = ['tetrahedral', 'squareplanar', 'octahedral', 'pyramidal']
+    type_matrix = np.zeros((len(all_types), len(all_types)))
+    type_to_idx = {coord_type: i for i, coord_type in enumerate(all_types)}
+    
+    for _, row in results.iterrows():
+        dft_type_idx = type_to_idx[row['dft_type']]
+        pred_type_idx = type_to_idx[row['pred_type']]
+        type_matrix[dft_type_idx, pred_type_idx] += 1
+    
+    # Plot heatmap for types
+    sns.heatmap(type_matrix, 
+                xticklabels=all_types, 
+                yticklabels=all_types,
+                annot=True, 
+                fmt='g',
+                cmap='Reds',
+                vmin=0)
+    plt.xlabel('Predicted Coordination Type')
+    plt.ylabel('DFT Coordination Type')
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, f'rf_type_{output_suffix}.png'))
+    plt.close()
+
+def get_prediction_std(rf, X):
+    """Get the prediction standard deviation for the given model and input data."""
+    # Get the predictions for each tree in the forest
+    predictions = np.array([tree.predict(X) for tree in rf.estimators_])
+    # Calculate the standard deviation of the predictions
+    std_dev = np.std(predictions, axis=0)
+    return std_dev
+
 def main():
     start_time = time.time()
-    print("Starting GPR analysis...")
+    print("Starting RF analysis...")
     
-    parser = argparse.ArgumentParser(description='Gaussian Process Regression using bulk_data.csv and mendeleev_data.csv')
+    parser = argparse.ArgumentParser(description='Random Forest Regression using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
-        'chg', 'mag', 'volume', 'l_bond', 'n_bond',
+        'numb', 'chg', 'mag', 'volume', 'l_bond', 'n_bond',
         'grosspop', 'madelung', 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
         'pauling', 'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
         'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
@@ -377,6 +354,14 @@ def main():
     # Convert feature names if they start with ICOHP or ICOOP (prepend '-')
     args.X = [('-' + x if x.startswith('ICOHP') or x.startswith('ICOOP') else x) for x in args.X]
     
+    # Define paths for all output files
+    output_suffix = args.output
+    log_path = os.path.join(root, f'rf_{output_suffix}.log')
+    tsv_path = os.path.join(root, f'rf_{output_suffix}.tsv')
+    png_path = os.path.join(root, f'rf_{output_suffix}.png')
+    importance_png_path = os.path.join(root, f'rf_{output_suffix}_importance.png')
+    json_path = os.path.join(root, f'rf_{output_suffix}.json')
+
     try:
         # Load data
         print("Loading data...")
@@ -418,41 +403,32 @@ def main():
     X_test_scaled = scaler.transform(X_test)
     print_time("Feature scaling completed", time.time() - scale_start)
 
-    # Define and fit GPR model with RationalQuadratic kernel
-    print("Setting up GPR model...")
+    # Define and fit Random Forest model
+    print("Setting up RF model...")
     model_start = time.time()
-    kernel = ConstantKernel(1.0, constant_value_bounds=(1e-10, 1e5)) * RationalQuadratic(
-        length_scale=1.0,
-        alpha=1.0,
-        length_scale_bounds=(1e-5, 1e5),
-        alpha_bounds=(1e-5, 1e5)
-    ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-10, 1e5))
     
-    gpr = GaussianProcessRegressor(
-        kernel=kernel,
-        random_state=args.random_state,
-        n_restarts_optimizer=20,
-        alpha=1e-10,
-        optimizer='fmin_l_bfgs_b',
-        normalize_y=True
+    rf = RandomForestRegressor(
+        n_estimators=100,
+        random_state=args.random_state
     )
 
     # Perform Bayesian Optimization
     print("Performing Bayesian Optimization...")
     grid_start = time.time()
     search_space = {
-        'kernel__k1__k2__length_scale': Real(1e-2, 1e2, prior='log-uniform'),
-        'kernel__k1__k2__alpha': Real(1e-2, 1e2, prior='log-uniform'),
-        'kernel__k2__noise_level': Real(1e-5, 1e0, prior='log-uniform')
+        'n_estimators': Integer(50, 500),
+        'max_depth': Integer(1, 20),
+        'min_samples_split': Integer(2, 20),
+        'min_samples_leaf': Integer(1, 10),
     }
 
     bayes_search = BayesSearchCV(
-        gpr,
+        rf,
         search_space,
-        n_iter=20,  # Number of parameter settings sampled
+        n_iter=20,
         cv=5,
         scoring='r2',
-        n_jobs=-1,
+        n_jobs=1,
         random_state=args.random_state,
         verbose=1
     )
@@ -461,7 +437,7 @@ def main():
     print(f"{MAGENTA}Best parameters: {bayes_search.best_params_}{ENDC}")
     
     # Use best model
-    gpr = bayes_search.best_estimator_
+    rf = bayes_search.best_estimator_
     
     # Perform cross-validation
     print("Performing cross-validation...")
@@ -469,9 +445,9 @@ def main():
     kf = KFold(n_splits=5, shuffle=True, random_state=args.random_state)
     
     # Calculate multiple metrics for cross-validation
-    cv_r2 = cross_val_score(gpr, X_train_scaled, y_train, cv=kf, scoring='r2')
-    cv_mae = -cross_val_score(gpr, X_train_scaled, y_train, cv=kf, scoring='neg_mean_absolute_error')
-    cv_mse = -cross_val_score(gpr, X_train_scaled, y_train, cv=kf, scoring='neg_mean_squared_error')
+    cv_r2 = cross_val_score(rf, X_train_scaled, y_train, cv=kf, scoring='r2')
+    cv_mae = -cross_val_score(rf, X_train_scaled, y_train, cv=kf, scoring='neg_mean_absolute_error')
+    cv_mse = -cross_val_score(rf, X_train_scaled, y_train, cv=kf, scoring='neg_mean_squared_error')
     
     print_time("Cross-validation completed", time.time() - cv_start)
     print(f"{MAGENTA}Cross-validation R2 scores: {cv_r2}{ENDC}")
@@ -484,8 +460,8 @@ def main():
     # Make predictions
     print("Making predictions...")
     pred_start = time.time()
-    y_pred_train, std_train = gpr.predict(X_train_scaled, return_std=True)
-    y_pred_test, std_test = gpr.predict(X_test_scaled, return_std=True)
+    y_pred_train = rf.predict(X_train_scaled)
+    y_pred_test = rf.predict(X_test_scaled)
     print_time("Predictions completed", time.time() - pred_start)
 
     # Calculate metrics
@@ -517,20 +493,13 @@ def main():
     # Calculate feature importance
     print("Calculating feature importance...")
     importance_start = time.time()
-    importance = feature_importance(X_train_scaled, y_train, gpr, args.X)
-    cumulative_scores = plot_feature_importance(X_train_scaled, X_test_scaled, y_train, y_test, args.X, os.path.join(root, f'gpr_{args.output}_importance.png'))
+    importance = feature_importance(X_train_scaled, y_train, rf, args.X)
+    cumulative_scores = plot_feature_importance(X_train_scaled, X_test_scaled, y_train, y_test, args.X, importance_png_path)
     print_time("Feature importance calculation completed", time.time() - importance_start)
 
     # Save results
-    output_suffix = args.output
     print("Saving results...")
     save_start = time.time()
-
-    # Define paths for all output files
-    log_path = os.path.join(root, f'gpr_{output_suffix}.log')
-    tsv_path = os.path.join(root, f'gpr_{output_suffix}.tsv')
-    png_path = os.path.join(root, f'gpr_{output_suffix}.png')
-    json_path = os.path.join(root, f'gpr_{output_suffix}.json')
 
     # Save metrics and cross-validation results
     with open(log_path, 'w') as f:
@@ -553,6 +522,15 @@ def main():
         f.write(f"Mean MAE score: {cv_mae.mean():.4f} (+/- {cv_mae.std() * 2:.4f})\n")
         f.write(f"MSE scores: {cv_mse}\n")
         f.write(f"Mean MSE score: {cv_mse.mean():.4f} (+/- {cv_mse.std() * 2:.4f})\n")
+        
+        # Add Feature Importance Analysis
+        f.write("\nFeature Importance Analysis:\n")
+        for score in cumulative_scores:
+            f.write(f"\nNumber of features: {score['n_features']}\n")
+            f.write(f"Features used: {', '.join(score['features'])}\n")
+            f.write(f"Train MAE: {score['mae_train']:.4f}\n")
+            f.write(f"Test MAE: {score['mae_test']:.4f}\n")
+
     print(f"{BLUE}Log file saved as {log_path}{ENDC}")
 
     # Save predictions
@@ -561,11 +539,10 @@ def main():
         'row': df['row'],
         'coord': df['coord'],
         'Y_true': y,
-        'Y_pred': gpr.predict(scaler.transform(X)),
-        'std': gpr.predict(scaler.transform(X), return_std=True)[1]
+        'Y_pred': rf.predict(scaler.transform(X)),
     })
     
-    # Extract actual metal name from the index (e.g., from 'WZ3d00' to 'Ti')
+    # Extract actual metal name from the index
     df_result['metal'] = df_result.apply(lambda row: df.loc[row['metal'], 'metal'], axis=1)
     
     df_result.to_csv(tsv_path, sep='\t', index=False)
@@ -599,50 +576,56 @@ def main():
             subset_train = df_train[(df_train['row'] == r) & (df_train['coord'] == c)]
             if not subset_train.empty:
                 row_features = subset_train[args.X].astype(float)
-                y_pred_train, std_train = gpr.predict(scaler.transform(row_features), return_std=True)
+                y_pred_train = rf.predict(scaler.transform(row_features))
+                std_train = get_prediction_std(rf, scaler.transform(row_features))
                 plt.errorbar(
                     subset_train['Y'],
                     y_pred_train,
                     yerr=std_train,
-                    fmt=coord_map.get(c, 'x'),
+                    fmt=coord_map.get(c, 'x'),  # Use different markers for different coords
                     label=f'{r}_{c}',
                     alpha=0.3,
                     color=row_map.get(r, 'gray'),
                     markeredgecolor=row_map.get(r, 'gray'),
                     markerfacecolor=row_map.get(r, 'gray'),
-                    ecolor='silver',
+                    ecolor='lightgray',
                     capsize=0,
                     linewidth=0.5
                 )
                 # Add labels for training set
                 for i, (_, row_data) in enumerate(subset_train.iterrows()):
                     plt.annotate(row_data['metal'], 
-                               (row_data['Y'], y_pred_train[i]), 
-                               fontsize=8)
+                                 (row_data['Y'], y_pred_train[i]), 
+                                 fontsize=8, 
+                                 ha='right', 
+                                 va='bottom')
             
             # Plot test data
             subset_test = df_test[(df_test['row'] == r) & (df_test['coord'] == c)]
             if not subset_test.empty:
                 row_features = subset_test[args.X].astype(float)
-                y_pred_test, std_test = gpr.predict(scaler.transform(row_features), return_std=True)
+                y_pred_test = rf.predict(scaler.transform(row_features))
+                std_test = get_prediction_std(rf, scaler.transform(row_features))
                 plt.errorbar(
                     subset_test['Y'],
                     y_pred_test,
                     yerr=std_test,
-                    fmt=coord_map.get(c, 'x'),
+                    fmt=coord_map.get(c, 'x'),  # Use different markers for different coords
                     alpha=0.3,
                     color=row_map.get(r, 'gray'),
                     markeredgecolor=row_map.get(r, 'gray'),
                     markerfacecolor=row_map.get(r, 'gray'),
-                    ecolor='silver',
+                    ecolor='lightgray',
                     capsize=0,
                     linewidth=0.5
                 )
                 # Add labels for test set
                 for i, (_, row_data) in enumerate(subset_test.iterrows()):
                     plt.annotate(row_data['metal'], 
-                               (row_data['Y'], y_pred_test[i]), 
-                               fontsize=8)
+                                 (row_data['Y'], y_pred_test[i]), 
+                                 fontsize=8, 
+                                 ha='right', 
+                                 va='bottom')
 
     plt.plot([y.min(), y.max()], [y.min(), y.max()], '--', lw=1, color='black')
     plt.xlabel(f'DFT-calculated {ylabels[args.Y]}')
@@ -659,11 +642,11 @@ def main():
     results = {
         'metrics': metrics,
         'model_params': {
-            'kernel': str(gpr.kernel),
-            'alpha': float(gpr.alpha),
-            'random_state': int(gpr.random_state),
-            'n_restarts_optimizer': int(gpr.n_restarts_optimizer),
-            'normalize_y': bool(gpr.normalize_y)
+            'n_estimators': rf.n_estimators,
+            'max_depth': rf.max_depth,
+            'min_samples_split': rf.min_samples_split,
+            'min_samples_leaf': rf.min_samples_leaf,
+            'random_state': rf.random_state
         },
         'feature_names': args.X,
         'target': args.Y,
@@ -680,10 +663,10 @@ def main():
     
     if len(coord_results) > 0:
         # Save coordination comparison results
-        coord_results.to_csv(os.path.join(root, f'gpr_coord_{output_suffix}.csv'))
+        coord_results.to_csv(os.path.join(root, f'rf_coord_{output_suffix}.csv'))
         
         # Create coordination summary file
-        with open(os.path.join(root, f'gpr_coord_{output_suffix}.log'), 'w') as f:
+        with open(os.path.join(root, f'rf_coord_{output_suffix}.log'), 'w') as f:
             # Overall statistics
             f.write("Overall Statistics:\n")
             f.write("-----------------\n")
@@ -754,60 +737,16 @@ def main():
                     f.write(f"Energy difference: {row['energy_diff']:.2f} eV\n")
                     f.write(f"DFT all preferred: {row['dft_all_preferred']}\n")
                     f.write(f"Predicted all preferred: {row['pred_all_preferred']}\n")
-        
+
         # Create coordination comparison plots
         plot_coordination_comparison(coord_results, root, args.output)
-        print(f"Coordination preference analysis completed")
+        print("Coordination preference analysis completed")
     else:
         print(f"{YELLOW}No valid results for coordination preference analysis{ENDC}")
 
-    # Feature Importance 분석 결과를 로그 파일에 저장
-    feature_importance_results = [
-        (1, ['n_bond'], 1.5164, 1.7689),
-        (2, ['n_bond', '-ICOOPn'], 1.2208, 1.5959),
-        (3, ['n_bond', '-ICOOPn', 'mag'], 0.8992, 1.2896),
-        (4, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn'], 0.4339, 1.0190),
-        (5, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond'], 0.3278, 0.9575),
-        (6, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm'], 0.3122, 0.8837),
-        (7, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn'], 0.2856, 0.8402),
-        (8, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal'], 0.2229, 0.6117),
-        (9, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm'], 0.2190, 0.5854),
-        (10, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw'], 0.1898, 0.5257),
-        (11, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume'], 0.1883, 0.5421),
-        (12, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm'], 0.1875, 0.5459),
-        (13, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung'], 0.1844, 0.5326),
-        (14, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval'], 0.1712, 0.4682),
-        (15, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole'], 0.1649, 0.5144),
-        (16, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil'], 0.1564, 0.5238),
-        (17, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg'], 0.1584, 0.4735),
-        (18, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop'], 0.1582, 0.4723),
-        (19, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap'], 0.1558, 0.4662),
-        (20, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap', 'pauling'], 0.1527, 0.4553),
-        (21, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap', 'pauling', 'density'], 0.1497, 0.4480),
-        (22, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap', 'pauling', 'density', 'Hform'], 0.1510, 0.4401),
-        (23, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap', 'pauling', 'density', 'Hform', 'Tmelt'], 0.1519, 0.4365),
-        (24, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap', 'pauling', 'density', 'Hform', 'Tmelt', 'ion3'], 0.1476, 0.4411),
-        (25, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap', 'pauling', 'density', 'Hform', 'Tmelt', 'ion3', 'Vatom'], 0.1495, 0.4382),
-        (26, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap', 'pauling', 'density', 'Hform', 'Tmelt', 'ion3', 'Vatom', 'ion2'], 0.1490, 0.4540),
-        (27, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap', 'pauling', 'density', 'Hform', 'Tmelt', 'ion3', 'Vatom', 'ion2', 'ion1'], 0.1499, 0.4474),
-        (28, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap', 'pauling', 'density', 'Hform', 'Tmelt', 'ion3', 'Vatom', 'ion2', 'ion1', 'Hfus'], 0.1514, 0.4586),
-        (29, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap', 'pauling', 'density', 'Hform', 'Tmelt', 'ion3', 'Vatom', 'ion2', 'ion1', 'Hfus', 'Natom'], 0.1522, 0.4465),
-        (30, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap', 'pauling', 'density', 'Hform', 'Tmelt', 'ion3', 'Vatom', 'ion2', 'ion1', 'Hfus', 'Natom', 'ion12'], 0.1519, 0.4489),
-        (31, ['n_bond', '-ICOOPn', 'mag', 'ICOBIn', 'l_bond', '-ICOOPm', '-ICOHPn', 'Rmetal', 'ICOBIm', 'Rvdw', 'volume', '-ICOHPm', 'madelung', 'Rcoval', 'dipole', 'Tboil', 'chg', 'grosspop', 'Hevap', 'pauling', 'density', 'Hform', 'Tmelt', 'ion3', 'Vatom', 'ion2', 'ion1', 'Hfus', 'Natom', 'ion12', 'mass'], 0.1501, 0.4520),
-    ]
-
-    with open(log_path, 'a') as f:
-        f.write("\nFeature Importance Analysis:\n")
-        f.write("---------------------------\n")
-        for num_features, features, train_mae, test_mae in feature_importance_results:
-            f.write(f"Number of features: {num_features}\n")
-            f.write(f"Features used: {', '.join(features)}\n")
-            f.write(f"Train MAE: {train_mae:.4f}\n")
-            f.write(f"Test MAE: {test_mae:.4f}\n\n")
-
     # Print total execution time
     total_time = time.time() - start_time
-    print(f"Execution Summary:")
+    print("Execution Summary:")
     print_time("Total execution time", total_time)
     print_time("Model training and evaluation time", time.time() - model_start)
     
@@ -826,4 +765,5 @@ def main():
         f.write(f"Results saving and plotting: {time.time() - save_start:.2f} seconds\n")
 
 if __name__ == '__main__':
-    main() 
+    main()
+    

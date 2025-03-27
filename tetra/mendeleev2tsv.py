@@ -75,8 +75,8 @@ for row in metals.keys():
 
 df['ion12'] = df['ion1'] + df['ion2']
 save_path = os.path.join(root, 'figures')
-df.to_csv(f'{save_path}/mendeleev_data.csv', sep=',')
-df.to_csv(f'{save_path}/mendeleev_data.tsv', sep='\t', float_format='%.2f')
+df.to_csv(os.path.join(save_path, 'mendeleev_data.csv'), sep=',')
+df.to_csv(os.path.join(save_path, 'mendeleev_data.tsv'), sep='\t', float_format='%.2f')
 print(f"Data saved as mendeleev_data.csv")
 
 for column in df.columns:
@@ -100,6 +100,6 @@ for column in df.columns:
     plt.ylabel(pattern.replace('_', ' ').title())
     plt.legend()
     plt.tight_layout()
-    plt.savefig(f'{save_path}/{pngname}', bbox_inches="tight")
+    plt.savefig(os.path.join(save_path, pngname), bbox_inches="tight")
     print(f"Figure saved as {pngname}")
     plt.close()
