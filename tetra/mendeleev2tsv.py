@@ -4,7 +4,7 @@ import pandas as pd
 from mendeleev import element
 import matplotlib.pyplot as plt
 
-root = '/pscratch/sd/j/jiuy97/7_V_bulk'
+root = '/Users/hailey/Desktop/7_V_bulk'
 
 metals = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
@@ -34,7 +34,11 @@ patterns = {
     'ionenergies[3]': 'ion3',
 }
 
-df = pd.DataFrame()
+# 데이터프레임 초기화 시 데이터 타입 지정
+df = pd.DataFrame(index=sum(metals.values(), []), dtype='object')
+df['row'] = pd.Series(dtype='object')
+df['numb'] = pd.Series(dtype='int')
+
 for row in metals.keys():
     for m, metal in enumerate(metals[row]):
         df.at[metal, 'row'] = row
@@ -45,15 +49,24 @@ for row in metals.keys():
             if 'ionenergies' in pattern:
                 ion_index = int(pattern.split('[')[1].strip(']'))
                 df.at[metal, column] = elem.ionenergies.get(ion_index, np.nan)
-            elif metal == 'Sn' and (pattern == 'boiling_point' or pattern == 'melting_point'):
-                df.at[metal, column] = getattr(elem, pattern)['gray']
+            elif metal == 'Sn' and pattern in ['boiling_point', 'melting_point']:
+                # Sn의 경우 특별 처리
+                if pattern == 'boiling_point':
+                    df.at[metal, column] = 2875  # Sn의 끓는점 (K)
+                elif pattern == 'melting_point':
+                    df.at[metal, column] = 505.08  # Sn의 녹는점 (K)
             else:
-                df.at[metal, column] = getattr(elem, pattern)
+                value = getattr(elem, pattern)
+                if isinstance(value, dict):
+                    df.at[metal, column] = value.get('gray', value)
+                else:
+                    df.at[metal, column] = value
 
 df['ion12'] = df['ion1'] + df['ion2']
 save_path = os.path.join(root, 'figures')
 df.to_csv(f'{save_path}/mendeleev_data.csv', sep=',')
 df.to_csv(f'{save_path}/mendeleev_data.tsv', sep='\t', float_format='%.2f')
+print(f"Data saved as mendeleev_data.csv")
 
 for column in df.columns:
     if column in ['row', 'numb']:
@@ -63,7 +76,6 @@ for column in df.columns:
     else:
         pattern = next((key for key, value in patterns.items() if value == column), None)
     pngname = f'mendeleev_{pattern}.png'
-
         
     plt.figure(figsize=(8, 6), dpi=100)
     plt.plot(df[df['row'] == '3d']['numb'], df[df['row'] == '3d'][column], 
@@ -77,6 +89,6 @@ for column in df.columns:
     plt.ylabel(pattern.replace('_', ' ').title())
     plt.legend()
     plt.tight_layout()
-    plt.savefig(f'{pngname}', bbox_inches="tight")
+    plt.savefig(f'{save_path}/{pngname}', bbox_inches="tight")
     print(f"Figure saved as {pngname}")
     plt.close()

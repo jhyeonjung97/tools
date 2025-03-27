@@ -7,9 +7,9 @@ import pandas as pd
 from ase.io import read, write
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from mendeleev import element
 
-root = '/pscratch/sd/j/jiuy97/7_V_bulk'
-# root = '/Users/hailey/Desktop/7_V_bulk'
+root = '/Users/hailey/Desktop/7_V_bulk'
 save_path = os.path.join(root, 'figures')
 
 coords_data = [

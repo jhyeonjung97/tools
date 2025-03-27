@@ -52,7 +52,7 @@ def main():
     # Convert feature names if they start with ICOHP or ICOOP (prepend '-')
     args.X = [('-' + x if x.startswith('ICOHP') or x.startswith('ICOOP') else x) for x in args.X]
     
-    root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
+    root = '/Users/hailey/Desktop/7_V_bulk/figures'
     df_bulk = pd.read_csv(os.path.join(root, 'bulk_data.csv'), index_col=0)
     df_mend = pd.read_csv(os.path.join(root, 'mendeleev_data.csv'), index_col=0)
 
