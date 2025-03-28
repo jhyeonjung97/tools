@@ -1,0 +1,877 @@
+Starting bulk prediction analysis at Fri Mar 28 13:29:18 PDT 2025
+----------------------------------------
+Running model: rf, target: form
+/Users/jiuy97/miniconda3/lib/python3.11/site-packages/skopt/optimizer/optimizer.py:517: UserWarning: The objective has been evaluated at point [20, 1, 2, 500] before, using random point [15, 4, 12, 187]
+  warnings.warn(
+Starting bulk prediction analysis...
+Loading data...
+[1mData loading completed: 0.01 seconds[0m
+Preprocessing data...
+Scaling features...
+[1mFeature scaling completed: 0.00 seconds[0m
+Setting up RF model...
+Performing Bayesian Optimization...
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+[1mBayesian Optimization completed: 129.20 seconds[0m
+[95mBest parameters: OrderedDict([('max_depth', 10), ('min_samples_leaf', 1), ('min_samples_split', 2), ('n_estimators', 500)])[0m
+Performing cross-validation...
+[1mCross-validation completed: 10.65 seconds[0m
+[95mCross-validation R2 scores: [0.88023123 0.89510151 0.93066572 0.93266268 0.93448348][0m
+[95mMean CV R2 score: 0.9146 (+/- 0.0451)[0m
+[95mCross-validation MAE scores: [0.49679338 0.44240498 0.42098028 0.3580139  0.38400822][0m
+[95mMean CV MAE score: 0.4204 (+/- 0.0961)[0m
+[95mCross-validation MSE scores: [0.48066724 0.35787309 0.25514758 0.2408558  0.2425894 ][0m
+[95mMean CV MSE score: 0.3154 (+/- 0.1868)[0m
+Making predictions...
+[1mPredictions completed: 3.59 seconds[0m
+Calculating metrics...
+[1mMetrics calculation completed: 0.00 seconds[0m
+Calculating feature importance...
+[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_all_result_importance.png[0m
+[1mFeature importance calculation completed: 2.70 seconds[0m
+Saving results...
+[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_all_result.log[0m
+[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_all_result.tsv[0m
+Creating parity plot...
+[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_all_result.png[0m
+[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_all_result.json[0m
+Analyzing coordination preferences...
+Coordination preference analysis completed
+Execution Summary:
+[1mTotal execution time: 209.99 seconds[0m
+[1mModel training and evaluation time: 209.98 seconds[0m
+Running model: rf, target: form, row: 3d
+Starting bulk prediction analysis...
+Loading data...
+[1mData loading completed: 0.01 seconds[0m
+Preprocessing data...
+Scaling features...
+[1mFeature scaling completed: 0.00 seconds[0m
+Setting up RF model...
+Performing Bayesian Optimization...
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+[1mBayesian Optimization completed: 76.23 seconds[0m
+[95mBest parameters: OrderedDict([('max_depth', 6), ('min_samples_leaf', 1), ('min_samples_split', 2), ('n_estimators', 500)])[0m
+Performing cross-validation...
+[1mCross-validation completed: 5.21 seconds[0m
+[95mCross-validation R2 scores: [0.93151429 0.92874771 0.95144836 0.88657589 0.81334782][0m
+[95mMean CV R2 score: 0.9023 (+/- 0.0985)[0m
+[95mCross-validation MAE scores: [0.37133097 0.33132612 0.26024945 0.50834238 0.45337359][0m
+[95mMean CV MAE score: 0.3849 (+/- 0.1755)[0m
+[95mCross-validation MSE scores: [0.18150814 0.19990136 0.09879053 0.43152465 0.32762384][0m
+[95mMean CV MSE score: 0.2479 (+/- 0.2350)[0m
+Making predictions...
+[1mPredictions completed: 3.11 seconds[0m
+Calculating metrics...
+[1mMetrics calculation completed: 0.00 seconds[0m
+Calculating feature importance...
+[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_3d_result_importance.png[0m
+[1mFeature importance calculation completed: 2.06 seconds[0m
+Saving results...
+[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_3d_result.log[0m
+[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_3d_result.tsv[0m
+Creating parity plot...
+[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_3d_result.png[0m
+[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_3d_result.json[0m
+Analyzing coordination preferences...
+Coordination preference analysis completed
+Execution Summary:
+[1mTotal execution time: 107.95 seconds[0m
+[1mModel training and evaluation time: 107.93 seconds[0m
+Running model: rf, target: form, row: 4d
+Starting bulk prediction analysis...
+Loading data...
+[1mData loading completed: 0.01 seconds[0m
+Preprocessing data...
+Scaling features...
+[1mFeature scaling completed: 0.00 seconds[0m
+Setting up RF model...
+Performing Bayesian Optimization...
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+[1mBayesian Optimization completed: 71.76 seconds[0m
+[95mBest parameters: OrderedDict([('max_depth', 9), ('min_samples_leaf', 1), ('min_samples_split', 4), ('n_estimators', 500)])[0m
+Performing cross-validation...
+[1mCross-validation completed: 4.93 seconds[0m
+[95mCross-validation R2 scores: [0.93841859 0.92844925 0.85428054 0.85716569 0.92268692][0m
+[95mMean CV R2 score: 0.9002 (+/- 0.0733)[0m
+[95mCross-validation MAE scores: [0.35208494 0.41516245 0.38464823 0.52508927 0.36103147][0m
+[95mMean CV MAE score: 0.4076 (+/- 0.1253)[0m
+[95mCross-validation MSE scores: [0.22321694 0.24813971 0.25854772 0.41034422 0.18181776][0m
+[95mMean CV MSE score: 0.2644 (+/- 0.1552)[0m
+Making predictions...
+[1mPredictions completed: 3.09 seconds[0m
+Calculating metrics...
+[1mMetrics calculation completed: 0.00 seconds[0m
+Calculating feature importance...
+[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_4d_result_importance.png[0m
+[1mFeature importance calculation completed: 2.06 seconds[0m
+Saving results...
+[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_4d_result.log[0m
+[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_4d_result.tsv[0m
+Creating parity plot...
+[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_4d_result.png[0m
+[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_4d_result.json[0m
+Analyzing coordination preferences...
+Coordination preference analysis completed
+Execution Summary:
+[1mTotal execution time: 105.00 seconds[0m
+[1mModel training and evaluation time: 104.99 seconds[0m
+Running model: rf, target: form, row: 5d
+Starting bulk prediction analysis...
+Loading data...
+[1mData loading completed: 0.01 seconds[0m
+Preprocessing data...
+Scaling features...
+[1mFeature scaling completed: 0.00 seconds[0m
+Setting up RF model...
+Performing Bayesian Optimization...
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+[1mBayesian Optimization completed: 75.94 seconds[0m
+[95mBest parameters: OrderedDict([('max_depth', 9), ('min_samples_leaf', 1), ('min_samples_split', 2), ('n_estimators', 500)])[0m
+Performing cross-validation...
+[1mCross-validation completed: 5.21 seconds[0m
+[95mCross-validation R2 scores: [0.91264915 0.95866368 0.83866907 0.97273453 0.88775578][0m
+[95mMean CV R2 score: 0.9141 (+/- 0.0972)[0m
+[95mCross-validation MAE scores: [0.392234   0.29467805 0.56013536 0.33829574 0.55124322][0m
+[95mMean CV MAE score: 0.4273 (+/- 0.2186)[0m
+[95mCross-validation MSE scores: [0.27368981 0.10220475 0.57714403 0.15830812 0.38391921][0m
+[95mMean CV MSE score: 0.2991 (+/- 0.3391)[0m
+Making predictions...
+[1mPredictions completed: 3.13 seconds[0m
+Calculating metrics...
+[1mMetrics calculation completed: 0.00 seconds[0m
+Calculating feature importance...
+[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_5d_result_importance.png[0m
+[1mFeature importance calculation completed: 2.06 seconds[0m
+Saving results...
+[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_5d_result.log[0m
+[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_5d_result.tsv[0m
+Creating parity plot...
+[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_5d_result.png[0m
+[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_5d_result.json[0m
+Analyzing coordination preferences...
+Coordination preference analysis completed
+Execution Summary:
+[1mTotal execution time: 109.67 seconds[0m
+[1mModel training and evaluation time: 109.65 seconds[0m
+Running model: rf, target: form, row: 4d 5d
+Starting bulk prediction analysis...
+Loading data...
+[1mData loading completed: 0.01 seconds[0m
+Preprocessing data...
+Scaling features...
+[1mFeature scaling completed: 0.00 seconds[0m
+Setting up RF model...
+Performing Bayesian Optimization...
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+[1mBayesian Optimization completed: 102.30 seconds[0m
+[95mBest parameters: OrderedDict([('max_depth', 10), ('min_samples_leaf', 1), ('min_samples_split', 2), ('n_estimators', 500)])[0m
+Performing cross-validation...
+[1mCross-validation completed: 7.92 seconds[0m
+[95mCross-validation R2 scores: [0.96567489 0.93513195 0.91683477 0.90012971 0.95556155][0m
+[95mMean CV R2 score: 0.9347 (+/- 0.0482)[0m
+[95mCross-validation MAE scores: [0.30513812 0.36198126 0.4925161  0.42730626 0.31092994][0m
+[95mMean CV MAE score: 0.3796 (+/- 0.1431)[0m
+[95mCross-validation MSE scores: [0.17099283 0.22378684 0.4887345  0.34485101 0.14218751][0m
+[95mMean CV MSE score: 0.2741 (+/- 0.2556)[0m
+Making predictions...
+[1mPredictions completed: 3.37 seconds[0m
+Calculating metrics...
+[1mMetrics calculation completed: 0.00 seconds[0m
+Calculating feature importance...
+[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_4d5d_result_importance.png[0m
+[1mFeature importance calculation completed: 2.34 seconds[0m
+Saving results...
+[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_4d5d_result.log[0m
+[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_4d5d_result.tsv[0m
+Creating parity plot...
+[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_4d5d_result.png[0m
+[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_rf_4d5d_result.json[0m
+Analyzing coordination preferences...
+Coordination preference analysis completed
+Execution Summary:
+[1mTotal execution time: 162.13 seconds[0m
+[1mModel training and evaluation time: 162.12 seconds[0m
+Running model: rf, target: coh
+/Users/jiuy97/miniconda3/lib/python3.11/site-packages/skopt/optimizer/optimizer.py:517: UserWarning: The objective has been evaluated at point [19, 1, 2, 500] before, using random point [17, 3, 12, 316]
+  warnings.warn(
+Starting bulk prediction analysis...
+Loading data...
+[1mData loading completed: 0.01 seconds[0m
+Preprocessing data...
+Scaling features...
+[1mFeature scaling completed: 0.00 seconds[0m
+Setting up RF model...
+Performing Bayesian Optimization...
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+[1mBayesian Optimization completed: 139.16 seconds[0m
+[95mBest parameters: OrderedDict([('max_depth', 14), ('min_samples_leaf', 1), ('min_samples_split', 2), ('n_estimators', 500)])[0m
+Performing cross-validation...
+[1mCross-validation completed: 10.13 seconds[0m
+[95mCross-validation R2 scores: [0.94032859 0.9660488  0.96173678 0.95651069 0.96011244][0m
+[95mMean CV R2 score: 0.9569 (+/- 0.0177)[0m
+[95mCross-validation MAE scores: [0.44143224 0.41103946 0.393368   0.41678876 0.41925971][0m
+[95mMean CV MAE score: 0.4164 (+/- 0.0309)[0m
+[95mCross-validation MSE scores: [0.34822595 0.3074684  0.25226386 0.34921601 0.33652905][0m
+[95mMean CV MSE score: 0.3187 (+/- 0.0730)[0m
+Making predictions...
+[1mPredictions completed: 3.51 seconds[0m
+Calculating metrics...
+[1mMetrics calculation completed: 0.00 seconds[0m
+Calculating feature importance...
+[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_all_result_importance.png[0m
+[1mFeature importance calculation completed: 2.64 seconds[0m
+Saving results...
+[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_all_result.log[0m
+[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_all_result.tsv[0m
+Creating parity plot...
+[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_all_result.png[0m
+[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_all_result.json[0m
+Analyzing coordination preferences...
+Coordination preference analysis completed
+Execution Summary:
+[1mTotal execution time: 219.93 seconds[0m
+[1mModel training and evaluation time: 219.91 seconds[0m
+Running model: rf, target: coh, row: 3d
+Starting bulk prediction analysis...
+Loading data...
+[1mData loading completed: 0.01 seconds[0m
+Preprocessing data...
+Scaling features...
+[1mFeature scaling completed: 0.00 seconds[0m
+Setting up RF model...
+Performing Bayesian Optimization...
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+[1mBayesian Optimization completed: 91.01 seconds[0m
+[95mBest parameters: OrderedDict([('max_depth', 11), ('min_samples_leaf', 1), ('min_samples_split', 2), ('n_estimators', 500)])[0m
+Performing cross-validation...
+[1mCross-validation completed: 5.23 seconds[0m
+[95mCross-validation R2 scores: [0.96685171 0.96242459 0.97949043 0.89181565 0.82629141][0m
+[95mMean CV R2 score: 0.9254 (+/- 0.1165)[0m
+[95mCross-validation MAE scores: [0.30539714 0.30848429 0.22903286 0.50097846 0.55310154][0m
+[95mMean CV MAE score: 0.3794 (+/- 0.2499)[0m
+[95mCross-validation MSE scores: [0.11924983 0.220648   0.07763961 0.42590156 0.64674341][0m
+[95mMean CV MSE score: 0.2980 (+/- 0.4238)[0m
+Making predictions...
+[1mPredictions completed: 3.12 seconds[0m
+Calculating metrics...
+[1mMetrics calculation completed: 0.00 seconds[0m
+Calculating feature importance...
+[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_3d_result_importance.png[0m
+[1mFeature importance calculation completed: 2.05 seconds[0m
+Saving results...
+[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_3d_result.log[0m
+[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_3d_result.tsv[0m
+Creating parity plot...
+[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_3d_result.png[0m
+[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_3d_result.json[0m
+Analyzing coordination preferences...
+Coordination preference analysis completed
+Execution Summary:
+[1mTotal execution time: 123.06 seconds[0m
+[1mModel training and evaluation time: 123.04 seconds[0m
+Running model: rf, target: coh, row: 4d
+Starting bulk prediction analysis...
+Loading data...
+[1mData loading completed: 0.01 seconds[0m
+Preprocessing data...
+Scaling features...
+[1mFeature scaling completed: 0.00 seconds[0m
+Setting up RF model...
+Performing Bayesian Optimization...
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+[1mBayesian Optimization completed: 87.28 seconds[0m
+[95mBest parameters: OrderedDict([('max_depth', 10), ('min_samples_leaf', 1), ('min_samples_split', 2), ('n_estimators', 500)])[0m
+Performing cross-validation...
+[1mCross-validation completed: 5.03 seconds[0m
+[95mCross-validation R2 scores: [0.97393499 0.94305187 0.98182226 0.92293872 0.98351449][0m
+[95mMean CV R2 score: 0.9611 (+/- 0.0480)[0m
+[95mCross-validation MAE scores: [0.39178462 0.57936615 0.3104     0.5315     0.28329833][0m
+[95mMean CV MAE score: 0.4193 (+/- 0.2355)[0m
+[95mCross-validation MSE scores: [0.21358178 0.44982944 0.13920868 0.44956646 0.14822271][0m
+[95mMean CV MSE score: 0.2801 (+/- 0.2817)[0m
+Making predictions...
+[1mPredictions completed: 3.17 seconds[0m
+Calculating metrics...
+[1mMetrics calculation completed: 0.00 seconds[0m
+Calculating feature importance...
+[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_4d_result_importance.png[0m
+[1mFeature importance calculation completed: 2.01 seconds[0m
+Saving results...
+[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_4d_result.log[0m
+[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_4d_result.tsv[0m
+Creating parity plot...
+[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_4d_result.png[0m
+[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_4d_result.json[0m
+Analyzing coordination preferences...
+Coordination preference analysis completed
+Execution Summary:
+[1mTotal execution time: 121.03 seconds[0m
+[1mModel training and evaluation time: 121.01 seconds[0m
+Running model: rf, target: coh, row: 5d
+Starting bulk prediction analysis...
+Loading data...
+[1mData loading completed: 0.01 seconds[0m
+Preprocessing data...
+Scaling features...
+[1mFeature scaling completed: 0.00 seconds[0m
+Setting up RF model...
+Performing Bayesian Optimization...
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+[1mBayesian Optimization completed: 81.68 seconds[0m
+[95mBest parameters: OrderedDict([('max_depth', 15), ('min_samples_leaf', 1), ('min_samples_split', 2), ('n_estimators', 500)])[0m
+Performing cross-validation...
+[1mCross-validation completed: 5.30 seconds[0m
+[95mCross-validation R2 scores: [0.96207855 0.96430177 0.83860084 0.98842539 0.96600802][0m
+[95mMean CV R2 score: 0.9439 (+/- 0.1070)[0m
+[95mCross-validation MAE scores: [0.43238571 0.53679571 0.64168143 0.28613077 0.51298308][0m
+[95mMean CV MAE score: 0.4820 (+/- 0.2371)[0m
+[95mCross-validation MSE scores: [0.31758991 0.47704133 1.0211972  0.12561467 0.44417044][0m
+[95mMean CV MSE score: 0.4771 (+/- 0.5974)[0m
+Making predictions...
+[1mPredictions completed: 3.21 seconds[0m
+Calculating metrics...
+[1mMetrics calculation completed: 0.00 seconds[0m
+Calculating feature importance...
+[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_5d_result_importance.png[0m
+[1mFeature importance calculation completed: 2.14 seconds[0m
+Saving results...
+[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_5d_result.log[0m
+[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_5d_result.tsv[0m
+Creating parity plot...
+[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_5d_result.png[0m
+[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_5d_result.json[0m
+Analyzing coordination preferences...
+Coordination preference analysis completed
+Execution Summary:
+[1mTotal execution time: 115.84 seconds[0m
+[1mModel training and evaluation time: 115.83 seconds[0m
+Running model: rf, target: coh, row: 4d 5d
+Starting bulk prediction analysis...
+Loading data...
+[1mData loading completed: 0.01 seconds[0m
+Preprocessing data...
+Scaling features...
+[1mFeature scaling completed: 0.00 seconds[0m
+Setting up RF model...
+Performing Bayesian Optimization...
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+Fitting 5 folds for each of 1 candidates, totalling 5 fits
+[1mBayesian Optimization completed: 88.13 seconds[0m
+[95mBest parameters: OrderedDict([('max_depth', 12), ('min_samples_leaf', 1), ('min_samples_split', 2), ('n_estimators', 50)])[0m
+Performing cross-validation...
+[1mCross-validation completed: 0.78 seconds[0m
+[95mCross-validation R2 scores: [0.98706795 0.97185464 0.91406924 0.98236583 0.96524556][0m
+[95mMean CV R2 score: 0.9641 (+/- 0.0524)[0m
+[95mCross-validation MAE scores: [0.27835556 0.38418519 0.50927692 0.36396923 0.44360385][0m
+[95mMean CV MAE score: 0.3959 (+/- 0.1552)[0m
+[95mCross-validation MSE scores: [0.15000985 0.22232148 0.53267614 0.21745938 0.28581786][0m
+[95mMean CV MSE score: 0.2817 (+/- 0.2653)[0m
+Making predictions...
+[1mPredictions completed: 0.33 seconds[0m
+Calculating metrics...
+[1mMetrics calculation completed: 0.00 seconds[0m
+Calculating feature importance...
+[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_4d5d_result_importance.png[0m
+[1mFeature importance calculation completed: 2.36 seconds[0m
+Saving results...
+[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_4d5d_result.log[0m
+[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_4d5d_result.tsv[0m
+Creating parity plot...
+[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_4d5d_result.png[0m
+[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_rf_4d5d_result.json[0m
+Analyzing coordination preferences...
+Coordination preference analysis completed
+Execution Summary:
+[1mTotal execution time: 96.57 seconds[0m
+[1mModel training and evaluation time: 96.55 seconds[0m
+Running model: gpr, target: form

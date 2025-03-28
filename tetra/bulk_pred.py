@@ -631,9 +631,10 @@ def main():
     # Perform Bayesian Optimization
     print("Performing Bayesian Optimization...")
     bayes_start = time.time()
-    
-    if args.model != 'lr':  # LR 모델이 아닐 때만 Bayesian Optimization 수행
+    if args.model != 'lr':  # LR 모델은 하이퍼파라미터 최적화가 필요 없음
+        # Define cross-validation for Bayesian Optimization
         cv = KFold(n_splits=5, shuffle=True, random_state=args.random_state)
+        
         bayes_search = BayesSearchCV(
             model,
             search_space,
@@ -646,14 +647,11 @@ def main():
         )
         bayes_search.fit(X_train_scaled, y_train)
         print_time("Bayesian Optimization completed", time.time() - bayes_start)
-        print(f"{MAGENTA}Best parameters: {bayes_search.best_params_}{ENDC}")
-        
-        # Use best model
+        print(f"\033[95mBest parameters: {bayes_search.best_params_}\033[0m")
         model = bayes_search.best_estimator_
-    else:  # LR 모델인 경우
+    else:
         model.fit(X_train_scaled, y_train)
         bayes_search = None
-        print_time("Model fitting completed", time.time() - bayes_start)
 
     # Perform cross-validation
     print("Performing cross-validation...")

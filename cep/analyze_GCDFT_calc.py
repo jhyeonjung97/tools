@@ -128,9 +128,9 @@ plt.legend()
 
 ## Save and display the DFT energy vs. charge plot
 if FULL:
-    plt.savefig('energy4p4FULL.png')
+    plt.savefig('energyFULL.png')
 else:
-    plt.savefig('energy4p4.png')
+    plt.savefig('energy.png')
 plt.show()
 plt.close()
 
@@ -145,9 +145,9 @@ plt.legend()
 
 ## Save and display the GC free energy vs. applied potential plot
 if FULL:
-    plt.savefig('Free_energy4p4FULL.png')
+    plt.savefig('Free_energyFULL.png')
 else:
-    plt.savefig('Free_energy4p4.png')
+    plt.savefig('Free_energy.png')
 plt.show()
 plt.close()
 
@@ -162,9 +162,9 @@ plt.ylabel("Number of Extra Electrons")
 
 ## Save and display the charge vs. applied potential plot
 if FULL:
-    plt.savefig('Charge4p4FULL.png')
+    plt.savefig('ChargeFULL.png')
 else:
-    plt.savefig('Charge4p4.png')
+    plt.savefig('Charge.png')
 plt.show()
 plt.close()
 
@@ -176,9 +176,9 @@ plt.ylabel("Fermi_Energy, eV")
 
 ## Save and display the Fermi energy vs. applied potential plot
 if FULL:
-    plt.savefig('Fermi_energy4p4FULL.png')
+    plt.savefig('Fermi_energyFULL.png')
 else:
-    plt.savefig('Fermi_energy4p4.png')
+    plt.savefig('Fermi_energy.png')
 plt.show()
 plt.close()
 
@@ -191,9 +191,9 @@ plt.legend()
 
 ## Save and Display the Capacitance vs. Applied Potential Plot
 if FULL:
-    plt.savefig('Capacitance4p4FULL.png')
+    plt.savefig('CapacitanceFULL.png')
 else:
-    plt.savefig('Capacitance4p4.png')
+    plt.savefig('Capacitance.png')
 plt.show()
 plt.close()
 

@@ -19,27 +19,29 @@ parser.add_argument('--no-bulk', action='store_false', help='Disable bulk Pourba
 parser.add_argument('--suffix', type=str, default='', help='Suffix for output filename')
 parser.add_argument('--show', action='store_true', help='Show the plot')
 parser.add_argument('--save-dir', action='store_true', help='Save to predefined directory')
+parser.add_argument('--ph', type=int, default=0, help='pH value for the plot (default: 0)')
 args = parser.parse_args()
 
 GCDFT = args.no_gc
 BULK_PB = args.no_bulk
+target_pH = args.ph
 
 if args.suffix:
     suffix = '_' + args.suffix
 else:
     suffix = ''
 
-if not args.save_dir:
+if args.save_dir:
     save_dir = ''
 else:
     hostname = socket.gethostname()
     user_name = os.getlogin()
     if hostname == 'PC102616':
-        save_dir = '/Users/jiuy97/Desktop/'
+        save_dir = '/Users/jiuy97/Desktop/9_pourbaixGC/figures/'
     elif user_name == 'jiuy97':
-        save_dir = '/pscratch/sd/j/jiuy97/'
+        save_dir = '/pscratch/sd/j/jiuy97/9_pourbaixGC/figures/'
     elif user_name == 'hailey':
-        save_dir = '/Users/hailey/Desktop/'
+        save_dir = '/Users/hailey/Desktop/9_pourbaixGC/figures/'
     else:
         raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
         
@@ -308,8 +310,8 @@ for idx, surf_id in enumerate(unique_ids):
     plt.plot([], [], color=colors[idx], linewidth=5, label=label)
 
 # pcolormesh
-pH, U = np.meshgrid(pHrange, Urange)
-plt.pcolormesh(pH, U, mapped_surfaces, cmap=cmap, norm=norm)
+pH_grid, U = np.meshgrid(pHrange, Urange)
+plt.pcolormesh(pH_grid, U, mapped_surfaces, cmap=cmap, norm=norm)
 
 plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., 
            fontsize='small', ncol=1, handlelength=3, edgecolor='black') 
@@ -327,6 +329,44 @@ else:
     png_name += '_surf'
 if GCDFT:
     png_name += '_gc'
+
+# Add potential vs. energy plot at pH=0
+fig2, ax2 = plt.subplots(figsize=(7, 6), dpi=100)
+ax2.axis([Umin, Umax, None, None])  # Fix x-axis only, y-axis will be adjusted automatically
+ax2.set_xlabel('E (V vs. SHE)', labelpad=0)
+ax2.set_ylabel('ΔG (eV)', labelpad=-6)
+ax2.tick_params(right=True, direction="in")
+
+# Calculate energy at specific pH
+all_energies = []
+for k in range(2, len(surfs)):
+    energies = np.zeros(len(Urange))
+    for i, U in enumerate(Urange):
+        energy = dg(k, target_pH, U, concentration=1e-6)
+        energies[i] = energy
+    all_energies.extend(energies)
+    ax2.plot(Urange, energies, label=surfs[k][10], lw=0.5)
+
+# Adjust y-axis range
+y_min = min(all_energies)
+y_max = max(all_energies)
+y_margin = (y_max - y_min) * 0.1
+ax2.set_ylim(y_min - y_margin, y_max + y_margin)
+
+ax2.set_xlim(Umin, Umax)
+ax2.grid(True, linestyle='--', alpha=0.3)
+
+ncol = 2 if BULK_PB else 1
+ax2.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., 
+           fontsize='small', ncol=ncol, handlelength=3, edgecolor='black')
+
+plt.tight_layout()
+plt.savefig(f'{save_dir}{png_name}_pH{target_pH}{suffix}.png', dpi=300, bbox_inches='tight')
+
+# Save original Pourbaix diagram
+plt.figure(1)
 plt.savefig(f'{save_dir}{png_name}{suffix}.png', dpi=300, bbox_inches='tight')
+print(f"Saved plots to {png_name}{suffix}.png and {png_name}_pH{target_pH}{suffix}.png")
+
 if args.show:
     plt.show()
