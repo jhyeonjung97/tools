@@ -6,47 +6,49 @@ import numpy as np
 from ase.io import read, Trajectory
 from ase.calculators.vasp import Vasp
 
-# basename = os.path.basename(os.getcwd())
+root = os.getcwd()
+basename = os.path.basename(root)
 
-# # Load atomic structure from available file
-# if os.path.exists('restart.json'):
-#     atoms = read('restart.json')
-# elif os.path.exists('start.traj'):
-#     atoms = read('start.traj')
-# else:
-#     raise ValueError("Neither restart.json nor start.traj file found")
+# Load atomic structure from available file
+if os.path.exists('restart.json'):
+    atoms = read('restart.json')
+elif os.path.exists('start.traj'):
+    atoms = read('start.traj')
+else:
+    raise ValueError("Neither restart.json nor start.traj file found")
 
-# # Define d-electron counts for transition metals
-# d_electrons = {
-#     'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 6, 'Co': 7, 'Ni': 8, 'Cu': 9, 'Zn': 10,
-#     'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 6, 'Rh': 7, 'Pd': 8, 'Ag': 9, 'Cd': 10,
-#     'La': 1, 'Hf': 2, 'Ta': 3, 'W': 4, 'Re': 5, 'Os': 6, 'Ir': 7, 'Pt': 8, 'Au': 9, 'Hg': 10,
-# }
+# Define d-electron counts for transition metals
+d_electrons = {
+    'Sc': 1, 'Ti': 2, 'V': 3, 'Cr': 4, 'Mn': 5, 'Fe': 6, 'Co': 7, 'Ni': 8, 'Cu': 9, 'Zn': 10,
+    'Y': 1, 'Zr': 2, 'Nb': 3, 'Mo': 4, 'Tc': 5, 'Ru': 6, 'Rh': 7, 'Pd': 8, 'Ag': 9, 'Cd': 10,
+    'La': 1, 'Hf': 2, 'Ta': 3, 'W': 4, 'Re': 5, 'Os': 6, 'Ir': 7, 'Pt': 8, 'Au': 9, 'Hg': 10,
+}
 
-# # Determine oxidation state (assuming MN4C system)
-# count_o = len([atom for atom in atoms if atom.symbol == 'O'])
-# count_h = len([atom for atom in atoms if atom.symbol == 'H'])
-# oxi = count_o * 2 - count_h + 2
+# Determine oxidation state (assuming MN4C system)
+count_o = len([atom for atom in atoms if atom.symbol == 'O'])
+count_h = len([atom for atom in atoms if atom.symbol == 'H'])
+oxi = count_o * 2 - count_h # assuming MN4C system
 
-# # Assign magnetic moments based on d-electron count
-# for atom in atoms:
-#     if atom.symbol in d_electrons:
-#         d_electron = d_electrons[atom.symbol] - oxi
-#         if basename.lower() == 'ls':  # Low spin state
-#             if d_electron < 0 or d_electron > 10:
-#                 sys.exit(f"Error: Unexpected d_electron value ({d_electron}) for {atom.symbol} in LS state.")
-#             spin = 1 if d_electron % 2 == 1 else 0
-#         elif basename.lower() == 'is':  # Intermediate spin state
-#             if d_electron not in {4, 5, 6}:
-#                 sys.exit(f"Error: Unexpected d_electron value ({d_electron}) for {atom.symbol} in IS state.")
-#             spin = 3 if d_electron == 5 else 2
-#         elif basename.lower() == 'hs':  # High spin state
-#             if d_electron not in {2, 3, 4, 5, 6, 7, 8}:
-#                 sys.exit(f"Error: Unexpected d_electron value ({d_electron}) for {atom.symbol} in HS state.")
-#             spin = d_electron if d_electron < 5 else 10 - d_electron
-#         else:
-#             sys.exit(f"Error: Invalid spin state. Choose from 'ls', 'is', or 'hs'.")
-#         atom.magmom = spin
+# Assign magnetic moments based on d-electron count
+spin = 0
+for atom in atoms:
+    if atom.symbol in d_electrons:
+        d_electron = d_electrons[atom.symbol] - oxi
+        if basename.lower() == 'ls':  # Low spin state
+            if d_electron < 0 or d_electron > 10:
+                sys.exit(f"Error: Unexpected d_electron value ({d_electron}) for {atom.symbol} in LS state.")
+            spin = 1 if d_electron % 2 == 1 else 0
+        elif basename.lower() == 'is':  # Intermediate spin state
+            if d_electron not in {4, 5, 6}:
+                sys.exit(f"Error: Unexpected d_electron value ({d_electron}) for {atom.symbol} in IS state.")
+            spin = 3 if d_electron == 5 else 2
+        elif basename.lower() == 'hs':  # High spin state
+            if d_electron not in {2, 3, 4, 5, 6, 7, 8}:
+                sys.exit(f"Error: Unexpected d_electron value ({d_electron}) for {atom.symbol} in HS state.")
+            spin = d_electron if d_electron < 5 else 10 - d_electron
+        else:
+            sys.exit(f"Error: Invalid spin state. Choose from 'ls', 'is', or 'hs'.")
+        atom.magmom = spin
 
 # Set up VASP calculator
 calc = Vasp(
@@ -88,7 +90,7 @@ calc = Vasp(
     ldauprint=2,           # Print LDA+U information
     lmaxmix=4,             # Maximum l quantum number for charge mixing
     ispin=2,               # Spin-polarized calculation
-    # nupdown=0,             # AFM vs FM
+    nupdown=spin,             # AFM vs FM
     lorbit=11,             # Projected density of states (DOS) output
     # ldipol=True,           # Enable dipole correction
     # idipol=3,              # Direction of dipole correction
@@ -104,28 +106,27 @@ calc = Vasp(
     lvtot=False,           # Do not write total potential
 )
 
-# # Run calculation
-# atoms.calc = calc
-# atoms.get_potential_energy()
-# atoms.get_forces()
+# Run calculation
+atoms.calc = calc
+atoms.get_potential_energy()
+atoms.get_forces()
 
-# # Save results
-# Trajectory('final_with_calculator.traj', 'w').write(atoms)
-# subprocess.call('ase convert -f final_with_calculator.traj final_with_calculator.json', shell=True)
-# subprocess.call('~/bin/get_restart3', shell=True)
+# Save results
+Trajectory('final_with_calculator.traj', 'w').write(atoms)
+subprocess.call('ase convert -f final_with_calculator.traj final_with_calculator.json', shell=True)
+subprocess.call('~/bin/get_restart3', shell=True)
 
-# if not os.path.exists('DONE'):
-#     sys.exit("Calculation not completed.")
+if not os.path.exists('DONE'):
+    sys.exit("Calculation not completed.")
     
 total_electrons = calc.get_number_of_electrons() 
 
 # Create a directory for each charge state
-parent_dir = os.getcwd()
-restart_path = os.path.join(parent_dir, 'restart.json')
-wavecar_path = os.path.join(parent_dir, 'WAVECAR')
+restart_path = os.path.join(root, 'restart.json')
+wavecar_path = os.path.join(root, 'WAVECAR')
 
 # Specify the charge states
-fraction_charges = [-0.5, -1.0, -1.5, -2.0, -2.5, -3.0] ## Change this to the desired charge states
+fraction_charges = [+1.0, +0.5, -0.5, -1.0, -1.5, -2.0] ## Change this to the desired charge states
 
 # Perform the calculations for each charge state
 for fraction in fraction_charges:
@@ -135,7 +136,7 @@ for fraction in fraction_charges:
     
     # Create a directory for the charge state and copy the necessary files
     folder_name = f'nelect_{nelect}'
-    folder_path = os.path.join(parent_dir, folder_name)
+    folder_path = os.path.join(root, folder_name)
     os.makedirs(folder_path)
     shutil.copy2(restart_path, folder_path)  
     shutil.copy2(wavecar_path, folder_path)
@@ -157,12 +158,12 @@ for fraction in fraction_charges:
 
 # Create a directory for the uncharged calculation and copy the OUTCAR file
 folder_name = 'nelect_{}'.format(total_electrons)
-folder_path = os.path.join(parent_dir, folder_name)
+folder_path = os.path.join(root, folder_name)
 os.makedirs(folder_path)
 
-# Copy all files from parent_dir to folder_path
-for file_name in os.listdir(parent_dir):
-    src_file = os.path.join(parent_dir, file_name)
+# Copy all files from root to folder_path
+for file_name in os.listdir(root):
+    src_file = os.path.join(root, file_name)
     dest_file = os.path.join(folder_path, file_name)
 
     # Only copy files, skip directories
