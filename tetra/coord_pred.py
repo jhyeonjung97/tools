@@ -7,18 +7,21 @@ import matplotlib.pyplot as plt
 import json
 from tqdm import tqdm
 import time
+import socket
+from sklearn.metrics import make_scorer
+
+# Scikit-learn imports
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.preprocessing import StandardScaler, RobustScaler
 from sklearn.model_selection import train_test_split, KFold, cross_val_score
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 from sklearn.pipeline import Pipeline
-from skopt import BayesSearchCV
-from skopt.space import Real, Integer
-import socket
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
-import xgboost as xgb
-import lightgbm as lgb
+
+# Scikit-optimize imports
+from skopt import BayesSearchCV
+from skopt.space import Real, Integer
 
 # ANSI color codes
 RED = '\033[91m'
@@ -76,29 +79,48 @@ def print_time(message, time_value):
 def feature_importance(X, y, model, feature_names):
     """Calculate feature importance for classification model"""
     if hasattr(model, 'feature_importances_'):
+        # Random Forest, Gradient Boosting
         importance = pd.Series(model.feature_importances_, index=feature_names)
+    elif hasattr(model, 'coef_'):
+        # Logistic Regression
+        # Take absolute values of coefficients and normalize
+        importance = pd.Series(np.abs(model.coef_).mean(axis=0), index=feature_names)
     else:
+        # SVM or other models
         importance = pd.Series(0, index=feature_names)
+    
+    # Normalize importance scores to sum to 1
+    importance = importance / importance.sum()
     return importance
 
 def plot_confusion_matrix(y_true, y_pred, output_path):
     """Plot confusion matrix"""
     cm = confusion_matrix(y_true, y_pred)
+    
+    # Get unique coordination types
+    coord_types = sorted(list(set(y_true) | set(y_pred)))
+    
     plt.figure(figsize=(10, 8))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-    plt.title('Confusion Matrix')
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                xticklabels=coord_types,
+                yticklabels=coord_types)
+    plt.xlabel('Predicted Coordination')
+    plt.ylabel('True Coordination')
     plt.tight_layout()
     plt.savefig(output_path)
     plt.close()
 
 def plot_feature_importance(importance, output_path):
     """Plot feature importance"""
-    plt.figure(figsize=(12, 6))
-    importance.sort_values(ascending=True).plot(kind='barh')
-    plt.xlabel('Feature Importance')
-    plt.title('Feature Importance Analysis')
+    plt.figure(figsize=(12, 6))  # 가로로 긴 레이아웃으로 변경
+    # 내림차순으로 정렬하고 수직 막대 그래프로 표시
+    ax = importance.sort_values(ascending=False).plot(kind='bar')
+    plt.ylabel('Feature Importance (Normalized)')
+    plt.xlabel('Feature')
+    plt.title('Feature Importance for Coordination Prediction')
+    # x축 레이블 회전
+    plt.xticks(rotation=45, ha='right')
+    # 레이아웃 조정하여 레이블이 잘리지 않도록 함
     plt.tight_layout()
     plt.savefig(output_path)
     plt.close()
@@ -129,7 +151,7 @@ def main():
     parser = argparse.ArgumentParser(description='Coordination prediction using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--X', nargs='+', default=[
         'numb', 'chg', 'mag', 'volume', 'l_bond', 'n_bond',
-        'grosspop', 'madelung', 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
+        'grosspop', 'madelung', '-ICOHPm', '-ICOHPn', 'ICOBIm', 'ICOBIn', '-ICOOPm', '-ICOOPn', 
         'pauling', 'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
         'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
@@ -139,12 +161,14 @@ def main():
     parser.add_argument('--output', type=str, default='result', help='Output filename suffix')
     parser.add_argument('--test_size', type=float, default=0.2, help='Test set size (default: 0.2)')
     parser.add_argument('--random_state', type=int, default=42, help='Random state for reproducibility (default: 42)')
-    parser.add_argument('--model', type=str, default='rf', choices=['rf', 'gb', 'lr', 'svm', 'xgb', 'lgb'], help='Model type: Random Forest (rf), Gradient Boosting (gb), Logistic Regression (lr), Support Vector Machine (svm), XGBoost (xgb), LightGBM (lgb)')
+    parser.add_argument('--model', type=str, default='rf', 
+                       choices=['rf', 'gb', 'lr', 'svm'],
+                       help='Model type: Random Forest (rf), Gradient Boosting (gb), Logistic Regression (lr), Support Vector Machine (svm)')
     args = parser.parse_args()
     
     # Convert feature names if they start with ICOHP or ICOOP (prepend '-')
     args.X = [('-' + x if x.startswith('ICOHP') or x.startswith('ICOOP') else x) for x in args.X]
-    
+
     try:
         # Load data
         print("Loading data...")
@@ -192,49 +216,59 @@ def main():
     if args.model == 'rf':
         model = RandomForestClassifier(
             n_estimators=100,
-            max_depth=None,
-            min_samples_split=2,
-            min_samples_leaf=1,
+            max_depth=10,
+            min_samples_split=5,
+            min_samples_leaf=4,
+            max_features='sqrt',
             random_state=args.random_state
         )
     elif args.model == 'gb':
         model = GradientBoostingClassifier(
             n_estimators=100,
-            learning_rate=0.1,
-            max_depth=3,
+            learning_rate=0.05,
+            max_depth=5,
+            min_samples_split=5,
+            min_samples_leaf=4,
+            subsample=0.8,
             random_state=args.random_state
         )
     elif args.model == 'lr':
-        model = LogisticRegression(max_iter=1000, random_state=args.random_state)
-    elif args.model == 'svm':
-        model = SVC(random_state=args.random_state, probability=True)
-    elif args.model == 'xgb':
-        model = xgb.XGBClassifier(n_estimators=100, random_state=args.random_state)
-    else:  # gb
-        model = GradientBoostingClassifier(
-            n_estimators=100,
-            learning_rate=0.1,
-            max_depth=3,
-            random_state=args.random_state
+        model = LogisticRegression(
+            max_iter=5000,
+            random_state=args.random_state,
+            penalty='elasticnet',
+            solver='saga',
+            tol=1e-3
         )
-    elif args.model == 'lgb':
-        model = lgb.LGBMClassifier(n_estimators=100, random_state=args.random_state)
+    elif args.model == 'svm':
+        model = SVC(
+            random_state=args.random_state,
+            probability=True,
+            cache_size=1000  # Increase cache size to avoid warnings
+        )
+    else:
+        raise ValueError(f"Unknown model type: {args.model}")
 
     # Perform Bayesian Optimization
     print("Performing Bayesian Optimization...")
     grid_start = time.time()
+    
     if args.model == 'rf':
         search_space = {
             'n_estimators': Integer(50, 200),
-            'max_depth': Integer(5, 30),
-            'min_samples_split': Integer(2, 10),
-            'min_samples_leaf': Integer(1, 5)
+            'max_depth': Integer(3, 15),
+            'min_samples_split': Integer(5, 15),
+            'min_samples_leaf': Integer(4, 10),
+            'max_features': ['sqrt', 'log2']
         }
     elif args.model == 'gb':
         search_space = {
             'n_estimators': Integer(50, 200),
-            'learning_rate': Real(0.01, 0.3, prior='log-uniform'),
-            'max_depth': Integer(3, 10)
+            'learning_rate': Real(0.01, 0.1, prior='log-uniform'),
+            'max_depth': Integer(3, 8),
+            'min_samples_split': Integer(5, 15),
+            'min_samples_leaf': Integer(4, 10),
+            'subsample': Real(0.6, 0.9)
         }
     elif args.model == 'lr':
         search_space = {
@@ -248,29 +282,8 @@ def main():
             'gamma': Real(1e-4, 1e-1, prior='log-uniform'),
             'kernel': ['rbf', 'linear']
         }
-    elif args.model == 'xgb':
-        search_space = {
-            'n_estimators': Integer(50, 200),
-            'max_depth': Integer(3, 10),
-            'learning_rate': Real(0.01, 0.3, prior='log-uniform'),
-            'subsample': Real(0.6, 1.0),
-            'colsample_bytree': Real(0.6, 1.0)
-        }
-    elif args.model == 'lgb':
-        search_space = {
-            'n_estimators': Integer(50, 200),
-            'max_depth': Integer(3, 10),
-            'learning_rate': Real(0.01, 0.3, prior='log-uniform'),
-            'num_leaves': Integer(20, 100),
-            'feature_fraction': Real(0.6, 1.0),
-            'bagging_fraction': Real(0.6, 1.0)
-        }
-    else:  # gb
-        search_space = {
-            'n_estimators': Integer(50, 200),
-            'learning_rate': Real(0.01, 0.3, prior='log-uniform'),
-            'max_depth': Integer(3, 10)
-        }
+    else:
+        raise ValueError(f"Unknown model type: {args.model}")
 
     bayes_search = BayesSearchCV(
         model,
@@ -280,8 +293,7 @@ def main():
         scoring='accuracy',
         n_jobs=1,
         random_state=args.random_state,
-        verbose=1,
-        n_points=5
+        verbose=1
     )
     bayes_search.fit(X_train_scaled, y_train)
     print_time("Bayesian Optimization completed", time.time() - grid_start)
@@ -297,9 +309,26 @@ def main():
     
     # Calculate multiple metrics for cross-validation
     cv_accuracy = cross_val_score(model, X_train_scaled, y_train, cv=kf, scoring='accuracy')
-    cv_precision = cross_val_score(model, X_train_scaled, y_train, cv=kf, scoring='precision_macro')
-    cv_recall = cross_val_score(model, X_train_scaled, y_train, cv=kf, scoring='recall_macro')
-    cv_f1 = cross_val_score(model, X_train_scaled, y_train, cv=kf, scoring='f1_macro')
+    
+    # Define custom scoring functions for multi-class classification
+    def custom_precision(y_true, y_pred):
+        return precision_score(y_true, y_pred, average='macro', zero_division=0)
+    
+    def custom_recall(y_true, y_pred):
+        return recall_score(y_true, y_pred, average='macro', zero_division=0)
+    
+    def custom_f1(y_true, y_pred):
+        return f1_score(y_true, y_pred, average='macro', zero_division=0)
+    
+    # Create scorers using custom functions
+    precision_scorer = make_scorer(custom_precision)
+    recall_scorer = make_scorer(custom_recall)
+    f1_scorer = make_scorer(custom_f1)
+    
+    # Calculate scores using scorers
+    cv_precision = cross_val_score(model, X_train_scaled, y_train, cv=kf, scoring=precision_scorer)
+    cv_recall = cross_val_score(model, X_train_scaled, y_train, cv=kf, scoring=recall_scorer)
+    cv_f1 = cross_val_score(model, X_train_scaled, y_train, cv=kf, scoring=f1_scorer)
     
     print_time("Cross-validation completed", time.time() - cv_start)
     print(f"{MAGENTA}Cross-validation Accuracy scores: {cv_accuracy}{ENDC}")
@@ -324,15 +353,15 @@ def main():
     metrics = {
         'train': {
             'accuracy': accuracy_score(y_train, y_pred_train),
-            'precision': precision_score(y_train, y_pred_train, average='macro'),
-            'recall': recall_score(y_train, y_pred_train, average='macro'),
-            'f1': f1_score(y_train, y_pred_train, average='macro')
+            'precision': precision_score(y_train, y_pred_train, average='macro', zero_division=0),
+            'recall': recall_score(y_train, y_pred_train, average='macro', zero_division=0),
+            'f1': f1_score(y_train, y_pred_train, average='macro', zero_division=0)
         },
         'test': {
             'accuracy': accuracy_score(y_test, y_pred_test),
-            'precision': precision_score(y_test, y_pred_test, average='macro'),
-            'recall': recall_score(y_test, y_pred_test, average='macro'),
-            'f1': f1_score(y_test, y_pred_test, average='macro')
+            'precision': precision_score(y_test, y_pred_test, average='macro', zero_division=0),
+            'recall': recall_score(y_test, y_pred_test, average='macro', zero_division=0),
+            'f1': f1_score(y_test, y_pred_test, average='macro', zero_division=0)
         },
         'cv': {
             'accuracy': {

@@ -13,6 +13,12 @@ import numpy as np
 from ase.io import *
 from ase.visualize import *
 import matplotlib.pyplot as plt
+import argparse
+
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Run GCDFT calculations with optional full electron range')
+parser.add_argument('--full', action='store_true', help='Use full electron range')
+args = parser.parse_args()
 
 # Read the OUTCAR file
 outcar_path = os.path.join(os.getcwd(), 'OUTCAR')
@@ -33,12 +39,13 @@ WF_SHE = 4.4 # Experimental WF of SHE (eV)
 e_chg = 1.602e-19 # Elementary Charge (Coulombs)
 
 ## Are all charge states used for the fitting?
-FULL = False
-# FULL = True
+FULL = args.full
 
 ## Charge states to analyze
-num_electrons = [+1.0, +0.5, 0.0, -0.5, -1.0, -1.5, -2.0]
-# num_electrons = [+0.5, 0.0, -0.5, -1.0, -1.5]
+if FULL:
+    num_electrons = [+1.0, +0.5, 0.0, -0.5, -1.0, -1.5, -2.0]
+else:
+    num_electrons = [+0.5, 0.0, -0.5, -1.0, -1.5]
 
 folders =[]
 
@@ -55,6 +62,7 @@ fermi_energies = [] # Fermi energy of the slab
 gc_free_energies =[] # GC free energy of the slab
 applied_potentials = [] # Potential (vs. SHE) of the slab
 latticeParams = [] # Lattice parameters of the slab
+dz_values = [] # z-coordinate difference between metal and nitrogen atoms
 
 ## Loop over the directories and extract the data
 for folder in folders:
@@ -64,41 +72,54 @@ for folder in folders:
     with open(outcar_path, 'r') as f:
         outcar = f.read()
 
+    # Read the CONTCAR file for atomic positions
+    contcar_path = os.path.join(folder, 'CONTCAR')
+    atoms = read(contcar_path)
+    
+    # Extract metal and nitrogen atoms z-coordinates
+    metal_z = []
+    nitrogen_z = []
+    for i, atom in enumerate(atoms):
+        if atom.symbol in ['Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Mo', 'W']:  # Add more metal symbols if needed
+            metal_z.append(atoms.positions[i][2])
+        elif atom.symbol == 'N':
+            nitrogen_z.append(atoms.positions[i][2])
+    
+    # Calculate average dz value
+    if metal_z and nitrogen_z:
+        dz = np.mean(metal_z) - np.mean(nitrogen_z)
+        dz_values.append(dz)
+    else:
+        print(f"Warning: Could not find metal or nitrogen atoms in {folder}")
+        dz_values.append(np.nan)
+
     # Extract the # of electrons
     nelect = float(outcar.split('NELECT =')[1].split()[0])
-    # print(nelect)
     nelects.append(nelect)
 
     # Extract the charge
     charge = nelect-neutral_electrons
-    # print(charge)
     charges.append(charge)
 
     # Extract the Fermi energy
     fermi_energy = float(outcar.split('E-fermi :')[-1].split()[0])
-    # print(fermi_energy)
     fermi_energies.append(fermi_energy)
 
     # Calculate the applied potential (vs. SHE)
     applied_potential = (fermi_shift-fermi_energy)-WF_SHE 
-    # print(applied_potential)
     applied_potentials.append(applied_potential)
 
     # Extract the DFT energy
     energy = float(outcar.split('energy  without entropy=')[-1].split()[0])
-    # print(energy)
     energies.append(energy)
 
     # Calculate the GC free energy
-    gc_free_energies.append(energy-charge*(fermi_energy)) 
-    # gc_free_energies.append(energy-charge*(fermi_energy-fermi_shift)) 
+    gc_free_energies.append(energy-charge*(fermi_energy))
 
     # Extract the lattice parameters
     aLat = float(outcar.split(' length of vectors')[-1].split()[0])
     bLat = float(outcar.split(' length of vectors')[-1].split()[1])
     latticeParams.append(aLat*bLat)
-    # print(aLat)
-    # print(bLat)
 
 ## Fit the data quadratically
 p1, risid1, rank1, sing1, rcon1 = np.polyfit(charges, energies, 2, full=True)
@@ -215,3 +236,27 @@ if FULL:
 else:
     np.savetxt('Applied_Pot_vs_GCFE_Fit.dat', np.column_stack((x, y2_fit_GCEnVPot)), header=coeffs)
     np.savetxt('GCFE_data.dat', np.column_stack((applied_potentials, gc_free_energies)))
+
+## Plot dz vs. applied potential (vs. SHE)
+plt.figure(figsize=(8,5))
+plt.plot(applied_potentials, dz_values, 'bo-', label='data')
+plt.xlabel("Potential vs. SHE")
+plt.ylabel("dz (Å)")
+plt.title("Metal-Nitrogen Distance vs. Applied Potential")
+plt.legend()
+plt.grid(True)
+
+## Save the dz vs. applied potential plot
+if FULL:
+    plt.savefig('dz_vs_potential_FULL.png')
+else:
+    plt.savefig('dz_vs_potential.png')
+plt.close()
+
+## Save the dz data
+if FULL:
+    np.savetxt('dz_data_FULL.dat', np.column_stack((applied_potentials, dz_values)), 
+               header='Potential vs. SHE (V) | dz (Å)')
+else:
+    np.savetxt('dz_data.dat', np.column_stack((applied_potentials, dz_values)), 
+               header='Potential vs. SHE (V) | dz (Å)')
