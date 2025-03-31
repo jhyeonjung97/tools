@@ -132,14 +132,23 @@ def get_prediction_std(model, X, n_iterations=100, model_type='gpr'):
         return std
     elif model_type in ['gbr', 'rf']:
         predictions = []
-        n_estimators = len(model.estimators_)
+        n_estimators = len(model.estimators_) if hasattr(model, 'estimators_') else model.n_estimators
         
         for i in range(n_iterations):
-            indices = np.random.choice(n_estimators, size=n_estimators//2, replace=False)
-            pred = np.zeros(X.shape[0])
-            for idx in indices:
-                pred += model.estimators_[idx].predict(X)
-            pred /= len(indices)
+            if model_type == 'rf':
+                # RF의 경우 estimators_ 속성을 직접 사용
+                indices = np.random.choice(n_estimators, size=n_estimators//2, replace=False)
+                pred = np.zeros(X.shape[0])
+                for idx in indices:
+                    pred += model.estimators_[idx].predict(X)
+                pred /= len(indices)
+            else:  # GBR
+                # GBR의 경우 staged_predict 사용
+                pred = np.zeros(X.shape[0])
+                for y_pred in model.staged_predict(X):
+                    pred = y_pred  # 마지막 예측값 사용
+                predictions.append(pred)
+                continue
             predictions.append(pred)
         return np.std(predictions, axis=0)
     else:  # lr
@@ -547,7 +556,7 @@ def main():
     # Scale the features
     print("Scaling features...")
     scale_start = time.time()
-    scaler = RobustScaler()
+    scaler = StandardScaler()  # RobustScaler 대신 StandardScaler만 사용
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     print_time("Feature scaling completed", time.time() - scale_start)
@@ -561,19 +570,19 @@ def main():
         kernel = ConstantKernel(1.0, constant_value_bounds=(1e-5, 1e5)) * RationalQuadratic(
             length_scale=1.0,
             alpha=1.0,
-            length_scale_bounds=(1e-5, 1e5),
-            alpha_bounds=(1e-5, 1e5)
-        ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-5, 1e5))
+            length_scale_bounds=(1e-6, 1e6),
+            alpha_bounds=(1e-6, 1e6)
+        ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-6, 1e5))
         
         model = MyGPR(
             kernel=kernel,
             random_state=args.random_state,
-            n_restarts_optimizer=50,
-            alpha=1e-5,
+            n_restarts_optimizer=200,  # 재시작 횟수 증가
+            alpha=1e-6,  # 노이즈 레벨 감소
             optimizer='fmin_l_bfgs_b',
             normalize_y=True,
-            max_iter=1e07,
-            gtol=1e-5
+            max_iter=1e09,  # 최대 반복 횟수 증가
+            gtol=1e-3  # 수렴 기준 완화
         )
 
         # Bayesian Optimization for GPR
@@ -1025,4 +1034,6 @@ def main():
         f.write(f"Results saving and plotting: {time.time() - save_start:.2f} seconds\n")
 
 if __name__ == '__main__':
+    print("Script started...")
+    print("Importing required libraries...")
     main() 
