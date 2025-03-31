@@ -30,7 +30,7 @@ BULK_PB = args.bulk
 target_pH = args.ph
 
 if BULK_PB:
-    ref_surf_name = 'vac+Ti(s)+N₂(g)/2'
+    ref_surf_name = 'vac+Ti(s)+0.50N₂(g)'
 else:
     ref_surf_name = '*'
 
@@ -176,10 +176,10 @@ for i in range(nions):
     if ions[i][1] > 1 and ions[i][2] > 1:
         raise ValueError(f"Ion {ions[i][11]} has both Ti and N")
     if ions[i][1] > 1:
-        ions[i][11] = ions[i][11] + f'/{int(ions[i][1])}'
+        ions[i][11] = f'{(1/ions[i][1]):.2f}' + ions[i][11]
         ions[i] = [x / ions[i][1] if isinstance(x, (int, float)) else x for x in ions[i]]
     elif ions[i][2] > 1:
-        ions[i][11] = ions[i][11] + f'/{int(ions[i][2])}'
+        ions[i][11] = f'{(1/ions[i][2]):.2f}' + ions[i][11]
         ions[i] = [x / ions[i][2] if isinstance(x, (int, float)) else x for x in ions[i]]
     ions[i][10] = ions[i][0]
 
@@ -188,10 +188,10 @@ for s in range(nsolids):
     if solids[s][1] > 1 and solids[s][2] > 1:
         raise ValueError(f"Solid {solids[s][11]} has both Ti and N")
     if solids[s][1] > 1:
-        solids[s][11] = solids[s][11] + f'/{int(solids[s][1])}'
+        solids[s][11] = f'{(1/solids[s][1]):.2f}' + solids[s][11]
         solids[s] = [x / solids[s][1] if isinstance(x, (int, float)) else x for x in solids[s]]
     elif solids[s][2] > 1:
-        solids[s][11] = solids[s][11] + f'/{int(solids[s][2])}'
+        solids[s][11] = f'{(1/solids[s][2]):.2f}' + solids[s][11]
         solids[s] = [x / solids[s][2] if isinstance(x, (int, float)) else x for x in solids[s]]
     solids[s][10] = solids[s][0]
 
@@ -200,10 +200,10 @@ for g in range(ngases):
     if gases[g][1] > 1 and gases[g][2] > 1:
         raise ValueError(f"Gas {gases[g][11]} has both Ti and N")
     if gases[g][1] > 1:
-        gases[g][11] = gases[g][11] + f'/{int(gases[g][1])}'
+        gases[g][11] = f'{(1/gases[g][1]):.2f}' + gases[g][11]
         gases[g] = [x / gases[g][1] if isinstance(x, (int, float)) else x for x in gases[g]]
     elif gases[g][2] > 1:
-        gases[g][11] = gases[g][11] + f'/{int(gases[g][2])}'
+        gases[g][11] = f'{(1/gases[g][2]):.2f}' + gases[g][11]
         gases[g] = [x / gases[g][2] if isinstance(x, (int, float)) else x for x in gases[g]]
     gases[g][10] = gases[g][0]
 
