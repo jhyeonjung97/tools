@@ -104,11 +104,29 @@ class MyGPR(GaussianProcessRegressor):
 def feature_importance(X, y, model, feature_names, model_type='gpr'):
     """Calculate feature importance"""
     if model_type == 'gpr':
+        # GPR 모델의 경우 커널 파라미터의 하한값을 낮춤
+        kernel = ConstantKernel(1.0, constant_value_bounds=(1e-10, 1e5)) * RationalQuadratic(
+            length_scale=1.0,
+            alpha=1.0,
+            length_scale_bounds=(1e-10, 1e6),  # 하한값을 1e-10으로 낮춤
+            alpha_bounds=(1e-10, 1e6)
+        ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-10, 1e5))
+        
         importance = []
         for i in tqdm(range(X.shape[1]), desc="Calculating feature importance"):
             X_permuted = X.copy()
             X_permuted[:, i] = np.random.permutation(X_permuted[:, i])
-            score = model.score(X_permuted, y)
+            
+            # 각 특성에 대해 새로운 GPR 모델 생성
+            temp_model = MyGPR(
+                kernel=kernel,
+                random_state=42,
+                n_restarts_optimizer=10,
+                alpha=1e-10,
+                normalize_y=True
+            )
+            temp_model.fit(X_permuted, y)
+            score = temp_model.score(X_permuted, y)
             importance.append(1 - score)
         return pd.Series(importance, index=feature_names)
     elif model_type in ['gbr', 'rf']:
@@ -571,23 +589,23 @@ def main():
             length_scale=1.0,
             alpha=1.0,
             length_scale_bounds=(1e-6, 1e6),
-            alpha_bounds=(1e-6, 1e6)
-        ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-6, 1e5))
+            alpha_bounds=(1e-6, 1e7)
+        ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-7, 1e5))
         
         model = MyGPR(
             kernel=kernel,
             random_state=args.random_state,
-            n_restarts_optimizer=200,  # 재시작 횟수 증가
-            alpha=1e-6,  # 노이즈 레벨 감소
+            n_restarts_optimizer=50,  # 재시작 횟수 감소
+            alpha=1e-6,
             optimizer='fmin_l_bfgs_b',
             normalize_y=True,
-            max_iter=1e09,  # 최대 반복 횟수 증가
-            gtol=1e-3  # 수렴 기준 완화
+            max_iter=1e06,  # 최대 반복 횟수 감소
+            gtol=1e-3
         )
 
         # Bayesian Optimization for GPR
         search_space = {
-            'kernel__k1__k2__length_scale': Real(1e-5, 1e5, prior='log-uniform'),
+            'kernel__k1__k2__length_scale': Real(1e-6, 1e5, prior='log-uniform'),
             'kernel__k1__k2__alpha': Real(1e-5, 1e5, prior='log-uniform'),
             'kernel__k2__noise_level': Real(1e-5, 1e5, prior='log-uniform')
         }
