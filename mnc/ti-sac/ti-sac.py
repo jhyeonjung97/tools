@@ -18,7 +18,7 @@ gas_nitrogen = -16.64503942/2 # from N₂, eV
 parser = argparse.ArgumentParser(description='Generate Pourbaix diagram')
 parser.add_argument('--gc', action='store_true', help='Enable GCDFT mode')
 parser.add_argument('--bulk', action='store_true', help='Enable bulk Pourbaix mode')
-parser.add_argument('--suffix', type=str, default='', help='Suffix for output filename')
+parser.add_argument('--suffix', type=str, default='TiSAC', help='Suffix for output filename')
 parser.add_argument('--show', action='store_true', help='Show the plot')
 parser.add_argument('--save-dir', action='store_true', help='Save to predefined directory')
 parser.add_argument('--ph', type=int, default=0, help='pH value for the plot (default: 0)')
@@ -124,7 +124,7 @@ ions = [
     # ['Ef', '#M(Ti)', '#N', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
     [ -75.100/calmol, 1, 0, +2, 0, 0, 0, 0, 0, 0, 0, 'Ti²⁺(aq)'],
     [ -83.600/calmol, 1, 0, +3, 0, 0, 0, 0, 0, 0, 0, 'Ti³⁺(aq)'],
-    [-138.000/calmol, 1, 0, +2, 0, 0, 0, 0, 0, 0, 0, 'TiO²⁺(aq)'],
+    [-138.000/calmol, 1, 0, +2, 0, 0, 1, 0, 0, 0, 0, 'TiO²⁺(aq)'],
     [-228.460/calmol, 1, 0, -1, 1, 0, 3, 0, 0, 0, 0, 'HTiO₃⁻(aq)'],
     [-111.670/calmol, 1, 0, +2, 0, 0, 2, 0, 0, 0, 0, 'TiO₂²⁺(aq)'],
     [ -19.100/calmol, 0, 1, +0, 1, 0, 3, 0, 0, 0, 0, 'HNO₃(aq)'],
@@ -246,14 +246,8 @@ nsurfs = len(surfs)
 ref_surf = surfs[0][0]
 ref_surf_gc = surfs[0][10]
 for k in range(nsurfs):
-    formation_energy_corr = (
-        - surfs[k][4] * (gh - dgh) # H
-        - surfs[k][5] * (goh - dgoh) # OH
-        - surfs[k][6] * (go - dgo) # O
-        - surfs[k][7] * (gooh - dgooh) # OOH
-    )
-    surfs[k][0] = surfs[k][0] - ref_surf + formation_energy_corr 
-    surfs[k][10] = surfs[k][10] - ref_surf_gc + formation_energy_corr 
+    surfs[k][0] = surfs[k][0] - ref_surf
+    surfs[k][10] = surfs[k][10] - ref_surf_gc 
 
 if BULK_PB:
     new_surfs = []
@@ -311,6 +305,16 @@ if BULK_PB:
     surfs.extend(new_surfs)
     surfs = [surf for surf in surfs if surf[2] != 0]
     nsurfs = len(surfs)
+
+for k in range(nsurfs):
+    formation_energy_corr = (
+        - surfs[k][4] * (gh - dgh) # H
+        - surfs[k][5] * (goh - dgoh) # OH
+        - surfs[k][6] * (go - dgo) # O
+        - surfs[k][7] * (gooh - dgooh) # OOH
+    )
+    surfs[k][0] = surfs[k][0] + formation_energy_corr 
+    surfs[k][10] = surfs[k][10] + formation_energy_corr 
 
 for i in range(nsurfs):
     if surfs[i][11] == ref_surf_name:

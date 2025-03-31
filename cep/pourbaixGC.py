@@ -10,20 +10,22 @@ import matplotlib.colors as mcolors
 from matplotlib.colors import LinearSegmentedColormap
 import argparse
 import socket
+
 bulk_metal = -5.041720865 # Fe, eV
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Generate Pourbaix diagram')
-parser.add_argument('--no-gc', action='store_false', help='Disable GCDFT mode')
-parser.add_argument('--no-bulk', action='store_false', help='Disable bulk Pourbaix mode')
+parser.add_argument('--gc', action='store_true', help='Enable GCDFT mode')
+parser.add_argument('--bulk', action='store_true', help='Enable bulk Pourbaix mode')
 parser.add_argument('--suffix', type=str, default='', help='Suffix for output filename')
 parser.add_argument('--show', action='store_true', help='Show the plot')
 parser.add_argument('--save-dir', action='store_true', help='Save to predefined directory')
 parser.add_argument('--ph', type=int, default=0, help='pH value for the plot (default: 0)')
+parser.add_argument('--tick', type=float, default=0.01, help='Tick size for pH and U ranges (default: 0.01)')
 args = parser.parse_args()
 
-GCDFT = args.no_gc
-BULK_PB = args.no_bulk
+GCDFT = args.gc
+BULK_PB = args.bulk
 target_pH = args.ph
 
 if args.suffix:
@@ -56,7 +58,7 @@ kjmol = 96.485
 calmol = 23.061
 
 # ticks
-tick = 0.01
+tick = args.tick
 pHrange = np.arange(0, 14.1, tick)
 Umin, Umax = -1.0, 3.0
 Urange = np.arange(Umin, Umax + 0.06 * 14, tick)
@@ -171,15 +173,9 @@ nsurfs = len(surfs)
 ref0 = surfs[0][0]
 ref9 = surfs[0][9]
 for k in range(nsurfs):
-    formation_energy_corr = (
-        - surfs[k][3] * (gh - dgh) # H
-        - surfs[k][4] * (goh - dgoh) # OH
-        - surfs[k][5] * (go - dgo) # O
-        - surfs[k][6] * (gooh - dgooh) # OOH
-    )
-    surfs[k][0] = surfs[k][0] - ref0 + formation_energy_corr 
-    surfs[k][9] = surfs[k][9] - ref9 + formation_energy_corr 
-
+    surfs[k][0] = surfs[k][0] - ref0
+    surfs[k][9] = surfs[k][9] - ref9 
+    
 if BULK_PB:
     new_surfs = []
     for k in range(nsurfs):
@@ -200,6 +196,23 @@ if BULK_PB:
     surfs.extend(new_surfs)  # Add new surfaces after looping
     nsurfs = len(surfs)  # Update length again after removing first two elements
 
+for k in range(nsurfs):
+    formation_energy_corr = (
+        - surfs[k][3] * (gh - dgh) # H
+        - surfs[k][4] * (goh - dgoh) # OH
+        - surfs[k][5] * (go - dgo) # O
+        - surfs[k][6] * (gooh - dgooh) # OOH
+    )
+    surfs[k][0] = surfs[k][0] + formation_energy_corr 
+    surfs[k][9] = surfs[k][9] + formation_energy_corr 
+
+for i in range(nsurfs):
+    if surfs[i][10] == ref_surf_name:
+        n_ref = i
+    print(f"#{i+1}:\t{surfs[i][0]:.2f}\t{surfs[i][10]}")
+
+print(f"total surfaces: {nsurfs}")
+print(f"reference surface: {n_ref+1}")
 lowest_surfaces = np.full((len(Urange), len(pHrange)), np.nan)
 
 pHindex = 0
