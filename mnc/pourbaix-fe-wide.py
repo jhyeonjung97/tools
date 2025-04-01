@@ -144,7 +144,6 @@ def get_solid_entries():
         'FeO' : -58.880/calmol,
         'Fe3O4': -242.400/calmol,
         'Fe2O3': -177.100/calmol,
-        # 'Fe2O3': -161.930/calmol, # wrong one
         'FeOOH': -478.1/kJmol,
         'Fe(OH)2': -115.570/calmol,
         'Fe(OH)3': -166.000/calmol,

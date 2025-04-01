@@ -118,7 +118,7 @@ def dg(k, pH, U, concentration, n_ref):
         surface_term = surfs[k][0] - surfs[n_ref][0]
     U_coeff = 1*surfs[k][4] - 1*surfs[k][5] - 2*surfs[k][6] - 3*surfs[k][7] - surfs[k][3]
     pH_coeff = 1*surfs[k][4] - 1*surfs[k][5] - 2*surfs[k][6] - 3*surfs[k][7]
-    dg = surface_term + U_coeff * U + pH_coeff * const * pH
+    dg = surface_term + U_coeff * U + (pH_coeff) * const * pH
     if '(aq)' in surfs[k][11]:
         dg += const * log10(concentration)
     return dg
@@ -249,8 +249,14 @@ nsurfs = len(surfs)
 ref_surf = surfs[0][0]
 ref_surf_gc = surfs[0][10]
 for k in range(nsurfs):
-    surfs[k][0] = surfs[k][0] - ref_surf
-    surfs[k][10] = surfs[k][10] - ref_surf_gc 
+    formation_energy_corr = (
+        - surfs[k][4] * (gh - dgh) # H
+        - surfs[k][5] * (goh - dgoh) # OH
+        - surfs[k][6] * (go - dgo) # O
+        - surfs[k][7] * (gooh - dgooh) # OOH
+    )
+    surfs[k][0] = surfs[k][0] - ref_surf + formation_energy_corr 
+    surfs[k][10] = surfs[k][10] - ref_surf_gc + formation_energy_corr 
 
 if BULK_PB:
     new_surfs = []
@@ -332,16 +338,6 @@ else:
     surfs.extend(new_surfs)
     surfs = [surf for surf in surfs if surf[2] != 0]
     nsurfs = len(surfs)
-
-for k in range(nsurfs):
-    formation_energy_corr = (
-        - surfs[k][4] * (gh - dgh) # H
-        - surfs[k][5] * (goh - dgoh) # OH
-        - surfs[k][6] * (go - dgo) # O
-        - surfs[k][7] * (gooh - dgooh) # OOH
-    )
-    surfs[k][0] = surfs[k][0] + formation_energy_corr 
-    surfs[k][10] = surfs[k][10] + formation_energy_corr 
 
 print(f"No.\tEnergy\t#Fe\t#N\t#e\t#H\t#OH\t#O\tSurface")
 for i in range(nsurfs):

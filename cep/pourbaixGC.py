@@ -125,10 +125,10 @@ def dg(k, pH, U, concentration, n_ref):
     
 ions = [
     # ['Ef', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
-    [-20.300/calmol,  1, +2, 0, 0, 0, 0, 0, 0, 0, 'Fe²⁺(aq)'],
-    [-90.627/calmol,  1, -1, 1, 0, 2, 0, 0, 0, 0, 'HFeO₂⁻(aq)'],
-    [-2.530/calmol,   1, +3, 0, 0, 0, 0, 0, 0, 0, 'Fe³⁺(aq)'],
-    [-55.910/calmol,  1, +2, 0, 1, 0, 0, 0, 0, 0, 'FeOH²⁺(aq)'],
+    [ -20.300/calmol, 1, +2, 0, 0, 0, 0, 0, 0, 0, 'Fe²⁺(aq)'],
+    [ -90.627/calmol, 1, -1, 1, 0, 2, 0, 0, 0, 0, 'HFeO₂⁻(aq)'],
+    [  -2.530/calmol, 1, +3, 0, 0, 0, 0, 0, 0, 0, 'Fe³⁺(aq)'],
+    [ -55.910/calmol, 1, +2, 0, 1, 0, 0, 0, 0, 0, 'FeOH²⁺(aq)'],
     [-106.200/calmol, 1, +1, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂⁺(aq)'],
 ]
 
@@ -180,8 +180,14 @@ nsurfs = len(surfs)
 ref0 = surfs[0][0]
 ref9 = surfs[0][9]
 for k in range(nsurfs):
-    surfs[k][0] = surfs[k][0] - ref0
-    surfs[k][9] = surfs[k][9] - ref9
+    formation_energy_corr = (
+        - surfs[k][3] * (gh - dgh) # H
+        - surfs[k][4] * (goh - dgoh) # OH
+        - surfs[k][5] * (go - dgo) # O
+        - surfs[k][6] * (gooh - dgooh) # OOH
+    )
+    surfs[k][0] = surfs[k][0] - ref0 + formation_energy_corr 
+    surfs[k][9] = surfs[k][9] - ref9 + formation_energy_corr 
     
 if BULK_PB:
     new_surfs = []
@@ -215,19 +221,9 @@ else:
     surfs = [surf for surf in surfs if surf[1] != 0]
     nsurfs = len(surfs)
 
-for k in range(nsurfs):
-    formation_energy_corr = (
-        - surfs[k][3] * (gh - dgh) # H
-        - surfs[k][4] * (goh - dgoh) # OH
-        - surfs[k][5] * (go - dgo) # O
-        - surfs[k][6] * (gooh - dgooh) # OOH
-    )
-    surfs[k][0] = surfs[k][0] + formation_energy_corr 
-    surfs[k][9] = surfs[k][9] + formation_energy_corr 
-
 print(f"No.\tEnergy\t#Fe\t#e\t#H\t#OH\t#O\tSurface")
 for i in range(nsurfs):
-    if surfs[i][10] == 'vac+'+solids[0][10]:
+    if surfs[i][10] == 'vac(H₂)+'+solids[0][10]:
         n_ref = i
     print(f"#{i+1}:\t{surfs[i][0]:.2f}\t{surfs[i][1]:.2f}\t{surfs[i][2]:.2f}\t{surfs[i][3]:.2f}\t{surfs[i][4]:.2f}\t{surfs[i][5]:.2f}\t{surfs[i][10]}")
 
