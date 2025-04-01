@@ -71,7 +71,7 @@ def dg(k, pH, U, concentration):
         surface_term = ((surfs[k][7]*(U**2) + surfs[k][8]*U + surfs[k][9])
                           - (surfs[0][7]*(U**2) + surfs[0][8]*U + surfs[0][9]))
     else:
-        surface_term = surfs[k][0] - surfs[0][0]
+        surface_term = surfs[k][0]
     U_coeff = 1*surfs[k][3] - 1*surfs[k][4] - 2*surfs[k][5] - 3*surfs[k][6] - surfs[k][2]
     pH_coeff = 1*surfs[k][3] - 1*surfs[k][4] - 2*surfs[k][5] - 3*surfs[k][6]
     dg = surface_term + U_coeff * U + pH_coeff * const * pH
@@ -93,7 +93,7 @@ solids = [
     [0,               1, +0, 0, 0, 0, 0, 0, 0, 0, 'Fe(s)'],
     [-58.880/calmol,  1, +0, 0, 0, 1, 0, 0, 0, 0, 'FeO'],
     [-242.400/calmol, 3, +0, 0, 0, 4, 0, 0, 0, 0, 'Fe₃O₄'],
-    # [-177.100/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
+    [-177.100/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
     [-161.930/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
     [-115.570/calmol, 1, +0, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂'],
     [-166.000/calmol, 1, +0, 0, 3, 0, 0, 0, 0, 0, 'Fe(OH)₃'],
@@ -111,6 +111,7 @@ for s in range(nsolids):
     if solids[s][1] > 1:
         solids[s] = [x / solids[s][1] if isinstance(x, (int, float)) else x for x in solids[s]]
     solids[s][9] = solids[s][0]
+
 surfs = [
     # ['E', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
     [-269.569746, 0, +0, 0, 0, 0, 0, -0.3655405668135691, 0.45552073788487135, -269.645443005364, 'vac'],
@@ -233,7 +234,7 @@ for base_color in base_colors:
     cmap = LinearSegmentedColormap.from_list(f"custom_{base_color}", ["white", base_color])
     cmaps[base_color] = cmap
     if base_color == 'dodgerblue' or base_color == 'orange':
-        shades[base_color] = [cmap(i) for i in np.linspace(0, 1, 4)]
+        shades[base_color] = [cmap(i) for i in np.linspace(0, 1, 8)]
     else:
         shades[base_color] = [cmap(i) for i in np.linspace(0, 1, 4)]
         

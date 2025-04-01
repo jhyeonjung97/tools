@@ -116,25 +116,26 @@ def dg(k, pH, U, concentration, n_ref):
                           - (surfs[n_ref][7]*(U**2) + surfs[n_ref][8]*U + surfs[n_ref][9]))
     else:
         surface_term = surfs[k][0] - surfs[n_ref][0]
-    U_coeff = 1*surfs[k][3] - 1*surfs[k][4] - 2*surfs[k][5] - 3*surfs[k][6] - surfs[k][2]
-    pH_coeff = 1*surfs[k][3] - 1*surfs[k][4] - 2*surfs[k][5] - 3*surfs[k][6]
-    dg = surface_term + U_coeff * U + pH_coeff * const * pH
+    U_term = 1*surfs[k][3] -1*surfs[k][4] -2*surfs[k][5] -3*surfs[k][6] -surfs[k][2]
+    pH_term = 1*surfs[k][3] -1*surfs[k][4] -2*surfs[k][5] -3*surfs[k][6]
+    dg = surface_term + U_term * U + pH_term * const * pH
     if '(aq)' in surfs[k][10]:
         dg += const * log10(concentration)
     return dg
     
 ions = [
     # ['Ef', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
-    [ -20.300/calmol, 1, +2, 0, 0, 0, 0, 0, 0, 0, 'Fe²⁺(aq)'],
-    [ -90.627/calmol, 1, -1, 1, 0, 2, 0, 0, 0, 0, 'HFeO₂⁻(aq)'],
-    [  -2.530/calmol, 1, +3, 0, 0, 0, 0, 0, 0, 0, 'Fe³⁺(aq)'],
-    [ -55.910/calmol, 1, +2, 0, 1, 0, 0, 0, 0, 0, 'FeOH²⁺(aq)'],
-    [-106.200/calmol, 1, +1, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂⁺(aq)'],
+    [ -20.300/calmol, 1, +2, 0, 0, 0, 0, 0, 0, 0, 'Fe²⁺'],
+    [ -90.627/calmol, 1, -1, 1, 0, 2, 0, 0, 0, 0, 'HFeO₂⁻'],
+    [  -2.530/calmol, 1, +3, 0, 0, 0, 0, 0, 0, 0, 'Fe³⁺'],
+    [ -55.910/calmol, 1, +2, 0, 1, 0, 0, 0, 0, 0, 'FeOH²⁺'],
+    [-106.200/calmol, 1, +1, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂⁺'],
+    [ -40.000/calmol, 1, -1, 0, 0, 4, 0, 0, 0, 0, 'FeO₄⁻'],
 ]
 
 solids = [
     # ['Ef', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
-    [0,               1, +0, 0, 0, 0, 0, 0, 0, 0, 'Fe(s)'],
+    [0,               1, +0, 0, 0, 0, 0, 0, 0, 0, 'Fe'],
     [-58.880/calmol,  1, +0, 0, 0, 1, 0, 0, 0, 0, 'FeO'],
     [-242.400/calmol, 3, +0, 0, 0, 4, 0, 0, 0, 0, 'Fe₃O₄'],
     [-177.100/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
@@ -148,11 +149,28 @@ for i in range(nions):
     ions[i][0] += water * (ions[i][4] + ions[i][5] + 2*ions[i][6]) + bulk_metal * ions[i][1]
     if ions[i][1] > 1:
         ions[i] = [x / ions[i][1] if isinstance(x, (int, float)) else x for x in ions[i]]
+    ions[i][9] = ions[i][0]
+    ions[i][10] = '+' + ions[i][10] + '(aq)'
 
 for s in range(nsolids):
     solids[s][0] += water * (solids[s][4] + solids[s][5] + 2*solids[s][6]) + bulk_metal * solids[s][1]
     if solids[s][1] > 1:
         solids[s] = [x / solids[s][1] if isinstance(x, (int, float)) else x for x in solids[s]]
+    solids[s][9] = solids[s][0]
+    solids[s][10] = '+' + solids[s][10] + '(s)'
+
+# surfs = [
+#     # ['E', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
+#     [-271.953170, 0, +0, 0, 0, 0, 0, 0, 0, 0, 'vac'],
+#     [-281.836091, 0, +0, 2, 0, 0, 0, 0, 0, 0, 'vac(H₂)'],
+#     [-280.176972, 1, +0, 0, 0, 0, 0, 0, 0, 0, 'clean'],
+#     [-282.637740, 1, +0, 1, 0, 0, 0, 0, 0, 0, '*H'],
+#     [-290.947634, 1, +0, 0, 1, 0, 0, 0, 0, 0, '*OH'],
+#     [-285.944778, 1, +0, 0, 0, 1, 0, 0, 0, 0, '*O'],
+#     [-300.626405, 1, +0, 0, 2, 0, 0, 0, 0, 0, '*OH+*OH'],
+#     [-295.526586, 1, +0, 0, 1, 1, 0, 0, 0, 0, '*OH+*O'],
+#     [-289.676342, 1, +0, 0, 0, 2, 0, 0, 0, 0, '*O+*O'],
+# ]
 
 surfs = [
     # ['E', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
@@ -188,22 +206,20 @@ for k in range(nsurfs):
     )
     surfs[k][0] = surfs[k][0] - ref0 + formation_energy_corr 
     surfs[k][9] = surfs[k][9] - ref9 + formation_energy_corr 
-    
+
 if BULK_PB:
     new_surfs = []
     for k in range(nsurfs):
         if surfs[k][1] == 0:
             for i in range(nions):
                 new_surf = []
-                for j in range(10):
+                for j in range(11):
                     new_surf.append(surfs[k][j] + ions[i][j])
-                new_surf.append(surfs[k][10] + '+' + ions[i][10])
                 new_surfs.append(new_surf)
             for s in range(nsolids):
                 new_surf = []
-                for j in range(10):
+                for j in range(11):
                     new_surf.append(surfs[k][j] + solids[s][j])
-                new_surf.append(surfs[k][10] + '+' + solids[s][10])
                 new_surfs.append(new_surf)
     surfs.extend(new_surfs)
     surfs = [surf for surf in surfs if surf[1] != 0]
@@ -213,19 +229,24 @@ else:
     for k in range(nsurfs):
         if surfs[k][1] == 0:
             new_surf = []
-            for j in range(10):
+            for j in range(11):
                 new_surf.append(surfs[k][j] + solids[0][j])
-            new_surf.append(surfs[k][10] + '+' + solids[0][10])
-            new_surfs.append(new_surf)
+            new_surfs.append(new_surf)    
     surfs.extend(new_surfs)
     surfs = [surf for surf in surfs if surf[1] != 0]
     nsurfs = len(surfs)
 
-print(f"No.\tEnergy\t#Fe\t#e\t#H\t#OH\t#O\tSurface")
+if GCDFT:
+    print(f"No.\tEnergy\t#Fe\t#e\t#H\t#OH\t#O\tA\tB\tC\tSurface")
+else:
+    print(f"No.\tEnergy\t#Fe\t#e\t#H\t#OH\t#O\tSurface")
 for i in range(nsurfs):
-    if surfs[i][10] == 'vac(H₂)+'+solids[0][10]:
+    if surfs[i][10] == 'vac'+solids[0][10]:
         n_ref = i
-    print(f"#{i+1}:\t{surfs[i][0]:.2f}\t{surfs[i][1]:.2f}\t{surfs[i][2]:.2f}\t{surfs[i][3]:.2f}\t{surfs[i][4]:.2f}\t{surfs[i][5]:.2f}\t{surfs[i][10]}")
+    if GCDFT:
+        print(f"#{i+1}:\t{surfs[i][0]:.2f}\t{surfs[i][1]:.2f}\t{surfs[i][2]:.2f}\t{surfs[i][3]:.2f}\t{surfs[i][4]:.2f}\t{surfs[i][5]:.2f}\t{surfs[i][7]:.2f}\t{surfs[i][8]:.2f}\t{surfs[i][9]:.2f}\t{surfs[i][10]}")
+    else:
+        print(f"#{i+1}:\t{surfs[i][0]:.2f}\t{surfs[i][1]:.2f}\t{surfs[i][2]:.2f}\t{surfs[i][3]:.2f}\t{surfs[i][4]:.2f}\t{surfs[i][5]:.2f}\t{surfs[i][10]}")
 
 print(f"total surfaces: {nsurfs}")
 print(f"reference surface: {n_ref+1}")
@@ -243,9 +264,6 @@ for pH in pHrange:
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
         Uindex+=1
     pHindex+=1
-
-print("\nlowest_surfaces:")
-print(lowest_surfaces)
 
 min_coords = {}
 n_rows, n_cols = lowest_surfaces.shape
