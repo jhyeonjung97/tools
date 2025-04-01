@@ -29,16 +29,19 @@ GCDFT = args.gc
 BULK_PB = args.bulk
 target_pH = args.ph
 
-if BULK_PB:
-    ref_surf_name = 'vac+Ti(s)+0.50N₂(g)'
-else:
-    ref_surf_name = '*'
-
 if args.suffix:
     suffix = '_' + args.suffix
 else:
     suffix = ''
 
+png_name = 'pourbaix'
+if BULK_PB:
+    png_name += '_bulk'
+else:
+    png_name += '_surf'
+if GCDFT:
+    png_name += '_gc'
+    
 if not args.save_dir:
     save_dir = ''
 else:
@@ -66,7 +69,7 @@ calmol = 23.061
 # ticks
 tick = args.tick
 pHrange = np.arange(0, 14+tick, tick)
-Umin, Umax = -1.0, 3.0
+Umin, Umax = -2.0, 2.0
 Urange = np.arange(Umin, Umax + 0.06 * 14, tick)
 
 # gas
@@ -305,6 +308,30 @@ if BULK_PB:
     surfs.extend(new_surfs)
     surfs = [surf for surf in surfs if surf[2] != 0]
     nsurfs = len(surfs)
+else:
+    new_surfs = []
+    for k in range(nsurfs):
+        if surfs[k][1] == 0:
+            new_surf = []
+            for j in range(11):
+                new_surf.append(surfs[k][j] + solids[0][j])
+            new_surf.append(surfs[k][11] + '+' + solids[0][11])
+            new_surfs.append(new_surf)
+    surfs.extend(new_surfs)
+    surfs = [surf for surf in surfs if surf[1] != 0]
+    nsurfs = len(surfs)
+
+    new_surfs = []
+    for k in range(nsurfs):
+        if surfs[k][2] == 0:
+            new_surf = []
+            for j in range(11):
+                new_surf.append(surfs[k][j] + gases[0][j])
+            new_surf.append(surfs[k][11] + '+' + gases[0][11])
+            new_surfs.append(new_surf)
+    surfs.extend(new_surfs)
+    surfs = [surf for surf in surfs if surf[2] != 0]
+    nsurfs = len(surfs)
 
 for k in range(nsurfs):
     formation_energy_corr = (
@@ -316,10 +343,11 @@ for k in range(nsurfs):
     surfs[k][0] = surfs[k][0] + formation_energy_corr 
     surfs[k][10] = surfs[k][10] + formation_energy_corr 
 
+print(f"No.\tEnergy\t#Fe\t#N\t#e\t#H\t#OH\t#O\tSurface")
 for i in range(nsurfs):
-    if surfs[i][11] == ref_surf_name:
+    if surfs[i][11] == 'vac'+'+'+solids[0][11]+'+'+gases[0][11]:
         n_ref = i
-    print(f"#{i+1}:\t{surfs[i][0]:.2f}\t{surfs[i][11]}")
+    print(f"#{i+1}:\t{surfs[i][0]:.2f}\t{surfs[i][1]:.2f}\t{surfs[i][2]:.2f}\t{surfs[i][3]:.2f}\t{surfs[i][4]:.2f}\t{surfs[i][5]:.2f}\t{surfs[i][6]:.2f}\t{surfs[i][11]}")
 
 print(f"total surfaces: {nsurfs}")
 print(f"reference surface: {n_ref+1}")
@@ -338,8 +366,8 @@ for pH in pHrange:
         Uindex+=1
     pHindex+=1
 
-print("\nlowest_surfaces:")
-print(lowest_surfaces)
+# print("\nlowest_surfaces:")
+# print(lowest_surfaces)
 
 min_coords = {}
 n_rows, n_cols = lowest_surfaces.shape
@@ -390,50 +418,47 @@ for sid in unique_ids_pH:
 
 # Count surfaces for each color group
 color_counts = {
-    'RdYlBu': 0,    # vac 포함된 모든 표면
-    'gray': 0,      # others
+    'Blues': 0,     # surfaces containing 'vac'
+    'Greys': 0,     # others
 }
 
 for surf_id in unique_ids:
     name = surfs[int(surf_id)][11]
-    if 'vac' in name:  # vac(H₂)도 포함
-        color_counts['RdYlBu'] += 1
+    if 'vac' in name:  # including 'vac(H₂)'
+        color_counts['Blues'] += 1
     else:
-        color_counts['gray'] += 1
+        color_counts['Greys'] += 1
 
 # Define base color groups and their initial indices
 base_colors = {
-    'RdYlBu': 0,    # vac 포함된 모든 표면
-    'gray': 0,      # others
+    'Blues': 0,     # surfaces containing 'vac'
+    'Greys': 0,     # others
 }
 
 # Generate custom colormaps and shades
 cmaps = {}
 shades = {}
 
-# RdYlBu는 matplotlib의 내장 colormap 사용
-rdylbu_cmap = plt.get_cmap('RdYlBu')
-if color_counts['RdYlBu'] > 0:
-    shades['RdYlBu'] = [rdylbu_cmap(i) for i in np.linspace(0, 1, color_counts['RdYlBu'])]
+# Use matplotlib's built-in colormaps for Blues and Greys
+blues_cmap = plt.get_cmap('Blues')
+if color_counts['Blues'] > 0:
+    shades['Blues'] = [blues_cmap(i) for i in np.linspace(0.1, 0.5, color_counts['Blues'])]
 
-# 나머지 색상은 기존 방식대로
-for base_color in ['gray']:
-    cmap = LinearSegmentedColormap.from_list(f"custom_{base_color}", ["white", base_color])
-    cmaps[base_color] = cmap
-    if color_counts[base_color] > 0:
-        shades[base_color] = [cmap(i) for i in np.linspace(0.1, 0.9, color_counts[base_color])]
+greys_cmap = plt.get_cmap('Greys')
+if color_counts['Greys'] > 0:
+    shades['Greys'] = [greys_cmap(i) for i in np.linspace(0.1, 0.5, color_counts['Greys'])]
         
 # Map surface ID to corresponding color shade
 color_mapping = {}
 
 for surf_id in unique_ids:
     name = surfs[int(surf_id)][11]
-    if 'vac' in name:  # vac(H₂)도 포함
-        color_mapping[surf_id] = shades['RdYlBu'][base_colors['RdYlBu']]
-        base_colors['RdYlBu'] += 1
+    if 'vac' in name:  # including 'vac(H₂)'
+        color_mapping[surf_id] = shades['Blues'][base_colors['Blues']]
+        base_colors['Blues'] += 1
     else:
-        color_mapping[surf_id] = shades['gray'][base_colors['gray']]
-        base_colors['gray'] += 1
+        color_mapping[surf_id] = shades['Greys'][base_colors['Greys']]
+        base_colors['Greys'] += 1
         
 # Apply color mapping to the colormap and ID mapping
 colors = [color_mapping[sid] for sid in unique_ids]
@@ -454,33 +479,27 @@ for idx, surf_id in enumerate(unique_ids):
 pH_grid, U = np.meshgrid(pHrange, Urange)
 plt.pcolormesh(pH_grid, U, mapped_surfaces, cmap=cmap, norm=norm)
 
-plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., 
-           fontsize='small', ncol=1, handlelength=3, edgecolor='black') 
+plt.legend(bbox_to_anchor=(0.02, 1.02), loc='lower left', borderaxespad=0., 
+           fontsize='small', ncol=2, handlelength=3, edgecolor='black') 
 
 plt.plot(pHrange, 1.23-pHrange*const, '--', lw=1, color='mediumblue')
-ax.text(0.2, 1.23+0.12, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$', rotation=-13, color='mediumblue', ha='left', va='top')
+ax.text(0.2, 1.23+0.14, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$', rotation=-9, color='mediumblue', ha='left', va='top')
 plt.plot(pHrange, 0-pHrange*const, '--', lw=1, color='mediumblue')
-ax.text(0.2, 0+0.12, r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$', rotation=-13, color='mediumblue', ha='left', va='top')
+ax.text(0.2, 0+0.14, r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$', rotation=-9, color='mediumblue', ha='left', va='top')
 
 plt.tight_layout()
-png_name = 'pourbaix'
-if BULK_PB:
-    png_name += '_bulk'
-else:
-    png_name += '_surf'
-if GCDFT:
-    png_name += '_gc'
+plt.savefig(f'{save_dir}{png_name}{suffix}.png', dpi=300, bbox_inches='tight')
 
 # Add potential vs. energy plot at pH=0
 fig2, ax2 = plt.subplots(figsize=(7, 6), dpi=100)
-ax2.axis([Umin, Umax, None, None])  # Fix x-axis only, y-axis will be adjusted automatically
+ax2.axis([Umin, Umax, None, None])
 ax2.set_xlabel('E (V vs. SHE)', labelpad=0)
 ax2.set_ylabel('ΔG (eV)', labelpad=-6)
 ax2.tick_params(right=True, direction="in")
 
 # Calculate energy at specific pH
 all_energies = []
-unique_ids_set = set(unique_ids_pH)  # unique_ids를 set으로 변환하여 검색 속도 향상
+unique_ids_set = set(unique_ids_pH)
 
 for k in range(2, len(surfs)):
     energies = np.zeros(len(Urange))
@@ -503,15 +522,11 @@ ax2.set_ylim(y_min - y_margin, y_max + y_margin)
 ax2.set_xlim(Umin, Umax)
 ax2.grid(True, linestyle='--', alpha=0.3)
 
-ax2.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., 
-          fontsize='small', ncol=1, handlelength=3, edgecolor='black')
+ax2.legend(bbox_to_anchor=(0.02, 1.02), loc='lower left', borderaxespad=0., 
+          fontsize='small', ncol=2, handlelength=3, edgecolor='black')
 
 plt.tight_layout()
 plt.savefig(f'{save_dir}{png_name}_pH{target_pH}{suffix}.png', dpi=300, bbox_inches='tight')
-
-# Save original Pourbaix diagram
-plt.figure(1)
-plt.savefig(f'{save_dir}{png_name}{suffix}.png', dpi=300, bbox_inches='tight')
 print(f"Saved plots to {png_name}{suffix}.png and {png_name}_pH{target_pH}{suffix}.png")
 
 if args.show:

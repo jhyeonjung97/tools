@@ -33,7 +33,15 @@ if args.suffix:
 else:
     suffix = ''
 
-if args.save_dir:
+png_name = 'pourbaix'
+if BULK_PB:
+    png_name += '_bulk'
+else:
+    png_name += '_surf'
+if GCDFT:
+    png_name += '_gc'
+    
+if not args.save_dir:
     save_dir = ''
 else:
     hostname = socket.gethostname()
@@ -59,7 +67,8 @@ calmol = 23.061
 
 # ticks
 tick = args.tick
-pHrange = np.arange(0, 14.1, tick)
+pHmin, pHmax = 0, 14
+pHrange = np.arange(pHmin, pHmax + tick, tick)
 Umin, Umax = -1.0, 3.0
 Urange = np.arange(Umin, Umax + 0.06 * 14, tick)
 
@@ -101,12 +110,12 @@ dgoh = zpeoh + cvoh - tsoh
 dgooh = zpeooh + cvooh - tsooh
 dgh = dgoh - dgo
 
-def dg(k, pH, U, concentration):
+def dg(k, pH, U, concentration, n_ref):
     if GCDFT:
         surface_term = ((surfs[k][7]*(U**2) + surfs[k][8]*U + surfs[k][9])
-                          - (surfs[0][7]*(U**2) + surfs[0][8]*U + surfs[0][9]))
+                          - (surfs[n_ref][7]*(U**2) + surfs[n_ref][8]*U + surfs[n_ref][9]))
     else:
-        surface_term = surfs[k][0] - surfs[0][0]
+        surface_term = surfs[k][0] - surfs[n_ref][0]
     U_coeff = 1*surfs[k][3] - 1*surfs[k][4] - 2*surfs[k][5] - 3*surfs[k][6] - surfs[k][2]
     pH_coeff = 1*surfs[k][3] - 1*surfs[k][4] - 2*surfs[k][5] - 3*surfs[k][6]
     dg = surface_term + U_coeff * U + pH_coeff * const * pH
@@ -128,7 +137,7 @@ solids = [
     [0,               1, +0, 0, 0, 0, 0, 0, 0, 0, 'Fe(s)'],
     [-58.880/calmol,  1, +0, 0, 0, 1, 0, 0, 0, 0, 'FeO'],
     [-242.400/calmol, 3, +0, 0, 0, 4, 0, 0, 0, 0, 'Fe₃O₄'],
-    # [-177.100/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
+    [-177.100/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
     [-161.930/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
     [-115.570/calmol, 1, +0, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂'],
     [-166.000/calmol, 1, +0, 0, 3, 0, 0, 0, 0, 0, 'Fe(OH)₃'],
@@ -139,34 +148,32 @@ for i in range(nions):
     ions[i][0] += water * (ions[i][4] + ions[i][5] + 2*ions[i][6]) + bulk_metal * ions[i][1]
     if ions[i][1] > 1:
         ions[i] = [x / ions[i][1] if isinstance(x, (int, float)) else x for x in ions[i]]
-    ions[i][9] = ions[i][0]
 
 for s in range(nsolids):
     solids[s][0] += water * (solids[s][4] + solids[s][5] + 2*solids[s][6]) + bulk_metal * solids[s][1]
     if solids[s][1] > 1:
         solids[s] = [x / solids[s][1] if isinstance(x, (int, float)) else x for x in solids[s]]
-    solids[s][9] = solids[s][0]
 
 surfs = [
     # ['E', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
-    [-269.569746, 0, +0, 0, 0, 0, 0, -0.3655405668135691, 0.45552073788487135, -269.645443005364, 'vac'],
-    [-279.340765, 0, +0, 2, 0, 0, 0, -0.4310220085501212, -0.18813647315805954, -279.27741924851745, 'vac(H₂)'],
-    [-277.215281, 1, +0, 0, 0, 0, 0, -0.5088279832115933, -0.3089382644866646, -277.16659314038986, 'clean(HS)'],
-    [-277.546212, 1, +0, 0, 0, 0, 0, -0.423357238170348, -0.18029803360057767, -277.46155128048673, 'clean(IS)'],
-    [-275.904061, 1, +0, 0, 0, 0, 0, -0.423198992129675, -0.023209968264605602, -275.8141779964752, 'clean(LS)'],
-    [-288.221008, 1, +0, 0, 1, 0, 0, -0.4467206439644741, 0.04059102541473414, -288.1146816835875, '*OH(HS)'],
-    [-288.124300, 1, +0, 0, 1, 0, 0, -0.49213990645417277, 0.2598149164035292, -288.04840908267477, '*OH(IS)'],
-    [-287.563089, 1, +0, 0, 1, 0, 0, -0.4807076337804513, 0.18746381957939667, -287.4849251837713, '*OH(LS)'],
-    [-283.228986, 1, +0, 0, 0, 1, 0, -0.40383700613414103, 0.2916884347090441, -283.1526637494537, '*O(HS)'],
-    [-282.942139, 1, +0, 0, 0, 1, 0, -0.45657630964544965, 0.3430163672241705, -282.89037791515415, '*O(IS)'],
-    [-282.513697, 1, +0, 0, 0, 1, 0, -0.4407271111295996, 0.2676105696973955, -282.43318248088525, '*O(LS)'],
-    [-297.295568, 1, +0, 0, 2, 0, 0, -0.5595101320515073, 0.4931725265118078, -297.292789623116, '*OH+*OH(HS)'],
-    [-296.997610, 1, +0, 0, 2, 0, 0, -0.5277748456986603, 0.39666069296217893, -297.15342439890617, '*OH+*OH(IS)'],
-    [-296.898685, 1, +0, 0, 2, 0, 0, -0.59572540226707, 0.5697551318500524, -297.0414929981233, '*OH+*OH(LS)'],
-    [-292.18643175, 1, +0, 0, 1, 1, 0, -0.474403700041583, 0.290084262601454, -292.08048960254666, '*OH+*O(HS)'],
-    [-292.66930911, 1, +0, 0, 1, 1, 0, -0.46048018108346694, 0.6326720159755281, -292.7217143067089, '*OH+*O(LS)'],
-    [-286.22738149, 1, +0, 0, 0, 2, 0, -0.5129915832564392, 0.7798114189274047, -286.3805242333587, '*O+*O(HS)'],
-    [-286.76062327, 1, +0, 0, 0, 2, 0, -0.4870021793211474, 0.7400411428427354, -286.902324627179, '*O+*O(LS)'],
+    [-269.569746, 0, +0, 0, 0, 0, 0, -0.365540566813569,  0.4555207378848713, -269.645443005364, 'vac'],
+    [-279.340765, 0, +0, 2, 0, 0, 0, -0.431022008550121, -0.1881364731580595, -279.277419248517, 'vac(H₂)'],
+    [-277.215281, 1, +0, 0, 0, 0, 0, -0.508827983211593, -0.3089382644866646, -277.166593140389, 'clean(HS)'],
+    [-277.546212, 1, +0, 0, 0, 0, 0, -0.423357238170348, -0.1802980336005776, -277.461551280486, 'clean(IS)'],
+    [-275.904061, 1, +0, 0, 0, 0, 0, -0.423198992129675, -0.0232099682646056, -275.814177996475, 'clean(LS)'],
+    [-288.221008, 1, +0, 0, 1, 0, 0, -0.446720643964474,  0.0405910254147341, -288.114681683587, '*OH(HS)'],
+    [-288.124300, 1, +0, 0, 1, 0, 0, -0.492139906454172,  0.2598149164035292, -288.048409082674, '*OH(IS)'],
+    [-287.563089, 1, +0, 0, 1, 0, 0, -0.480707633780451,  0.1874638195793966, -287.484925183771, '*OH(LS)'],
+    [-283.228986, 1, +0, 0, 0, 1, 0, -0.403837006134141,  0.2916884347090441, -283.152663749453, '*O(HS)'],
+    [-282.942139, 1, +0, 0, 0, 1, 0, -0.456576309645449,  0.3430163672241705, -282.890377915154, '*O(IS)'],
+    [-282.513697, 1, +0, 0, 0, 1, 0, -0.440727111129599,  0.2676105696973955, -282.433182480885, '*O(LS)'],
+    [-297.295568, 1, +0, 0, 2, 0, 0, -0.559510132051507,  0.4931725265118078, -297.292789623116, '*OH+*OH(HS)'],
+    [-296.997610, 1, +0, 0, 2, 0, 0, -0.527774845698660,  0.3966606929621789, -297.153424398906, '*OH+*OH(IS)'],
+    [-296.898685, 1, +0, 0, 2, 0, 0, -0.595725402267070,  0.5697551318500524, -297.041492998123, '*OH+*OH(LS)'],
+    [-292.186431, 1, +0, 0, 1, 1, 0, -0.474403700041583,  0.2900842626014540, -292.080489602546, '*OH+*O(HS)'],
+    [-292.669309, 1, +0, 0, 1, 1, 0, -0.460480181083466,  0.6326720159755281, -292.721714306708, '*OH+*O(LS)'],
+    [-286.227381, 1, +0, 0, 0, 2, 0, -0.512991583256439,  0.7798114189274047, -286.380524233358, '*O+*O(HS)'],
+    [-286.760623, 1, +0, 0, 0, 2, 0, -0.487002179321147,  0.7400411428427354, -286.902324627179, '*O+*O(LS)'],
 ]
 
 nsurfs = len(surfs)
@@ -174,7 +181,7 @@ ref0 = surfs[0][0]
 ref9 = surfs[0][9]
 for k in range(nsurfs):
     surfs[k][0] = surfs[k][0] - ref0
-    surfs[k][9] = surfs[k][9] - ref9 
+    surfs[k][9] = surfs[k][9] - ref9
     
 if BULK_PB:
     new_surfs = []
@@ -192,9 +199,21 @@ if BULK_PB:
                     new_surf.append(surfs[k][j] + solids[s][j])
                 new_surf.append(surfs[k][10] + '+' + solids[s][10])
                 new_surfs.append(new_surf)
-
-    surfs.extend(new_surfs)  # Add new surfaces after looping
-    nsurfs = len(surfs)  # Update length again after removing first two elements
+    surfs.extend(new_surfs)
+    surfs = [surf for surf in surfs if surf[1] != 0]
+    nsurfs = len(surfs)
+else:
+    new_surfs = []
+    for k in range(nsurfs):
+        if surfs[k][1] == 0:
+            new_surf = []
+            for j in range(10):
+                new_surf.append(surfs[k][j] + solids[0][j])
+            new_surf.append(surfs[k][10] + '+' + solids[0][10])
+            new_surfs.append(new_surf)
+    surfs.extend(new_surfs)
+    surfs = [surf for surf in surfs if surf[1] != 0]
+    nsurfs = len(surfs)
 
 for k in range(nsurfs):
     formation_energy_corr = (
@@ -206,10 +225,11 @@ for k in range(nsurfs):
     surfs[k][0] = surfs[k][0] + formation_energy_corr 
     surfs[k][9] = surfs[k][9] + formation_energy_corr 
 
+print(f"No.\tEnergy\t#Fe\t#e\t#H\t#OH\t#O\tSurface")
 for i in range(nsurfs):
-    if surfs[i][10] == ref_surf_name:
+    if surfs[i][10] == 'vac+'+solids[0][10]:
         n_ref = i
-    print(f"#{i+1}:\t{surfs[i][0]:.2f}\t{surfs[i][10]}")
+    print(f"#{i+1}:\t{surfs[i][0]:.2f}\t{surfs[i][1]:.2f}\t{surfs[i][2]:.2f}\t{surfs[i][3]:.2f}\t{surfs[i][4]:.2f}\t{surfs[i][5]:.2f}\t{surfs[i][10]}")
 
 print(f"total surfaces: {nsurfs}")
 print(f"reference surface: {n_ref+1}")
@@ -221,21 +241,24 @@ for pH in pHrange:
     for U in Urange:
         values = []
         for k in range(nsurfs):
-            value = dg(k, pH, U, concentration=1e-6)
+            value = dg(k, pH, U, concentration=1e-6, n_ref=n_ref)
             values.append(value)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces[Uindex][pHindex] = sorted_values[0]
         Uindex+=1
     pHindex+=1
 
+print("\nlowest_surfaces:")
+print(lowest_surfaces)
+
 min_coords = {}
 n_rows, n_cols = lowest_surfaces.shape
 
-for j in range(n_cols):   # loop over pH (columns)
-    for i in range(n_rows):       # loop over U (rows)
+for j in range(n_cols):
+    for i in range(n_rows):
         sid = int(lowest_surfaces[i, j])
-        x = pHrange[j]   # pH varies along columns (x-axis)
-        y = Urange[i]    # U varies along rows    (y-axis)
+        x = pHrange[j]
+        y = Urange[i]
         if sid not in min_coords:
             min_coords[sid] = (x, y)
         else:
@@ -250,62 +273,57 @@ for sid in sorted(min_coords):
 
 # Set Axes Limits and Labels
 fig, ax = plt.subplots(figsize=(7, 6), dpi=100)
-ax.axis([0, 14, Umin, Umax])
+ax.axis([pHmin, pHmax, Umin, Umax])
 ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
 ax.tick_params(right=True, direction="in")
 
 # Check unique values in lowest_surfaces and create a list of unique surface IDs
 unique_ids = np.unique(lowest_surfaces)
-nsurfs = len(unique_ids)
 
 # Count surfaces for each color group
 color_counts = {
-    'orange': 0,     # vac(H₂)  
-    'darkorange': 0, # vac
-    'gray': 0,       # others
+    'YlOrBr': 0,    # surfaces containing 'vac'
+    'Greys': 0,     # others
 }
 
 for surf_id in unique_ids:
     name = surfs[int(surf_id)][10]
-    if 'vac(H₂)' in name:
-        color_counts['orange'] += 1
-    elif 'vac' in name:
-        color_counts['darkorange'] += 1
+    if 'vac' in name:  # including 'vac(H₂)'
+        color_counts['YlOrBr'] += 1
     else:
-        color_counts['gray'] += 1
+        color_counts['Greys'] += 1
 
 # Define base color groups and their initial indices
 base_colors = {
-    'orange': 0,     # vac(H₂)  
-    'darkorange': 0, # vac
-    'gray': 0,       # others
+    'YlOrBr': 0,    # surfaces containing 'vac'
+    'Greys': 0,     # others
 }
 
-# Generate custom colormaps and shades from white → base color
+# Generate custom colormaps and shades
 cmaps = {}
 shades = {}
 
-for base_color in base_colors:
-    cmap = LinearSegmentedColormap.from_list(f"custom_{base_color}", ["white", base_color])
-    cmaps[base_color] = cmap
-    if color_counts[base_color] > 0:
-        shades[base_color] = [cmap(i) for i in np.linspace(0.2, 0.7, color_counts[base_color])]
+# Use matplotlib's built-in colormaps for YlOrBr and Greys
+ylorbr_cmap = plt.get_cmap('YlOrBr')
+if color_counts['YlOrBr'] > 0:
+    shades['YlOrBr'] = [ylorbr_cmap(i) for i in np.linspace(0.1, 0.5, color_counts['YlOrBr'])]
+
+greys_cmap = plt.get_cmap('Greys')
+if color_counts['Greys'] > 0:
+    shades['Greys'] = [greys_cmap(i) for i in np.linspace(0.1, 0.5, color_counts['Greys'])]
         
 # Map surface ID to corresponding color shade
 color_mapping = {}
 
 for surf_id in unique_ids:
     name = surfs[int(surf_id)][10]
-    if 'vac(H₂)' in name:
-        color_mapping[surf_id] = shades['orange'][base_colors['orange']]
-        base_colors['orange'] += 1
-    elif 'vac' in name:
-        color_mapping[surf_id] = shades['darkorange'][base_colors['darkorange']]
-        base_colors['darkorange'] += 1
+    if 'vac' in name:  # including 'vac(H₂)'
+        color_mapping[surf_id] = shades['YlOrBr'][base_colors['YlOrBr']]
+        base_colors['YlOrBr'] += 1
     else:
-        color_mapping[surf_id] = shades['gray'][base_colors['gray']]
-        base_colors['gray'] += 1
+        color_mapping[surf_id] = shades['Greys'][base_colors['Greys']]
+        base_colors['Greys'] += 1
         
 # Apply color mapping to the colormap and ID mapping
 colors = [color_mapping[sid] for sid in unique_ids]
@@ -335,13 +353,7 @@ plt.plot(pHrange, 0-pHrange*const, '--', lw=1, color='mediumblue')
 ax.text(0.2, 0+0.12, r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$', rotation=-13, color='mediumblue', ha='left', va='top')
 
 plt.tight_layout()
-png_name = 'pourbaix'
-if BULK_PB:
-    png_name += '_bulk'
-else:
-    png_name += '_surf'
-if GCDFT:
-    png_name += '_gc'
+plt.savefig(f'{save_dir}{png_name}{suffix}.png', dpi=300, bbox_inches='tight')
 
 # Add potential vs. energy plot at pH=0
 fig2, ax2 = plt.subplots(figsize=(7, 6), dpi=100)
@@ -352,13 +364,31 @@ ax2.tick_params(right=True, direction="in")
 
 # Calculate energy at specific pH
 all_energies = []
-for k in range(2, len(surfs)):
+
+# Calculate lowest surfaces at target_pH directly using dg function
+lowest_surfaces_pH = np.zeros(len(Urange))
+for Uindex, U in enumerate(Urange):
+    values = []
+    for k in range(nsurfs):
+        value = dg(k, pH=target_pH, U=U, concentration=1e-6, n_ref=n_ref)
+        values.append(value)
+    sorted_values = sorted(range(len(values)), key=lambda k: values[k])
+    lowest_surfaces_pH[Uindex] = sorted_values[0]
+
+unique_ids_pH = np.unique(lowest_surfaces_pH.astype(int))
+unique_ids_set = set(unique_ids_pH)  # unique_ids를 set으로 변환하여 검색 속도 향상
+
+for k in range(nsurfs):
     energies = np.zeros(len(Urange))
     for i, U in enumerate(Urange):
-        energy = dg(k, target_pH, U, concentration=1e-6)
+        energy = dg(k, target_pH, U, concentration=1e-6, n_ref=n_ref)
         energies[i] = energy
     all_energies.extend(energies)
-    ax2.plot(Urange, energies, label=surfs[k][10], lw=0.5)
+    
+    if k in unique_ids_set:
+        ax2.plot(Urange, energies, label=surfs[k][10], lw=0.5)
+    else:
+        ax2.plot(Urange, energies, lw=0.5)
 
 # Adjust y-axis range
 y_min = min(all_energies)
@@ -369,16 +399,11 @@ ax2.set_ylim(y_min - y_margin, y_max + y_margin)
 ax2.set_xlim(Umin, Umax)
 ax2.grid(True, linestyle='--', alpha=0.3)
 
-ncol = 2 if BULK_PB else 1
 ax2.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., 
-           fontsize='small', ncol=ncol, handlelength=3, edgecolor='black')
+           fontsize='small', ncol=1, handlelength=3, edgecolor='black')
 
 plt.tight_layout()
 plt.savefig(f'{save_dir}{png_name}_pH{target_pH}{suffix}.png', dpi=300, bbox_inches='tight')
-
-# Save original Pourbaix diagram
-plt.figure(1)
-plt.savefig(f'{save_dir}{png_name}{suffix}.png', dpi=300, bbox_inches='tight')
 print(f"Saved plots to {png_name}{suffix}.png and {png_name}_pH{target_pH}{suffix}.png")
 
 if args.show:

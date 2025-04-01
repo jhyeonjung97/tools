@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python ~/bin/tools/cep/pourbaixGC.py --gc --bulk
-python ~/bin/tools/cep/pourbaixGC.py --bulk
-python ~/bin/tools/cep/pourbaixGC.py --gc
-python ~/bin/tools/cep/pourbaixGC.py
+python ~/bin/tools/cep/pourbaixGC.py --save-dir --gc --bulk
+python ~/bin/tools/cep/pourbaixGC.py --save-dir --bulk
+python ~/bin/tools/cep/pourbaixGC.py --save-dir --gc
+python ~/bin/tools/cep/pourbaixGC.py --save-dir
