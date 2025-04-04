@@ -8,7 +8,7 @@ LOG_FILE="bulk_pred_$(date +%Y%m%d_%H%M%S).log"
     echo "Starting bulk prediction analysis at $(date)"
     echo "----------------------------------------"
     
-    for model in gbr; do # lr rf gpr 
+    for model in gpr gbr rf lr; do
         for Y in form coh; do
             echo "Running model: $model, target: $Y"
             python ~/bin/tools/tetra/bulk_pred.py --model $model --Y $Y 2>&1

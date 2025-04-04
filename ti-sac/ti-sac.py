@@ -25,6 +25,8 @@ parser.add_argument('--show', action='store_true', help='Show the plot')
 parser.add_argument('--save-dir', action='store_true', help='Save to predefined directory')
 parser.add_argument('--ph', type=int, default=0, help='pH value for the plot (default: 0)')
 parser.add_argument('--tick', type=float, default=0.01, help='Tick size for pH and U ranges (default: 0.01)')
+parser.add_argument('--x', type=float, default=7, help='Figure width in inches (default: 7)')
+parser.add_argument('--y', type=float, default=6, help='Figure height in inches (default: 6)')
 args = parser.parse_args()
 
 GCDFT = args.gc
@@ -214,18 +216,6 @@ surfs = [
     # ['E', '#M(Ti)', '#N', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
     [-269.569746,   0, 0, +0, 0, 0, 0, 0, 0, 0, 0, 'vac'],
     [-279.340765,   0, 0, +0, 2, 0, 0, 0, 0, 0, 0, 'vac(H₂)'],
-    # [-290.30625044, 1, 0, +0, 0, 1, 0, 0, 0, 0, 0, '*OH'],
-    # [-286.71959099, 1, 0, +0, 0, 0, 0, 0, 0, 0, 0, '*O'],
-    # [-301.53899925, 1, 0, +0, 0, 2, 0, 0, 0, 0, 0, '*OH+*OH(adj)'],
-    # [-300.39500297, 1, 0, +0, 0, 2, 0, 0, 0, 0, 0, '*OH+*OH(anti)'],
-    # [-295.43972963, 1, 0, +0, 0, 1, 1, 0, 0, 0, 0, '*O+*OH(anti)'],
-    # [-295.43511415, 1, 0, +0, 0, 1, 1, 0, 0, 0, 0, '*OH+*O(anti)'],
-    # [-289.47051131, 1, 0, +0, 0, 0, 2, 0, 0, 0, 0, '*O+*O(anti)'],
-    # [-291.63620335, 1, 0, +0, 0, 0, 2, 0, 0, 0, 0, '*O₂'],
-    # [-300.01076906, 1, 0, +0, 0, 0, 1, 1, 0, 0, 0, '*O+*OOH(anti)'],
-    # [-304.62550385, 1, 0, +0, 0, 1, 0, 1, 0, 0, 0, '*OH+*OOH(anti)'],
-    # [-294.51658115, 0, 0, +0, 0, 0, 0, 1, 0, 0, 0, '*OOH'],
-    # [-309.56150674, 0, 0, +0, 0, 0, 0, 2, 0, 0, 0, '*OOH+*OOH(adj)'],
     [-304.97333512, 1, 1, +0, 0, 0, 3, 0, 0, 0, 0, '*NO₃(mono)'],
     [-305.14580502, 1, 1, +0, 0, 0, 3, 0, 0, 0, 0, '*NO₃(bi)'],
     [-277.22964386, 1, 0, +0, 0, 0, 0, 0, 0, 0, 0, '*'],
@@ -422,7 +412,7 @@ for sid in sorted(min_coords):
     print(f"Surface {sid}: x = {x:.2f}, y = {y:.2f}, name = {name}")
 
 # Set Axes Limits and Labels
-fig, ax = plt.subplots(figsize=(7, 6), dpi=100)
+fig, ax = plt.subplots(figsize=(args.x, args.y), dpi=100)
 ax.axis([0, 14, Umin, Umax])
 ax.set_xlabel('pH', labelpad=0)
 ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
@@ -529,7 +519,7 @@ plt.tight_layout()
 plt.savefig(f'{save_dir}{png_name}{suffix}.png', dpi=300, bbox_inches='tight')
 
 # Add potential vs. energy plot at pH=0
-fig2, ax2 = plt.subplots(figsize=(7, 6), dpi=100)
+fig2, ax2 = plt.subplots(figsize=(args.x, args.y), dpi=100)
 ax2.axis([Umin, Umax, None, None])
 ax2.set_xlabel('E (V vs. SHE)', labelpad=0)
 ax2.set_ylabel('ΔG (eV)', labelpad=-6)

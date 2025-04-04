@@ -13,7 +13,7 @@ from sklearn.metrics import make_scorer
 # Scikit-learn imports
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.preprocessing import StandardScaler, RobustScaler
-from sklearn.model_selection import train_test_split, KFold, cross_val_score
+from sklearn.model_selection import train_test_split, KFold, cross_val_score, StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
@@ -37,13 +37,13 @@ BOLD = '\033[1m'
 hostname = socket.gethostname()
 user_name = os.getlogin()
 if hostname == 'PC102616':
-    root = '/Users/jiuy97/Desktop/7_V_bulk/figures'
+    root = '/Users/jiuy97/Desktop/7_V_bulk/figures/'
 elif user_name == 'jiuy97':
-    root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
-elif user_name == 'hailey':
-    root = '/Users/hailey/Desktop/7_V_bulk/figures'
+    root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures/'
+elif user_name == 'hailey' or user_name == 'root':
+    root = '/Users/hailey/Desktop/7_V_bulk/figures/'
 else:
-    raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
+    raise ValueError(f"Unknown hostname: {hostname} or user_name: {user_name}. Please set the root path manually.")
 
 ylabels = {
     'coord': 'Coordination',
@@ -100,7 +100,7 @@ def plot_confusion_matrix(y_true, y_pred, output_path):
     # Get unique coordination types
     coord_types = sorted(list(set(y_true) | set(y_pred)))
     
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(4, 3))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
                 xticklabels=coord_types,
                 yticklabels=coord_types)
@@ -112,7 +112,7 @@ def plot_confusion_matrix(y_true, y_pred, output_path):
 
 def plot_feature_importance(importance, output_path):
     """Plot feature importance"""
-    plt.figure(figsize=(12, 6))  # 가로로 긴 레이아웃으로 변경
+    plt.figure(figsize=(4, 3))  # 가로로 긴 레이아웃으로 변경
     # 내림차순으로 정렬하고 수직 막대 그래프로 표시
     ax = importance.sort_values(ascending=False).plot(kind='bar')
     plt.ylabel('Feature Importance (Normalized)')
@@ -195,11 +195,24 @@ def main():
     # Drop rows with NaN in any relevant column
     df = df.dropna(subset=args.X + ['coord'])
 
+    # Remove classes with only one sample
+    class_counts = df['coord'].value_counts()
+    single_sample_classes = class_counts[class_counts == 1].index
+    if len(single_sample_classes) > 0:
+        print(f"{YELLOW}Warning: Removing classes with only one sample: {single_sample_classes.tolist()}{ENDC}")
+        df = df[~df['coord'].isin(single_sample_classes)]
+
     X = df[args.X].astype(float)
     y = df['coord']
 
     # Split data into train and test sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=args.test_size, random_state=args.random_state)
+    # Check if we have enough samples for stratification
+    min_class_size = min(y.value_counts())
+    if min_class_size < 2:
+        print(f"{YELLOW}Warning: Some classes have less than 2 samples. Using non-stratified split.{ENDC}")
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=args.test_size, random_state=args.random_state)
+    else:
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=args.test_size, random_state=args.random_state, stratify=y)
 
     # Scale the features
     print("Scaling features...")
@@ -220,7 +233,8 @@ def main():
             min_samples_split=5,
             min_samples_leaf=4,
             max_features='sqrt',
-            random_state=args.random_state
+            random_state=args.random_state,
+            class_weight='balanced'  # Add class weight balancing
         )
     elif args.model == 'gb':
         model = GradientBoostingClassifier(
@@ -238,13 +252,15 @@ def main():
             random_state=args.random_state,
             penalty='elasticnet',
             solver='saga',
-            tol=1e-3
+            tol=1e-3,
+            class_weight='balanced'  # Add class weight balancing
         )
     elif args.model == 'svm':
         model = SVC(
             random_state=args.random_state,
             probability=True,
-            cache_size=1000  # Increase cache size to avoid warnings
+            cache_size=1000,  # Increase cache size to avoid warnings
+            class_weight='balanced'  # Add class weight balancing
         )
     else:
         raise ValueError(f"Unknown model type: {args.model}")
@@ -285,11 +301,18 @@ def main():
     else:
         raise ValueError(f"Unknown model type: {args.model}")
 
+    # Calculate minimum class size and adjust n_splits accordingly
+    min_class_size = min(y_train.value_counts())
+    n_splits = min(5, min_class_size)  # Use minimum of 5 or minimum class size
+    if n_splits < 2:
+        print(f"{YELLOW}Warning: Not enough samples for cross-validation. Using n_splits=2.{ENDC}")
+        n_splits = 2
+    
     bayes_search = BayesSearchCV(
         model,
         search_space,
         n_iter=50,
-        cv=5,
+        cv=StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=args.random_state),
         scoring='accuracy',
         n_jobs=1,
         random_state=args.random_state,
@@ -305,10 +328,11 @@ def main():
     # Perform cross-validation
     print("Performing cross-validation...")
     cv_start = time.time()
-    kf = KFold(n_splits=5, shuffle=True, random_state=args.random_state)
     
     # Calculate multiple metrics for cross-validation
-    cv_accuracy = cross_val_score(model, X_train_scaled, y_train, cv=kf, scoring='accuracy')
+    cv_accuracy = cross_val_score(model, X_train_scaled, y_train, 
+                                cv=StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=args.random_state), 
+                                scoring='accuracy')
     
     # Define custom scoring functions for multi-class classification
     def custom_precision(y_true, y_pred):
@@ -326,9 +350,15 @@ def main():
     f1_scorer = make_scorer(custom_f1)
     
     # Calculate scores using scorers
-    cv_precision = cross_val_score(model, X_train_scaled, y_train, cv=kf, scoring=precision_scorer)
-    cv_recall = cross_val_score(model, X_train_scaled, y_train, cv=kf, scoring=recall_scorer)
-    cv_f1 = cross_val_score(model, X_train_scaled, y_train, cv=kf, scoring=f1_scorer)
+    cv_precision = cross_val_score(model, X_train_scaled, y_train, 
+                                 cv=StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=args.random_state), 
+                                 scoring=precision_scorer)
+    cv_recall = cross_val_score(model, X_train_scaled, y_train, 
+                              cv=StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=args.random_state), 
+                              scoring=recall_scorer)
+    cv_f1 = cross_val_score(model, X_train_scaled, y_train, 
+                          cv=StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=args.random_state), 
+                          scoring=f1_scorer)
     
     print_time("Cross-validation completed", time.time() - cv_start)
     print(f"{MAGENTA}Cross-validation Accuracy scores: {cv_accuracy}{ENDC}")
@@ -395,7 +425,7 @@ def main():
     print_time("Feature importance calculation completed", time.time() - importance_start)
 
     # Save results
-    output_suffix = args.output
+    output_suffix = f"{args.output}_{args.model}"
     print("Saving results...")
     save_start = time.time()
 
