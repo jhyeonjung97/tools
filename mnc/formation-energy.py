@@ -1537,11 +1537,11 @@ if __name__ == '__main__':
                label='HS (constrained Δz, enforced spin)', markersize=8, linestyle='None'),
     
         Line2D([0], [0], marker='s', color='#ff7f0e', 
-               label='LS (relaxed Δz, free spin)', markersize=8, linestyle='None'),
+               label='LS (relaxed Δz, enforced spin)', markersize=8, linestyle='None'),
         Line2D([0], [0], marker='s', color='#279ff2', 
-               label='IS (relaxed Δz, free spin)', markersize=8, linestyle='None'),
+               label='IS (relaxed Δz, enforced spin)', markersize=8, linestyle='None'),
         Line2D([0], [0], marker='s', color='#9467bd', 
-               label='HS (relaxed Δz, free spin)', markersize=8, linestyle='None'),
+               label='HS (relaxed Δz, enforced spin)', markersize=8, linestyle='None'),
     
         Line2D([0], [0], marker='x', color='#ff7f0e', 
                label='LS (constrained Δz, free spin)', markersize=8, linestyle='None'),
