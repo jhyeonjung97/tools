@@ -24,6 +24,7 @@ parser.add_argument('--ph', type=int, default=0, help='pH value for the plot (de
 parser.add_argument('--tick', type=float, default=0.01, help='Tick size for pH and U ranges (default: 0.01)')
 parser.add_argument('--x', type=float, default=7, help='Figure width in inches (default: 7)')
 parser.add_argument('--y', type=float, default=6, help='Figure height in inches (default: 6)')
+parser.add_argument('--no-legend', action='store_true', default=False, help='No legend (default: False)')
 args = parser.parse_args()
 
 GCDFT = args.gc
@@ -138,12 +139,12 @@ ions = [
 solids = [
     # ['Ef', '#M(=Fe)', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'name']
     [0,               1, +0, 0, 0, 0, 0, 0, 0, 0, 'Fe'],
-    [-58.880/calmol,  1, +0, 0, 0, 1, 0, 0, 0, 0, 'FeO'],
-    [-242.400/calmol, 3, +0, 0, 0, 4, 0, 0, 0, 0, 'Fe₃O₄'],
-    [-177.100/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
-    [-161.930/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
-    [-115.570/calmol, 1, +0, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂'],
-    [-166.000/calmol, 1, +0, 0, 3, 0, 0, 0, 0, 0, 'Fe(OH)₃'],
+    # [-58.880/calmol,  1, +0, 0, 0, 1, 0, 0, 0, 0, 'FeO'],
+    # [-242.400/calmol, 3, +0, 0, 0, 4, 0, 0, 0, 0, 'Fe₃O₄'],
+    # [-177.100/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
+    # [-161.930/calmol, 2, +0, 0, 0, 3, 0, 0, 0, 0, 'Fe₂O₃'],
+    # [-115.570/calmol, 1, +0, 0, 2, 0, 0, 0, 0, 0, 'Fe(OH)₂'],
+    # [-166.000/calmol, 1, +0, 0, 3, 0, 0, 0, 0, 0, 'Fe(OH)₃'],
 ]
 
 nions, nsolids = len(ions), len(solids)
@@ -360,13 +361,14 @@ for idx, surf_id in enumerate(unique_ids):
 pH_grid, U = np.meshgrid(pHrange, Urange)
 plt.pcolormesh(pH_grid, U, mapped_surfaces, cmap=cmap, norm=norm)
 
-plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., 
-           fontsize='small', ncol=1, handlelength=3, edgecolor='black') 
+if not args.no_legend:
+    plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., 
+               fontsize='small', ncol=1, handlelength=3, edgecolor='black') 
 
 plt.plot(pHrange, 1.23-pHrange*const, '--', lw=1, color='mediumblue')
-ax.text(0.2, 1.23+0.12, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$', rotation=-13, color='mediumblue', ha='left', va='top')
+# ax.text(0.2, 1.23+0.12, r'2H$_2$O $\leftrightarrow$ 4H$^+$+O$_2$+4e$^-$', rotation=-13, color='mediumblue', ha='left', va='top')
 plt.plot(pHrange, 0-pHrange*const, '--', lw=1, color='mediumblue')
-ax.text(0.2, 0+0.12, r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$', rotation=-13, color='mediumblue', ha='left', va='top')
+# ax.text(0.2, 0+0.12, r'H$_2 $ $\leftrightarrow$ 2H$^+$+$\ $2e$^-$', rotation=-13, color='mediumblue', ha='left', va='top')
 
 plt.tight_layout()
 plt.savefig(f'{save_dir}{png_name}{suffix}.png', dpi=300, bbox_inches='tight')
@@ -415,8 +417,9 @@ ax2.set_ylim(y_min - y_margin, y_max + y_margin)
 ax2.set_xlim(Umin, Umax)
 ax2.grid(True, linestyle='--', alpha=0.3)
 
-ax2.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., 
-           fontsize='small', ncol=1, handlelength=3, edgecolor='black')
+if not args.no_legend:
+    ax2.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., 
+               fontsize='small', ncol=1, handlelength=3, edgecolor='black')
 
 plt.tight_layout()
 plt.savefig(f'{save_dir}{png_name}_pH{target_pH}{suffix}.png', dpi=300, bbox_inches='tight')
