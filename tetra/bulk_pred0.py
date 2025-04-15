@@ -9,7 +9,7 @@ from tqdm import tqdm
 import time
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RationalQuadratic, WhiteKernel, ConstantKernel
-from sklearn.preprocessing import StandardScaler, RobustScaler
+from sklearn.preprocessing import StandardScaler, RobustScaler, SimpleImputer
 from sklearn.model_selection import train_test_split, KFold, cross_val_score
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score, max_error
 from sklearn.pipeline import Pipeline
@@ -556,20 +556,48 @@ def main():
     df = df.drop(columns=['row_mend', 'numb_bulk'])
     df = df[df['row'] != 'fm']
 
+    # Print dataset size
+    print(f"\nDataset size before filtering:")
+    print(f"Total rows: {len(df)}")
+    print(f"Total columns: {len(df.columns)}")
+    print(f"Features used: {len(args.X)}")
+    print(f"Target variable: {args.Y}")
+
     if args.row:
         df = df[df['row'].isin(args.row)]
     if args.coord:
         df = df[df['coord'].isin(args.coord)]
 
-    # Drop rows with NaN in any relevant column
-    all_columns = args.X + [args.Y]
-    df = df.dropna(subset=all_columns)
+    # Print dataset size after filtering
+    print(f"\nDataset size after filtering:")
+    print(f"Total rows: {len(df)}")
+    print(f"Total columns: {len(df.columns)}")
+    print(f"Features used: {len(args.X)}")
+    print(f"Target variable: {args.Y}")
 
+    # Handle missing values in both X and y
     X = df[args.X].astype(float)
     y = df[args.Y].astype(float)
+    
+    # Drop rows where y is NaN
+    valid_indices = ~y.isna()
+    X = X[valid_indices]
+    y = y[valid_indices]
+    
+    # Handle remaining missing values in X
+    imputer = SimpleImputer(strategy='median')
+    X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns, index=X.index)
 
-    # Split data into train and test sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=args.test_size, random_state=args.random_state)
+    # Split into train and test
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_imputed, y, test_size=0.2, random_state=args.random_state
+    )
+
+    # Print training and test dataset sizes
+    print(f"\nTraining and test dataset sizes:")
+    print(f"Training data: {len(X_train)} samples")
+    print(f"Test data: {len(X_test)} samples")
+    print(f"Total data: {len(X_train) + len(X_test)} samples")
 
     # Scale the features
     print("Scaling features...")
@@ -655,7 +683,7 @@ def main():
         # No hyperparameter optimization needed for LR
         search_space = {}
 
-    # Perform Bayesian Optimization
+    # Train model with hyperparameter optimization
     print("Performing Bayesian Optimization...")
     bayes_start = time.time()
     if args.model != 'lr':  # LR 모델은 하이퍼파라미터 최적화가 필요 없음
