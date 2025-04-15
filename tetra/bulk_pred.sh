@@ -1,11 +1,12 @@
 #!/bin/bash
 
-
 for model in gpr gbr rf lr; do
-    python ~/bin/tools/tetra/bulk_pred9.py --model $model --Y form --output threshold7 --X chg dipole density ion1 volume ICOOPn Hfus ion3 mag n_bond grosspop
-    python ~/bin/tools/tetra/bulk_pred9.py --model $model --Y form --output threshold8 --X chg ion12 numb density Rcoval ion1 Natom volume ICOOPn l_bond madelung Hfus ion3 mag n_bond grosspop
-    python ~/bin/tools/tetra/bulk_pred9.py --model $model --Y form --output threshold9 --X chg pauling ion12 dipole numb density Rcoval ion1 Vatom Natom Rvdw volume ICOOPn ICOBIm l_bond madelung Hfus ion3 mag Hevap n_bond grosspop
-    python ~/bin/tools/tetra/bulk_pred9.py --model $model --Y form --output threshold0
+    for numb in 0 7 8 9; do
+        python ~/bin/tools/tetra/bulk_pred${numb}.py --model $model --Y form --output threshold7_old${numb} --X chg dipole density ion1 volume ICOOPn Hfus ion3 mag n_bond grosspop
+        python ~/bin/tools/tetra/bulk_pred${numb}.py --model $model --Y form --output threshold8_old${numb} --X chg ion12 numb density Rcoval ion1 Natom volume ICOOPn l_bond madelung Hfus ion3 mag n_bond grosspop
+        python ~/bin/tools/tetra/bulk_pred${numb}.py --model $model --Y form --output threshold9_old${numb} --X chg pauling ion12 dipole numb density Rcoval ion1 Vatom Natom Rvdw volume ICOOPn ICOBIm l_bond madelung Hfus ion3 mag Hevap n_bond grosspop
+        python ~/bin/tools/tetra/bulk_pred${numb}.py --model $model --Y form --output threshold0_old${numb}
+    done
 done
 
 # # 현재 날짜와 시간으로 로그 파일명 생성

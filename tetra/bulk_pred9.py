@@ -15,10 +15,8 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score, m
 from sklearn.pipeline import Pipeline
 from skopt import BayesSearchCV
 from skopt.space import Real, Integer, Categorical
-from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor, VotingRegressor
+from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
-from sklearn.svm import SVR
-from sklearn.neural_network import MLPRegressor
 from sklearn.utils.optimize import _check_optimize_result
 import scipy.optimize
 import socket
@@ -169,23 +167,11 @@ def get_model(model_type, random_state=42):
             min_samples_leaf=1,
             random_state=random_state
         )
-    elif model_type == 'svr':
-        return SVR(kernel='rbf', C=1.0, epsilon=0.1)
-    elif model_type == 'mlp':
-        return MLPRegressor(
-            hidden_layer_sizes=(100, 50),
-            activation='relu',
-            solver='adam',
-            max_iter=1000,
+    elif model_type == 'lr':
+        return Ridge(
+            alpha=1.0,
             random_state=random_state
         )
-    elif model_type == 'ensemble':
-        estimators = [
-            ('gbr', get_model('gbr', random_state)),
-            ('rf', get_model('rf', random_state)),
-            ('svr', get_model('svr'))
-        ]
-        return VotingRegressor(estimators=estimators)
     else:
         raise ValueError(f"Unknown model type: {model_type}")
 
@@ -233,18 +219,9 @@ def optimize_hyperparameters(model, X, y, model_type, cv=5):
             'min_samples_split': [2, 5, 10],
             'min_samples_leaf': [1, 2, 4]
         }
-    elif model_type == 'svr':
+    elif model_type == 'lr':
         param_grid = {
-            'C': [0.1, 1.0, 10.0],
-            'epsilon': [0.01, 0.1, 1.0],
-            'kernel': ['linear', 'rbf', 'poly']
-        }
-    elif model_type == 'mlp':
-        param_grid = {
-            'hidden_layer_sizes': [(50,), (100,), (100, 50)],
-            'activation': ['relu', 'tanh'],
-            'solver': ['adam', 'lbfgs'],
-            'alpha': [0.0001, 0.001, 0.01]
+            'alpha': [0.1, 1.0, 10.0]
         }
     else:
         return model
@@ -275,20 +252,11 @@ def get_prediction_std(model, X, model_type):
         # For RF, use the standard deviation of predictions from individual trees
         predictions = np.array([tree.predict(X) for tree in model.estimators_])
         return np.std(predictions, axis=0)
-    elif model_type == 'svr':
-        # For SVR, use the standard deviation of the residuals as a simple uncertainty estimate
+    elif model_type == 'lr':
+        # For LR, use the standard deviation of the residuals as a simple uncertainty estimate
         y_pred = model.predict(X)
         residuals = y_pred - model.predict(X)
         return np.std(residuals) * np.ones(len(X))
-    elif model_type == 'mlp':
-        # For MLP, use the standard deviation of the residuals as a simple uncertainty estimate
-        y_pred = model.predict(X)
-        residuals = y_pred - model.predict(X)
-        return np.std(residuals) * np.ones(len(X))
-    elif model_type == 'ensemble':
-        # For ensemble, use the standard deviation of predictions from individual models
-        predictions = np.array([estimator.predict(X) for estimator in model.estimators_])
-        return np.std(predictions, axis=0)
     else:
         # For other models, return zeros as a fallback
         return np.zeros(len(X))
@@ -579,7 +547,7 @@ def main():
     print("Starting enhanced bulk prediction analysis...")
     
     parser = argparse.ArgumentParser(description='Enhanced bulk prediction with multiple optimization techniques')
-    parser.add_argument('--model', type=str, choices=['gpr', 'gbr', 'rf', 'svr', 'mlp', 'ensemble'], default='gbr',
+    parser.add_argument('--model', type=str, choices=['gpr', 'gbr', 'rf', 'lr'], default='gbr',
                       help='Model type to use')
     parser.add_argument('--Y', type=str, choices=['form', 'coh'], default='form',
                       help='Target column from bulk_data.csv (form or coh)')
