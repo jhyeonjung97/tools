@@ -9,7 +9,8 @@ from tqdm import tqdm
 import time
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RationalQuadratic, WhiteKernel, ConstantKernel
-from sklearn.preprocessing import StandardScaler, RobustScaler, SimpleImputer
+from sklearn.preprocessing import StandardScaler, RobustScaler
+from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split, KFold, cross_val_score
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score, max_error
 from sklearn.pipeline import Pipeline
@@ -819,12 +820,12 @@ def main():
 
     # Save predictions
     df_result = pd.DataFrame({
-        'metal': df.index,
-        'row': df['row'],
-        'coord': df['coord'],
+        'metal': df.loc[valid_indices, 'metal'],
+        'row': df.loc[valid_indices, 'row'],
+        'coord': df.loc[valid_indices, 'coord'],
         'Y_true': y,
-        'Y_pred': model.predict(scaler.transform(X)),
-        'std': get_prediction_std(model, scaler.transform(X), model_type=args.model)
+        'Y_pred': model.predict(scaler.transform(X_imputed)),
+        'std': get_prediction_std(model, scaler.transform(X_imputed), model_type=args.model)
     })
     
     # Extract actual metal name from the index
