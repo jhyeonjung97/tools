@@ -525,7 +525,7 @@ def main():
         root = '/Users/jiuy97/Desktop/7_V_bulk/figures'
     elif user_name == 'jiuy97':
         root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
-    elif user_name == 'hailey':
+    elif user_name == 'hailey' or user_name == 'root':
         root = '/Users/hailey/Desktop/7_V_bulk/figures'
     else:
         raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
@@ -829,7 +829,9 @@ def main():
     })
     
     # Extract actual metal name from the index
-    df_result['metal'] = df_result.apply(lambda row: df.loc[row['metal'], 'metal'], axis=1)
+    df_result['metal'] = df_result['metal']  # 단순히 metal 컬럼 유지
+    # 또는
+    # df_result = df_result.merge(df[['metal']], on='metal', how='left')  # merge 사용
     
     df_result.to_csv(tsv_path, sep='\t', index=False)
     print(f"{BLUE}TSV file saved as {tsv_path}{ENDC}")

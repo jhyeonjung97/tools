@@ -21,7 +21,8 @@ from sklearn.utils.optimize import _check_optimize_result
 import scipy.optimize
 import socket
 from sklearn.decomposition import PCA
-from sklearn.feature_selection import RFE, RFECV
+from sklearn.feature_selection import RFE, RFECV, SelectFromModel
+from scipy import stats
 
 # ANSI color codes
 RED = '\033[91m'
@@ -176,46 +177,28 @@ def feature_importance(X, y, model, feature_names, model_type='gpr'):
     else:  # lr
         return pd.Series(np.abs(model.coef_), index=feature_names)
 
-def get_prediction_std(model, X, n_iterations=100, model_type='gpr'):
+def get_prediction_std(model, X, model_type='gpr'):
     """
-    Estimate prediction uncertainty
-    Args:
-        model: Trained model (GPR, GBR, RF, or LR)
-        X: Input features
-        n_iterations: Number of bootstrap iterations (for GBR/RF)
-        model_type: Type of model ('gpr', 'gbr', 'rf', or 'lr')
-    Returns:
-        Standard deviation of predictions
+    Calculate prediction standard deviation for different model types
     """
     if model_type == 'gpr':
+        # GPR의 경우 내장된 불확실성 추정 사용
         _, std = model.predict(X, return_std=True)
         return std
     elif model_type in ['gbr', 'rf']:
-        predictions = []
-        n_estimators = len(model.estimators_) if hasattr(model, 'estimators_') else model.n_estimators
-        
-        for i in range(n_iterations):
-            if model_type == 'rf':
-                # RF의 경우 estimators_ 속성을 직접 사용
-                indices = np.random.choice(n_estimators, size=n_estimators//2, replace=False)
-                pred = np.zeros(X.shape[0])
-                for idx in indices:
-                    pred += model.estimators_[idx].predict(X)
-                pred /= len(indices)
-            else:  # GBR
-                # GBR의 경우 staged_predict 사용
-                pred = np.zeros(X.shape[0])
-                for y_pred in model.staged_predict(X):
-                    pred = y_pred  # 마지막 예측값 사용
-                predictions.append(pred)
-                continue
-            predictions.append(pred)
-        return np.std(predictions, axis=0)
+        # GBR과 RF의 경우 개별 트리의 예측값들의 표준편차 사용
+        if hasattr(model, 'estimators_'):
+            predictions = np.array([tree.predict(X) for tree in model.estimators_])
+            return np.std(predictions, axis=0)
+        else:
+            # staged_predict 사용 (GBR의 경우)
+            predictions = np.array([pred for pred in model.staged_predict(X)])
+            return np.std(predictions, axis=0)
     else:  # lr
-        # For LR, we'll use the standard deviation of the residuals as a simple uncertainty estimate
+        # LR의 경우 잔차의 표준편차를 사용
         y_pred = model.predict(X)
         residuals = y_pred - model.predict(X)
-        return np.std(residuals) * np.ones(X.shape[0])
+        return np.std(residuals) * np.ones(len(X))
 
 def get_preferred_coordination(energies):
     """Get the coordination with minimum energy"""
@@ -531,6 +514,12 @@ def plot_training_metrics(train_mae, train_mse, test_mae, test_mse, output_dir, 
     plt.close()
     print(f"{BLUE}MSE training metrics plot saved as {mse_path}{ENDC}")
 
+def remove_outliers(X, y, n_sigma=3):
+    """Remove outliers based on z-score"""
+    z_scores = np.abs(stats.zscore(y))
+    mask = z_scores < n_sigma
+    return X[mask], y[mask]
+
 def main():
     start_time = time.time()
     print("Starting bulk prediction analysis...")
@@ -554,7 +543,7 @@ def main():
     parser.add_argument('--random_state', type=int, default=42, help='Random state for reproducibility (default: 42)')
     parser.add_argument('--threshold', type=float, default=0.2,
                        help='Energy threshold (eV) for considering multiple coordinations in preference analysis')
-    parser.add_argument('--scaler', type=str, choices=['standard', 'robust'], default='standard',
+    parser.add_argument('--scaler', type=str, choices=['standard', 'robust'], default='robust',
                        help='Scaler to use for feature scaling')
     parser.add_argument('--feature_selection', type=str, choices=['none', 'rfe', 'rfecv'], default='none',
                        help='Feature selection method')
@@ -575,7 +564,7 @@ def main():
         root = '/Users/jiuy97/Desktop/7_V_bulk/figures'
     elif user_name == 'jiuy97':
         root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
-    elif user_name == 'hailey':
+    elif user_name == 'hailey' or user_name == 'root':
         root = '/Users/hailey/Desktop/7_V_bulk/figures'
     else:
         raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
@@ -638,11 +627,12 @@ def main():
         # Scale features
         print("Scaling features...")
         scale_start = time.time()
-        scaler = get_scaler(args.scaler)
+        scaler = RobustScaler()
         X = df[args.X].astype(float)
         y = df[args.Y].astype(float)
+        X_cleaned, y_cleaned = remove_outliers(X, y)
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=args.random_state
+            X_cleaned, y_cleaned, test_size=0.2, random_state=args.random_state
         )
         X_train_scaled = pd.DataFrame(scaler.fit_transform(X_train), columns=X_train.columns, index=X_train.index)
         X_test_scaled = pd.DataFrame(scaler.transform(X_test), columns=X_test.columns, index=X_test.index)
@@ -652,12 +642,12 @@ def main():
         if args.feature_selection != 'none':
             print("Performing feature selection...")
             feature_start = time.time()
-            selected_indices = feature_selection(
-                X_train_scaled, y_train, 
-                method=args.feature_selection,
-                model_type=args.model,
-                n_features=args.n_features
+            feature_selection = SelectFromModel(
+                GradientBoostingRegressor(random_state=42),
+                max_features=20  # 적절한 특성 수 선택
             )
+            feature_selection.fit(X_train_scaled, y_train)
+            selected_indices = feature_selection.get_support(indices=True)
             X_train_scaled = X_train_scaled.iloc[:, selected_indices]
             X_test_scaled = X_test_scaled.iloc[:, selected_indices]
             selected_features = [X_train.columns[i] for i in selected_indices]
@@ -682,35 +672,42 @@ def main():
 
         # Train model with hyperparameter optimization
         if args.model == 'gpr':
-            # GPR model setup
-            kernel = ConstantKernel(1.0, constant_value_bounds=(1e-5, 1e5)) * RationalQuadratic(
+            # 커널 파라미터 조정
+            kernel = ConstantKernel(1.0, constant_value_bounds=(1e-3, 1e3)) * RBF(
                 length_scale=1.0,
-                alpha=1.0,
-                length_scale_bounds=(1e-6, 1e6),
-                alpha_bounds=(1e-6, 1e7)
-            ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-7, 1e5))
+                length_scale_bounds=(1e-2, 1e2)  # 범위를 좁혀서 과적합 방지
+            ) + WhiteKernel(
+                noise_level=1.0,
+                noise_level_bounds=(1e-2, 1e2)  # 노이즈 레벨 증가
+            )
             
             model = MyGPR(
                 kernel=kernel,
                 random_state=args.random_state,
-                n_restarts_optimizer=50,
-                alpha=1e-6,
+                n_restarts_optimizer=5,  # 재시작 횟수 감소
+                alpha=1e-1,  # 정규화 강화
                 optimizer='fmin_l_bfgs_b',
                 normalize_y=True,
-                max_iter=1e06,
-                gtol=1e-3
+                max_iter=1000,  # 반복 횟수 제한
+                gtol=1e-3  # 수렴 기준 완화
             )
-        elif args.model == 'gbr':
-            model = GradientBoostingRegressor(random_state=args.random_state)
+
+            # Bayesian Optimization for GPR with reduced search space
             search_space = {
-                'n_estimators': Integer(150, 300),
-                'learning_rate': Real(0.005, 0.015),
-                'max_depth': Integer(3, 4),
-                'min_samples_split': Integer(10, 15),
-                'min_samples_leaf': Integer(8, 12),
-                'subsample': Real(0.7, 0.85),
-                'max_features': Real(0.7, 0.85)
+                'kernel__k1__k2__length_scale': Real(1e-2, 1e2, prior='log-uniform'),
+                'kernel__k2__noise_level': Real(1e-2, 1e2, prior='log-uniform')
             }
+        elif args.model == 'gbr':
+            model = GradientBoostingRegressor(
+                n_estimators=300,  # 증가
+                learning_rate=0.01,  # 감소
+                max_depth=4,  # 적절히 조정
+                min_samples_split=10,  # 증가
+                min_samples_leaf=5,  # 증가
+                subsample=0.8,
+                max_features=0.8,
+                random_state=args.random_state
+            )
         elif args.model == 'rf':
             model = RandomForestRegressor(random_state=args.random_state)
             search_space = {
@@ -768,37 +765,26 @@ def main():
         print("Creating parity plot...")
         plt.figure(figsize=(10, 8))
 
-        # Create DataFrames for train and test sets
-        df_train = pd.DataFrame(X_train_scaled, columns=X_train_scaled.columns)
-        df_train['Y'] = y_train
-        df_train['Y_pred'] = y_pred_train
-        df_train['std'] = std_train
-        df_train['row'] = df.loc[X_train_scaled.index, 'row']
-        df_train['coord'] = df.loc[X_train_scaled.index, 'coord']
-        df_train['metal'] = df.loc[X_train_scaled.index, 'metal']
-
-        df_test = pd.DataFrame(X_test_scaled, columns=X_test_scaled.columns)
-        df_test['Y'] = y_test
-        df_test['Y_pred'] = y_pred_test
-        df_test['std'] = std_test
-        df_test['row'] = df.loc[X_test_scaled.index, 'row']
-        df_test['coord'] = df.loc[X_test_scaled.index, 'coord']
-        df_test['metal'] = df.loc[X_test_scaled.index, 'metal']
-
         # Define color and marker mappings
         row_map = {'3d': 'red', '4d': 'green', '5d': 'blue'}
         coord_map = {'WZ': '>', 'ZB': '<', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'd', 'LT': 'h'}
+
+        print("\nPlotting data points count check:")
+        plotted_train_points = 0
+        plotted_test_points = 0
 
         # Plot training data with error bars
         for r in df['row'].unique():
             for c in df['coord'].unique():
                 # Plot training data
-                subset_train = df_train[(df_train['row'] == r) & (df_train['coord'] == c)]
-                if not subset_train.empty:
+                train_mask = (df.loc[X_train.index, 'row'] == r) & (df.loc[X_train.index, 'coord'] == c)
+                train_indices = np.where(train_mask)[0]
+                if len(train_indices) > 0:
+                    plotted_train_points += len(train_indices)
                     plt.errorbar(
-                        subset_train['Y'].values,
-                        subset_train['Y_pred'].values,  # 저장된 예측값 사용
-                        yerr=subset_train['std'].values,  # 저장된 표준편차 사용
+                        y_train[train_indices],
+                        y_pred_train[train_indices],
+                        yerr=std_train[train_indices],
                         fmt=coord_map.get(c, 'x'),
                         label=f'{r}_{c}',
                         alpha=0.3,
@@ -810,18 +796,20 @@ def main():
                         linewidth=0.5
                     )
                     # Add labels for training set
-                    for i, (_, row_data) in enumerate(subset_train.iterrows()):
-                        plt.annotate(row_data['metal'], 
-                                   (row_data['Y'], row_data['Y_pred']),  # 저장된 예측값 사용
+                    for i, idx in enumerate(train_indices):
+                        plt.annotate(df.loc[X_train.index[idx], 'metal'], 
+                                   (y_train[idx], y_pred_train[idx]),
                                    fontsize=8)
                 
                 # Plot test data
-                subset_test = df_test[(df_test['row'] == r) & (df_test['coord'] == c)]
-                if not subset_test.empty:
+                test_mask = (df.loc[X_test.index, 'row'] == r) & (df.loc[X_test.index, 'coord'] == c)
+                test_indices = np.where(test_mask)[0]
+                if len(test_indices) > 0:
+                    plotted_test_points += len(test_indices)
                     plt.errorbar(
-                        subset_test['Y'].values,
-                        subset_test['Y_pred'].values,  # 저장된 예측값 사용
-                        yerr=subset_test['std'].values,  # 저장된 표준편차 사용
+                        y_test[test_indices],
+                        y_pred_test[test_indices],
+                        yerr=std_test[test_indices],
                         fmt=coord_map.get(c, 'x'),
                         alpha=0.3,
                         color=row_map.get(r, 'gray'),
@@ -832,9 +820,9 @@ def main():
                         linewidth=0.5
                     )
                     # Add labels for test set
-                    for i, (_, row_data) in enumerate(subset_test.iterrows()):
-                        plt.annotate(row_data['metal'], 
-                                   (row_data['Y'], row_data['Y_pred']),  # 저장된 예측값 사용
+                    for i, idx in enumerate(test_indices):
+                        plt.annotate(df.loc[X_test.index[idx], 'metal'], 
+                                   (y_test[idx], y_pred_test[idx]),
                                    fontsize=8)
 
         plt.plot([y.min(), y.max()], [y.min(), y.max()], '--', lw=1, color='black')
@@ -989,6 +977,25 @@ def main():
             f.write(f"Data preprocessing: {time.time() - preprocess_start:.2f} seconds\n")
             f.write(f"Feature scaling: {time.time() - preprocess_start:.2f} seconds\n")
             f.write(f"Results saving and plotting: {time.time() - preprocess_start:.2f} seconds\n")
+
+        # main 함수 내 데이터 분할 직후에 추가
+        print("\nFormation Energy 분포:")
+        print(f"전체 데이터 범위: {y.min():.2f}eV ~ {y.max():.2f}eV")
+        print(f"-2eV 근처(±0.5eV) 데이터 수: {len(y[(y > -2.5) & (y < -1.5)])}")
+        print(f"전체 데이터 수: {len(y)}")
+
+        plt.figure(figsize=(8, 6))
+        plt.hist(y, bins=30)
+        plt.xlabel('Formation Energy (eV)')
+        plt.ylabel('Count')
+        plt.title('Distribution of Formation Energy')
+        plt.savefig(os.path.join(root, f'{args.Y}_distribution.png'))
+        plt.close()
+
+        print(f"Total training points plotted: {plotted_train_points}")
+        print(f"Actual training set size: {len(X_train)}")
+        print(f"Total test points plotted: {plotted_test_points}")
+        print(f"Actual test set size: {len(X_test)}")
 
     except Exception as e:
         print(f"{RED}Error: {str(e)}{ENDC}")

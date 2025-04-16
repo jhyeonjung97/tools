@@ -510,7 +510,7 @@ def main():
         root = '/Users/jiuy97/Desktop/7_V_bulk/figures'
     elif user_name == 'jiuy97':
         root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
-    elif user_name == 'hailey':
+    elif user_name == 'hailey' or user_name == 'root':
         root = '/Users/hailey/Desktop/7_V_bulk/figures'
     else:
         raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")

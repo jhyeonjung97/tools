@@ -24,6 +24,7 @@ from sklearn.feature_selection import SequentialFeatureSelector, SelectFromModel
 from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.decomposition import PCA
 import warnings
+import scipy.stats as stats
 warnings.filterwarnings('ignore')
 
 # ANSI color codes
@@ -129,51 +130,53 @@ def get_imputer(imputer_type):
     else:
         raise ValueError(f"Unknown imputer type: {imputer_type}")
 
-def get_model(model_type, random_state=42):
-    """Get appropriate model based on type"""
+def get_model(model_type, random_state=42, n_features=None):
+    """Get the appropriate model based on the specified type"""
     if model_type == 'gpr':
-        kernel = ConstantKernel(1.0, constant_value_bounds=(1e-5, 1e5)) * RationalQuadratic(
-            length_scale=1.0,
-            alpha=1.0,
-            length_scale_bounds=(1e-6, 1e6),
-            alpha_bounds=(1e-6, 1e7)
-        ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-7, 1e5))
+        # 커널 파라미터 조정
+        kernel = ConstantKernel(1.0, constant_value_bounds=(1e-3, 1e3)) * RBF(
+            length_scale=1.0,  # 단일 length_scale 사용
+            length_scale_bounds=(1e-2, 1e2)  # 범위를 좁혀서 과적합 방지
+        ) + WhiteKernel(
+            noise_level=1.0,
+            noise_level_bounds=(1e-2, 1e2)  # 노이즈 레벨 증가
+        )
+        
         return EnhancedGPR(
             kernel=kernel,
             random_state=random_state,
-            n_restarts_optimizer=50,
-            alpha=1e-6,
+            n_restarts_optimizer=5,  # 재시작 횟수 감소
+            alpha=1e-1,  # 정규화 강화
             optimizer='fmin_l_bfgs_b',
             normalize_y=True,
-            max_iter=1e06,
-            gtol=1e-3
+            max_iter=1000,  # 반복 횟수 제한
+            gtol=1e-3  # 수렴 기준 완화
         )
     elif model_type == 'gbr':
         return GradientBoostingRegressor(
-            n_estimators=200,
-            learning_rate=0.05,
+            n_estimators=300,
+            learning_rate=0.01,
             max_depth=4,
             min_samples_split=10,
             min_samples_leaf=5,
-            subsample=0.85,
+            subsample=0.8,
             max_features=0.8,
             random_state=random_state
         )
     elif model_type == 'rf':
         return RandomForestRegressor(
-            n_estimators=200,
+            n_estimators=300,
             max_depth=None,
-            min_samples_split=2,
-            min_samples_leaf=1,
+            min_samples_split=10,
+            min_samples_leaf=5,
+            max_features='auto',
             random_state=random_state
         )
-    elif model_type == 'lr':
+    else:  # lr
         return Ridge(
             alpha=1.0,
             random_state=random_state
         )
-    else:
-        raise ValueError(f"Unknown model type: {model_type}")
 
 def feature_selection(X, y, method='sequential', model_type='gbr', n_features=None):
     """Perform feature selection using different methods"""
@@ -542,6 +545,12 @@ def plot_coordination_comparison(results, output_dir, output_suffix, model_type,
     plt.savefig(os.path.join(output_dir, f'{target}_pred_{model_type}_{row_str}_{output_suffix}_type.png'))
     plt.close()
 
+def remove_outliers(X, y, n_sigma=3):
+    """Remove outliers based on z-score"""
+    z_scores = np.abs(stats.zscore(y))
+    mask = z_scores < n_sigma
+    return X[mask], y[mask]
+
 def main():
     start_time = time.time()
     print("Starting enhanced bulk prediction analysis...")
@@ -587,7 +596,7 @@ def main():
         root = '/Users/jiuy97/Desktop/7_V_bulk/figures'
     elif user_name == 'jiuy97':
         root = '/pscratch/sd/j/jiuy97/7_V_bulk/figures'
-    elif user_name == 'hailey':
+    elif user_name == 'hailey' or user_name == 'root':
         root = '/Users/hailey/Desktop/7_V_bulk/figures'
     else:
         raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
@@ -614,10 +623,24 @@ def main():
 
     print("Preprocessing data...")
     preprocess_start = time.time()
+    
+    # Merge bulk and mendeleev data
     df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True, suffixes=('_bulk', '_mend'))
     df = df.rename(columns={'row_bulk': 'row', 'numb_mend': 'numb'})
     df = df.drop(columns=['row_mend', 'numb_bulk'])
     df = df[df['row'] != 'fm']
+
+    # Handle missing values in features quietly
+    for col in args.X + [args.Y]:  # Y값도 포함하여 NaN 처리
+        if df[col].isna().any():
+            if df[col].dtype in [np.float64, np.int64]:
+                df[col] = df[col].fillna(df[col].median())
+            else:
+                df[col] = df[col].fillna(df[col].mode()[0])
+
+    # Drop rows where y is NaN
+    valid_indices = ~df[args.Y].isna()
+    df = df[valid_indices]
 
     # Print dataset size
     print(f"\nDataset size before filtering:")
@@ -638,37 +661,60 @@ def main():
     print(f"Features used: {len(args.X)}")
     print(f"Target variable: {args.Y}")
 
-    # Handle missing values in both X and y
+    # Handle missing values and data preparation
+    print("Preprocessing data...")
+    preprocess_start = time.time()
+
+    # Handle missing values in features quietly
+    for col in args.X + [args.Y]:  # Y값도 포함하여 NaN 처리
+        if df[col].isna().any():
+            if df[col].dtype in [np.float64, np.int64]:
+                df[col] = df[col].fillna(df[col].median())
+            else:
+                df[col] = df[col].fillna(df[col].mode()[0])
+
+    # Drop rows where y is NaN
+    valid_indices = ~df[args.Y].isna()
+    df = df[valid_indices]
+
+    # Scale features
+    print("Scaling features...")
+    scale_start = time.time()
+    scaler = RobustScaler()  # 또는 args.scaler에 따라 선택
     X = df[args.X].astype(float)
     y = df[args.Y].astype(float)
     
-    # Drop rows where y is NaN
-    valid_indices = ~y.isna()
-    X = X[valid_indices]
-    y = y[valid_indices]
+    # Remove outliers
+    X_cleaned, y_cleaned = remove_outliers(X, y)
     
-    # Handle remaining missing values in X
-    imputer = get_imputer(args.imputer)
-    X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns)
-
     # Split data
     X_train, X_test, y_train, y_test = train_test_split(
-        X_imputed, y, test_size=args.test_size, random_state=args.random_state
+        X_cleaned, y_cleaned, test_size=args.test_size, random_state=args.random_state
     )
+    
+    # Scale the features
+    X_train_scaled = pd.DataFrame(scaler.fit_transform(X_train), columns=X_train.columns, index=X_train.index)
+    X_test_scaled = pd.DataFrame(scaler.transform(X_test), columns=X_test.columns, index=X_test.index)
+    print_time("Feature scaling completed", time.time() - scale_start)
+
+    # Create df_train and df_test for metadata
+    df_train = pd.DataFrame(X_train, columns=args.X)
+    df_train['Y'] = y_train
+    df_train['row'] = df.loc[X_train.index, 'row']
+    df_train['coord'] = df.loc[X_train.index, 'coord']
+    df_train['metal'] = df.loc[X_train.index, 'metal']
+    
+    df_test = pd.DataFrame(X_test, columns=args.X)
+    df_test['Y'] = y_test
+    df_test['row'] = df.loc[X_test.index, 'row']
+    df_test['coord'] = df.loc[X_test.index, 'coord']
+    df_test['metal'] = df.loc[X_test.index, 'metal']
 
     # Print training and test dataset sizes
     print(f"\nTraining and test dataset sizes:")
     print(f"Training data: {len(X_train)} samples")
     print(f"Test data: {len(X_test)} samples")
     print(f"Total data: {len(X_train) + len(X_test)} samples")
-
-    # Scale features
-    print("Scaling features...")
-    scale_start = time.time()
-    scaler = get_scaler(args.scaler)
-    X_train_scaled = pd.DataFrame(scaler.fit_transform(X_train), columns=X_train.columns, index=X_train.index)
-    X_test_scaled = pd.DataFrame(scaler.transform(X_test), columns=X_test.columns, index=X_test.index)
-    print_time("Feature scaling completed", time.time() - scale_start)
 
     # Feature selection
     if args.feature_selection != 'none':
@@ -698,16 +744,26 @@ def main():
 
     # Get and optimize model
     print(f"Setting up {args.model.upper()} model...")
-    model_start = time.time()
     model = get_model(args.model, args.random_state)
     
-    if args.optimize:
-        print("Optimizing hyperparameters...")
-        optimize_start = time.time()
-        model = optimize_hyperparameters(model, X_train_scaled, y_train, args.model, args.cv)
-        print_time("Hyperparameter optimization completed", time.time() - optimize_start)
+    # 모델이 GPR인 경우 커널 파라미터 업데이트
+    if args.model == 'gpr':
+        # 각 특성별 길이 스케일로 커널 업데이트
+        kernel = ConstantKernel(1.0, constant_value_bounds=(1e-3, 1e3)) * RBF(
+            length_scale=[1.0] * X_train.shape[1],
+            length_scale_bounds=(1e-2, 1e2)
+        ) + WhiteKernel(
+            noise_level=1.0,
+            noise_level_bounds=(1e-2, 1e2)
+        )
+        model.kernel = kernel
+    
+    # 교차 검증으로 과적합 모니터링
+    cv = KFold(n_splits=5, shuffle=True, random_state=args.random_state)
+    cv_scores = cross_val_score(model, X_train_scaled, y_train, cv=cv, scoring='neg_mean_squared_error')
+    print(f"Cross-validation MSE: {-cv_scores.mean():.4f} (+/- {cv_scores.std() * 2:.4f})")
 
-    # Train model
+    # 모델 학습
     model.fit(X_train_scaled, y_train)
 
     # Make predictions
@@ -763,7 +819,7 @@ def main():
         'row': df.loc[valid_indices, 'row'],
         'coord': df.loc[valid_indices, 'coord'],
         'Y_true': y,
-        'Y_pred': model.predict(scaler.transform(X_imputed))
+        'Y_pred': model.predict(scaler.transform(X_cleaned))
     })
     df_result.to_csv(tsv_path, sep='\t', index=False)
 
@@ -796,8 +852,8 @@ def main():
     coord_map = {'WZ': '>', 'ZB': '<', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'd', 'LT': 'h'}
 
     # Plot training data with error bars
-    for r in df['row'].unique():
-        for c in df['coord'].unique():
+    for r in df.iloc[train_indices]['row'].unique():
+        for c in df.iloc[train_indices]['coord'].unique():
             # Plot training data
             subset_train = df_train[(df_train['row'] == r) & (df_train['coord'] == c)]
             if not subset_train.empty:
