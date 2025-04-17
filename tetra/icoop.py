@@ -22,9 +22,7 @@ def read_icooplist(filepath='.'):
     
     # Initialize lists to store data
     data = []
-    current_bond = None
-    current_distance = None
-    current_atoms = None
+    processed_bonds = set()  # To track processed bonds
     
     for line in lines:
         if line.strip() == '':
@@ -38,11 +36,15 @@ def read_icooplist(filepath='.'):
             continue
             
         # Check if this is a new bond
-        if len(parts) >= 6 and parts[0].isdigit():
-            current_bond = int(parts[0])
+        if len(parts) >= 8 and parts[0].isdigit():
+            bond_id = int(parts[0])
             atom1 = parts[1]
             atom2 = parts[2]
-            current_distance = float(parts[3])
+            distance = float(parts[3])
+            
+            # Skip if we've already processed this bond
+            if bond_id in processed_bonds:
+                continue
             
             # Get element symbols from POSCAR
             idx1 = int(re.findall(r'\d+', atom1)[0]) - 1  # Convert to 0-based index
@@ -50,25 +52,32 @@ def read_icooplist(filepath='.'):
             ele1 = atoms[idx1].symbol
             ele2 = atoms[idx2].symbol
             
-            current_atoms = (ele1, idx1, ele2, idx2)
-            
             # Get orbital information
             orb1 = parts[1].split('_')[1] if '_' in parts[1] else None
             orb2 = parts[2].split('_')[1] if '_' in parts[2] else None
             
             if orb1 is None and orb2 is None:
                 # This is a total ICOOP value
-                icoop = float(parts[5])
+                icoop = float(parts[7])
+                # Determine which element is metal and which is oxygen
+                if ele1 in ['Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn']:
+                    metal, metal_idx = ele1, idx1
+                    oxygen, oxygen_idx = ele2, idx2
+                else:
+                    metal, metal_idx = ele2, idx2
+                    oxygen, oxygen_idx = ele1, idx1
+                
                 data.append({
-                    'label': current_bond,
-                    'ele1': ele1,
-                    'idx1': idx1,
-                    'ele2': ele2,
-                    'idx2': idx2,
-                    'pair': f"{ele1}{idx1}(d)-{ele2}{idx2}(p)",
+                    'label': bond_id,
+                    'ele1': metal,
+                    'idx1': metal_idx,
+                    'ele2': oxygen,
+                    'idx2': oxygen_idx,
+                    'pair': f"{metal}{metal_idx}(d)-{oxygen}{oxygen_idx}(p)",
                     '-ICOOP': -icoop,  # Change sign to match expected format
-                    'distance': current_distance
+                    'distance': distance
                 })
+                processed_bonds.add(bond_id)
     
     if not data:
         raise ValueError("No ICOOP data found in the file. Please check the file format.")
