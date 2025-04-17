@@ -59,6 +59,7 @@ def read_icooplist(filepath='.'):
             if orb1 is None and orb2 is None:
                 # This is a total ICOOP value
                 icoop = float(parts[7])
+                
                 # Determine which element is metal and which is oxygen
                 if ele1 in ['Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn']:
                     metal, metal_idx = ele1, idx1
@@ -67,6 +68,7 @@ def read_icooplist(filepath='.'):
                     metal, metal_idx = ele2, idx2
                     oxygen, oxygen_idx = ele1, idx1
                 
+                # Always put metal as ele1
                 data.append({
                     'label': bond_id,
                     'ele1': metal,
