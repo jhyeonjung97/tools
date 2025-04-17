@@ -28,11 +28,6 @@ coords_data = [
     {'coord': '2', 'CN': 6, 'ON': 4, 'MN': 1, 'coord_dir': '2_Octahedral_+4', 'zorder': 2, 'marker': 's', 'color': 'gold'},
     {'coord': '3', 'CN': 6, 'ON': 5, 'MN': 1, 'coord_dir': '3_Octahedral_+5', 'zorder': 3, 'marker': '^', 'color': 'dodgerblue'},
     {'coord': '4', 'CN': 6, 'ON': 6, 'MN': 1, 'coord_dir': '4_Octahedral_+6', 'zorder': 4, 'marker': 'v', 'color': 'deepskyblue'},
-    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'zorder': 1, 'marker': 's', 'color': 'limegreen',},
-    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'zorder': 6, 'marker': 'd', 'color': 'orchid',},
-    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'zorder': 0, 'marker': 'h', 'color': 'silver',},
-    # {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'pink',},
-    # {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'cyan',},
 ]
     
 coords = pd.DataFrame(coords_data).set_index('coord')
@@ -42,7 +37,6 @@ metals = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
     '4d': ['Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn'],
     '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb'],
-    'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
 }
 indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(metals['3d'], metals['4d'], metals['5d'])]
 
