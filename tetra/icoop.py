@@ -66,7 +66,7 @@ def read_icooplist(filepath='.'):
                     'ele2': ele2,
                     'idx2': idx2,
                     'pair': f"{ele1}{idx1}(d)-{ele2}{idx2}(p)",
-                    '-ICOOP': icoop,
+                    '-ICOOP': -icoop,  # Change sign to match expected format
                     'distance': current_distance
                 })
     
