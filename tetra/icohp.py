@@ -1,5 +1,5 @@
 """
-Module for reading ICOOPLIST.lobster and generating icoop.txt
+Module for reading ICOHPLIST.lobster and generating icohp.txt
 Hailey @SUNCAT/Stanford
 Jul 1, 2023
 """
@@ -9,12 +9,12 @@ import pandas as pd
 from ase.io import read
 import re
 
-def read_icooplist(filepath='.'):
+def read_icohplist(filepath='.'):
     """
-    Read ICOOPLIST.lobster file and return a pandas DataFrame
+    Read ICOHPLIST.lobster file and return a pandas DataFrame
     """
-    # Read ICOOPLIST.lobster
-    with open(f'{filepath}/ICOOPLIST.lobster', 'r') as f:
+    # Read ICOHPLIST.lobster
+    with open(f'{filepath}/ICOHPLIST.lobster', 'r') as f:
         lines = f.readlines()
     
     # Read POSCAR to get element symbols
@@ -22,15 +22,13 @@ def read_icooplist(filepath='.'):
     
     # Initialize lists to store data
     data = []
+    processed_bonds = set()  # To track processed bonds
     
     # Metal elements list from aloha/coop_analysis.py
     metal_elements = ['Li', 'Be', 'Na', 'Mg', 'Al', 'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi']
     
-    # Dictionary to store ICOOP values for each bond
+    # Dictionary to store ICOHP values for each bond
     bond_values = {}
-    
-    # Dictionary to store orbital information for each atom
-    atom_orbitals = {}
     
     for line in lines:
         if line.strip() == '':
@@ -40,7 +38,7 @@ def read_icooplist(filepath='.'):
         parts = line.split()
         
         # Skip header line
-        if 'COOP#' in line:
+        if 'COHP#' in line:
             continue
             
         # Check if this is a new bond
@@ -60,46 +58,23 @@ def read_icooplist(filepath='.'):
             orb1 = parts[1].split('_')[1] if '_' in parts[1] else None
             orb2 = parts[2].split('_')[1] if '_' in parts[2] else None
             
-            # Store orbital information
-            if orb1 is not None:
-                atom_key1 = f"{ele1}{idx1}"
-                if atom_key1 not in atom_orbitals:
-                    atom_orbitals[atom_key1] = set()
-                atom_orbitals[atom_key1].add(orb1.split('_')[0] if '_' in orb1 else orb1)
-            
-            if orb2 is not None:
-                atom_key2 = f"{ele2}{idx2}"
-                if atom_key2 not in atom_orbitals:
-                    atom_orbitals[atom_key2] = set()
-                atom_orbitals[atom_key2].add(orb2.split('_')[0] if '_' in orb2 else orb2)
-            
-            # Get ICOOP value
-            icoop = float(parts[7])
-            
-            # Only consider d orbitals for metal and p orbitals for oxygen
-            if orb1 is not None and orb2 is not None:
-                if ele1 in metal_elements and not orb1.startswith('5d'):
-                    continue
-                if ele1 == 'O' and not orb1.startswith('2p'):
-                    continue
-                if ele2 in metal_elements and not orb2.startswith('5d'):
-                    continue
-                if ele2 == 'O' and not orb2.startswith('2p'):
-                    continue
-            
-            # Add to bond_values dictionary
-            if bond_id not in bond_values:
-                bond_values[bond_id] = {
-                    'atom1': atom1,
-                    'atom2': atom2,
-                    'distance': distance,
-                    'ele1': ele1,
-                    'ele2': ele2,
-                    'idx1': idx1,
-                    'idx2': idx2,
-                    'icoop': 0.0
-                }
-            bond_values[bond_id]['icoop'] += icoop
+            if orb1 is None and orb2 is None:
+                # This is a total ICOHP value
+                icohp = float(parts[7])
+                
+                # Add to bond_values dictionary
+                if bond_id not in bond_values:
+                    bond_values[bond_id] = {
+                        'atom1': atom1,
+                        'atom2': atom2,
+                        'distance': distance,
+                        'ele1': ele1,
+                        'ele2': ele2,
+                        'idx1': idx1,
+                        'idx2': idx2,
+                        'icohp': 0.0
+                    }
+                bond_values[bond_id]['icohp'] += icohp
     
     # Process bond_values to create data
     for bond_id, values in bond_values.items():
@@ -118,12 +93,12 @@ def read_icooplist(filepath='.'):
             'ele2': oxygen,
             'idx2': oxygen_idx,
             'pair': f"{metal}{metal_idx}(d)-{oxygen}{oxygen_idx}(p)",
-            '-ICOOP': -values['icoop'],  # Change sign to match expected format
+            '-ICOHP': -values['icohp'],  # Change sign to match expected format
             'distance': values['distance']
         })
     
     if not data:
-        raise ValueError("No ICOOP data found in the file. Please check the file format.")
+        raise ValueError("No ICOHP data found in the file. Please check the file format.")
     
     # Convert to DataFrame
     df = pd.DataFrame(data)
@@ -139,16 +114,16 @@ def read_icooplist(filepath='.'):
         'ele2': [''],
         'idx2': [''],
         'pair': [''],
-        '-ICOOP': [df['-ICOOP'].sum()],
+        '-ICOHP': [df['-ICOHP'].sum()],
         'distance': ['']
     })
     df = pd.concat([df, sum_row], ignore_index=True)
     
     return df
 
-def write_icoop_txt(df, filepath='.'):
+def write_icohp_txt(df, filepath='.'):
     """
-    Write DataFrame to icoop.txt file
+    Write DataFrame to icohp.txt file
     """
     # Format the DataFrame for output
     df['label'] = df['label'].astype(str).str.rjust(5)
@@ -157,25 +132,25 @@ def write_icoop_txt(df, filepath='.'):
     df['ele2'] = df['ele2'].astype(str).str.rjust(4)
     df['idx2'] = df['idx2'].astype(str).str.rjust(4)
     df['pair'] = df['pair'].astype(str).str.rjust(12)
-    df['-ICOOP'] = df['-ICOOP'].apply(lambda x: f"{x:.5f}" if isinstance(x, float) else x)
+    df['-ICOHP'] = df['-ICOHP'].apply(lambda x: f"{x:.5f}" if isinstance(x, float) else x)
     df['distance'] = df['distance'].astype(str)
     
     # Write header
-    with open(f'{filepath}/icoop.txt', 'w') as f:
-        f.write('label ele1  idx1 ele2  idx2         pair   -ICOOP  distance\n')
+    with open(f'{filepath}/icohp.txt', 'w') as f:
+        f.write('label ele1  idx1 ele2  idx2         pair   -ICOHP  distance\n')
         
         # Write data
         for _, row in df.iterrows():
-            f.write(f"{row['label']} {row['ele1']} {row['idx1']} {row['ele2']} {row['idx2']} {row['pair']} {row['-ICOOP']} {row['distance']}\n")
+            f.write(f"{row['label']} {row['ele1']} {row['idx1']} {row['ele2']} {row['idx2']} {row['pair']} {row['-ICOHP']} {row['distance']}\n")
 
 def main():
     """
-    Main function to read ICOOPLIST.lobster and write icoop.txt
+    Main function to read ICOHPLIST.lobster and write icohp.txt
     """
     try:
-        df = read_icooplist()
-        write_icoop_txt(df)
-        print("Successfully generated icoop.txt")
+        df = read_icohplist()
+        write_icohp_txt(df)
+        print("Successfully generated icohp.txt")
     except Exception as e:
         print(f"Error: {str(e)}")
 
