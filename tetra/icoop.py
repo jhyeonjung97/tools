@@ -1,15 +1,14 @@
 """
-Module for reading ICOOPLIST.lobster and generating icoop.txt
-Hailey @SUNCAT/Stanford
-Jul 1, 2023
+Module for reading ICOOPLIST.lobster and generating icoop.txt and icoop-{d_orbital}2p.txt
 """
 
 import numpy as np
 import pandas as pd
 from ase.io import read
 import re
+import os
 
-def read_icooplist(filepath='.'):
+def read_icoplist(filepath='.'):
     """
     Read ICOOPLIST.lobster file and return a pandas DataFrame
     """
@@ -17,21 +16,38 @@ def read_icooplist(filepath='.'):
     with open(f'{filepath}/ICOOPLIST.lobster', 'r') as f:
         lines = f.readlines()
     
-    # Read POSCAR to get element symbols
-    atoms = read(f'{filepath}/POSCAR')
+    # Read atoms from final_with_calculator.json or moments.json
+    if os.path.exists(f'{filepath}/final_with_calculator.json'):
+        atoms = read(f'{filepath}/final_with_calculator.json')
+    else:
+        atoms = read(f'{filepath}/moments.json')
     
     # Initialize lists to store data
     data = []
     
-    # Metal elements list from aloha/coop_analysis.py
-    metal_elements = ['Li', 'Be', 'Na', 'Mg', 'Al', 'K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Cs', 'Ba', 'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi']
+    # Metal elements list with d orbital types
+    metals = {
+        '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
+        '4d': ['Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn'],
+        '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb']
+    }
+    
+    # Orbital order list (from lowest to highest energy)
+    orbital_order = ['1s', '2s', '2p', '3s', '3p', '4s', '3d', '4p', '5s', '4d', '5p', '6s', '4f', '5d', '6p', '7s', '5f', '6d', '7p']
     
     # Dictionary to store ICOOP values for each bond
     bond_values = {}
     
-    # Dictionary to store orbital information for each atom
-    atom_orbitals = {}
+    # Track current spin
+    current_spin = None
     
+    # Dictionary to store highest energy orbitals for each bond
+    highest_orbitals = {}
+    
+    # Dictionary to store ICOOP values for each spin
+    spin_values = {}
+    
+    # First pass: Find highest energy orbitals for each bond
     for line in lines:
         if line.strip() == '':
             continue
@@ -39,6 +55,92 @@ def read_icooplist(filepath='.'):
         # Split line into components
         parts = line.split()
         
+        # Check for spin information
+        if 'for spin' in line:
+            current_spin = int(parts[-1])
+            continue
+            
+        # Skip header line
+        if 'COOP#' in line:
+            continue
+            
+        # Check if this is a new bond
+        if len(parts) >= 8 and parts[0].isdigit():
+            bond_id = int(parts[0])
+            atom1 = parts[1]
+            atom2 = parts[2]
+            
+            # Get element symbols from atoms
+            idx1 = int(re.findall(r'\d+', atom1)[0]) - 1  # Convert to 0-based index
+            idx2 = int(re.findall(r'\d+', atom2)[0]) - 1
+            ele1 = atoms[idx1].symbol
+            ele2 = atoms[idx2].symbol
+            
+            # Get orbital information
+            orb1 = parts[1].split('_')[1] if '_' in parts[1] else None
+            orb2 = parts[2].split('_')[1] if '_' in parts[2] else None
+            
+            # Find highest energy orbitals
+            if ele1 in metals['3d'] or ele1 in metals['4d'] or ele1 in metals['5d']:
+                if orb1 is not None and orb2 is not None and '2p' in orb2:
+                    if bond_id not in highest_orbitals:
+                        highest_orbitals[bond_id] = {
+                            'orb1': orb1,
+                            'orb2': orb2,
+                            'ele1': ele1,
+                            'ele2': ele2,
+                            'idx1': idx1,
+                            'idx2': idx2
+                        }
+                    else:
+                        current_orb = orb1.split('_')[0]
+                        stored_orb = highest_orbitals[bond_id]['orb1'].split('_')[0]
+                        if orbital_order.index(current_orb) > orbital_order.index(stored_orb):
+                            highest_orbitals[bond_id] = {
+                                'orb1': orb1,
+                                'orb2': orb2,
+                                'ele1': ele1,
+                                'ele2': ele2,
+                                'idx1': idx1,
+                                'idx2': idx2
+                            }
+            elif ele2 in metals['3d'] or ele2 in metals['4d'] or ele2 in metals['5d']:
+                if orb1 is not None and orb2 is not None and '2p' in orb1:
+                    if bond_id not in highest_orbitals:
+                        highest_orbitals[bond_id] = {
+                            'orb1': orb2,
+                            'orb2': orb1,
+                            'ele1': ele2,
+                            'ele2': ele1,
+                            'idx1': idx2,
+                            'idx2': idx1
+                        }
+                    else:
+                        current_orb = orb2.split('_')[0]
+                        stored_orb = highest_orbitals[bond_id]['orb1'].split('_')[0]
+                        if orbital_order.index(current_orb) > orbital_order.index(stored_orb):
+                            highest_orbitals[bond_id] = {
+                                'orb1': orb2,
+                                'orb2': orb1,
+                                'ele1': ele2,
+                                'ele2': ele1,
+                                'idx1': idx2,
+                                'idx2': idx1
+                            }
+    
+    # Second pass: Read ICOOP values for the highest energy orbitals
+    for line in lines:
+        if line.strip() == '':
+            continue
+            
+        # Split line into components
+        parts = line.split()
+        
+        # Check for spin information
+        if 'for spin' in line:
+            current_spin = int(parts[-1])
+            continue
+            
         # Skip header line
         if 'COOP#' in line:
             continue
@@ -50,66 +152,104 @@ def read_icooplist(filepath='.'):
             atom2 = parts[2]
             distance = float(parts[3])
             
-            # Get element symbols from POSCAR
-            idx1 = int(re.findall(r'\d+', atom1)[0]) - 1  # Convert to 0-based index
-            idx2 = int(re.findall(r'\d+', atom2)[0]) - 1
-            ele1 = atoms[idx1].symbol
-            ele2 = atoms[idx2].symbol
-            
             # Get orbital information
             orb1 = parts[1].split('_')[1] if '_' in parts[1] else None
             orb2 = parts[2].split('_')[1] if '_' in parts[2] else None
             
-            # Store orbital information
-            if orb1 is not None:
-                atom_key1 = f"{ele1}{idx1}"
-                if atom_key1 not in atom_orbitals:
-                    atom_orbitals[atom_key1] = set()
-                atom_orbitals[atom_key1].add(orb1.split('_')[0] if '_' in orb1 else orb1)
-            
-            if orb2 is not None:
-                atom_key2 = f"{ele2}{idx2}"
-                if atom_key2 not in atom_orbitals:
-                    atom_orbitals[atom_key2] = set()
-                atom_orbitals[atom_key2].add(orb2.split('_')[0] if '_' in orb2 else orb2)
-            
             # Get ICOOP value
             icoop = float(parts[7])
             
-            # Only consider d orbitals for metal and p orbitals for oxygen
-            if orb1 is not None and orb2 is not None:
-                if ele1 in metal_elements and not orb1.startswith('5d'):
-                    continue
-                if ele1 == 'O' and not orb1.startswith('2p'):
-                    continue
-                if ele2 in metal_elements and not orb2.startswith('5d'):
-                    continue
-                if ele2 == 'O' and not orb2.startswith('2p'):
-                    continue
-            
-            # Add to bond_values dictionary
+            # Initialize bond_values if not exists
             if bond_id not in bond_values:
-                bond_values[bond_id] = {
-                    'atom1': atom1,
-                    'atom2': atom2,
-                    'distance': distance,
-                    'ele1': ele1,
-                    'ele2': ele2,
-                    'idx1': idx1,
-                    'idx2': idx2,
-                    'icoop': 0.0
-                }
-            bond_values[bond_id]['icoop'] += icoop
+                if bond_id in highest_orbitals:
+                    highest = highest_orbitals[bond_id]
+                    bond_values[bond_id] = {
+                        'atom1': atom1,
+                        'atom2': atom2,
+                        'distance': distance,
+                        'ele1': highest['ele1'],
+                        'ele2': highest['ele2'],
+                        'idx1': highest['idx1'],
+                        'idx2': highest['idx2'],
+                        'total_icoop': 0.0,
+                        'd_p_icoop': 0.0,
+                        'outer_icoop': 0.0,
+                        'orb1': highest['orb1'],
+                        'orb2': highest['orb2']
+                    }
+                    spin_values[bond_id] = {
+                        'total_icoop': {1: 0.0, 2: 0.0},
+                        'd_p_icoop': {1: 0.0, 2: 0.0},
+                        'outer_icoop': {1: 0.0, 2: 0.0}
+                    }
+                else:
+                    bond_values[bond_id] = {
+                        'atom1': atom1,
+                        'atom2': atom2,
+                        'distance': distance,
+                        'ele1': atoms[int(re.findall(r'\d+', atom1)[0]) - 1].symbol,
+                        'ele2': atoms[int(re.findall(r'\d+', atom2)[0]) - 1].symbol,
+                        'idx1': int(re.findall(r'\d+', atom1)[0]) - 1,
+                        'idx2': int(re.findall(r'\d+', atom2)[0]) - 1,
+                        'total_icoop': 0.0,
+                        'd_p_icoop': 0.0,
+                        'outer_icoop': 0.0,
+                        'orb1': None,
+                        'orb2': None
+                    }
+                    spin_values[bond_id] = {
+                        'total_icoop': {1: 0.0, 2: 0.0},
+                        'd_p_icoop': {1: 0.0, 2: 0.0},
+                        'outer_icoop': {1: 0.0, 2: 0.0}
+                    }
+            
+            # Update total ICOOP only if no orbitals are specified
+            if orb1 is None and orb2 is None:
+                spin_values[bond_id]['total_icoop'][current_spin] += icoop
+            
+            # Update outer orbital ICOOP
+            if bond_id in highest_orbitals:
+                highest = highest_orbitals[bond_id]
+                if orb1 == highest['orb1'] and orb2 == highest['orb2']:
+                    spin_values[bond_id]['outer_icoop'][current_spin] += icoop
+            
+            # Update d-p ICOOP
+            if bond_id in highest_orbitals:
+                highest = highest_orbitals[bond_id]
+                # Get the correct d orbital type for the metal
+                metal_ele = highest['ele1']
+                d_orbital = None
+                if metal_ele in metals['3d']:
+                    d_orbital = '3d'
+                elif metal_ele in metals['4d']:
+                    d_orbital = '4d'
+                elif metal_ele in metals['5d']:
+                    d_orbital = '5d'
+                
+                if d_orbital is not None:
+                    if (str(orb1)==str(d_orbital) and str(orb2)=='2p') or (str(orb2)==str(d_orbital) and str(orb1)=='2p'):
+                        spin_values[bond_id]['d_p_icoop'][current_spin] += icoop
+    
+    # Sum up spin values for each bond
+    for bond_id in bond_values:
+        if bond_id in spin_values:
+            bond_values[bond_id]['total_icoop'] = sum(spin_values[bond_id]['total_icoop'].values())
+            bond_values[bond_id]['d_p_icoop'] = sum(spin_values[bond_id]['d_p_icoop'].values())
+            bond_values[bond_id]['outer_icoop'] = sum(spin_values[bond_id]['outer_icoop'].values())
     
     # Process bond_values to create data
     for bond_id, values in bond_values.items():
         # Determine which element is metal and which is oxygen
-        if values['ele1'] in metal_elements:
+        if values['ele1'] in metals['3d'] or values['ele1'] in metals['4d'] or values['ele1'] in metals['5d']:
             metal, metal_idx = values['ele1'], values['idx1']
             oxygen, oxygen_idx = values['ele2'], values['idx2']
+            orb_metal = values['orb1']
+            orb_oxygen = values['orb2']
         else:
             metal, metal_idx = values['ele2'], values['idx2']
             oxygen, oxygen_idx = values['ele1'], values['idx1']
+            orb_metal = values['orb2']
+            orb_oxygen = values['orb1']
         
         data.append({
             'label': bond_id,
@@ -117,8 +257,12 @@ def read_icooplist(filepath='.'):
             'idx1': metal_idx,
             'ele2': oxygen,
             'idx2': oxygen_idx,
-            'pair': f"{metal}{metal_idx}(d)-{oxygen}{oxygen_idx}(p)",
-            '-ICOOP': -values['icoop'],  # Change sign to match expected format
+            'pair': f"{metal}{metal_idx}-{oxygen}{oxygen_idx}",
+            'd_pair': f"{metal}{metal_idx}(d)-{oxygen}{oxygen_idx}(p)",
+            'outer_pair': f"{metal}{metal_idx}({orb_metal})-{oxygen}{oxygen_idx}({orb_oxygen})",
+            'ICOOP': values['total_icoop'],
+            'd_p_ICOOP': values['d_p_icoop'],
+            'outer_ICOOP': values['outer_icoop'],
             'distance': values['distance']
         })
     
@@ -131,25 +275,19 @@ def read_icooplist(filepath='.'):
     # Sort by label
     df = df.sort_values('label')
     
-    # Add sum row
-    sum_row = pd.DataFrame({
-        'label': [''],
-        'ele1': [''],
-        'idx1': [''],
-        'ele2': [''],
-        'idx2': [''],
-        'pair': [''],
-        '-ICOOP': [df['-ICOOP'].sum()],
-        'distance': ['']
-    })
-    df = pd.concat([df, sum_row], ignore_index=True)
-    
     return df
 
-def write_icoop_txt(df, filepath='.'):
+def write_icoop_files(df, filepath='.'):
     """
-    Write DataFrame to icoop.txt file
+    Write DataFrame to icoop.txt, icoop-{d_orbital}2p.txt, and icoop-outer.txt files
     """
+    # Metal elements list with d orbital types
+    metals = {
+        '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
+        '4d': ['Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn'],
+        '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb']
+    }
+    
     # Format the DataFrame for output
     df['label'] = df['label'].astype(str).str.rjust(5)
     df['ele1'] = df['ele1'].astype(str).str.rjust(4)
@@ -157,25 +295,62 @@ def write_icoop_txt(df, filepath='.'):
     df['ele2'] = df['ele2'].astype(str).str.rjust(4)
     df['idx2'] = df['idx2'].astype(str).str.rjust(4)
     df['pair'] = df['pair'].astype(str).str.rjust(12)
-    df['-ICOOP'] = df['-ICOOP'].apply(lambda x: f"{x:.5f}" if isinstance(x, float) else x)
+    df['d_pair'] = df['d_pair'].astype(str).str.rjust(12)
+    df['outer_pair'] = df['outer_pair'].astype(str).str.rjust(12)
+    df['ICOOP'] = df['ICOOP'].apply(lambda x: f"{x:.5f}" if isinstance(x, float) else x)
+    df['d_p_ICOOP'] = df['d_p_ICOOP'].apply(lambda x: f"{x:.5f}" if isinstance(x, float) else x)
+    df['outer_ICOOP'] = df['outer_ICOOP'].apply(lambda x: f"{x:.5f}" if isinstance(x, float) else x)
     df['distance'] = df['distance'].astype(str)
     
     # Write header
+    header = 'label ele1  idx1 ele2  idx2        pair  ICOOP  distance\n'
+    
+    # Write total ICOOP file
     with open(f'{filepath}/icoop.txt', 'w') as f:
-        f.write('label ele1  idx1 ele2  idx2         pair   -ICOOP  distance\n')
-        
-        # Write data
+        f.write(header)
         for _, row in df.iterrows():
-            f.write(f"{row['label']} {row['ele1']} {row['idx1']} {row['ele2']} {row['idx2']} {row['pair']} {row['-ICOOP']} {row['distance']}\n")
+            f.write(f"{row['label']} {row['ele1']} {row['idx1']} {row['ele2']} {row['idx2']} {row['pair']} {row['ICOOP']} {row['distance']}\n")
+        f.write(f"\t\t\tICOOP sum:{df['ICOOP'].astype(float).sum():.5f}\n")
+    
+    # Get d orbital type from the first metal element
+    metal_ele = df['ele1'].iloc[0].strip()  # Remove whitespace
+    d_orbital = None
+    if metal_ele in metals['3d']:
+        d_orbital = '3d'
+    elif metal_ele in metals['4d']:
+        d_orbital = '4d'
+    elif metal_ele in metals['5d']:
+        d_orbital = '5d'
+    
+    # Write d-p ICOOP file with dynamic filename
+    if d_orbital is not None:
+        with open(f'{filepath}/icoop-d.txt', 'w') as f:
+            f.write(header)
+            for _, row in df.iterrows():
+                f.write(f"{row['label']} {row['ele1']} {row['idx1']} {row['ele2']} {row['idx2']} {row['d_pair']} {row['d_p_ICOOP']} {row['distance']}\n")
+            f.write(f"\t\t\tICOOP sum:{df['d_p_ICOOP'].astype(float).sum():.5f}\n")
+    
+    # Write outer orbital ICOOP file
+    with open(f'{filepath}/icoop-outer.txt', 'w') as f:
+        f.write(header)
+        for _, row in df.iterrows():
+            f.write(f"{row['label']} {row['ele1']} {row['idx1']} {row['ele2']} {row['idx2']} {row['outer_pair']} {row['outer_ICOOP']} {row['distance']}\n")
+        f.write(f"\t\t\tICOOP sum:{df['outer_ICOOP'].astype(float).sum():.5f}\n")
+    
+    return d_orbital
 
 def main():
     """
-    Main function to read ICOOPLIST.lobster and write icoop.txt
+    Main function to read ICOOPLIST.lobster and write icoop files
     """
     try:
-        df = read_icooplist()
-        write_icoop_txt(df)
-        print("Successfully generated icoop.txt")
+        # Check if ICOOPLIST.lobster exists and unmatched file doesn't exist
+        if not os.path.exists('ICOOPLIST.lobster') or os.path.exists('unmatched'):
+            return
+            
+        df = read_icoplist()
+        d_name = write_icoop_files(df)
+        print(f"Successfully generated icoop.txt, icoop-d.txt, and icoop-outer.txt")
     except Exception as e:
         print(f"Error: {str(e)}")
 

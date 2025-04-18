@@ -60,7 +60,6 @@ ylabels = {
     'ICOBIn': 'ICOBI per Bond',
     '-ICOOPn': '-ICOOP per Bond (eV)',
     'madelung': 'Madelung Energy (Loewdin eV)',
-    'grosspop': 'Gross Population (Loewdin e⁻)',
 }
 
 def print_time(message, time_value):

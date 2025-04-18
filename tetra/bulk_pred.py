@@ -35,30 +35,8 @@ BOLD = '\033[1m'
 os.environ['JOBLIB_START_METHOD'] = 'fork'
 
 ylabels = {
-    'coord': 'Coordination',
-    'row': 'Row',
-    'numb': 'Number',
-    'metal': 'Metal',
-    'CN': 'Coordination Number',
-    'ON': 'Oxidation Number',
-    'energy': 'Energy (eV)',
     'form': 'Formation Energy (eV)',
     'coh': 'Cohesive Energy (eV)',
-    'volume': 'Volume (Å³)',
-    'cell': 'Cell',
-    'chg': 'Bader Charge (e⁻)',
-    'mag': 'Magnetic Moments (μB)',
-    'l_bond': 'Bond Length (Å)',
-    'n_bond': 'Number of Bonds per Metal',
-    'match': 'Bulk Structure Maintain',
-    '-ICOHPm': '-ICOHP per Metal (eV)',
-    'ICOBIm': 'ICOBI per Metal',
-    '-ICOOPm': '-ICOOP per Metal (eV)',
-    '-ICOHPn': '-ICOHP per Bond (eV)',
-    'ICOBIn': 'ICOBI per Bond',
-    '-ICOOPn': '-ICOOP per Bond (eV)',
-    'madelung': 'Madelung Energy (Loewdin eV)',
-    'grosspop': 'Gross Population (Loewdin e⁻)',
 }
 
 def print_time(message, time_value):
@@ -188,7 +166,7 @@ def get_coordination_type(coord):
         return 'tetrahedral'
     elif coord in ['TN', 'PD', 'NB']:
         return 'squareplanar'
-    elif coord == 'RS':
+    elif coord in ['RS', '+3', '+4', '+5', '+6']:
         return 'octahedral'
     elif coord == 'LT':
         return 'pyramidal'
@@ -282,7 +260,7 @@ def plot_coordination_comparison(results, output_dir, output_suffix, model_type,
     plt.figure(figsize=(4, 3))
     
     # Create comparison matrix
-    all_coords = ['ZB', 'WZ', 'RS', 'NB', 'PD', 'TN', 'LT']
+    all_coords = ['ZB', 'WZ', 'RS', 'NB', 'PD', 'TN', 'LT', '+3', '+4', '+5', '+6']
     comparison_matrix = np.zeros((len(all_coords), len(all_coords)))
     coord_to_idx = {coord: i for i, coord in enumerate(all_coords)}
     
@@ -490,6 +468,57 @@ def plot_training_metrics(train_mae, train_mse, test_mae, test_mse, output_dir, 
     plt.close()
     print(f"{BLUE}MSE training metrics plot saved as {mse_path}{ENDC}")
 
+def select_features_by_correlation(correlation_matrix, target_col, threshold=0.7):
+    """
+    Select one feature from a group of highly correlated features
+    
+    Args:
+        correlation_matrix: Correlation matrix of features
+        target_col: Name of the target variable
+        threshold: Threshold for high correlation (default: 0.7)
+    
+    Returns:
+        selected_features: List of selected features
+    """
+    # Sort features by absolute correlation with target variable
+    target_corr = correlation_matrix[target_col].abs().sort_values(ascending=False)
+    
+    # Track selected and dropped features
+    selected_features = []
+    dropped_features = []
+    
+    # Iterate through all features
+    for feature in target_corr.index:
+        if feature == target_col:
+            continue
+            
+        # Check correlation with already selected features
+        high_corr = False
+        for selected in selected_features:
+            if abs(correlation_matrix.loc[feature, selected]) > threshold:
+                high_corr = True
+                # Select feature with higher correlation to target
+                if target_corr[feature] > target_corr[selected]:
+                    selected_features.remove(selected)
+                    dropped_features.append(selected)
+                    selected_features.append(feature)
+                else:
+                    dropped_features.append(feature)
+                break
+                
+        if not high_corr:
+            selected_features.append(feature)
+    
+    print("\nSelected features:")
+    for feat in selected_features:
+        print(f"- {feat}")
+    
+    print("\nDropped features:")
+    for feat in dropped_features:
+        print(f"- {feat}")
+    
+    return selected_features
+
 def main():
     start_time = time.time()
     print("Starting bulk prediction analysis...")
@@ -498,14 +527,14 @@ def main():
     parser.add_argument('--model', type=str, choices=['gpr', 'gbr', 'rf', 'lr'], default='gpr',
                       help='Model type to use (gpr, gbr, rf, or lr)')
     parser.add_argument('--Y', type=str, choices=['form', 'coh'], default='form',
-                      help='Target column from bulk_data.csv (form or coh)')
+                      help='Target column from bulk_data_total.csv (form or coh)')
     parser.add_argument('--X', nargs='+', default=[
-        'numb', 'chg', 'mag', 'volume', 'l_bond', 'n_bond',
-        'grosspop', 'madelung', 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
-        'pauling', 'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
-        'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
+        'OS', 'CN', 'numb', 'chg', 'mag', 'volume', 'l_bond',
+        'madelung', 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn',
+        'ion', 'ion-1', 'ion+1', 'ionN', 'ionN-1', 'ionN+1', 
+        'pauling', 'Natom', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
-    ], help='List of feature columns from bulk_data.csv and/or mendeleev_data.csv')
+    ], help='List of feature columns from bulk_data_total.csv')
     parser.add_argument('--row', nargs='+', type=str, default=None, help='Filter by row: 3d, 4d, or 5d')
     parser.add_argument('--coord', nargs='+', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
     parser.add_argument('--output', type=str, default='result', help='Output filename suffix')
@@ -543,8 +572,7 @@ def main():
         # Load data
         print("Loading data...")
         load_start = time.time()
-        df_bulk = pd.read_csv(os.path.join(root, 'bulk_data.csv'), index_col=0)
-        df_mend = pd.read_csv(os.path.join(root, 'mendeleev_data.csv'), index_col=0)
+        df_bulk = pd.read_csv(os.path.join(root, 'bulk_data_total.csv'), index_col=0)
         print_time("Data loading completed", time.time() - load_start)
     except FileNotFoundError as e:
         print(f"{RED}Error: Required data file not found: {e}{ENDC}")
@@ -552,29 +580,12 @@ def main():
 
     print("Preprocessing data...")
     preprocess_start = time.time()
-    df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True, suffixes=('_bulk', '_mend'))
-    df = df.rename(columns={'row_bulk': 'row', 'numb_mend': 'numb'})
-    df = df.drop(columns=['row_mend', 'numb_bulk'])
-    df = df[df['row'] != 'fm']
-
-    # Print dataset size
-    print(f"\nDataset size before filtering:")
-    print(f"Total rows: {len(df)}")
-    print(f"Total columns: {len(df.columns)}")
-    print(f"Features used: {len(args.X)}")
-    print(f"Target variable: {args.Y}")
+    df = df_bulk.copy()
 
     if args.row:
         df = df[df['row'].isin(args.row)]
     if args.coord:
         df = df[df['coord'].isin(args.coord)]
-
-    # Print dataset size after filtering
-    print(f"\nDataset size after filtering:")
-    print(f"Total rows: {len(df)}")
-    print(f"Total columns: {len(df.columns)}")
-    print(f"Features used: {len(args.X)}")
-    print(f"Target variable: {args.Y}")
 
     # Handle missing values in both X and y
     X = df[args.X].astype(float)
@@ -855,7 +866,7 @@ def main():
     
     # Define color and marker mappings
     row_map = {'3d': 'red', '4d': 'green', '5d': 'blue'}
-    coord_map = {'WZ': '>', 'ZB': '<', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'd', 'LT': 'h'}
+    coord_map = {'WZ': '+', 'ZB': 'x', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'D', 'LT': 'h', '+3': 'v', '+4': '^', '+5': '<', '+6': '>'}
     
     # Plot training data with error bars
     for r in df['row'].unique():

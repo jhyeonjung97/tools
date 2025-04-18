@@ -20,30 +20,8 @@ else:
     raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
 
 ylabels = {
-    'coord': 'Coordination',
-    'row': 'Row',
-    'numb': 'Number',
-    'metal': 'Metal',
-    'CN': 'Coordination Number',
-    'ON': 'Oxidation Number',
-    'energy': 'Energy (eV)',
     'form': 'Formation Energy (eV)',
     'coh': 'Cohesive Energy (eV)',
-    'volume': 'Volume (Å³)',
-    'cell': 'Cell',
-    'chg': 'Bader Charge (e⁻)',
-    'mag': 'Magnetic Moments (μB)',
-    'l_bond': 'Bond Length (Å)',
-    'n_bond': 'Number of Bonds per Metal',
-    'match': 'Bulk Structure Maintain',
-    '-ICOHPm': '-ICOHP per Metal (eV)',
-    'ICOBIm': 'ICOBI per Metal',
-    '-ICOOPm': '-ICOOP per Metal (eV)',
-    '-ICOHPn': '-ICOHP per Bond (eV)',
-    'ICOBIn': 'ICOBI per Bond',
-    '-ICOOPn': '-ICOOP per Bond (eV)',
-    'madelung': 'Madelung Energy (Loewdin eV)',
-    'grosspop': 'Gross Population (Loewdin e⁻)',
 }
 
 def select_features_by_correlation(correlation_matrix, target_col, threshold=0.7):
@@ -101,9 +79,9 @@ def main():
     parser = argparse.ArgumentParser(description='Linear regression using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
-        'numb', 'chg', 'mag', 'volume', 'l_bond', 'n_bond',
-        'grosspop', 'madelung', 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
-        'pauling', 'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
+        'OS', 'CN', 'numb', 'chg', 'mag', 'volume', 'l_bond',
+        'madelung', 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
+        'pauling', 'ion-1', 'ion', 'ion+1','ionN-1', 'ionN', 'ionN+1', 'Natom', 'mass', 'density', 
         'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
     ], help='List of feature columns from bulk_data.csv and/or mendeleev_data.csv')
@@ -115,9 +93,12 @@ def main():
     # Convert feature names if they start with ICOHP or ICOOP (prepend '-')
     args.X = [('-' + x if x.startswith('ICOHP') or x.startswith('ICOOP') else x) for x in args.X]
     
-    df_bulk = pd.read_csv(os.path.join(root, 'bulk_data.csv'), index_col=0)
+    # Read data files
+    df_tetra = pd.read_csv(os.path.join(root, 'bulk_data.csv'), index_col=0, dtype={'coord': str})
+    df_octa = pd.read_csv(os.path.join(root, 'comer_bulk_data.csv'), index_col=0, dtype={'coord': str})
     df_mend = pd.read_csv(os.path.join(root, 'mendeleev_data.csv'), index_col=0)
 
+    df_bulk = pd.concat([df_tetra, df_octa], axis=0)
     df = pd.merge(df_bulk, df_mend, left_on='metal', right_index=True, suffixes=('_bulk', '_mend'))
     df = df.rename(columns={'row_bulk': 'row', 'numb_mend': 'numb'})
     df = df.drop(columns=['row_mend', 'numb_bulk'])
@@ -128,9 +109,30 @@ def main():
     if args.coord:
         df = df[df['coord'].isin(args.coord)]
 
+    # Calculate ion values for each row
+    df['ion-1'] = df.apply(lambda row: row[f'ion{int(row["OS"])-1}'], axis=1)
+    df['ion'] = df.apply(lambda row: row[f'ion{int(row["OS"])}'], axis=1)
+    df['ion+1'] = df.apply(lambda row: row[f'ion{int(row["OS"])+1}'], axis=1)
+    
+    # Initialize columns with float type
+    df['ionN-1'] = 0.0
+    df['ionN'] = 0.0
+    df['ionN+1'] = 0.0
+    
+    for idx, row in df.iterrows():
+        for i in range(1, int(row['OS'])):
+            df.at[idx, 'ionN-1'] = float(df.at[idx, 'ionN-1']) + float(row[f'ion{i}'])
+        df.at[idx, 'ionN'] = float(df.at[idx, 'ionN-1']) + float(row[f'ion{int(row["OS"])}'])
+        df.at[idx, 'ionN+1'] = float(df.at[idx, 'ionN']) + float(row[f'ion{int(row["OS"])+1}'])
+
     # Drop rows with NaN in any relevant column
-    all_columns = args.X + [args.Y]
-    df = df.dropna(subset=all_columns)
+    df = df.dropna(subset=args.X + [args.Y])
+
+    # Exclude ion1~7 columns from saving
+    columns_to_save = [col for col in args.X + [args.Y] if col not in ['ion1', 'ion2', 'ion3', 'ion4', 'ion5', 'ion6', 'ion7']]
+    df_to_save = df[columns_to_save]
+    df_to_save.to_csv(f'{root}/bulk_data_total.csv', sep=',')
+    df_to_save.to_csv(f'{root}/bulk_data_total.tsv', sep='\t', float_format='%.2f')
 
     X = df[args.X].astype(float)
     Y = df[args.Y].astype(float)
@@ -161,7 +163,7 @@ def main():
 
     # Plot parity with color by 'row' and marker by 'coord'
     row_map = {'3d': 'red', '4d': 'green', '5d': 'blue'}
-    coord_map = {'WZ': '>', 'ZB': '<', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'd', 'LT': 'h'}
+    coord_map = {'WZ': '+', 'ZB': 'x', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'D', 'LT': 'h', '+3': 'v', '+4': '^', '+5': '<', '+6': '>'}
 
     plt.figure(figsize=(10, 8))
     for r in df['row'].unique():
@@ -220,10 +222,6 @@ def main():
     df_result_all['Y_pred'] = Y_pred_all
     df_result_all['residual'] = Y - Y_pred_all
     df_result_all.to_csv(os.path.join(root, f'lr_{args.output}_all.tsv'), sep='\t', index=False)
-
-    # Plot parity with color by 'row' and marker by 'coord'
-    row_map = {'3d': 'red', '4d': 'green', '5d': 'blue'}
-    coord_map = {'WZ': '>', 'ZB': '<', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'd', 'LT': 'h'}
 
     plt.figure(figsize=(10, 8))
     for r in df['row'].unique():
@@ -307,10 +305,6 @@ def main():
         df_result_selected['Y_pred'] = Y_pred_selected
         df_result_selected['residual'] = Y - Y_pred_selected
         df_result_selected.to_csv(os.path.join(root, f'lr_{args.output}_{suffix}.tsv'), sep='\t', index=False)
-
-        # Plot parity with color by 'row' and marker by 'coord'
-        row_map = {'3d': 'red', '4d': 'green', '5d': 'blue'}
-        coord_map = {'WZ': '>', 'ZB': '<', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'd', 'LT': 'h'}
 
         plt.figure(figsize=(10, 8))
         for r in df['row'].unique():

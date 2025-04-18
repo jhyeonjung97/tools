@@ -24,15 +24,15 @@ else:
 save_path = os.path.join(root, 'figures')
 
 coords_data = [
-    {'coord': 'WZ', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ',  'zorder': 5, 'marker': '>', 'color': 'darkorange',},
-    {'coord': 'ZB', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB',  'zorder': 4, 'marker': '<', 'color': 'gold',},
-    {'coord': 'TN', 'CN': 4, 'ON': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'zorder': 3, 'marker': 'o', 'color': 'dodgerblue',},
-    {'coord': 'PD', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD', 'zorder': 2, 'marker': 'o', 'color': 'deepskyblue',},
-    {'coord': 'NB', 'CN': 4, 'ON': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'zorder': 1, 'marker': 's', 'color': 'limegreen',},
-    {'coord': 'RS', 'CN': 6, 'ON': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'zorder': 6, 'marker': 'd', 'color': 'orchid',},
-    {'coord': 'LT', 'CN': 4, 'ON': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'zorder': 0, 'marker': 'h', 'color': 'silver',},
-    # {'coord': 'AQ', 'CN': 4, 'ON': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'pink',},
-    # {'coord': 'AU', 'CN': 4, 'ON': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'cyan',},
+    {'coord': 'WZ', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ',  'zorder': 5, 'marker': '>', 'color': 'darkorange',},
+    {'coord': 'ZB', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB',  'zorder': 4, 'marker': '<', 'color': 'gold',},
+    {'coord': 'TN', 'CN': 4, 'OS': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'zorder': 3, 'marker': 'o', 'color': 'dodgerblue',},
+    {'coord': 'PD', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD', 'zorder': 2, 'marker': 'o', 'color': 'deepskyblue',},
+    {'coord': 'NB', 'CN': 4, 'OS': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'zorder': 1, 'marker': 's', 'color': 'limegreen',},
+    {'coord': 'RS', 'CN': 6, 'OS': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'zorder': 6, 'marker': 'd', 'color': 'orchid',},
+    {'coord': 'LT', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'zorder': 0, 'marker': 'h', 'color': 'silver',},
+    # {'coord': 'AQ', 'CN': 4, 'OS': 4, 'MN': 6, 'coord_dir': '8_Tetrahedral_AQ',  'marker': '^', 'color': 'pink',},
+    # {'coord': 'AU', 'CN': 4, 'OS': 3, 'MN': 4, 'coord_dir': '9_SquarePlanar_AU', 'marker': 'v', 'color': 'cyan',},
 ]
     
 coords = pd.DataFrame(coords_data).set_index('coord')
@@ -52,7 +52,7 @@ columns_data = [
     {'column': 'numb',     'png_name': 'number',              'ylabel': 'Number'},
     {'column': 'metal',    'png_name': 'metal',               'ylabel': 'Metal'},
     {'column': 'CN',       'png_name': 'coordination_number', 'ylabel': 'Coordination Number'},
-    {'column': 'ON',       'png_name': 'oxidation_number',    'ylabel': 'Oxidation Number'},
+    {'column': 'OS',       'png_name': 'oxidation_number',    'ylabel': 'Oxidation Number'},
     {'column': 'energy',   'png_name': 'energy',              'ylabel': 'Energy (eV)'},
     {'column': 'form',     'png_name': 'formation_energy',    'ylabel': 'Formation Energy (eV)'},
     {'column': 'coh',      'png_name': 'cohesive_energy',     'ylabel': 'Cohesive Energy (eV)'},
@@ -70,16 +70,15 @@ columns_data = [
     {'column': 'ICOBIn',   'png_name': 'icobi_per_bond',      'ylabel': 'ICOBI per Bond'},
     {'column': '-ICOOPn',  'png_name': 'icoop_per_bond',      'ylabel': '-ICOOP per Bond (eV)'},
     {'column': 'madelung', 'png_name': 'madelung',            'ylabel': 'Madelung Energy (Loewdin, eV)'},
-    {'column': 'grosspop', 'png_name': 'gross_population',    'ylabel': 'Gross Population (Loewdin, e⁻)'},
 ]
 columns = pd.DataFrame(columns_data).set_index('column')
 columns.index.name = None
 
 df = pd.DataFrame(columns=columns.index, dtype='object')
 bool_cols = ['match']
-int_cols = ['CN', 'ON', 'n_bond']
+int_cols = ['CN', 'OS', 'n_bond']
 str_cols = ['coord', 'row', 'numb', 'metal']
-float_cols = ['energy', 'form', 'coh', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
+float_cols = ['energy', 'form', 'coh', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung']
 
 metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t', index_col=0)
 mendeleev_df = pd.read_csv(os.path.join(save_path, 'mendeleev_data.csv'), index_col=0)
@@ -110,7 +109,7 @@ def main():
     # for coord in coords.index:
     for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']:
         CN = coords.loc[coord, 'CN']
-        ON = coords.loc[coord, 'ON']
+        ON = coords.loc[coord, 'OS']
         MN = coords.loc[coord, 'MN']
         coord_dir = coords.loc[coord, 'coord_dir']
         
@@ -118,7 +117,7 @@ def main():
             for m, metal in enumerate(metals[row]):
                 numb = str(m).zfill(2)
                 item = coord+row+numb
-                df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'ON']] = coord, row, m, metal, CN, ON 
+                df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'OS']] = coord, row, m, metal, CN, ON 
                 dir_path = os.path.join(root, coord_dir, row, numb+'_'+metal)
                 
                 atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')                
@@ -157,11 +156,10 @@ def main():
                     mag = np.mean([abs(mags[atom.index]) for atom in atoms if atom.symbol == metal])
                     df.loc[item, 'mag'] = mag
             
-                icohp_path = os.path.join(dir_path, 'icohp.txt')
-                icobi_path = os.path.join(dir_path, 'icobi.txt')
-                icoop_path = os.path.join(dir_path, 'icoop.txt')
+                icohp_path = os.path.join(dir_path, 'icohp-d.txt')
+                icobi_path = os.path.join(dir_path, 'icobi-d.txt')
+                icoop_path = os.path.join(dir_path, 'icoop-d.txt')
                 madelung_path = os.path.join(dir_path, 'MadelungEnergies.lobster')
-                grosspop_path = os.path.join(dir_path, 'GROSSPOP.lobster')
                 if os.path.exists(icohp_path) and os.path.getsize(icohp_path) != 0:
                     icohp, bond, nbond = parse_icohp(icohp_path)
                     df.loc[item, ['l_bond', 'n_bond', '-ICOHPn', '-ICOHPm']] = bond, nbond, icohp, icohp*nbond
@@ -174,9 +172,6 @@ def main():
                 if os.path.exists(madelung_path) and os.path.getsize(madelung_path) != 0:
                     madelung = parse_madelung(madelung_path)
                     df.loc[item, ['madelung']] = madelung/MN
-                if os.path.exists(grosspop_path) and os.path.getsize(grosspop_path) != 0:
-                    grosspop = parse_grosspop(grosspop_path, metal)
-                    df.loc[item, ['grosspop']] = grosspop
                     
                 df.to_csv(f'{save_path}/bulk_data.csv', sep=',')
                 # df[int_cols] = df[int_cols].astype(int)
@@ -273,18 +268,6 @@ def parse_madelung(file_path):
                 madelung = float(parts[2])
                 return madelung
     return np.nan
-                                      
-def parse_grosspop(file_path, metal):
-    elements, loewdin_totals = [], []
-    with open(file_path, 'r') as f:
-        for line in f:
-            parts = line.split()
-            if len(parts) == 5 and (parts[1] == metal or parts[1] == 'O'):
-                elements.append(parts[1])  
-            if len(parts) == 3 and parts[0] == 'total':
-                loewdin_totals.append(float(parts[-1]))
-    loewdin_gp = [loewdin_totals[i] for i in range(len(elements)) if elements[i] == metal]
-    return np.mean(loewdin_gp) if loewdin_gp else np.nan
         
 if __name__ == "__main__":
     main()

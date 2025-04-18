@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from mendeleev import element
 
-# 서버 주소 가져오기
 hostname = socket.gethostname()
 user_name = os.getlogin()
 if hostname == 'PC102616':
@@ -24,10 +23,10 @@ else:
 save_path = os.path.join(root, 'figures')
 
 coords_data = [
-    {'coord': '1', 'CN': 6, 'ON': 3, 'MN': 1, 'coord_dir': '1_Octahedral_+3', 'zorder': 1, 'marker': 'o', 'color': 'darkorange'},
-    {'coord': '2', 'CN': 6, 'ON': 4, 'MN': 1, 'coord_dir': '2_Octahedral_+4', 'zorder': 2, 'marker': 's', 'color': 'gold'},
-    {'coord': '3', 'CN': 6, 'ON': 5, 'MN': 1, 'coord_dir': '3_Octahedral_+5', 'zorder': 3, 'marker': '^', 'color': 'dodgerblue'},
-    {'coord': '4', 'CN': 6, 'ON': 6, 'MN': 1, 'coord_dir': '4_Octahedral_+6', 'zorder': 4, 'marker': 'v', 'color': 'deepskyblue'},
+    {'coord': '+3', 'CN': 6, 'OS': 3, 'MN': 4, 'coord_dir': '1_Octahedral_+3', 'zorder': 1, 'marker': 'o', 'color': 'darkorange'},
+    {'coord': '+4', 'CN': 6, 'OS': 4, 'MN': 2, 'coord_dir': '2_Octahedral_+4', 'zorder': 2, 'marker': 's', 'color': 'gold'},
+    {'coord': '+5', 'CN': 6, 'OS': 5, 'MN': 4, 'coord_dir': '3_Octahedral_+5', 'zorder': 3, 'marker': '^', 'color': 'dodgerblue'},
+    {'coord': '+6', 'CN': 6, 'OS': 6, 'MN': 1, 'coord_dir': '4_Octahedral_+6', 'zorder': 4, 'marker': 'v', 'color': 'deepskyblue'},
 ]
     
 coords = pd.DataFrame(coords_data).set_index('coord')
@@ -46,7 +45,7 @@ columns_data = [
     {'column': 'numb',     'png_name': 'number',              'ylabel': 'Number'},
     {'column': 'metal',    'png_name': 'metal',               'ylabel': 'Metal'},
     {'column': 'CN',       'png_name': 'coordination_number', 'ylabel': 'Coordination Number'},
-    {'column': 'ON',       'png_name': 'oxidation_number',    'ylabel': 'Oxidation Number'},
+    {'column': 'OS',       'png_name': 'oxidation_state',    'ylabel': 'Oxidation State'},
     {'column': 'energy',   'png_name': 'energy',              'ylabel': 'Energy (eV)'},
     {'column': 'form',     'png_name': 'formation_energy',    'ylabel': 'Formation Energy (eV)'},
     {'column': 'coh',      'png_name': 'cohesive_energy',     'ylabel': 'Cohesive Energy (eV)'},
@@ -64,16 +63,15 @@ columns_data = [
     {'column': 'ICOBIn',   'png_name': 'icobi_per_bond',      'ylabel': 'ICOBI per Bond'},
     {'column': '-ICOOPn',  'png_name': 'icoop_per_bond',      'ylabel': '-ICOOP per Bond (eV)'},
     {'column': 'madelung', 'png_name': 'madelung',            'ylabel': 'Madelung Energy (Loewdin, eV)'},
-    {'column': 'grosspop', 'png_name': 'gross_population',    'ylabel': 'Gross Population (Loewdin, e⁻)'},
 ]
 columns = pd.DataFrame(columns_data).set_index('column')
 columns.index.name = None
 
 df = pd.DataFrame(columns=columns.index, dtype='object')
 bool_cols = ['match']
-int_cols = ['CN', 'ON', 'n_bond']
+int_cols = ['CN', 'OS', 'n_bond']
 str_cols = ['coord', 'row', 'numb', 'metal']
-float_cols = ['energy', 'form', 'coh', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 'grosspop']
+float_cols = ['energy', 'form', 'coh', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung']
 
 metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t', index_col=0)
 mendeleev_df = pd.read_csv(os.path.join(save_path, 'mendeleev_data.csv'), index_col=0)
@@ -102,41 +100,48 @@ def main():
     #     df = pd.read_csv(f'{save_path}/bulk_data.csv')
     
     # for coord in coords.index:
-    for coord in ['1', '2', '3', '4', 'NB', 'RS', 'LT']:
+    for coord in ['+3', '+4', '+5', '+6']:
         CN = coords.loc[coord, 'CN']
-        ON = coords.loc[coord, 'ON']
+        ON = coords.loc[coord, 'OS']
         MN = coords.loc[coord, 'MN']
-        coord_dir = f"{coord.split('_')[0]}_Octahedral_+{int(coord.split('_')[0])+2}"
+        coord_dir = coords.loc[coord, 'coord_dir']
         
         for row in metals.keys():
             for m, metal in enumerate(metals[row]):
                 numb = str(m).zfill(2)
                 item = coord+row+numb
-                df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'ON']] = coord, row, m, metal, CN, ON 
+                df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'OS']] = coord, row, m, metal, CN, ON 
                 dir_path = os.path.join(root, 'comer', coord_dir, row, numb+'_'+metal)
                 
-                atoms_path = os.path.join(dir_path, 'final_with_calculator.json')                
+                atoms_path = os.path.join(dir_path, 'final_with_calculator.json')
                 if os.path.exists(atoms_path):
                     atoms = read(atoms_path)
-                    energy = atoms.get_total_energy()
-                    volume = atoms.get_volume()
-                    df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
-
-                    formation = energy/MN - metal_df.loc[metal, 'E'] - (go2 / 2) * (ON /2)
-                    df.loc[item, 'form'] = formation
-                    
-                    cohesive = mendeleev_df.loc[metal, 'Hform'] / 96.48 + (cohesive_o2 / 2) * (ON /2) - formation
-                    df.loc[item, 'coh'] = cohesive
-                    
-                    if coord in ['1', '3', '4', 'LT', 'AQ']:
-                        a = atoms.cell.cellpar()[0]
-                        c = atoms.cell.cellpar()[2]
-                        df.loc[item, 'cell'] = c/a
-                    elif coord in ['2', 'RS']:
-                        df.loc[item, 'cell'] = atoms.cell.cellpar()[3] / 33.33
-                    elif coord in ['NB']:
-                        df.loc[item, 'cell'] = atoms.cell.cellpar()[3] / 60.0
+                else:
+                    atoms_path = os.path.join(dir_path, 'moments.json')
+                    if os.path.exists(atoms_path):
+                        atoms = read(atoms_path)
+                    else:
+                        continue
                         
+                energy = atoms.get_total_energy()
+                volume = atoms.get_volume()
+                df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
+
+                formation = energy/MN - metal_df.loc[metal, 'E'] - (go2 / 2) * (ON /2)
+                df.loc[item, 'form'] = formation
+                
+                cohesive = mendeleev_df.loc[metal, 'Hform'] / 96.48 + (cohesive_o2 / 2) * (ON /2) - formation
+                df.loc[item, 'coh'] = cohesive
+                
+                if coord in ['+4', '+5']:
+                    a = atoms.cell.cellpar()[0]
+                    c = atoms.cell.cellpar()[2]
+                    df.loc[item, 'cell'] = c/a
+                elif coord in ['+3']:
+                    df.loc[item, 'cell'] = atoms.cell.cellpar()[3] / 60.0
+                elif coord in ['+6']:
+                    df.loc[item, 'cell'] = atoms.cell.cellpar()[3] / 90.0
+                    
                 chg_path = os.path.join(dir_path, 'bader_charges.txt')
                 if os.path.exists(chg_path):
                     with open(chg_path, 'r') as f:
@@ -162,16 +167,18 @@ def main():
             
                 mag_path = os.path.join(dir_path, 'moments.json')
                 if os.path.exists(mag_path):
-                    atoms = read(mag_path)
-                    mags = atoms.get_magnetic_moments()
-                    mag = np.mean([abs(mags[atom.index]) for atom in atoms if atom.symbol == metal])
-                    df.loc[item, 'mag'] = mag
+                    try:
+                        atoms = read(mag_path)
+                        mags = atoms.get_magnetic_moments()
+                        mag = np.mean([abs(mags[atom.index]) for atom in atoms if atom.symbol == metal])
+                        df.loc[item, 'mag'] = mag
+                    except:
+                        df.loc[item, 'mag'] = 0.0
             
-                icohp_path = os.path.join(dir_path, 'ICOHPLIST.lobster')
-                icobi_path = os.path.join(dir_path, 'ICOBILIST.lobster')
-                icoop_path = os.path.join(dir_path, 'ICOOPLIST.lobster')
+                icohp_path = os.path.join(dir_path, 'icohp-d.txt')
+                icobi_path = os.path.join(dir_path, 'icobi-d.txt')
+                icoop_path = os.path.join(dir_path, 'icoop-d.txt')
                 madelung_path = os.path.join(dir_path, 'MadelungEnergies.lobster')
-                grosspop_path = os.path.join(dir_path, 'GROSSPOP.lobster')
                 if os.path.exists(icohp_path) and os.path.getsize(icohp_path) != 0:
                     icohp, bond, nbond = parse_icohp(icohp_path)
                     df.loc[item, ['l_bond', 'n_bond', '-ICOHPn', '-ICOHPm']] = bond, nbond, icohp, icohp*nbond
@@ -184,9 +191,6 @@ def main():
                 if os.path.exists(madelung_path) and os.path.getsize(madelung_path) != 0:
                     madelung = parse_madelung(madelung_path)
                     df.loc[item, ['madelung']] = madelung/MN
-                if os.path.exists(grosspop_path) and os.path.getsize(grosspop_path) != 0:
-                    grosspop = parse_grosspop(grosspop_path, metal)
-                    df.loc[item, ['grosspop']] = grosspop
                     
                 df.to_csv(f'{save_path}/comer_bulk_data.csv', sep=',')
                 # df[int_cols] = df[int_cols].astype(int)
@@ -209,7 +213,7 @@ def plot_by_metal_row(df, save_path):
                 continue
             plt.figure(figsize=(8, 6))
             # for coord in coords.index:
-            for c, coord in enumerate(['1', '2', '3', '4', 'NB', 'RS', 'LT']):
+            for c, coord in enumerate(['+3', '+4', '+5', '+6']):
                 zorder=coords.loc[coord, 'zorder']
                 marker=coords.loc[coord, 'marker']
                 color=coords.loc[coord, 'color']
@@ -234,7 +238,7 @@ def plot_by_metal_row(df, save_path):
             
 def plot_by_coordination(df, save_path):        
     # for coord in coords.index:
-    for coord in ['1', '2', '3', '4', 'NB', 'RS', 'LT']:            
+    for coord in ['+3', '+4', '+5', '+6']:            
         for col in columns.index:
             marker=coords.loc[coord, 'marker']
             base_color = coords.loc[coord, 'color']
@@ -283,18 +287,6 @@ def parse_madelung(file_path):
                 madelung = float(parts[2])
                 return madelung
     return np.nan
-                                      
-def parse_grosspop(file_path, metal):
-    elements, loewdin_totals = [], []
-    with open(file_path, 'r') as f:
-        for line in f:
-            parts = line.split()
-            if len(parts) == 5 and (parts[1] == metal or parts[1] == 'O'):
-                elements.append(parts[1])  
-            if len(parts) == 3 and parts[0] == 'total':
-                loewdin_totals.append(float(parts[-1]))
-    loewdin_gp = [loewdin_totals[i] for i in range(len(elements)) if elements[i] == metal]
-    return np.mean(loewdin_gp) if loewdin_gp else np.nan
         
 if __name__ == "__main__":
     main()

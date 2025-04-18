@@ -5,7 +5,7 @@ import pandas as pd
 from mendeleev import element
 import matplotlib.pyplot as plt
 
-# 서버 주소 가져오기
+# Get server address
 hostname = socket.gethostname()
 user_name = os.getlogin()
 if hostname == 'PC102616':
@@ -43,9 +43,13 @@ patterns = {
     'ionenergies[1]': 'ion1', 
     'ionenergies[2]': 'ion2', 
     'ionenergies[3]': 'ion3',
+    'ionenergies[4]': 'ion4',
+    'ionenergies[5]': 'ion5',
+    'ionenergies[6]': 'ion6',
+    'ionenergies[7]': 'ion7',
 }
 
-# 데이터프레임 초기화 시 데이터 타입 지정
+# Initialize DataFrame with specified data types
 df = pd.DataFrame(index=sum(metals.values(), []), dtype='object')
 df['row'] = pd.Series(dtype='object')
 df['numb'] = pd.Series(dtype='int')
@@ -61,11 +65,11 @@ for row in metals.keys():
                 ion_index = int(pattern.split('[')[1].strip(']'))
                 df.at[metal, column] = elem.ionenergies.get(ion_index, np.nan)
             elif metal == 'Sn' and pattern in ['boiling_point', 'melting_point']:
-                # Sn의 경우 특별 처리
+                # Special handling for Sn
                 if pattern == 'boiling_point':
-                    df.at[metal, column] = 2875  # Sn의 끓는점 (K)
+                    df.at[metal, column] = 2875  # Boiling point of Sn (K)
                 elif pattern == 'melting_point':
-                    df.at[metal, column] = 505.08  # Sn의 녹는점 (K)
+                    df.at[metal, column] = 505.08  # Melting point of Sn (K)
             else:
                 value = getattr(elem, pattern)
                 if isinstance(value, dict):
@@ -73,7 +77,6 @@ for row in metals.keys():
                 else:
                     df.at[metal, column] = value
 
-df['ion12'] = df['ion1'] + df['ion2']
 save_path = os.path.join(root, 'figures')
 df.to_csv(os.path.join(save_path, 'mendeleev_data.csv'), sep=',')
 df.to_csv(os.path.join(save_path, 'mendeleev_data.tsv'), sep='\t', float_format='%.2f')
