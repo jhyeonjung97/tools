@@ -15,6 +15,9 @@ do
     elif [[ -f "submit.sh" ]]; then
         cp ~/bin/tools/tetra/submit_slab.sh ./submit.sh
         sed -i -e "s/jobname/${jobname}/" submit.sh
+        if [[ $row == 'fm' ]]; then
+            sed -i -e 's/afm/fm/' submit.sh
+        fi
         python ~/bin/get_restart3.py
         pwd; sbatch submit.sh
     fi
