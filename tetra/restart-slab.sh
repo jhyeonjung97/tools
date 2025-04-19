@@ -16,6 +16,6 @@ do
         cp ~/bin/tools/tetra/submit_slab.sh ./submit.sh
         sed -i -e "s/jobname/${jobname}/" submit.sh
         python ~/bin/get_restart3.py
-        pwd; #sbatch submit.sh
+        pwd; sbatch submit.sh
     fi
 done
