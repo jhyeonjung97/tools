@@ -21,6 +21,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.utils.optimize import _check_optimize_result
 import scipy.optimize
 import socket
+import xgboost as xgb
+import lightgbm as lgb
 
 # ANSI color codes
 RED = '\033[91m'
@@ -109,6 +111,10 @@ def feature_importance(X, y, model, feature_names, model_type='gpr'):
             importance.append(1 - score)
         return pd.Series(importance, index=feature_names)
     elif model_type in ['gbr', 'rf']:
+        return pd.Series(model.feature_importances_, index=feature_names)
+    elif model_type == 'xgb':
+        return pd.Series(model.feature_importances_, index=feature_names)
+    elif model_type == 'lgb':
         return pd.Series(model.feature_importances_, index=feature_names)
     else:  # lr
         return pd.Series(np.abs(model.coef_), index=feature_names)
@@ -523,9 +529,9 @@ def main():
     start_time = time.time()
     print("Starting bulk prediction analysis...")
     
-    parser = argparse.ArgumentParser(description='Bulk prediction using GPR, GBR, RF, or LR')
-    parser.add_argument('--model', type=str, choices=['gpr', 'gbr', 'rf', 'lr'], default='gpr',
-                      help='Model type to use (gpr, gbr, rf, or lr)')
+    parser = argparse.ArgumentParser(description='Bulk prediction using GPR, GBR, RF, LR, XGBoost, or LightGBM')
+    parser.add_argument('--model', type=str, choices=['gpr', 'gbr', 'rf', 'lr', 'xgb', 'lgb'], default='gpr',
+                      help='Model type to use (gpr, gbr, rf, lr, xgb, or lgb)')
     parser.add_argument('--Y', type=str, choices=['form', 'coh'], default='form',
                       help='Target column from bulk_data_total.csv (form or coh)')
     parser.add_argument('--X', nargs='+', default=[
@@ -689,11 +695,61 @@ def main():
             'min_samples_split': Integer(2, 20),
             'min_samples_leaf': Integer(1, 10),
         }
-    else:  # lr
+    elif args.model == 'lr':
         # LR model setup
         model = LinearRegression()
         # No hyperparameter optimization needed for LR
         search_space = {}
+    elif args.model == 'xgb':
+        # XGBoost model setup
+        model = xgb.XGBRegressor(
+            objective='reg:squarederror',
+            random_state=args.random_state,
+            n_estimators=200,
+            learning_rate=0.05,
+            max_depth=6,
+            min_child_weight=1,
+            subsample=0.8,
+            colsample_bytree=0.8,
+            gamma=0,
+            reg_alpha=0,
+            reg_lambda=1
+        )
+        search_space = {
+            'n_estimators': Integer(100, 300),
+            'learning_rate': Real(0.01, 0.1),
+            'max_depth': Integer(3, 8),
+            'min_child_weight': Integer(1, 5),
+            'subsample': Real(0.6, 0.9),
+            'colsample_bytree': Real(0.6, 0.9),
+            'gamma': Real(0, 0.5),
+            'reg_alpha': Real(0, 1),
+            'reg_lambda': Real(0, 1)
+        }
+    else:  # lgb
+        # LightGBM model setup
+        model = lgb.LGBMRegressor(
+            objective='regression',
+            random_state=args.random_state,
+            n_estimators=200,
+            learning_rate=0.05,
+            max_depth=6,
+            num_leaves=31,
+            subsample=0.8,
+            colsample_bytree=0.8,
+            reg_alpha=0,
+            reg_lambda=0
+        )
+        search_space = {
+            'n_estimators': Integer(100, 300),
+            'learning_rate': Real(0.01, 0.1),
+            'max_depth': Integer(3, 8),
+            'num_leaves': Integer(20, 50),
+            'subsample': Real(0.6, 0.9),
+            'colsample_bytree': Real(0.6, 0.9),
+            'reg_alpha': Real(0, 1),
+            'reg_lambda': Real(0, 1)
+        }
 
     # Train model with hyperparameter optimization
     print("Performing Bayesian Optimization...")
@@ -754,7 +810,12 @@ def main():
         y_pred_test = model.predict(X_test_scaled)
         std_train = get_prediction_std(model, X_train_scaled, model_type=args.model)
         std_test = get_prediction_std(model, X_test_scaled, model_type=args.model)
-    else:  # lr
+    elif args.model == 'lr':
+        y_pred_train = model.predict(X_train_scaled)
+        y_pred_test = model.predict(X_test_scaled)
+        std_train = get_prediction_std(model, X_train_scaled, model_type=args.model)
+        std_test = get_prediction_std(model, X_test_scaled, model_type=args.model)
+    else:  # xgb or lgb
         y_pred_train = model.predict(X_train_scaled)
         y_pred_test = model.predict(X_test_scaled)
         std_train = get_prediction_std(model, X_train_scaled, model_type=args.model)
