@@ -5,7 +5,8 @@ from ase.io import read
 import pandas as pd
 
 # Base directory
-base_dir = '/home/hyeonjung/scratch/4_IrFe3'
+# base_dir = '/home/hyeonjung/scratch/4_IrFe3'
+base_dir = '/Users/hailey/Desktop/4_IrFe3'
 
 # ZVAL values from POTCAR
 zval_dict = {
