@@ -1,3 +1,4 @@
+#!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=24
 #SBATCH --partition=g3
