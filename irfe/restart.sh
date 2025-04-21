@@ -1,13 +1,26 @@
-for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/5_M_top
-do
-    cd $dir
-    find . ! -name '*top*.vasp' -delete
-    cp *.vasp POSCAR
-done
+# for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/5_M_top
+# do
+#     cd $dir
+#     find . ! -name '*top*.vasp' -delete
+#     cp *.vasp POSCAR
+# done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/6_M_hol
+# for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/6_M_hol
+# do
+#     cd $dir
+#     find . ! -name '*hol*.vasp' -delete
+#     cp *.vasp POSCAR
+# done
+
+for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_M_*
 do
     cd $dir
-    find . ! -name '*hol*.vasp' -delete
+    cp ~/bin/tools/irfe/INCAR .
+    cp ~/bin/tools/irfe/KPOINTS .
     cp *.vasp POSCAR
+    vaspkit -task 107
+    mv POSCAR_REV POSCAR
+    rm POTCAR
+    vaspkit -task 103
+    python3 ~/bin/orange/magmom.py
 done
