@@ -19,14 +19,14 @@ for ads in ['h', 'o']:
         # Single atom adsorption
         atoms = original_atoms.copy()
         atoms += Atoms(symbol, positions=[atoms[range0].position + (0.0, 0.0, dz)])
-        write(f'{ads}-{site}-atom.vasp', atoms)
+        write(f'{ads}-{site}-Ir.vasp', atoms)
 
         if ads == 'o' and site == 'top':
             atoms += Atoms('H', positions=[atoms[-1].position + (0.6, 0.8, 0.0)])
-            write(f'{ads}h-{site}-atom.vasp', atoms)
+            write(f'{ads}h-{site}-Ir.vasp', atoms)
         elif ads == 'o' and site == 'hol':
             atoms += Atoms('H', positions=[atoms[-1].position + (0.0, 0.0, 1.0)])
-            write(f'{ads}h-{site}-atom.vasp', atoms)
+            write(f'{ads}h-{site}-Ir.vasp', atoms)
 
         # Layer adsorption
         atoms = original_atoms.copy()
