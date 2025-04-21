@@ -12,15 +12,21 @@
 #     cp *.vasp POSCAR
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_M_*
+# for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_M_*
+# do
+#     cd $dir
+#     cp ~/bin/tools/irfe/INCAR .
+#     cp ~/bin/tools/irfe/KPOINTS .
+#     cp *.vasp POSCAR
+#     vaspkit -task 107
+#     mv POSCAR_REV POSCAR
+#     rm POTCAR
+#     vaspkit -task 103
+#     python3 ~/bin/orange/magmom.py
+# done
+
+for dir in /home/hyeonjung/scratch/4_IrFe3/*_*
 do
     cd $dir
-    cp ~/bin/tools/irfe/INCAR .
-    cp ~/bin/tools/irfe/KPOINTS .
-    cp *.vasp POSCAR
-    vaspkit -task 107
-    mv POSCAR_REV POSCAR
-    rm POTCAR
-    vaspkit -task 103
-    python3 ~/bin/orange/magmom.py
+    cp ~/bin/tools/irfe/run_slurm.sh .
 done
