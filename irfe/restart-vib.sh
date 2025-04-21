@@ -16,7 +16,7 @@
 #     python3 ~/bin/orange/magmom.py
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/vib/*_*
+for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/vib/*_*/
 do
     cd $dir
     cp ~/bin/tools/irfe/run_vib.sh run_slurm.sh
