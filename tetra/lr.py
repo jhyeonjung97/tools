@@ -79,10 +79,11 @@ def main():
     parser = argparse.ArgumentParser(description='Linear regression using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
-        'OS', 'CN', 'numb', 'chg', 'mag', 'volume', 'l_bond',
-        'madelung', 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
-        'pauling', 'ion-1', 'ion', 'ion+1','ionN-1', 'ionN', 'ionN+1', 'Natom', 'mass', 'density', 
-        'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
+        'OS', 'CN', 'numb', 'chg', 'mag', 'volume', 'l_bond', 'madelung',
+        'ICOHPm', 'ICOHPmn', 'ICOHPn', 'ICOBIm', 'ICOBImn', 'ICOBIn', 'ICOOPm', 'ICOOPmn', 'ICOOPn', 
+        # 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
+        'ion-1', 'ion', 'ion+1', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1', 
+        'pauling', 'Natom', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
     ], help='List of feature columns from bulk_data.csv and/or mendeleev_data.csv')
     parser.add_argument('--row', nargs='+', type=str, default=None, help='Filter by row: 3d, 4d, or 5d')
@@ -113,7 +114,15 @@ def main():
     df['ion-1'] = df.apply(lambda row: row[f'ion{int(row["OS"])-1}'], axis=1)
     df['ion'] = df.apply(lambda row: row[f'ion{int(row["OS"])}'], axis=1)
     df['ion+1'] = df.apply(lambda row: row[f'ion{int(row["OS"])+1}'], axis=1)
-    
+
+    df['ion-1n'] = df['ion-1']/df['OS']
+    df['ionn'] = df['ion']/df['OS']
+    df['ion+1n'] = df['ion+1']/df['OS']
+
+    df['-ICOHPmn'] = df['-ICOHPm']/df['OS']
+    df['ICOBImn'] = df['ICOBIm']/df['OS']
+    df['-ICOOPmn'] = df['-ICOOPm']/df['OS']
+
     # Initialize columns with float type
     df['ionN-1'] = 0.0
     df['ionN'] = 0.0
@@ -129,7 +138,7 @@ def main():
     df = df.dropna(subset=args.X + [args.Y])
 
     # Exclude ion1~7 columns from saving
-    columns_to_save = [col for col in args.X + [args.Y] if col not in ['ion1', 'ion2', 'ion3', 'ion4', 'ion5', 'ion6', 'ion7']]
+    columns_to_save = [col for col in ['metal', 'row', 'coord'] + args.X + [args.Y] if col not in ['ion1', 'ion2', 'ion3', 'ion4', 'ion5', 'ion6', 'ion7']]
     df_to_save = df[columns_to_save]
     df_to_save.to_csv(f'{root}/bulk_data_total.csv', sep=',')
     df_to_save.to_csv(f'{root}/bulk_data_total.tsv', sep='\t', float_format='%.2f')

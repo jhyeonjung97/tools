@@ -474,7 +474,7 @@ def plot_training_metrics(train_mae, train_mse, test_mae, test_mse, output_dir, 
     plt.close()
     print(f"{BLUE}MSE training metrics plot saved as {mse_path}{ENDC}")
 
-def select_features_by_correlation(correlation_matrix, target_col, threshold=0.7):
+def select_features_by_correlation(correlation_matrix, target_col, threshold=1.0):
     """
     Select one feature from a group of highly correlated features
     
@@ -535,9 +535,9 @@ def main():
     parser.add_argument('--Y', type=str, choices=['form', 'coh'], default='form',
                       help='Target column from bulk_data_total.csv (form or coh)')
     parser.add_argument('--X', nargs='+', default=[
-        'OS', 'CN', 'numb', 'chg', 'mag', 'volume', 'l_bond',
-        'madelung', 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn',
-        'ion', 'ion-1', 'ion+1', 'ionN', 'ionN-1', 'ionN+1', 
+        'OS', 'CN', 'numb', 'chg', 'mag', 'volume', 'l_bond', 'madelung', 
+        'ICOHPm', 'ICOHPmn', 'ICOHPn', 'ICOBIm', 'ICOBImn', 'ICOBIn', 'ICOOPm', 'ICOOPmn', 'ICOOPn', 
+        'ion-1', 'ion', 'ion+1', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1', 
         'pauling', 'Natom', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
     ], help='List of feature columns from bulk_data_total.csv')
@@ -546,8 +546,11 @@ def main():
     parser.add_argument('--output', type=str, default='result', help='Output filename suffix')
     parser.add_argument('--test_size', type=float, default=0.2, help='Test set size (default: 0.2)')
     parser.add_argument('--random_state', type=int, default=42, help='Random state for reproducibility (default: 42)')
-    parser.add_argument('--threshold', type=float, default=0.2,
+    parser.add_argument('--energy_threshold', type=float, default=0.2,
                        help='Energy threshold (eV) for considering multiple coordinations in preference analysis')
+    parser.add_argument('--corr_threshold', type=float, default=1.0,
+                       help='Correlation threshold for feature selection (0.7, 0.8, 0.9 등)')
+    parser.add_argument('--save', action='store_true', help='Save results to file')
     args = parser.parse_args()
     
     # Convert feature names if they start with ICOHP or ICOOP (prepend '-')
@@ -606,9 +609,18 @@ def main():
     imputer = SimpleImputer(strategy='median')
     X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns, index=X.index)
 
-    # Split into train and test
+    # Calculate correlation matrix
+    print("Calculating correlation matrix...")
+    corr_matrix = df[args.X + [args.Y]].corr()
+    
+    # Select features based on correlation
+    print("Selecting features based on correlation...")
+    selected_features = select_features_by_correlation(corr_matrix, args.Y, args.corr_threshold)
+    
+    # Update X with selected features
+    X = df[selected_features].astype(float)
     X_train, X_test, y_train, y_test = train_test_split(
-        X_imputed, y, test_size=0.2, random_state=args.random_state
+        X, y, test_size=args.test_size, random_state=args.random_state
     )
 
     # Print training and test dataset sizes
@@ -729,22 +741,23 @@ def main():
     else:  # lgb
         # LightGBM model setup
         model = lgb.LGBMRegressor(
-            objective='regression',
-            random_state=args.random_state,
             n_estimators=200,
             learning_rate=0.05,
-            max_depth=6,
-            num_leaves=31,
+            max_depth=4,
+            min_data_in_leaf=5,  # 더 작은 값으로 설정
+            min_gain_to_split=0.01,  # 더 작은 값으로 설정
             subsample=0.8,
             colsample_bytree=0.8,
-            reg_alpha=0,
-            reg_lambda=0
+            reg_alpha=0.1,  # L1 정규화 추가
+            reg_lambda=0.1,  # L2 정규화 추가
+            random_state=42
         )
         search_space = {
             'n_estimators': Integer(100, 300),
             'learning_rate': Real(0.01, 0.1),
             'max_depth': Integer(3, 8),
-            'num_leaves': Integer(20, 50),
+            'min_data_in_leaf': Integer(5, 50),
+            'min_gain_to_split': Real(0.01, 0.1),
             'subsample': Real(0.6, 0.9),
             'colsample_bytree': Real(0.6, 0.9),
             'reg_alpha': Real(0, 1),
@@ -851,8 +864,8 @@ def main():
     # Calculate feature importance
     print("Calculating feature importance...")
     importance_start = time.time()
-    importance = feature_importance(X_train_scaled, y_train, model, args.X, args.model)
-    cumulative_scores = plot_feature_importance(X_train_scaled, X_test_scaled, y_train, y_test, args.X, importance_png_path, args.model)
+    importance = feature_importance(X_train_scaled, y_train, model, selected_features, args.model)
+    cumulative_scores = plot_feature_importance(X_train_scaled, X_test_scaled, y_train, y_test, selected_features, importance_png_path, args.model)
     print_time("Feature importance calculation completed", time.time() - importance_start)
 
     # Save results
@@ -890,108 +903,42 @@ def main():
             f.write(f"Test MAE: {score['mae_test']:.4f}\n")
     print(f"{BLUE}Log file saved as {log_path}{ENDC}")
 
+    print(df_bulk.columns.tolist())
     # Save predictions
     df_result = pd.DataFrame({
-        'metal': df.loc[valid_indices, 'metal'],
-        'row': df.loc[valid_indices, 'row'],
-        'coord': df.loc[valid_indices, 'coord'],
+        'metal': df_bulk.loc[valid_indices, 'metal'],
+        'row': df_bulk.loc[valid_indices, 'row'],
+        'coord': df_bulk.loc[valid_indices, 'coord'],
         'Y_true': y,
-        'Y_pred': model.predict(scaler.transform(X_imputed)),
-        'std': get_prediction_std(model, scaler.transform(X_imputed), model_type=args.model)
+        'Y_pred': model.predict(scaler.transform(X[selected_features].astype(float))),
+        'std': get_prediction_std(model, scaler.transform(X[selected_features].astype(float)), model_type=args.model)
     })
-    
-    # Extract actual metal name from the index
-    df_result['metal'] = df_result['metal']  # 단순히 metal 컬럼 유지
-    # 또는
-    # df_result = df_result.merge(df[['metal']], on='metal', how='left')  # merge 사용
     
     df_result.to_csv(tsv_path, sep='\t', index=False)
     print(f"{BLUE}TSV file saved as {tsv_path}{ENDC}")
 
-    # Plot parity plot with uncertainty
-    print("Creating parity plot...")
-    plt.figure(figsize=(10, 8))
-    
-    # Create DataFrames for train and test sets
-    df_train = pd.DataFrame(X_train, columns=args.X)
-    df_train['Y'] = y_train
-    df_train['row'] = df.loc[X_train.index, 'row']
-    df_train['coord'] = df.loc[X_train.index, 'coord']
-    df_train['metal'] = df.loc[X_train.index, 'metal']
-    
-    df_test = pd.DataFrame(X_test, columns=args.X)
-    df_test['Y'] = y_test
-    df_test['row'] = df.loc[X_test.index, 'row']
-    df_test['coord'] = df.loc[X_test.index, 'coord']
-    df_test['metal'] = df.loc[X_test.index, 'metal']
-    
-    # Define color and marker mappings
+    # Plot parity with color by 'row' and marker by 'coord'
     row_map = {'3d': 'red', '4d': 'green', '5d': 'blue'}
     coord_map = {'WZ': '+', 'ZB': 'x', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'D', 'LT': 'h', '+3': 'v', '+4': '^', '+5': '<', '+6': '>'}
-    
-    # Plot training data with error bars
+
+    plt.figure(figsize=(10, 8))
     for r in df['row'].unique():
         for c in df['coord'].unique():
-            # Plot training data
-            subset_train = df_train[(df_train['row'] == r) & (df_train['coord'] == c)]
-            if not subset_train.empty:
-                row_features = subset_train[args.X].astype(float)
-                row_features_scaled = scaler.transform(row_features)
-                if args.model == 'gpr':
-                    y_pred_train, std_train = model.predict(row_features_scaled, return_std=True)
-                else:
-                    y_pred_train = model.predict(row_features_scaled)
-                    std_train = get_prediction_std(model, row_features_scaled, model_type=args.model)
-                
-                plt.errorbar(
-                    subset_train['Y'].values,
-                    y_pred_train,
-                    yerr=std_train,
-                    fmt=coord_map.get(c, 'x'),
-                    label=f'{r}_{c}',
-                    alpha=0.3,
-                    color=row_map.get(r, 'gray'),
-                    markeredgecolor=row_map.get(r, 'gray'),
-                    markerfacecolor=row_map.get(r, 'gray'),
-                    ecolor='silver',
-                    capsize=0,
-                    linewidth=0.5
-                )
-                # Add labels for training set
-                for i, (_, row_data) in enumerate(subset_train.iterrows()):
-                    plt.annotate(row_data['metal'], 
-                               (row_data['Y'], y_pred_train[i]), 
-                               fontsize=8)
-            
-            # Plot test data
-            subset_test = df_test[(df_test['row'] == r) & (df_test['coord'] == c)]
-            if not subset_test.empty:
-                row_features = subset_test[args.X].astype(float)
-                row_features_scaled = scaler.transform(row_features)
-                if args.model == 'gpr':
-                    y_pred_test, std_test = model.predict(row_features_scaled, return_std=True)
-                else:
-                    y_pred_test = model.predict(row_features_scaled)
-                    std_test = get_prediction_std(model, row_features_scaled, model_type=args.model)
-                
-                plt.errorbar(
-                    subset_test['Y'].values,
-                    y_pred_test,
-                    yerr=std_test,
-                    fmt=coord_map.get(c, 'x'),
-                    alpha=0.3,
-                    color=row_map.get(r, 'gray'),
-                    markeredgecolor=row_map.get(r, 'gray'),
-                    markerfacecolor=row_map.get(r, 'gray'),
-                    ecolor='silver',
-                    capsize=0,
-                    linewidth=0.5
-                )
-                # Add labels for test set
-                for i, (_, row_data) in enumerate(subset_test.iterrows()):
-                    plt.annotate(row_data['metal'], 
-                               (row_data['Y'], y_pred_test[i]), 
-                               fontsize=8)
+            subset = df[(df['row'] == r) & (df['coord'] == c)]
+            if subset.empty:
+                continue
+            plt.scatter(
+                subset[args.Y],
+                model.predict(scaler.transform(subset[selected_features].astype(float))),
+                label=f'{r}_{c}',
+                alpha=0.3,
+                color=row_map.get(r, 'gray'),
+                marker=coord_map.get(c, 'x')
+            )
+            for _, row_data in subset.iterrows():
+                row_features = pd.DataFrame([row_data[selected_features].values], columns=selected_features)
+                y_pred_single = model.predict(scaler.transform(row_features))[0]
+                plt.annotate(row_data['metal'], (row_data[args.Y], y_pred_single), fontsize=8)
 
     plt.plot([y.min(), y.max()], [y.min(), y.max()], '--', lw=1, color='black')
     plt.xlabel(f'DFT-calculated {ylabels[args.Y]}')
@@ -1021,7 +968,7 @@ def main():
 
     # Analyze coordination preferences
     print("Analyzing coordination preferences...")
-    coord_results = analyze_coordination_preference(df, df_result, args.threshold, args.Y)
+    coord_results = analyze_coordination_preference(df, df_result, args.energy_threshold, args.Y)
     
     if len(coord_results) > 0:
         # Save coordination comparison results
@@ -1153,6 +1100,26 @@ def main():
         f.write(f"Metrics calculation: {time.time() - metrics_start:.2f} seconds\n")
         f.write(f"Feature importance calculation: {time.time() - importance_start:.2f} seconds\n")
         f.write(f"Results saving and plotting: {time.time() - save_start:.2f} seconds\n")
+
+    # Save results to file if --save option is used
+    if args.save:
+        # threshold 값을 파일명에 추가 (예: 0.7 -> 7)
+        threshold_str = str(int(args.energy_threshold * 10))
+        with open(f'{args.Y}_pred_{args.model}{threshold_str}_all_result.log', 'w') as f:
+            f.write(f'Model: {args.model}\n')
+            f.write(f'Threshold: {args.energy_threshold}\n')
+            f.write(f'Features: {", ".join(args.X)}\n')
+            f.write(f'Target: {args.Y}\n')
+            f.write(f'R2 Score: {metrics["test"]["r2"]:.4f}\n')
+            f.write(f'MAE: {metrics["test"]["mae"]:.4f}\n')
+            f.write(f'RMSE: {metrics["test"]["rmse"]:.4f}\n')
+            f.write(f'MAPE: {metrics["test"]["max_error"] / y.max() * 100:.4f}%\n')
+            f.write(f'Max Error: {metrics["test"]["max_error"]:.4f}\n')
+            f.write(f'Training Time: {time.time() - model_start:.2f} seconds\n')
+            f.write(f'Prediction Time: {time.time() - pred_start:.2f} seconds\n')
+            f.write('\nFeature Importance:\n')
+            for feature, importance in importance:
+                f.write(f'{feature}: {importance:.4f}\n')
 
 if __name__ == '__main__':
     print("Script started...")

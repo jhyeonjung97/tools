@@ -5,6 +5,10 @@ from os import path
 from ase.io import read, write
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
+import lightgbm as lgb
+from sklearn.model_selection import KFold
+import pandas as pd
+import argparse
 
 name = 'opt_bulk3_afm'
 start_time = time.time()
@@ -117,3 +121,85 @@ with open('time.log', 'a') as f:
     f.write("="*40 + "\n")
 
 print(f"Execution time logged in 'time.log'.")
+
+model = lgb.LGBMRegressor(
+    n_estimators=200,
+    learning_rate=0.05,
+    max_depth=4,
+    min_data_in_leaf=10,
+    min_gain_to_split=0.1,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    reg_alpha=0.1,
+    reg_lambda=0.1,
+    random_state=42
+)
+
+kf = KFold(n_splits=5, shuffle=True, random_state=42)
+
+def select_features_by_correlation(correlation_matrix, target_col, threshold=0.7):
+    """
+    상관관계가 높은 특성들을 제거하는 함수
+    
+    Args:
+        correlation_matrix: 상관관계 행렬
+        target_col: 타겟 변수 이름
+        threshold: 상관관계 임계값 (0.7, 0.8, 0.9 등)
+    
+    Returns:
+        selected_features: 선택된 특성들의 리스트
+    """
+    # 타겟 변수와의 상관관계로 정렬
+    target_corr = correlation_matrix[target_col].abs().sort_values(ascending=False)
+    
+    # 선택된 특성과 제거된 특성 추적
+    selected_features = []
+    dropped_features = []
+    
+    # 모든 특성에 대해 반복
+    for feature in target_corr.index:
+        if feature == target_col:
+            continue
+            
+        # 이미 선택된 특성들과의 상관관계 확인
+        high_corr = False
+        for selected in selected_features:
+            if abs(correlation_matrix.loc[feature, selected]) > threshold:
+                high_corr = True
+                # 타겟과의 상관관계가 더 높은 특성 선택
+                if target_corr[feature] > target_corr[selected]:
+                    selected_features.remove(selected)
+                    dropped_features.append(selected)
+                    selected_features.append(feature)
+                else:
+                    dropped_features.append(feature)
+                break
+                
+        if not high_corr:
+            selected_features.append(feature)
+    
+    print(f"\n상관관계 임계값: {threshold}")
+    print("\n선택된 특성:")
+    for feat in selected_features:
+        print(f"- {feat}")
+    
+    print("\n제거된 특성:")
+    for feat in dropped_features:
+        print(f"- {feat}")
+    
+    return selected_features
+
+# 상관관계 임계값을 파라미터로 받기
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('--corr_threshold', type=float, default=0.7,
+                   help='상관관계 임계값 (0.7, 0.8, 0.9 등)')
+
+# 상관관계 기반 특성 선택
+selected_features = select_features_by_correlation(
+    correlation_matrix=df[args.X].corr(),
+    target_col=args.Y,
+    threshold=args.corr_threshold
+)
+
+# 선택된 특성으로 X 데이터 업데이트
+X = X[selected_features]
