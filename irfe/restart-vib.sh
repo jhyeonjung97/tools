@@ -7,7 +7,17 @@ do
         python ~/bin/tools/irfe/vib.py
         cp vib.vasp $vib_dir/POSCAR
     fi
+    cd $vib_dir
     cp ~/bin/tools/irfe/INCAR_vib INCAR
     cp ~/bin/tools/irfe/KPOINTS .
+    vaspkit -task 107
+    mv POSCAR_REV POSCAR
+    vaspkit -task 103
+    python3 ~/bin/orange/magmom.py
+done
+
+for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/vib/*_*
+do
+    cd $dir
     cp ~/bin/tools/irfe/run_slurm.sh .
 done
