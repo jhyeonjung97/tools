@@ -7,4 +7,7 @@ do
         python ~/bin/tools/irfe/vib.py
         cp vib.vasp $vib_dir/POSCAR
     fi
+    cp ~/bin/tools/irfe/INCAR_vib INCAR
+    cp ~/bin/tools/irfe/KPOINTS .
+    cp ~/bin/tools/irfe/run_slurm.sh .
 done
