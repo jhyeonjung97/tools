@@ -8,25 +8,25 @@ for ads in ['h', 'o']:
 
     for site in ['top', 'hol']:
         if site == 'top':
-            range0 = 29
+            range0 = 25
             ranges = range(24, 32)
             dz = 1.8
         elif site == 'hol':
-            range0 = 13
+            range0 = 9
             ranges = range(8, 16)
             dz = 5.8
 
         # Single atom adsorption
         atoms = original_atoms.copy()
         atoms += Atoms(symbol, positions=[atoms[range0].position + (0.0, 0.0, dz)])
-        write(f'{ads}-{site}-Ir.vasp', atoms)
+        write(f'{ads}-{site}-M.vasp', atoms)
 
         if ads == 'o' and site == 'top':
             atoms += Atoms('H', positions=[atoms[-1].position + (0.6, 0.8, 0.0)])
-            write(f'{ads}h-{site}-Ir.vasp', atoms)
+            write(f'{ads}h-{site}-M.vasp', atoms)
         elif ads == 'o' and site == 'hol':
             atoms += Atoms('H', positions=[atoms[-1].position + (0.0, 0.0, 1.0)])
-            write(f'{ads}h-{site}-Ir.vasp', atoms)
+            write(f'{ads}h-{site}-M.vasp', atoms)
 
         # Layer adsorption
         atoms = original_atoms.copy()
