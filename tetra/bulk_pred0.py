@@ -159,13 +159,11 @@ def get_prediction_std(model, X, n_iterations=100, model_type='gpr'):
     """
     Estimate prediction uncertainty
     """
-    # X를 DataFrame으로 변환하고 feature names 유지
-    if isinstance(X, np.ndarray):
-        if hasattr(model, 'feature_names_in_'):
-            feature_names = model.feature_names_in_
-        else:
-            feature_names = [f'f{i}' for i in range(X.shape[1])]
-        X = pd.DataFrame(X, columns=feature_names)
+    # X를 numpy 배열로 변환
+    if isinstance(X, pd.DataFrame):
+        X_array = X.values
+    else:
+        X_array = X
 
     if model_type == 'gpr':
         _, std = model.predict(X, return_std=True)
@@ -177,13 +175,13 @@ def get_prediction_std(model, X, n_iterations=100, model_type='gpr'):
         for i in range(n_iterations):
             if model_type == 'rf':
                 indices = np.random.choice(n_estimators, size=n_estimators//2, replace=False)
-                pred = np.zeros(X.shape[0])
+                pred = np.zeros(X_array.shape[0])
                 for idx in indices:
-                    pred += model.estimators_[idx].predict(X)
+                    pred += model.estimators_[idx].predict(X_array)
                 pred /= len(indices)
             else:  # GBR
-                pred = np.zeros(X.shape[0])
-                for y_pred in model.staged_predict(X):
+                pred = np.zeros(X_array.shape[0])
+                for y_pred in model.staged_predict(X_array):
                     pred = y_pred
                 predictions.append(pred)
                 continue
@@ -192,13 +190,13 @@ def get_prediction_std(model, X, n_iterations=100, model_type='gpr'):
     elif model_type == 'lgb':
         predictions = []
         for i in range(n_iterations):
-            pred = model.predict(X, num_iteration=model.best_iteration_)
+            pred = model.predict(X_array, num_iteration=model.best_iteration_)
             predictions.append(pred)
         return np.std(predictions, axis=0)
     else:  # lr
-        y_pred = model.predict(X)
-        residuals = y_pred - model.predict(X)
-        return np.std(residuals) * np.ones(X.shape[0])
+        y_pred = model.predict(X_array)
+        residuals = y_pred - model.predict(X_array)
+        return np.std(residuals) * np.ones(X_array.shape[0])
 
 def get_preferred_coordination(energies):
     """Get the coordination with minimum energy"""
@@ -546,7 +544,7 @@ def main():
     parser.add_argument('--coord', nargs='+', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
     parser.add_argument('--output', type=str, default='result', help='Output filename suffix')
     parser.add_argument('--test_size', type=float, default=0.2, help='Test set size (default: 0.2)')
-    parser.add_argument('--random_state', type=int, default=42, help='Random state for reproducibility (default: 42)')
+    parser.add_argument('--random_state', type=int, default=41, help='Random state for reproducibility (default: 41)')
     parser.add_argument('--energy_threshold', type=float, default=0.2,
                        help='Energy threshold (eV) for considering multiple coordinations in preference analysis')
     parser.add_argument('--corr_threshold', type=float, default=1.0,
@@ -615,7 +613,8 @@ def main():
     valid_indices = ~y.isna()
     X = X[valid_indices]
     y = y[valid_indices]
-    
+    df = df[valid_indices]  # df도 같이 필터링
+
     # Handle remaining missing values in X
     imputer = SimpleImputer(strategy='median')
     X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns, index=X.index)
@@ -961,14 +960,11 @@ def main():
     y_pred = model.predict(X_pred_scaled)
     std_pred = get_prediction_std(model, X_pred_scaled, model_type=args.model)
     
-    # valid_indices를 사용하여 원본 데이터프레임에서 해당하는 행들을 선택
-    df_valid = df_bulk[valid_indices].copy()
-
-    # DataFrame 생성 시 인덱스 매칭 문제 해결
+    # DataFrame 생성
     df_result = pd.DataFrame({
-        'metal': df_valid['metal'],
-        'row': df_valid['row'],
-        'coord': df_valid['coord'],
+        'metal': df['metal'],  # df_bulk[valid_indices] 대신 df 사용
+        'row': df['row'],
+        'coord': df['coord'],
         'Y_true': y,
         'Y_pred': y_pred,
         'std': std_pred

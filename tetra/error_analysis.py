@@ -127,18 +127,18 @@ def main():
     ax1.set_ylabel('Test MAE (eV)')
     ax1.grid(True, linestyle='--', alpha=0.7)
     ax1.legend()
-    ax1.set_xlim(60, 105)
-    ax1.set_xticks([70, 80, 90, 100])
-    ax1.set_xticklabels(['0.7', '0.8', '0.9', '1.0'])
+    ax1.set_xlim(45, 105)
+    ax1.set_xticks([50, 60, 70, 80, 90, 100])
+    ax1.set_xticklabels(['0.5', '0.6', '0.7', '0.8', '0.9', '1.0'])
     
     # Configure MSE plot
     ax2.set_xlabel('Correlation Threshold')
     ax2.set_ylabel('Test MSE (eV²)')
     ax2.grid(True, linestyle='--', alpha=0.7)
     ax2.legend()
-    ax2.set_xlim(60, 105)
-    ax2.set_xticks([70, 80, 90, 100])
-    ax2.set_xticklabels(['0.7', '0.8', '0.9', '1.0'])
+    ax2.set_xlim(45, 105)
+    ax2.set_xticks([50, 60, 70, 80, 90, 100])
+    ax2.set_xticklabels(['0.5', '0.6', '0.7', '0.8', '0.9', '1.0'])
     
     # Save plot
     plt.tight_layout()

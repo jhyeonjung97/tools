@@ -92,9 +92,15 @@ def feature_importance(X, y, model, feature_names, model_type='gpr'):
             alpha_bounds=(1e-3, 1e6)
         ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-3, 1e5))
         
+        # DataFrame을 numpy 배열로 변환
+        if isinstance(X, pd.DataFrame):
+            X_array = X.values
+        else:
+            X_array = X
+            
         importance = []
-        for i in tqdm(range(X.shape[1]), desc="Calculating feature importance"):
-            X_permuted = X.copy()
+        for i in tqdm(range(X_array.shape[1]), desc="Calculating feature importance"):
+            X_permuted = X_array.copy()
             X_permuted[:, i] = np.random.permutation(X_permuted[:, i])
             
             temp_model = MyGPR(
@@ -610,7 +616,8 @@ def main():
     valid_indices = ~y.isna()
     X = X[valid_indices]
     y = y[valid_indices]
-    
+    df = df[valid_indices]
+
     # Handle remaining missing values in X
     imputer = SimpleImputer(strategy='median')
     X_imputed = pd.DataFrame(imputer.fit_transform(X), columns=X.columns, index=X.index)
@@ -956,10 +963,11 @@ def main():
     y_pred = model.predict(X_pred_scaled)
     std_pred = get_prediction_std(model, X_pred_scaled, model_type=args.model)
     
+    # DataFrame 생성
     df_result = pd.DataFrame({
-        'metal': df_bulk.loc[valid_indices, 'metal'],
-        'row': df_bulk.loc[valid_indices, 'row'],
-        'coord': df_bulk.loc[valid_indices, 'coord'],
+        'metal': df['metal'],  # df_bulk[valid_indices] 대신 df 사용
+        'row': df['row'],
+        'coord': df['coord'],
         'Y_true': y,
         'Y_pred': y_pred,
         'std': std_pred

@@ -1,9 +1,45 @@
 #!/bin/bash
 
-for model in gpr gbr rf lr xgb lgb; do
-    for numb in 0.7 0.8 0.9 1.0; do
-        python ~/bin/tools/tetra/bulk_pred.py --model $model --corr_threshold $numb
+for model in rf lr; do
+    for numb in 0.5 0.6 0.7 0.8 0.9 1.0; do
+        python ~/bin/tools/tetra/bulk_pred0.py --model $model --corr_threshold $numb
+        python ~/bin/tools/tetra/bulk_pred_cfse.py --model $model --corr_threshold $numb
     done
 done
 
-/opt/homebrew/bin/rsync -avz '/Users/jiuy97/Desktop/7_V_bulk/figures' '/Users/jiuy97/Library/CloudStorage/GoogleDrive-jiuy97@stanford.edu/My Drive/Tetrahedral_oxides_ML/Figures'
+for model in gpr gbr xgb lgb; do
+    for numb in $(seq 51 99 | awk '{printf "%.2f\n", $1/100}'); do
+        python ~/bin/tools/tetra/bulk_pred0.py --model $model --corr_threshold $numb
+        python ~/bin/tools/tetra/bulk_pred_cfse.py --model $model --corr_threshold $numb
+    done
+done
+
+for numb in 0.5 0.6 0.7 0.8 0.9 1.0; do
+    python ~/bin/tools/tetra/bulk_pred0.py --model lr --corr_threshold $numb
+    python ~/bin/tools/tetra/bulk_pred_cfse.py --model lr --corr_threshold $numb
+done
+
+for numb in 0.5 0.6 0.7 0.8 0.9 1.0; do
+    python ~/bin/tools/tetra/bulk_pred0.py --model rf --corr_threshold $numb
+    python ~/bin/tools/tetra/bulk_pred_cfse.py --model rf --corr_threshold $numb
+done
+
+for numb in $(seq 50 99 | awk '{printf "%.2f\n", $1/100}'); do
+    python ~/bin/tools/tetra/bulk_pred0.py --model gpr --corr_threshold $numb
+    python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --corr_threshold $numb
+done
+
+for numb in $(seq 50 99 | awk '{printf "%.2f\n", $1/100}'); do
+    python ~/bin/tools/tetra/bulk_pred0.py --model gbr --corr_threshold $numb
+    python ~/bin/tools/tetra/bulk_pred_cfse.py --model gbr --corr_threshold $numb
+done
+
+for numb in $(seq 50 99 | awk '{printf "%.2f\n", $1/100}'); do
+    python ~/bin/tools/tetra/bulk_pred0.py --model xgb --corr_threshold $numb
+    python ~/bin/tools/tetra/bulk_pred_cfse.py --model xgb --corr_threshold $numb
+done
+
+for numb in $(seq 50 99 | awk '{printf "%.2f\n", $1/100}'); do
+    python ~/bin/tools/tetra/bulk_pred0.py --model lgb --corr_threshold $numb
+    python ~/bin/tools/tetra/bulk_pred_cfse.py --model lgb --corr_threshold $numb
+done
