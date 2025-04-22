@@ -85,25 +85,23 @@ class MyGPR(GaussianProcessRegressor):
 def feature_importance(X, y, model, feature_names, model_type='gpr'):
     """Calculate feature importance"""
     if model_type == 'gpr':
-        # GPR 모델의 경우 커널 파라미터의 하한값을 낮춤
-        kernel = ConstantKernel(1.0, constant_value_bounds=(1e-10, 1e5)) * RationalQuadratic(
+        kernel = ConstantKernel(1.0, constant_value_bounds=(1e-3, 1e5)) * RationalQuadratic(
             length_scale=1.0,
             alpha=1.0,
-            length_scale_bounds=(1e-10, 1e6),  # 하한값을 1e-10으로 낮춤
-            alpha_bounds=(1e-10, 1e6)
-        ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-10, 1e5))
+            length_scale_bounds=(1e-3, 1e6),
+            alpha_bounds=(1e-3, 1e6)
+        ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-3, 1e5))
         
         importance = []
         for i in tqdm(range(X.shape[1]), desc="Calculating feature importance"):
             X_permuted = X.copy()
             X_permuted[:, i] = np.random.permutation(X_permuted[:, i])
             
-            # 각 특성에 대해 새로운 GPR 모델 생성
             temp_model = MyGPR(
                 kernel=kernel,
                 random_state=42,
                 n_restarts_optimizer=10,
-                alpha=1e-10,
+                alpha=1e-3,
                 normalize_y=True
             )
             temp_model.fit(X_permuted, y)
@@ -111,25 +109,58 @@ def feature_importance(X, y, model, feature_names, model_type='gpr'):
             importance.append(1 - score)
         return pd.Series(importance, index=feature_names)
     elif model_type in ['gbr', 'rf']:
-        return pd.Series(model.feature_importances_, index=feature_names)
+        if isinstance(X, pd.DataFrame):
+            X_array = X.values
+        else:
+            X_array = X
+            
+        from sklearn.base import clone
+        temp_model = clone(model)
+        temp_model.fit(X_array, y)
+        
+        importance = temp_model.feature_importances_
+        return pd.Series(importance, index=feature_names)
     elif model_type == 'xgb':
-        return pd.Series(model.feature_importances_, index=feature_names)
+        if isinstance(X, pd.DataFrame):
+            X_array = X.values
+        else:
+            X_array = X
+            
+        temp_model = xgb.XGBRegressor()
+        temp_model.fit(X_array, y)
+        importance = temp_model.feature_importances_
+        return pd.Series(importance, index=feature_names)
     elif model_type == 'lgb':
-        return pd.Series(model.feature_importances_, index=feature_names)
+        if isinstance(X, pd.DataFrame):
+            X_array = X.values
+        else:
+            X_array = X
+            
+        temp_model = lgb.LGBMRegressor()
+        temp_model.fit(X_array, y)
+        importance = temp_model.feature_importances_
+        return pd.Series(importance, index=feature_names)
     else:  # lr
-        return pd.Series(np.abs(model.coef_), index=feature_names)
+        if isinstance(X, pd.DataFrame):
+            X_array = X.values
+        else:
+            X_array = X
+            
+        importance = np.abs(model.coef_)
+        return pd.Series(importance, index=feature_names)
 
 def get_prediction_std(model, X, n_iterations=100, model_type='gpr'):
     """
     Estimate prediction uncertainty
-    Args:
-        model: Trained model (GPR, GBR, RF, or LR)
-        X: Input features
-        n_iterations: Number of bootstrap iterations (for GBR/RF)
-        model_type: Type of model ('gpr', 'gbr', 'rf', or 'lr')
-    Returns:
-        Standard deviation of predictions
     """
+    # X를 DataFrame으로 변환하고 feature names 유지
+    if isinstance(X, np.ndarray):
+        if hasattr(model, 'feature_names_in_'):
+            feature_names = model.feature_names_in_
+        else:
+            feature_names = [f'f{i}' for i in range(X.shape[1])]
+        X = pd.DataFrame(X, columns=feature_names)
+
     if model_type == 'gpr':
         _, std = model.predict(X, return_std=True)
         return std
@@ -139,23 +170,26 @@ def get_prediction_std(model, X, n_iterations=100, model_type='gpr'):
         
         for i in range(n_iterations):
             if model_type == 'rf':
-                # RF의 경우 estimators_ 속성을 직접 사용
                 indices = np.random.choice(n_estimators, size=n_estimators//2, replace=False)
                 pred = np.zeros(X.shape[0])
                 for idx in indices:
                     pred += model.estimators_[idx].predict(X)
                 pred /= len(indices)
             else:  # GBR
-                # GBR의 경우 staged_predict 사용
                 pred = np.zeros(X.shape[0])
                 for y_pred in model.staged_predict(X):
-                    pred = y_pred  # 마지막 예측값 사용
+                    pred = y_pred
                 predictions.append(pred)
                 continue
             predictions.append(pred)
         return np.std(predictions, axis=0)
+    elif model_type == 'lgb':
+        predictions = []
+        for i in range(n_iterations):
+            pred = model.predict(X, num_iteration=model.best_iteration_)
+            predictions.append(pred)
+        return np.std(predictions, axis=0)
     else:  # lr
-        # For LR, we'll use the standard deviation of the residuals as a simple uncertainty estimate
         y_pred = model.predict(X)
         residuals = y_pred - model.predict(X)
         return np.std(residuals) * np.ones(X.shape[0])
@@ -181,15 +215,6 @@ def get_coordination_type(coord):
 def analyze_coordination_preference(df_bulk, df_pred, energy_threshold=0.2, target='form'):
     """
     Compare DFT and predicted coordination preferences
-    
-    Args:
-        df_bulk: DataFrame with DFT results
-        df_pred: DataFrame with predictions
-        energy_threshold: Energy threshold for considering multiple coordinations
-        target: Target energy column ('form' or 'coh')
-    
-    Returns:
-        DataFrame with comparison results
     """
     results = []
     
@@ -197,24 +222,25 @@ def analyze_coordination_preference(df_bulk, df_pred, energy_threshold=0.2, targ
     pred_grouped = df_pred.groupby(['metal', 'coord'])['Y_pred'].mean().reset_index()
     pred_grouped = pred_grouped.pivot(index='metal', columns='coord', values='Y_pred')
     
-    # Print only essential information
-    bulk_metals = set(df_bulk['metal'].unique())
-    pred_metals = set(pred_grouped.index)
-    missing_metals = bulk_metals - pred_metals
-    if missing_metals:
-        print(f"{YELLOW}Metals without predictions: {missing_metals}{ENDC}")
-    
     for metal in df_bulk['metal'].unique():
         try:
             # DFT data
             dft_data = df_bulk[df_bulk['metal'] == metal]
             if len(dft_data) == 0:
+                print(f"Warning: No DFT data for {metal}")
                 continue
                 
             dft_energies = dict(zip(dft_data['coord'], dft_data[target]))
-            dft_energies = {k: v for k, v in dft_energies.items() if pd.notna(v)}  # Remove NaN values
+            
+            # NaN 값이 있는 경우 출력
+            nan_coords = [k for k, v in dft_energies.items() if pd.isna(v)]
+            if nan_coords:
+                print(f"Warning: NaN values in DFT data for {metal} at coordinations: {nan_coords}")
+            
+            dft_energies = {k: v for k, v in dft_energies.items() if pd.notna(v)}
             
             if not dft_energies:
+                print(f"Warning: No valid DFT energies for {metal} after NaN filtering")
                 continue
                 
             dft_min_energy = min(dft_energies.values())
@@ -223,10 +249,12 @@ def analyze_coordination_preference(df_bulk, df_pred, energy_threshold=0.2, targ
             
             # Predicted data
             if metal not in pred_grouped.index:
+                print(f"Warning: No predictions for {metal}")
                 continue
                 
             pred_energies = pred_grouped.loc[metal].dropna().to_dict()
             if not pred_energies:
+                print(f"Warning: No valid predictions for {metal} after NaN filtering")
                 continue
                 
             pred_min_energy = min(pred_energies.values())
@@ -260,7 +288,7 @@ def analyze_coordination_preference(df_bulk, df_pred, energy_threshold=0.2, targ
     
     return pd.DataFrame(results)
 
-def plot_coordination_comparison(results, output_dir, output_suffix, model_type, target, row_str):
+def plot_coordination_comparison(results, output_dir, output_suffix, model_type, target, row_str, threshold_str):
     """Create visualization plots for the coordination comparison"""
     # 1. Heatmap showing matches and mismatches for specific coordinations
     plt.figure(figsize=(4, 3))
@@ -286,7 +314,7 @@ def plot_coordination_comparison(results, output_dir, output_suffix, model_type,
     plt.xlabel('Predicted Preferred Coordination')
     plt.ylabel('DFT Preferred Coordination')
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'{target}_pred_{model_type}_{row_str}_{output_suffix}_coord.png'))
+    plt.savefig(os.path.join(output_dir, f'{target}_pred_cfse_{model_type}{threshold_str}_{row_str}_{output_suffix}_coord.png'))
     plt.close()
 
     # 2. Heatmap showing matches and mismatches for coordination types
@@ -313,7 +341,7 @@ def plot_coordination_comparison(results, output_dir, output_suffix, model_type,
     plt.xlabel('Predicted Coordination Type')
     plt.ylabel('DFT Coordination Type')
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'{target}_pred_{model_type}_{row_str}_{output_suffix}_type.png'))
+    plt.savefig(os.path.join(output_dir, f'{target}_pred_cfse_{model_type}{threshold_str}_{row_str}_{output_suffix}_type.png'))
     plt.close()
 
 def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, output_path, model_type):
@@ -329,19 +357,27 @@ def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, out
 
     for feature in feature_names:
         # Select single feature using DataFrame indexing
-        X_train_selected = X_train[[feature]].copy()
-        X_test_selected = X_test[[feature]].copy()
+        X_train_selected = X_train[[feature]]
+        X_test_selected = X_test[[feature]]
         
         # Scale the selected features
         scaler_selected = RobustScaler()
-        X_train_scaled_selected = scaler_selected.fit_transform(X_train_selected)
-        X_test_scaled_selected = scaler_selected.transform(X_test_selected)
+        X_train_scaled_selected = pd.DataFrame(
+            scaler_selected.fit_transform(X_train_selected),
+            columns=X_train_selected.columns
+        )
+        X_test_scaled_selected = pd.DataFrame(
+            scaler_selected.transform(X_test_selected),
+            columns=X_test_selected.columns
+        )
         
         # Train model with selected features
         if model_type == 'gpr':
             kernel = ConstantKernel(1.0) * RationalQuadratic() + WhiteKernel()
             model_selected = MyGPR(kernel=kernel, random_state=42)
-        else:  # gbr or lr
+        elif model_type == 'lr':
+            model_selected = LinearRegression()
+        else:  # gbr
             model_selected = GradientBoostingRegressor(random_state=42)
         
         model_selected.fit(X_train_scaled_selected, y_train)
@@ -364,11 +400,11 @@ def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, out
             'mae_test': mae_test
         })
     
-    # Sort features by individual MAE (best to worst - lower MAE means better performance)
+    # Sort features by individual MAE
     sorted_features = sorted(single_feature_scores, key=lambda x: x['mae_train'])
     sorted_feature_names = [score['feature'] for score in sorted_features]
     
-    # Calculate cumulative MAE by adding one feature at a time (starting from most important)
+    # Calculate cumulative MAE
     for i in range(1, len(sorted_feature_names) + 1):
         selected_features = sorted_feature_names[:i]
         X_train_selected = X_train[selected_features]
@@ -376,14 +412,22 @@ def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, out
         
         # Scale the selected features
         scaler_selected = RobustScaler()
-        X_train_scaled_selected = scaler_selected.fit_transform(X_train_selected)
-        X_test_scaled_selected = scaler_selected.transform(X_test_selected)
+        X_train_scaled_selected = pd.DataFrame(
+            scaler_selected.fit_transform(X_train_selected),
+            columns=selected_features
+        )
+        X_test_scaled_selected = pd.DataFrame(
+            scaler_selected.transform(X_test_selected),
+            columns=selected_features
+        )
         
         # Train model with selected features
         if model_type == 'gpr':
             kernel = ConstantKernel(1.0) * RationalQuadratic() + WhiteKernel()
             model_selected = MyGPR(kernel=kernel, random_state=42)
-        else:  # gbr or lr
+        elif model_type == 'lr':
+            model_selected = LinearRegression()
+        else:  # gbr
             model_selected = GradientBoostingRegressor(random_state=42)
         
         model_selected.fit(X_train_scaled_selected, y_train)
@@ -441,50 +485,9 @@ def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, out
 
     return cumulative_scores
 
-def plot_training_metrics(train_mae, train_mse, test_mae, test_mse, output_dir, output_suffix, model_type):
-    """Plot training and test MAE and MSE over iterations in separate files."""
-    # Get Y and row information from output_suffix
-    parts = output_suffix.split('_')
-    Y = parts[0]  # Y는 output_suffix의 첫 번째 부분
-    row_str = parts[2]  # row 정보는 세 번째 부분
-    
-    # Plot MAE
-    plt.figure(figsize=(5, 4))
-    plt.plot(train_mae, label='Train MAE', color='blue')
-    plt.plot(test_mae, label='Test MAE', color='orange')
-    plt.xlabel('Iterations')
-    plt.ylabel('MAE')
-    plt.legend()
-    plt.tight_layout()
-    mae_path = os.path.join(output_dir, f'{Y}_pred_{model_type}_{row_str}_mae.png')
-    plt.savefig(mae_path)
-    plt.close()
-    print(f"{BLUE}MAE training metrics plot saved as {mae_path}{ENDC}")
-    
-    # Plot MSE
-    plt.figure(figsize=(5, 4))
-    plt.plot(train_mse, label='Train MSE', color='blue')
-    plt.plot(test_mse, label='Test MSE', color='orange')
-    plt.xlabel('Iterations')
-    plt.ylabel('MSE')
-    plt.legend()
-    plt.tight_layout()
-    mse_path = os.path.join(output_dir, f'{Y}_pred_{model_type}_{row_str}_mse.png')
-    plt.savefig(mse_path)
-    plt.close()
-    print(f"{BLUE}MSE training metrics plot saved as {mse_path}{ENDC}")
-
 def select_features_by_correlation(correlation_matrix, target_col, threshold=1.0):
     """
     Select one feature from a group of highly correlated features
-    
-    Args:
-        correlation_matrix: Correlation matrix of features
-        target_col: Name of the target variable
-        threshold: Threshold for high correlation (default: 0.7)
-    
-    Returns:
-        selected_features: List of selected features
     """
     # Sort features by absolute correlation with target variable
     target_corr = correlation_matrix[target_col].abs().sort_values(ascending=False)
@@ -515,15 +518,7 @@ def select_features_by_correlation(correlation_matrix, target_col, threshold=1.0
         if not high_corr:
             selected_features.append(feature)
     
-    print("\nSelected features:")
-    for feat in selected_features:
-        print(f"- {feat}")
-    
-    print("\nDropped features:")
-    for feat in dropped_features:
-        print(f"- {feat}")
-    
-    return selected_features
+    return selected_features, dropped_features
 
 def main():
     start_time = time.time()
@@ -540,12 +535,13 @@ def main():
         'ion-1', 'ion', 'ion+1', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1', 
         'pauling', 'Natom', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
+        'base_cfse', 'ee_repulsion', 'jt_effect', 'field_strength', 'cfse'
     ], help='List of feature columns from bulk_data_total.csv')
     parser.add_argument('--row', nargs='+', type=str, default=None, help='Filter by row: 3d, 4d, or 5d')
     parser.add_argument('--coord', nargs='+', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
     parser.add_argument('--output', type=str, default='result', help='Output filename suffix')
     parser.add_argument('--test_size', type=float, default=0.2, help='Test set size (default: 0.2)')
-    parser.add_argument('--random_state', type=int, default=42, help='Random state for reproducibility (default: 42)')
+    parser.add_argument('--random_state', type=int, default=41, help='Random state for reproducibility (default: 41)')
     parser.add_argument('--energy_threshold', type=float, default=0.2,
                        help='Energy threshold (eV) for considering multiple coordinations in preference analysis')
     parser.add_argument('--corr_threshold', type=float, default=1.0,
@@ -571,11 +567,21 @@ def main():
     # Define paths for all output files
     output_suffix = args.output
     row_str = ''.join(sorted(args.row)) if args.row else 'all'  # row 정보를 문자열로 변환
-    log_path = os.path.join(root, f'{args.Y}_pred_{args.model}_{row_str}_{output_suffix}.log')
-    tsv_path = os.path.join(root, f'{args.Y}_pred_{args.model}_{row_str}_{output_suffix}.tsv')
-    png_path = os.path.join(root, f'{args.Y}_pred_{args.model}_{row_str}_{output_suffix}.png')
-    importance_png_path = os.path.join(root, f'{args.Y}_pred_{args.model}_{row_str}_{output_suffix}_importance.png')
-    json_path = os.path.join(root, f'{args.Y}_pred_{args.model}_{row_str}_{output_suffix}.json')
+    
+    # corr_threshold가 1.0이 아닐 때만 threshold_str 추가
+    threshold_str = str(int(args.corr_threshold * 100)) if args.corr_threshold != 1.0 else '00'
+    
+    # 파일명 정의
+    log_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}.log')
+    tsv_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}.tsv')
+    png_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}.png')
+    importance_png_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}_importance.png')
+    json_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}.json')
+
+    # coordination 분석 결과 파일 경로
+    coord_csv_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.csv')
+    coord_log_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.log')
+    coord_png_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.png')
 
     try:
         # Load data
@@ -615,7 +621,7 @@ def main():
     
     # Select features based on correlation
     print("Selecting features based on correlation...")
-    selected_features = select_features_by_correlation(corr_matrix, args.Y, args.corr_threshold)
+    selected_features, dropped_features = select_features_by_correlation(corr_matrix, args.Y, args.corr_threshold)
     
     # Update X with selected features
     X = df[selected_features].astype(float)
@@ -632,9 +638,17 @@ def main():
     # Scale the features
     print("Scaling features...")
     scale_start = time.time()
-    scaler = StandardScaler()  # RobustScaler 대신 StandardScaler만 사용
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    scaler = StandardScaler()
+    X_train_scaled = pd.DataFrame(
+        scaler.fit_transform(X_train),
+        columns=X_train.columns,
+        index=X_train.index
+    )
+    X_test_scaled = pd.DataFrame(
+        scaler.transform(X_test),
+        columns=X_test.columns,
+        index=X_test.index
+    )
     print_time("Feature scaling completed", time.time() - scale_start)
 
     # Define and fit model
@@ -643,29 +657,29 @@ def main():
     
     if args.model == 'gpr':
         # GPR model setup
-        kernel = ConstantKernel(1.0, constant_value_bounds=(1e-5, 1e5)) * RationalQuadratic(
+        kernel = ConstantKernel(1.0, constant_value_bounds=(1e-3, 1e5)) * RationalQuadratic(
             length_scale=1.0,
             alpha=1.0,
-            length_scale_bounds=(1e-6, 1e6),
-            alpha_bounds=(1e-6, 1e7)
-        ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-7, 1e5))
+            length_scale_bounds=(1e-3, 1e6),
+            alpha_bounds=(1e-3, 1e6)
+        ) + WhiteKernel(noise_level=0.1, noise_level_bounds=(1e-3, 1e5))
         
         model = MyGPR(
             kernel=kernel,
             random_state=args.random_state,
-            n_restarts_optimizer=50,  # 재시작 횟수 감소
-            alpha=1e-6,
+            n_restarts_optimizer=20,
+            alpha=1e-3,
             optimizer='fmin_l_bfgs_b',
             normalize_y=True,
-            max_iter=1e06,  # 최대 반복 횟수 감소
+            max_iter=1000,
             gtol=1e-3
         )
 
         # Bayesian Optimization for GPR
         search_space = {
-            'kernel__k1__k2__length_scale': Real(1e-6, 1e5, prior='log-uniform'),
-            'kernel__k1__k2__alpha': Real(1e-5, 1e5, prior='log-uniform'),
-            'kernel__k2__noise_level': Real(1e-5, 1e5, prior='log-uniform')
+            'kernel__k1__k2__length_scale': Real(1e-3, 1e5, prior='log-uniform'),
+            'kernel__k1__k2__alpha': Real(1e-3, 1e5, prior='log-uniform'),
+            'kernel__k2__noise_level': Real(1e-3, 1e5, prior='log-uniform')
         }
     elif args.model == 'gbr':
         # GBR model setup
@@ -742,26 +756,29 @@ def main():
         # LightGBM model setup
         model = lgb.LGBMRegressor(
             n_estimators=200,
-            learning_rate=0.05,
-            max_depth=4,
-            min_data_in_leaf=5,  # 더 작은 값으로 설정
-            min_gain_to_split=0.01,  # 더 작은 값으로 설정
+            learning_rate=0.1,  # 학습률 증가
+            max_depth=6,  # 트리 깊이 증가
+            min_child_samples=10,  # 최소 데이터 수 증가
+            min_child_weight=1e-3,  # 최소 가중치 추가
+            min_split_gain=1e-3,  # 최소 분할 이득 감소
             subsample=0.8,
             colsample_bytree=0.8,
-            reg_alpha=0.1,  # L1 정규화 추가
-            reg_lambda=0.1,  # L2 정규화 추가
-            random_state=42
+            reg_alpha=0.1,
+            reg_lambda=0.1,
+            random_state=42,
+            verbose=-1  # 경고 메시지 출력 억제
         )
         search_space = {
             'n_estimators': Integer(100, 300),
-            'learning_rate': Real(0.01, 0.1),
-            'max_depth': Integer(3, 8),
-            'min_data_in_leaf': Integer(5, 50),
-            'min_gain_to_split': Real(0.01, 0.1),
+            'learning_rate': Real(0.05, 0.2),
+            'max_depth': Integer(4, 8),
+            'min_child_samples': Integer(10, 50),
+            'min_child_weight': Real(1e-3, 1e-1),
+            'min_split_gain': Real(1e-3, 1e-1),
             'subsample': Real(0.6, 0.9),
             'colsample_bytree': Real(0.6, 0.9),
-            'reg_alpha': Real(0, 1),
-            'reg_lambda': Real(0, 1)
+            'reg_alpha': Real(0.1, 1.0),
+            'reg_lambda': Real(0.1, 1.0)
         }
 
     # Train model with hyperparameter optimization
@@ -770,6 +787,10 @@ def main():
     if args.model != 'lr':  # LR 모델은 하이퍼파라미터 최적화가 필요 없음
         # Define cross-validation for Bayesian Optimization
         cv = KFold(n_splits=5, shuffle=True, random_state=args.random_state)
+        
+        # 경고 메시지 숨기기
+        import warnings
+        warnings.filterwarnings('ignore', category=UserWarning, module='skopt')
         
         bayes_search = BayesSearchCV(
             model,
@@ -828,7 +849,12 @@ def main():
         y_pred_test = model.predict(X_test_scaled)
         std_train = get_prediction_std(model, X_train_scaled, model_type=args.model)
         std_test = get_prediction_std(model, X_test_scaled, model_type=args.model)
-    else:  # xgb or lgb
+    elif args.model == 'lgb':
+        y_pred_train = model.predict(X_train_scaled, num_iteration=model.best_iteration_)
+        y_pred_test = model.predict(X_test_scaled, num_iteration=model.best_iteration_)
+        std_train = get_prediction_std(model, X_train_scaled, model_type=args.model)
+        std_test = get_prediction_std(model, X_test_scaled, model_type=args.model)
+    else:  # xgb
         y_pred_train = model.predict(X_train_scaled)
         y_pred_test = model.predict(X_test_scaled)
         std_train = get_prediction_std(model, X_train_scaled, model_type=args.model)
@@ -894,6 +920,18 @@ def main():
         f.write(f"MSE scores: {cv_mse}\n")
         f.write(f"Mean MSE score: {cv_mse.mean():.4f} (+/- {cv_mse.std() * 2:.4f})\n")
         
+        # Add Feature Selection Results
+        f.write("\nFeature Selection Results:\n")
+        f.write("-----------------------\n")
+        f.write(f"Correlation threshold: {args.corr_threshold}\n\n")
+        f.write("Selected Features:\n")
+        for feat in selected_features:
+            f.write(f"- {feat}\n")
+        
+        f.write("\nDropped Features:\n")
+        for feat in dropped_features:
+            f.write(f"- {feat}\n")
+
         # Add Feature Importance Analysis
         f.write("\nFeature Importance Analysis:\n")
         for score in cumulative_scores:
@@ -903,15 +941,28 @@ def main():
             f.write(f"Test MAE: {score['mae_test']:.4f}\n")
     print(f"{BLUE}Log file saved as {log_path}{ENDC}")
 
-    print(df_bulk.columns.tolist())
     # Save predictions
+    print("Saving predictions...")
+    
+    # 예측을 위한 X 데이터 준비
+    X_pred = X[selected_features].astype(float)
+    X_pred_scaled = pd.DataFrame(
+        scaler.transform(X_pred),
+        columns=selected_features,
+        index=X_pred.index
+    )
+    
+    # 예측 수행
+    y_pred = model.predict(X_pred_scaled)
+    std_pred = get_prediction_std(model, X_pred_scaled, model_type=args.model)
+    
     df_result = pd.DataFrame({
         'metal': df_bulk.loc[valid_indices, 'metal'],
         'row': df_bulk.loc[valid_indices, 'row'],
         'coord': df_bulk.loc[valid_indices, 'coord'],
         'Y_true': y,
-        'Y_pred': model.predict(scaler.transform(X[selected_features].astype(float))),
-        'std': get_prediction_std(model, scaler.transform(X[selected_features].astype(float)), model_type=args.model)
+        'Y_pred': y_pred,
+        'std': std_pred
     })
     
     df_result.to_csv(tsv_path, sep='\t', index=False)
@@ -922,23 +973,51 @@ def main():
     coord_map = {'WZ': '+', 'ZB': 'x', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'D', 'LT': 'h', '+3': 'v', '+4': '^', '+5': '<', '+6': '>'}
 
     plt.figure(figsize=(10, 8))
+    
+    # 전체 데이터에 대한 예측을 한 번에 수행
+    X_all = df[selected_features].astype(float)
+    X_all_scaled = pd.DataFrame(
+        scaler.transform(X_all),
+        columns=selected_features,
+        index=X_all.index
+    )
+    y_pred_all = model.predict(X_all_scaled)
+    
+    # 예측 결과를 DataFrame으로 저장
+    predictions_df = pd.DataFrame({
+        'Y_true': df[args.Y],
+        'Y_pred': y_pred_all,
+        'row': df['row'],
+        'coord': df['coord'],
+        'metal': df['metal']
+    })
+    
+    # 각 row와 coordination type에 대해 플롯
     for r in df['row'].unique():
         for c in df['coord'].unique():
-            subset = df[(df['row'] == r) & (df['coord'] == c)]
+            subset = predictions_df[
+                (predictions_df['row'] == r) & 
+                (predictions_df['coord'] == c)
+            ]
             if subset.empty:
                 continue
+            
             plt.scatter(
-                subset[args.Y],
-                model.predict(scaler.transform(subset[selected_features].astype(float))),
+                subset['Y_true'],
+                subset['Y_pred'],
                 label=f'{r}_{c}',
                 alpha=0.3,
                 color=row_map.get(r, 'gray'),
                 marker=coord_map.get(c, 'x')
             )
+            
+            # 금속 이름 표시
             for _, row_data in subset.iterrows():
-                row_features = pd.DataFrame([row_data[selected_features].values], columns=selected_features)
-                y_pred_single = model.predict(scaler.transform(row_features))[0]
-                plt.annotate(row_data['metal'], (row_data[args.Y], y_pred_single), fontsize=8)
+                plt.annotate(
+                    row_data['metal'], 
+                    (row_data['Y_true'], row_data['Y_pred']), 
+                    fontsize=8
+                )
 
     plt.plot([y.min(), y.max()], [y.min(), y.max()], '--', lw=1, color='black')
     plt.xlabel(f'DFT-calculated {ylabels[args.Y]}')
@@ -972,10 +1051,10 @@ def main():
     
     if len(coord_results) > 0:
         # Save coordination comparison results
-        coord_results.to_csv(os.path.join(root, f'{args.Y}_pred_{args.model}_{row_str}_{output_suffix}_coord.csv'))
+        coord_results.to_csv(coord_csv_path)
         
         # Create coordination summary file
-        with open(os.path.join(root, f'{args.Y}_pred_{args.model}_{row_str}_{output_suffix}_coord.log'), 'w') as f:
+        with open(coord_log_path, 'w') as f:
             # Overall statistics
             f.write("Overall Statistics:\n")
             f.write("-----------------\n")
@@ -1048,37 +1127,10 @@ def main():
                     f.write(f"Predicted all preferred: {row['pred_all_preferred']}\n")
         
         # Create coordination comparison plots
-        plot_coordination_comparison(coord_results, root, output_suffix, args.model, args.Y, row_str)
+        plot_coordination_comparison(coord_results, root, output_suffix, args.model, args.Y, row_str, threshold_str)
         print("Coordination preference analysis completed")
     else:
         print(f"{YELLOW}No valid results for coordination preference analysis{ENDC}")
-
-    # Calculate training metrics over iterations for GBR
-    if args.model == 'gbr':
-        print("Calculating training metrics over iterations...")
-        train_mae_list = []
-        train_mse_list = []
-        test_mae_list = []
-        test_mse_list = []
-
-        for y_pred_train in model.staged_predict(X_train_scaled):
-            # 학습 데이터에 대한 메트릭 계산
-            train_mae = mean_absolute_error(y_train, y_pred_train)
-            train_mse = mean_squared_error(y_train, y_pred_train)
-            
-            train_mae_list.append(train_mae)
-            train_mse_list.append(train_mse)
-            
-            # 테스트 데이터에 대한 메트릭 계산
-            y_pred_test = model.predict(X_test_scaled)
-            test_mae = mean_absolute_error(y_test, y_pred_test)
-            test_mse = mean_squared_error(y_test, y_pred_test)
-            
-            test_mae_list.append(test_mae)
-            test_mse_list.append(test_mse)
-
-        # Plot training metrics
-        plot_training_metrics(train_mae_list, train_mse_list, test_mae_list, test_mse_list, root, f'{args.Y}_pred_{args.model}_{row_str}_{output_suffix}', args.model)
 
     # Print total execution time
     total_time = time.time() - start_time
@@ -1103,12 +1155,12 @@ def main():
 
     # Save results to file if --save option is used
     if args.save:
-        # threshold 값을 파일명에 추가 (예: 0.7 -> 7)
-        threshold_str = str(int(args.energy_threshold * 10))
-        with open(f'{args.Y}_pred_{args.model}{threshold_str}_all_result.log', 'w') as f:
+        result_filename = f'{args.Y}_pred_cfse_{args.model}{threshold_str}_all_result.log'
+        
+        with open(result_filename, 'w') as f:
             f.write(f'Model: {args.model}\n')
-            f.write(f'Threshold: {args.energy_threshold}\n')
-            f.write(f'Features: {", ".join(args.X)}\n')
+            f.write(f'Correlation Threshold: {args.corr_threshold}\n')
+            f.write(f'Features: {", ".join(selected_features)}\n')  # selected_features 사용
             f.write(f'Target: {args.Y}\n')
             f.write(f'R2 Score: {metrics["test"]["r2"]:.4f}\n')
             f.write(f'MAE: {metrics["test"]["mae"]:.4f}\n')
@@ -1118,8 +1170,8 @@ def main():
             f.write(f'Training Time: {time.time() - model_start:.2f} seconds\n')
             f.write(f'Prediction Time: {time.time() - pred_start:.2f} seconds\n')
             f.write('\nFeature Importance:\n')
-            for feature, importance in importance:
-                f.write(f'{feature}: {importance:.4f}\n')
+            for feature, imp_value in importance.items():
+                f.write(f'{feature}: {imp_value:.4f}\n')
 
 if __name__ == '__main__':
     print("Script started...")
