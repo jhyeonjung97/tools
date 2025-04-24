@@ -16,7 +16,7 @@
 #     python3 ~/bin/orange/magmom.py
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/5_M_top
+for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/6_M_hol
 do
     cd $dir; pwd
     IFS='/' read -r -a path <<< $dir
