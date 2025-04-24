@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 import socket
-import matplotlib.colors as mcolors
 
 hostname = socket.gethostname()
 user_name = os.getlogin()
@@ -24,28 +23,6 @@ ylabels = {
     'form': 'Formation Energy (eV)',
     'coh': 'Cohesive Energy (eV)',
 }
-
-coords_data = [
-    {'coord': 'WZ', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ',  'zorder': 5, 'marker': '>', 'color': 'darkorange',},
-    {'coord': 'ZB', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB',  'zorder': 4, 'marker': '<', 'color': 'gold',},
-    {'coord': 'TN', 'CN': 4, 'OS': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'zorder': 3, 'marker': 'o', 'color': 'dodgerblue',},
-    {'coord': 'PD', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD', 'zorder': 2, 'marker': 'o', 'color': 'deepskyblue',},
-    {'coord': 'NB', 'CN': 4, 'OS': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'zorder': 1, 'marker': 's', 'color': 'limegreen',},
-    {'coord': 'RS', 'CN': 6, 'OS': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'zorder': 6, 'marker': 'd', 'color': 'orchid',},
-    {'coord': 'LT', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'zorder': 0, 'marker': 'h', 'color': 'silver',},
-]
-
-coords = pd.DataFrame(coords_data).set_index('coord')
-coords.index.name = None
-
-metals = {
-    '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
-    '4d': ['Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn'],
-    '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb'],
-    'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
-}
-
-indice = [f'{a}\n{b}\n{c}' for a, b, c in zip(metals['3d'], metals['4d'], metals['5d'])]
 
 def select_features_by_correlation(correlation_matrix, target_col, threshold=0.7):
     """
@@ -87,6 +64,14 @@ def select_features_by_correlation(correlation_matrix, target_col, threshold=0.7
                 
         if not high_corr:
             selected_features.append(feature)
+    
+    print("\nSelected features:")
+    for feat in selected_features:
+        print(f"- {feat}")
+    
+    print("\nDropped features:")
+    for feat in dropped_features:
+        print(f"- {feat}")
     
     return selected_features
 
@@ -318,82 +303,6 @@ def add_cfse_feature(df):
     
     return df
 
-def plot_cfse_by_metal_row(df, save_path):
-    cfse_ylabels = {
-        'd_electrons': 'Number of d-electrons',
-        'base_cfse': 'Base CFSE (eV)',
-        'ee_repulsion': 'Electron-Electron Repulsion (eV)',
-        'jt_effect': 'Jahn-Teller Effect (eV)',
-        'field_strength': 'Crystal Field Strength',
-        'cfse': 'Total CFSE (eV)'
-    }
-    
-    for row in ['fm', '3d', '4d', '5d']:
-        for feature in cfse_ylabels.keys():
-            plt.figure(figsize=(8, 6))
-            # 각 배위구조별로 플롯
-            for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']:
-                subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                
-                # coords에서 스타일 정보 가져오기
-                zorder = coords.loc[coord, 'zorder']
-                marker = coords.loc[coord, 'marker']
-                color = coords.loc[coord, 'color']
-                
-                plt.plot(subset['numb'], subset[feature], 
-                        marker=marker, color=color,
-                        linestyle='-', label=coord, zorder=zorder)
-            
-            plt.xticks(np.arange(len(metals[row])), metals[row])
-            plt.xlabel("Metal Index")
-            plt.ylabel(cfse_ylabels[feature])
-            plt.legend()
-            plt.tight_layout()
-            
-            png_name = f"cfse_{row}_{feature}.png"
-            plt.savefig(os.path.join(save_path, png_name))
-            plt.close()
-            print(f"Figure saved as {png_name}")
-
-def plot_cfse_by_coordination(df, save_path):
-    cfse_ylabels = {
-        'd_electrons': 'Number of d-electrons',
-        'base_cfse': 'Base CFSE (eV)',
-        'ee_repulsion': 'Electron-Electron Repulsion (eV)',
-        'jt_effect': 'Jahn-Teller Effect (eV)',
-        'field_strength': 'Crystal Field Strength',
-        'cfse': 'Total CFSE (eV)'
-    }
-    
-    for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']:
-        for feature in cfse_ylabels.keys():
-            plt.figure(figsize=(8, 6))
-            
-            # 스타일 정보 가져오기
-            marker = coords.loc[coord, 'marker']
-            base_color = coords.loc[coord, 'color']
-            cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', [base_color, 'white'])
-            colors = cmap(np.linspace(0.0, 0.6, 3))
-            
-            # 각 row별로 플롯
-            for r, row in enumerate(['3d', '4d', '5d']):
-                color = 'lightgray' if row == 'fm' else colors[r]
-                subset = df[(df['coord'] == coord) & (df['row'] == row)]
-                plt.plot(subset['numb'], subset[feature],
-                        marker=marker, color=color,
-                        linestyle='-', label=row)
-            
-            plt.xticks(np.arange(len(indice)), indice)
-            plt.xlabel("Metal Index")
-            plt.ylabel(cfse_ylabels[feature])
-            plt.legend()
-            plt.tight_layout()
-            
-            png_name = f"cfse_{coord}_{feature}.png"
-            plt.savefig(os.path.join(save_path, png_name))
-            plt.close()
-            print(f"Figure saved as {png_name}")
-
 def main():
     parser = argparse.ArgumentParser(description='Linear regression using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
@@ -430,7 +339,7 @@ def main():
         df = df[df['coord'].isin(args.coord)]
 
     # CFSE 관련 피쳐들 추가
-    cfse_features = ['d_electrons', 'base_cfse', 'ee_repulsion', 'jt_effect', 'field_strength', 'cfse']
+    cfse_features = ['base_cfse', 'ee_repulsion', 'jt_effect', 'field_strength', 'cfse']
     for feature in cfse_features:
         if feature not in args.X:
             args.X.append(feature)
@@ -729,10 +638,6 @@ def main():
     print(f"Saved: lr_{output_suffix}.log, lr_{output_suffix}.tsv")
     print(f"Saved: covariance_{output_suffix}.tsv, covariance_{output_suffix}.png")
     print(f"Saved: correlation_{output_suffix}.tsv, correlation_{output_suffix}.png")
-
-    # CFSE 관련 플롯 생성
-    plot_cfse_by_metal_row(df, root)
-    plot_cfse_by_coordination(df, root)
 
 if __name__ == '__main__':
     main()

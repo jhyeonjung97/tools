@@ -159,14 +159,19 @@ def get_prediction_std(model, X, n_iterations=100, model_type='gpr'):
     """
     Estimate prediction uncertainty
     """
-    # X를 numpy 배열로 변환
+    # X를 numpy 배열로 변환하되, feature names 유지
     if isinstance(X, pd.DataFrame):
-        X_array = X.values
-    else:
+        feature_names = X.columns
         X_array = X
+    else:
+        if hasattr(model, 'feature_names_in_'):
+            feature_names = model.feature_names_in_
+            X_array = pd.DataFrame(X, columns=feature_names)
+        else:
+            X_array = X
 
     if model_type == 'gpr':
-        _, std = model.predict(X, return_std=True)
+        _, std = model.predict(X_array, return_std=True)
         return std
     elif model_type in ['gbr', 'rf']:
         predictions = []

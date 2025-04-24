@@ -159,16 +159,19 @@ def get_prediction_std(model, X, n_iterations=100, model_type='gpr'):
     """
     Estimate prediction uncertainty
     """
-    # X를 DataFrame으로 변환하고 feature names 유지
-    if isinstance(X, np.ndarray):
+    # X를 numpy 배열로 변환하되, feature names 유지
+    if isinstance(X, pd.DataFrame):
+        feature_names = X.columns
+        X_array = X
+    else:
         if hasattr(model, 'feature_names_in_'):
             feature_names = model.feature_names_in_
+            X_array = pd.DataFrame(X, columns=feature_names)
         else:
-            feature_names = [f'f{i}' for i in range(X.shape[1])]
-        X = pd.DataFrame(X, columns=feature_names)
+            X_array = X
 
     if model_type == 'gpr':
-        _, std = model.predict(X, return_std=True)
+        _, std = model.predict(X_array, return_std=True)
         return std
     elif model_type in ['gbr', 'rf']:
         predictions = []
@@ -177,13 +180,13 @@ def get_prediction_std(model, X, n_iterations=100, model_type='gpr'):
         for i in range(n_iterations):
             if model_type == 'rf':
                 indices = np.random.choice(n_estimators, size=n_estimators//2, replace=False)
-                pred = np.zeros(X.shape[0])
+                pred = np.zeros(X_array.shape[0])
                 for idx in indices:
-                    pred += model.estimators_[idx].predict(X)
+                    pred += model.estimators_[idx].predict(X_array)
                 pred /= len(indices)
             else:  # GBR
-                pred = np.zeros(X.shape[0])
-                for y_pred in model.staged_predict(X):
+                pred = np.zeros(X_array.shape[0])
+                for y_pred in model.staged_predict(X_array):
                     pred = y_pred
                 predictions.append(pred)
                 continue
@@ -192,13 +195,13 @@ def get_prediction_std(model, X, n_iterations=100, model_type='gpr'):
     elif model_type == 'lgb':
         predictions = []
         for i in range(n_iterations):
-            pred = model.predict(X, num_iteration=model.best_iteration_)
+            pred = model.predict(X_array, num_iteration=model.best_iteration_)
             predictions.append(pred)
         return np.std(predictions, axis=0)
     else:  # lr
-        y_pred = model.predict(X)
-        residuals = y_pred - model.predict(X)
-        return np.std(residuals) * np.ones(X.shape[0])
+        y_pred = model.predict(X_array)
+        residuals = y_pred - model.predict(X_array)
+        return np.std(residuals) * np.ones(X_array.shape[0])
 
 def get_preferred_coordination(energies):
     """Get the coordination with minimum energy"""
