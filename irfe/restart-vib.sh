@@ -18,7 +18,7 @@
 
 for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/5_M_top
 do
-    cd $dir
+    cd $dir; pwd
     IFS='/' read -r -a path <<< $dir
     vib_dir=/home/hyeonjung/scratch/4_IrFe3/${path[-3]}/vib/${path[-2]}/${path[-1]}
     if [[ -f CONTCAR ]]; then
