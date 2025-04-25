@@ -1,7 +1,6 @@
 for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*
 do
     cd $dir; pwd
-    IFS='/' read -r -a path <<< $dir
     if [[ -f OUTCAR ]] && [[ ! -f final_with_calculator.json ]]; then
         ase convert -n -1 OUTCAR final_with_calculator.json
     fi
