@@ -6,7 +6,7 @@ original_atoms = read('o-top-layer.vasp')
 atoms = original_atoms.copy()
 gap = atoms[31].position - atoms[30].position
 for i in range(8):
-    atoms[-i-1].position += gap
+    atoms[-i-1].position += gap/2
 write('o-brg-layer.vasp', atoms)
 
 # for i in range(8):
