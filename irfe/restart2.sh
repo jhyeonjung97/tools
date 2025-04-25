@@ -31,28 +31,13 @@
 #     cp ~/bin/tools/irfe/run_slurm.sh .
 # done
 
-# for dir in /home/hyeonjung/scratch/4_IrFe3/2_OH/*_*/*_*_*
-# do
-#     cd $dir
-#     if [[ ! -f OUTCAR ]]; then
-#         cp ~/bin/tools/irfe/INCAR .
-#         cp ~/bin/tools/irfe/KPOINTS .
-#         cp *.vasp POSCAR
-#         vaspkit -task 107
-#         mv POSCAR_REV POSCAR
-#         rm POTCAR
-#         vaspkit -task 103
-#         python3 ~/bin/orange/magmom.py
-#     fi
-# done
-
-for dir in /home/hyeonjung/scratch/4_IrFe3/*_Ir*/*_*_*/*_*_*
+for dir in /home/hyeonjung/scratch/4_IrFe3/2_OH/*_*/*_*_*
 do
     cd $dir
     if [[ ! -f OUTCAR ]]; then
         cp ~/bin/tools/irfe/INCAR .
         cp ~/bin/tools/irfe/KPOINTS .
-        mv *.vasp POSCAR
+        cp *.vasp POSCAR
         vaspkit -task 107
         mv POSCAR_REV POSCAR
         rm POTCAR
