@@ -10,11 +10,9 @@
 ## HPC ENVIRONMENT DON'T REMOVE THIS PART
 . /etc/profile.d/TMI.sh
 
-for dir in 1_Mn 2_Fe 3_Co 4_Ni; do
-    for sub in 5_M_top 6_M_hol; do
-        path="${dir}/${sub}"
-        cp $path/* .
-	    mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
-        cp * $path/
-    done
+for dir in 1_V_V 2_V_O 3_V_OH 4_O_O 5_O_OH 6_O_OOH
+do
+    cp $dir/* .
+    mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
+    cp * $dir/
 done
