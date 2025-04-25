@@ -19,3 +19,17 @@ for i in [33, 34, 36, 39]:
 for i in [32, 35, 37, 38]:
     atoms += Atoms('H', positions=[atoms[i].position + (0.5, 0.8, 0.0)])
 write('oh-top-layer.vasp', atoms)
+
+original_atoms = read('CONTCAR')
+
+atoms = original_atoms.copy()
+atoms += Atoms('O', positions=[(atoms[30].position + atoms[31].position)/2])
+write('o-brg-Ir.vasp', atoms)
+atoms += Atoms('H', positions=[atoms[-8].position + (0.0, -0.8, 0.5)])
+write('oh-brg-Ir.vasp', atoms)
+
+atoms = original_atoms.copy()
+atoms += Atoms('O', positions=[(atoms[28].position + atoms[29].position)/2])
+write('o-brg-M.vasp', atoms)
+atoms += Atoms('H', positions=[atoms[-8].position + (0.0, -0.8, 0.5)])
+write('oh-brg-M.vasp', atoms)
