@@ -10,7 +10,7 @@ for i in range(8):
 write('o-brg-layer.vasp', atoms)
 
 for i in range(8):
-    atoms += Atoms('H', positions=[atoms[-8].position + (0.0, -1.0, 0.0)])
+    atoms += Atoms('H', positions=[atoms[-8].position + (0.0, -0.8, 0.6)])
 write('oh-brg-layer.vasp', atoms)
 
 atoms = original_atoms.copy()
