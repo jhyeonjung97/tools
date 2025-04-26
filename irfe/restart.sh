@@ -61,7 +61,7 @@
 #     fi
 # done
 
-for dir in 5_IrMn 6_IrFe 7_IrCo 8_IrNi
+for dir in 6_IrFe 7_IrCo 8_IrNi # 5_IrMn
 do
     cd /home/hyeonjung/scratch/4_IrFe3/slab/$dir
     cp h-*.vasp /home/hyeonjung/scratch/4_IrFe3/1_H/$dir
