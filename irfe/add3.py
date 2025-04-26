@@ -16,7 +16,7 @@ atoms = read('o-oh.vasp')
 del atoms[34]
 write('v-oh.vasp', atoms)
 
-del original_atoms[39]
+del original_atoms[34]
 write('v-o.vasp', original_atoms)
 
 del original_atoms[36]
