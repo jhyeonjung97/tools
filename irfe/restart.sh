@@ -61,7 +61,7 @@
 #     fi
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/slab/*_*
+for dir in /home/hyeonjung/scratch/4_IrFe3/2_OH/*_*/*_*_brg
 do
     cd $dir
     if [[ ! -f OUTCAR ]]; then
