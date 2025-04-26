@@ -46,11 +46,6 @@ def read_vib_correction(vib_file):
     except:
         return 0.0  # 파일이 없거나 읽을 수 없는 경우 0 반환
 
-def get_vib_path(base_path, ads, metal, site):
-    """진동 계산 결과가 있는 경로 반환"""
-    vib_path = os.path.join(base_path, ads, 'vib', metal, site, 'vib.txt')
-    return vib_path
-
 def calculate_free_energy(E, E0, n_H, n_O, U, G_vib=0.0, pH=0):
     """Gibbs free energy 계산 - 진동 자유에너지와 열역학적 보정 포함"""
     # 기체 상수
@@ -165,7 +160,11 @@ def create_pourbaix_diagram(base_path):
         '1_Mn': 'IrMn',
         '2_Fe': 'IrFe',
         '3_Co': 'IrCo',
-        '4_Ni': 'IrNi'
+        '4_Ni': 'IrNi',
+        '5_IrMn': 'IrMn@Ir',
+        '6_IrFe': 'IrFe@Ir',
+        '7_IrCo': 'IrCo@Ir',
+        '8_IrNi': 'IrNi@Ir'
     }
     
     # 각 흡착물 종류별 colormap 정의
@@ -200,7 +199,7 @@ def create_pourbaix_diagram(base_path):
                     continue
                 
                 # 진동 보정값 읽기
-                vib_file = get_vib_path(base_path, ads, target_metal, site)
+                vib_file = os.path.join(base_path, ads, target_metal, site, 'vib', 'vib.txt')
                 G_vib = read_vib_correction(vib_file)
                     
                 atoms = read(full_path)

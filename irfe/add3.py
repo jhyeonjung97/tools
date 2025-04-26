@@ -1,7 +1,7 @@
 from ase.io import read, write
 from ase import Atoms
 
-original_atoms = read('4_O_O/final_with_calculator.json')
+original_atoms = read('CONTCAR')
 
 atoms = original_atoms.copy()
 atoms += Atoms('O', positions=[atoms[37].position + (0.0, 0.0, 1.4)])
