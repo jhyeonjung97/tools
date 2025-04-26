@@ -22,9 +22,9 @@ atoms = read('o-oh.vasp')
 del atoms[35]
 write('v-oh.vasp', atoms)
 
-# rm CONTCAR
-# mv o-oh.vasp 5_O_OH
-# mv o-ooh.vasp 6_O_OOH
-# mv v-oh.vasp 3_V_OH
-# mv v-o.vasp 2_V_O
-# mv v-v.vasp 1_V_V
+mv CONTCAR 4_O_O
+mv o-oh.vasp 5_O_OH
+mv o-ooh.vasp 6_O_OOH
+mv v-oh.vasp 3_V_OH
+mv v-o.vasp 2_V_O
+mv v-v.vasp 1_V_V
