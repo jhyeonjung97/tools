@@ -61,17 +61,26 @@
 #     fi
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/2_OH/*_*/*_*_brg
+# for dir in /home/hyeonjung/scratch/4_IrFe3/2_OH/*_*/*_*_brg
+# do
+#     cd $dir
+#     if [[ ! -f OUTCAR ]]; then
+#         cp ~/bin/tools/irfe/INCAR .
+#         cp ~/bin/tools/irfe/KPOINTS .
+#         mv *.vasp POSCAR
+#         vaspkit -task 107
+#         mv POSCAR_REV POSCAR
+#         rm POTCAR
+#         vaspkit -task 103
+#         python3 ~/bin/orange/magmom.py
+#     fi
+# done
+
+path=/home/hyeonjung/scratch/4_IrFe3/slab
+for dir in 5_IrMn 6_IrFe 7_IrCo 8_IrNi
 do
-    cd $dir
-    if [[ ! -f OUTCAR ]]; then
-        cp ~/bin/tools/irfe/INCAR .
-        cp ~/bin/tools/irfe/KPOINTS .
-        mv *.vasp POSCAR
-        vaspkit -task 107
-        mv POSCAR_REV POSCAR
-        rm POTCAR
-        vaspkit -task 103
-        python3 ~/bin/orange/magmom.py
-    fi
+    cd $path/$dir
+    cp h-*.vasp /home/hyeonjung/scratch/4_IrFe3/1_H/$dir
+    cp o-*.vasp /home/hyeonjung/scratch/4_IrFe3/3_O/$dir
+    cp oh-*.vasp /home/hyeonjung/scratch/4_IrFe3/2_OH/$dir
 done
