@@ -13,18 +13,11 @@ atoms += Atoms('H', positions=[atoms[37].position + (0.5, 0.8, 0.0)])
 write('o-oh.vasp', atoms)
 
 atoms = read('o-oh.vasp')
-del atoms[35]
+del atoms[34]
 write('v-oh.vasp', atoms)
 
-del original_atoms[35]
+del original_atoms[39]
 write('v-o.vasp', original_atoms)
 
-del original_atoms[35]
+del original_atoms[36]
 write('v-v.vasp', original_atoms)
-
-rm CONTCAR
-mv o-oh.vasp 5_O_OH
-mv o-ooh.vasp 6_O_OOH
-mv v-oh.vasp 3_V_OH
-mv v-o.vasp 2_V_O
-mv v-v.vasp 1_V_V
