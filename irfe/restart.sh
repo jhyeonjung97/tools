@@ -104,15 +104,17 @@
 #     done
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/4_OXR/*_IrFe_*/*_*_*
+for dir in /home/hyeonjung/scratch/4_IrFe3/4_OXR/*_*_*/*_*_*
 do
     cd $dir
-    cp ~/bin/tools/irfe/INCAR .
-    cp ~/bin/tools/irfe/KPOINTS .
-    mv *.vasp POSCAR
-    vaspkit -task 107
-    mv POSCAR_REV POSCAR
-    rm POTCAR
-    vaspkit -task 103
-    python3 ~/bin/orange/magmom.py
+    if [[ ! -f OUTCAR ]]; then
+        cp ~/bin/tools/irfe/INCAR .
+        cp ~/bin/tools/irfe/KPOINTS .
+        mv *.vasp POSCAR
+        vaspkit -task 107
+        mv POSCAR_REV POSCAR
+        rm POTCAR
+        vaspkit -task 103
+        python3 ~/bin/orange/magmom.py
+    fi
 done
