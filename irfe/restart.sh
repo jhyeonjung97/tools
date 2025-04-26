@@ -109,7 +109,7 @@ do
     cd $dir
     cp ~/bin/tools/irfe/INCAR .
     cp ~/bin/tools/irfe/KPOINTS .
-    cp *.vasp POSCAR
+    mv *.vasp POSCAR
     vaspkit -task 107
     mv POSCAR_REV POSCAR
     rm POTCAR
