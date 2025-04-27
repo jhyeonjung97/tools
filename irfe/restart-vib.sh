@@ -34,18 +34,26 @@
 #     python3 ~/bin/orange/magmom.py
 # done
 
+# for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*
+# do
+#     cd $dir
+#     if [[ ! -d vib ]] && [[ -f CONTCAR ]]; then
+#         python ~/bin/tools/irfe/vib.py
+#         mkdir -p vib
+#         cp vib.vasp vib/POSCAR
+#     fi
+#     cd vib
+#     cp ~/bin/tools/irfe/INCAR_vib INCAR
+#     cp ~/bin/tools/irfe/KPOINTS .
+#     vaspkit -task 107
+#     mv POSCAR_REV POSCAR
+#     vaspkit -task 103
+# done
+
 for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*
 do
     cd $dir
-    if [[ ! -d vib ]] && [[ -f CONTCAR ]]; then
-        python ~/bin/tools/irfe/vib.py
-        mkdir -p vib
-        cp vib.vasp vib/POSCAR
+    if [[ -d vib ]] && [[ -f unmatched ]]; then
+        rm -r vib
     fi
-    cd vib
-    cp ~/bin/tools/irfe/INCAR_vib INCAR
-    cp ~/bin/tools/irfe/KPOINTS .
-    vaspkit -task 107
-    mv POSCAR_REV POSCAR
-    vaspkit -task 103
 done
