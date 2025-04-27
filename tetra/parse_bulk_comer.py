@@ -15,7 +15,7 @@ user_name = os.getlogin()
 if hostname == 'PC102616':
     root = '/Users/jiuy97/Desktop/7_V_bulk'
 elif user_name == 'jiuy97':
-    root = '/pscratch/sd/j/jiuy97/7_V_bulk/'
+    root = '/pscratch/sd/j/jiuy97/7_V_bulk'
 elif user_name == 'hailey' or user_name == 'root':
     root = '/Users/hailey/Desktop/7_V_bulk'
 else:
@@ -95,9 +95,6 @@ cohesive_o2 = 5.1614  # eV
 
 def main():
     global df
-    
-    # if os.path.exists(f'{save_path}/bulk_data.csv'):
-    #     df = pd.read_csv(f'{save_path}/bulk_data.csv')
     
     # for coord in coords.index:
     for coord in ['+3', '+4', '+5', '+6']:
@@ -203,8 +200,8 @@ def main():
                     df.loc[item, float_cols] = np.nan
     
     print(df)
-    # plot_by_metal_row(df, save_path)
-    # plot_by_coordination(df, save_path)
+    plot_by_metal_row(df, save_path)
+    plot_by_coordination(df, save_path)
     
 def plot_by_metal_row(df, save_path):
     for row in ['fm', '3d', '4d', '5d']:
