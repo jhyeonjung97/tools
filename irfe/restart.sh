@@ -61,34 +61,15 @@
 #     fi
 # done
 
-for dir in 5_IrMn
+for dir in 5_IrMn 6_IrFe 7_IrCo 8_IrNi
 do
     cd /home/hyeonjung/scratch/4_IrFe3/slab/$dir
-    cp h-*.vasp /home/hyeonjung/scratch/4_IrFe3/1_H/$dir
-    cp o-*.vasp /home/hyeonjung/scratch/4_IrFe3/3_O/$dir
-    cp oh-*.vasp /home/hyeonjung/scratch/4_IrFe3/2_OH/$dir
+    cp h-top-atom1.vasp /home/hyeonjung/scratch/4_IrFe3/1_H/$dir/3_atom_top1
+    cp h-hol-atom1.vasp /home/hyeonjung/scratch/4_IrFe3/1_H/$dir/5_atom_hol1
+    cp o-top-atom1.vasp /home/hyeonjung/scratch/4_IrFe3/3_O/$dir/3_atom_top1
+    cp o-hol-atom1.vasp /home/hyeonjung/scratch/4_IrFe3/3_O/$dir/5_atom_hol1
 
-    cd /home/hyeonjung/scratch/4_IrFe3/1_H/$dir
-    mv h-top-layer.vasp 1_layer_top
-    mv h-hol-layer.vasp 2_layer_hol
-    mv h-top-atom.vasp 3_atom_top
-    mv h-hol-atom.vasp 4_atom_hol
-
-    cd /home/hyeonjung/scratch/4_IrFe3/2_OH/$dir
-    mv oh-top-layer.vasp 1_layer_top
-    mv oh-brg-layer.vasp 2_layer_brg
-    mv oh-top-atom1.vasp 3_atom_top1
-    mv oh-top-atom2.vasp 4_atom_top2
-    mv oh-brg-atom1.vasp 5_atom_brg1
-    mv oh-brg-atom2.vasp 6_atom_brg2
-
-    cd /home/hyeonjung/scratch/4_IrFe3/3_O/$dir
-    mv o-top-layer.vasp 1_layer_top
-    mv o-hol-layer.vasp 2_layer_hol
-    mv o-top-atom.vasp 3_atom_top
-    mv o-hol-atom.vasp 4_atom_hol
-
-    for subdir in /home/hyeonjung/scratch/4_IrFe3/*_*/$dir/*_*_*
+    for subdir in /home/hyeonjung/scratch/4_IrFe3/*_*/$dir/*_*_*1
     do
         cd $subdir
         if [[ ! -f OUTCAR ]]; then
