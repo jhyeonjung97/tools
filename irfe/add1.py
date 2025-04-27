@@ -21,24 +21,8 @@ for ads in ['h', 'o']:
         atoms += Atoms(symbol, positions=[atoms[range0].position + (0.0, 0.0, dz)])
         write(f'{ads}-{site}-M.vasp', atoms)
 
-        if ads == 'o' and site == 'top':
-            atoms += Atoms('H', positions=[atoms[-1].position + (0.6, 0.8, 0.0)])
-            write(f'{ads}h-{site}-M.vasp', atoms)
-        elif ads == 'o' and site == 'hol':
-            atoms += Atoms('H', positions=[atoms[-1].position + (0.0, 0.0, 1.0)])
-            write(f'{ads}h-{site}-M.vasp', atoms)
-
         # Layer adsorption
         atoms = original_atoms.copy()
         for i in ranges:
             atoms += Atoms(symbol, positions=[atoms[i].position + (0.0, 0.0, dz)])
         write(f'{ads}-{site}-layer.vasp', atoms)
-
-        if ads == 'o' and site == 'top':
-            for i in range(8):
-                atoms += Atoms('H', positions=[atoms[-8].position + (0.6, 0.8, 0.0)])
-            write(f'{ads}h-{site}-layer.vasp', atoms)
-        elif ads == 'o' and site == 'hol':
-            for i in range(8):
-                atoms += Atoms('H', positions=[atoms[-8].position + (0.0, 0.0, 1.0)])
-            write(f'{ads}h-{site}-layer.vasp', atoms)
