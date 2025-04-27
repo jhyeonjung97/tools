@@ -10,18 +10,9 @@
 ## HPC ENVIRONMENT DON'T REMOVE THIS PART
 . /etc/profile.d/TMI.sh
 
-cp 1_top_layer/* .
-mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
-cp * 1_top_layer/
-
-cp 2_hol_layer/* .
-mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
-cp * 2_hol_layer/
-
-cp 3_Ir_top/* .
-mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
-cp * 3_Ir_top/
-
-cp 4_Ir_hol/* .
-mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
-cp * 4_Ir_hol/
+for dir in 1_layer_top 2_layer_hol 3_atom_top 4_atom_hol
+do
+    cp $dir/vib/* .
+    mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
+    cp * $dir/vib/
+done
