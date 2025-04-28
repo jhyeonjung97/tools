@@ -61,41 +61,42 @@
 #     fi
 # done
 
-for dir in 5_IrMn 6_IrFe 7_IrCo 8_IrNi
-do
-    cd /home/hyeonjung/scratch/4_IrFe3/slab/$dir
-    cp h-top-atom1.vasp /home/hyeonjung/scratch/4_IrFe3/1_H/$dir/3_atom_top1
-    cp h-hol-atom1.vasp /home/hyeonjung/scratch/4_IrFe3/1_H/$dir/5_atom_hol1
-    cp o-top-atom1.vasp /home/hyeonjung/scratch/4_IrFe3/3_O/$dir/3_atom_top1
-    cp o-hol-atom1.vasp /home/hyeonjung/scratch/4_IrFe3/3_O/$dir/5_atom_hol1
-
-    for subdir in /home/hyeonjung/scratch/4_IrFe3/*_*/$dir/*_*_*1
-    do
-        cd $subdir
-        if [[ ! -f OUTCAR ]]; then
-            cp ~/bin/tools/irfe/INCAR .
-            cp ~/bin/tools/irfe/KPOINTS .
-            mv *.vasp POSCAR
-            vaspkit -task 107
-            mv POSCAR_REV POSCAR
-            rm POTCAR
-            vaspkit -task 103
-            python3 ~/bin/orange/magmom.py
-        fi
-    done
-done
-
-# for dir in /home/hyeonjung/scratch/4_IrFe3/4_OXRa/*_*_*/*_*_*
+# for dir in 5_IrMn 6_IrFe 7_IrCo 8_IrNi
 # do
-#     cd $dir
-#     if [[ ! -f OUTCAR ]]; then
-#         cp ~/bin/tools/irfe/INCAR .
-#         cp ~/bin/tools/irfe/KPOINTS .
-#         mv *.vasp POSCAR
-#         vaspkit -task 107
-#         mv POSCAR_REV POSCAR
-#         rm POTCAR
-#         vaspkit -task 103
-#         python3 ~/bin/orange/magmom.py
-#     fi
+#     cd /home/hyeonjung/scratch/4_IrFe3/slab/$dir
+#     cp h-top-atom1.vasp /home/hyeonjung/scratch/4_IrFe3/1_H/$dir/3_atom_top1
+#     cp h-hol-atom1.vasp /home/hyeonjung/scratch/4_IrFe3/1_H/$dir/5_atom_hol1
+#     cp o-top-atom1.vasp /home/hyeonjung/scratch/4_IrFe3/3_O/$dir/3_atom_top1
+#     cp o-hol-atom1.vasp /home/hyeonjung/scratch/4_IrFe3/3_O/$dir/5_atom_hol1
+
+#     for subdir in /home/hyeonjung/scratch/4_IrFe3/*_*/$dir/*_*_*1
+#     do
+#         cd $subdir
+#         if [[ ! -f OUTCAR ]]; then
+#             cp ~/bin/tools/irfe/INCAR .
+#             cp ~/bin/tools/irfe/KPOINTS .
+#             mv *.vasp POSCAR
+#             vaspkit -task 107
+#             mv POSCAR_REV POSCAR
+#             rm POTCAR
+#             vaspkit -task 103
+#             python3 ~/bin/orange/magmom.py
+#         fi
+#     done
 # done
+
+for dir in /home/hyeonjung/scratch/4_IrFe3/5_OXRb/*_*_*/*_*_*
+do
+    cd $dir
+    if [[ -f '*.vasp' ]]; then
+        pwd
+        # cp ~/bin/tools/irfe/INCAR .
+        # cp ~/bin/tools/irfe/KPOINTS .
+        # mv *.vasp POSCAR
+        # vaspkit -task 107
+        # mv POSCAR_REV POSCAR
+        # rm POTCAR
+        # vaspkit -task 103
+        # python3 ~/bin/orange/magmom.py
+    fi
+done
