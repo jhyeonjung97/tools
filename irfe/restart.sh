@@ -88,7 +88,7 @@
 for dir in /home/hyeonjung/scratch/4_IrFe3/5_OXRb/*_*_*/*_*_*
 do
     cd $dir
-    if [[ -f '*.vasp' ]]; then
+    if [[ -f *.vasp ]]; then
         pwd
         # cp ~/bin/tools/irfe/INCAR .
         # cp ~/bin/tools/irfe/KPOINTS .
