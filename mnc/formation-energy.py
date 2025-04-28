@@ -45,11 +45,11 @@ elements_data = {
 
 vacancy = {}
 for i in range(9):
-    path = f"/pscratch/sd/j/jiuy97/6_MNC/empty/{i}_/final_with_calculator.json"
-    # path = f"/pscratch/sd/j/jiuy97/6_MNC/empty/2_/final_with_calculator.json"
+    path = f"/Users/hailey/Desktop/6_MNC/empty/{i}_/final_with_calculator.json"
+    # path = f"/Users/hailey/Desktop/6_MNC/empty/2_/final_with_calculator.json"
     atoms = read(path)
     vacancy[i] = atoms.get_total_energy()
-save_path = '/pscratch/sd/j/jiuy97/6_MNC/figures/formation_energy'
+save_path = '/Users/hailey/Desktop/6_MNC/figures/formation_energy'
 
 # spins = {'LS': '#ffe2cc', 'IS': '#cceaff', 'HS': '#e8dff2'}
 spins = {'LS': '#ffd199', 'IS': '#a8d9f9', 'HS': '#d5c8e4'}
@@ -134,8 +134,8 @@ metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 def main():
     for row_key, metals in rows.items():
         for m, metal in enumerate(metals):
-            if metal != 'Co':
-                continue
+            # if metal != 'Co':
+            #     continue
             df = pd.DataFrame()
             Ef = pd.DataFrame()
             df_dz = pd.DataFrame()
@@ -320,19 +320,19 @@ def main():
             #         png_filename = f'{row_key}_{m+2}{metal}{category}{suffix}.png'
             
             for spin in spins.keys():
-                path_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/0_clean/{row_key}/*_{metal}/*_{spin}'
+                path_pattern = f'/Users/hailey/Desktop/6_MNC/0_clean/{row_key}/*_{metal}/*_{spin}'
                 matching_paths = glob.glob(path_pattern)
-                path_O_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/1_O/*_{metal}/*_{spin}'
+                path_O_pattern = f'/Users/hailey/Desktop/6_MNC/1_O/*_{metal}/*_{spin}'
                 matching_O_paths = glob.glob(path_O_pattern)
-                path_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/2_OH/*_{metal}/*_{spin}'
+                path_OH_pattern = f'/Users/hailey/Desktop/6_MNC/2_OH/*_{metal}/*_{spin}'
                 matching_OH_paths = glob.glob(path_OH_pattern)
-                path_OOH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/3_OOH/*_{metal}/*_{spin}'
+                path_OOH_pattern = f'/Users/hailey/Desktop/6_MNC/3_OOH/*_{metal}/*_{spin}'
                 matching_OOH_paths = glob.glob(path_OOH_pattern)
-                path_O_O_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/4_O_O/*_{metal}/*_{spin}'
+                path_O_O_pattern = f'/Users/hailey/Desktop/6_MNC/4_O_O/*_{metal}/*_{spin}'
                 matching_O_O_paths = glob.glob(path_O_O_pattern)
-                path_O_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/5_O_OH/*_{metal}/*_{spin}'
+                path_O_OH_pattern = f'/Users/hailey/Desktop/6_MNC/5_O_OH/*_{metal}/*_{spin}'
                 matching_O_OH_paths = glob.glob(path_O_OH_pattern)
-                path_OH_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/6_OH_OH/*_{metal}/*_{spin}'
+                path_OH_OH_pattern = f'/Users/hailey/Desktop/6_MNC/6_OH_OH/*_{metal}/*_{spin}'
                 matching_OH_OH_paths = glob.glob(path_OH_OH_pattern)
                 
                 path = None
@@ -864,19 +864,19 @@ def main():
                             df_OH_OH_relaxed_bond1.at[dz_relaxed, spin] = 0
                             df_OH_OH_relaxed_bond2.at[dz_relaxed, spin] = 0
                             
-            path_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/0_clean/{row_key}/*_{metal}'
+            path_pattern = f'/Users/hailey/Desktop/6_MNC/0_clean/{row_key}/*_{metal}'
             matching_paths = glob.glob(path_pattern)
-            path_O_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/1_O/*_{metal}'
+            path_O_pattern = f'/Users/hailey/Desktop/6_MNC/1_O/*_{metal}'
             matching_O_paths = glob.glob(path_O_pattern)
-            path_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/2_OH/*_{metal}'
+            path_OH_pattern = f'/Users/hailey/Desktop/6_MNC/2_OH/*_{metal}'
             matching_OH_paths = glob.glob(path_OH_pattern)
-            path_OOH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/3_OOH/*_{metal}'
+            path_OOH_pattern = f'/Users/hailey/Desktop/6_MNC/3_OOH/*_{metal}'
             matching_OOH_paths = glob.glob(path_OOH_pattern)
-            path_O_O_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/4_O_O/*_{metal}'
+            path_O_O_pattern = f'/Users/hailey/Desktop/6_MNC/4_O_O/*_{metal}'
             matching_O_O_paths = glob.glob(path_O_O_pattern)
-            path_O_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/5_O_OH/*_{metal}'
+            path_O_OH_pattern = f'/Users/hailey/Desktop/6_MNC/5_O_OH/*_{metal}'
             matching_O_OH_paths = glob.glob(path_O_OH_pattern)
-            path_OH_OH_pattern = f'/pscratch/sd/j/jiuy97/6_MNC/6_OH_OH/*_{metal}'
+            path_OH_OH_pattern = f'/Users/hailey/Desktop/6_MNC/6_OH_OH/*_{metal}'
             matching_OH_OH_paths = glob.glob(path_OH_OH_pattern)
             
             for path in matching_paths:
@@ -884,9 +884,11 @@ def main():
                 if os.path.exists(spin_tsv):
                     spin_df = pd.read_csv(spin_tsv, sep='\t')
                     spin_df.set_index('dz', inplace=True)
+                    spin_df.index = spin_df.index.round(2)
                     for i, dz in enumerate(dzs):
-                        if len(spin_df) > 0:
-                            ms = spin_df.loc[dz, 'spin_state']
+                        dz_rounded = round(dz, 2)
+                        if dz_rounded in spin_df.index:
+                            ms = spin_df.loc[dz_rounded, 'spin_state']
                         else:
                             continue
                         atoms_path = os.path.join(path, 'most_stable', f'{i}_', 'final_with_calculator.json')
@@ -921,9 +923,11 @@ def main():
                 if os.path.exists(spin_tsv):
                     spin_df = pd.read_csv(spin_tsv, sep='\t')
                     spin_df.set_index('dz', inplace=True)
+                    spin_df.index = spin_df.index.round(2)
                     for i, dz in enumerate(dzs):
-                        if len(spin_df) > 0:
-                            ms = spin_df.loc[dz, 'spin_state']
+                        dz_rounded = round(dz, 2)
+                        if dz_rounded in spin_df.index:
+                            ms = spin_df.loc[dz_rounded, 'spin_state']
                         else:
                             continue
                         atoms_path = os.path.join(path_O, 'most_stable', f'{i}_', 'final_with_calculator.json')
@@ -960,9 +964,11 @@ def main():
                 if os.path.exists(spin_tsv):
                     spin_df = pd.read_csv(spin_tsv, sep='\t')
                     spin_df.set_index('dz', inplace=True)
+                    spin_df.index = spin_df.index.round(2)
                     for i, dz in enumerate(dzs):
-                        if len(spin_df) > 0:
-                            ms = spin_df.loc[dz, 'spin_state']
+                        dz_rounded = round(dz, 2)
+                        if dz_rounded in spin_df.index:
+                            ms = spin_df.loc[dz_rounded, 'spin_state']
                         else:
                             continue
                         atoms_path = os.path.join(path_OH, 'most_stable', f'{i}_', 'final_with_calculator.json')
@@ -999,9 +1005,11 @@ def main():
                 if os.path.exists(spin_tsv):
                     spin_df = pd.read_csv(spin_tsv, sep='\t')
                     spin_df.set_index('dz', inplace=True)
+                    spin_df.index = spin_df.index.round(2)
                     for i, dz in enumerate(dzs):
-                        if len(spin_df) > 0:
-                            ms = spin_df.loc[dz, 'spin_state']
+                        dz_rounded = round(dz, 2)
+                        if dz_rounded in spin_df.index:
+                            ms = spin_df.loc[dz_rounded, 'spin_state']
                         else:
                             continue
                         atoms_path = os.path.join(path_OOH, 'most_stable', f'{i}_', 'final_with_calculator.json')
@@ -1038,9 +1046,11 @@ def main():
                 if os.path.exists(spin_tsv):
                     spin_df = pd.read_csv(spin_tsv, sep='\t')
                     spin_df.set_index('dz', inplace=True)
+                    spin_df.index = spin_df.index.round(2)
                     for i, dz in enumerate(dzs):
-                        if len(spin_df) > 0:
-                            ms = spin_df.loc[dz, 'spin_state']
+                        dz_rounded = round(dz, 2)
+                        if dz_rounded in spin_df.index:
+                            ms = spin_df.loc[dz_rounded, 'spin_state']
                         else:
                             continue
                         atoms_path = os.path.join(path_O_O, 'most_stable', f'{i}_', 'final_with_calculator.json')
@@ -1077,9 +1087,11 @@ def main():
                 if os.path.exists(spin_tsv):
                     spin_df = pd.read_csv(spin_tsv, sep='\t')
                     spin_df.set_index('dz', inplace=True)
+                    spin_df.index = spin_df.index.round(2)
                     for i, dz in enumerate(dzs):
-                        if len(spin_df) > 0:
-                            ms = spin_df.loc[dz, 'spin_state']
+                        dz_rounded = round(dz, 2)
+                        if dz_rounded in spin_df.index:
+                            ms = spin_df.loc[dz_rounded, 'spin_state']
                         else:
                             continue
                         atoms_path = os.path.join(path_O_OH, 'most_stable', f'{i}_', 'final_with_calculator.json')
@@ -1116,9 +1128,11 @@ def main():
                 if os.path.exists(spin_tsv):
                     spin_df = pd.read_csv(spin_tsv, sep='\t')
                     spin_df.set_index('dz', inplace=True)
+                    spin_df.index = spin_df.index.round(2)
                     for i, dz in enumerate(dzs):
-                        if len(spin_df) > 0:
-                            ms = spin_df.loc[dz, 'spin_state']
+                        dz_rounded = round(dz, 2)
+                        if dz_rounded in spin_df.index:
+                            ms = spin_df.loc[dz_rounded, 'spin_state']
                         else:
                             continue
                         atoms_path = os.path.join(path_OH_OH, 'most_stable', f'{i}_', 'final_with_calculator.json')
@@ -1409,6 +1423,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                 df['MS'] = df[ms_columns].bfill(axis=1).iloc[:, 0]
                 
             plt.figure(figsize=(4, 3), dpi=300)
+            min_y = 0
             for column in df.columns:
                 filtered_df = df[column].dropna()
                 if not filtered_df.empty:
@@ -1417,6 +1432,7 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
                     if column == 'MS':
                         spl = make_interp_spline(x, y, k=3)
                         y_smooth = spl(x_new)
+                        min_y = min(y_smooth)
                     elif 'MS' in column:
                         plt.scatter(x, y, marker='x', color=ms_spins.get(column, 'black'), zorder=5)
                     else:
@@ -1468,6 +1484,8 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.1f'))  # Fix to 0.0 format
             # plt.legend(labelspacing=0.3)
             plt.tight_layout()
+            
+            plt.axhline(y=min_y + 0.5, color='silver', linestyle=(0, (6, 2)), linewidth=1, zorder=0)
             plt.savefig(os.path.join(save_path, f"smooth/smooth_{png_filename}"), bbox_inches="tight")
             print(f"Figure saved as smooth_{png_filename}")
             plt.close()
