@@ -142,6 +142,7 @@ def main():
     df_to_save = df[columns_to_save]
     df_to_save.to_csv(f'{root}/bulk_data_total.csv', sep=',')
     df_to_save.to_csv(f'{root}/bulk_data_total.tsv', sep='\t', float_format='%.2f')
+    print(f'bulk_data_total.csv and bulk_data_total.tsv saved')
 
     X = df[args.X].astype(float)
     Y = df[args.Y].astype(float)

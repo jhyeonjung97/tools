@@ -64,6 +64,9 @@ for row in metals.keys():
             if 'ionenergies' in pattern:
                 ion_index = int(pattern.split('[')[1].strip(']'))
                 df.at[metal, column] = elem.ionenergies.get(ion_index, np.nan)
+            elif metal == 'Ru' and pattern == 'evaporation_heat':
+                # Special handling for Ru
+                df.at[metal, column] = 595
             elif metal == 'Sn' and pattern in ['boiling_point', 'melting_point']:
                 # Special handling for Sn
                 if pattern == 'boiling_point':

@@ -204,7 +204,7 @@ def main():
     plot_by_coordination(df, save_path)
     
 def plot_by_metal_row(df, save_path):
-    for row in ['fm', '3d', '4d', '5d']:
+    for row in ['3d', '4d', '5d']:
         for col in columns.index:
             if col in str_cols or col in bool_cols:
                 continue
