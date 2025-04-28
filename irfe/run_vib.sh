@@ -10,9 +10,11 @@
 ## HPC ENVIRONMENT DON'T REMOVE THIS PART
 . /etc/profile.d/TMI.sh
 
-for dir in 1_layer_top 2_layer_hol 3_atom_top 4_atom_hol
+for dir in 1_layer_top 2_layer_brg 3_atom_top1 4_atom_top2 5_atom_brg1 6_atom_brg2
 do
-    cp $dir/vib/* .
-    mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
-    cp * $dir/vib/
+    if [[ -d ../$dir/vib ]] && [[ ! -f ../$dir/vib/OUTCAR ]]; then
+        cp ../$dir/vib/* .
+        mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
+        cp * ../$dir/vib/
+    fi
 done
