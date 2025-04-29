@@ -90,13 +90,13 @@
 #     cd $dir
 #     if [[ -f *.vasp ]]; then
 #         pwd
-#             cp ~/bin/tools/irfe/INCAR .
-#             cp ~/bin/tools/irfe/KPOINTS .
-#             mv *.vasp POSCAR
-#             vaspkit -task 107
-#             mv POSCAR_REV POSCAR
-#             rm POTCAR
-#             vaspkit -task 103
-#             python3 ~/bin/orange/magmom.py
+            cp ~/bin/tools/irfe/INCAR .
+            cp ~/bin/tools/irfe/KPOINTS .
+            mv *.vasp POSCAR
+            vaspkit -task 107
+            mv POSCAR_REV POSCAR
+            rm POTCAR
+            vaspkit -task 103
+            python3 ~/bin/orange/magmom.py
 #     fi
 # done
