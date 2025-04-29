@@ -615,6 +615,9 @@ def main():
 
     # Drop rows with NaN in any relevant column
     df = df.dropna(subset=args.X + [args.Y])
+    
+    # 전자 수 조건에 맞지 않는 데이터 필터링
+    df = df[(df['n_electrons'] >= 0) & (df['n_electrons'] <= 10)]
 
     # Exclude ion1~7 columns from saving
     columns_to_save = [col for col in ['metal', 'row', 'coord'] + args.X + [args.Y] if col not in ['ion1', 'ion2', 'ion3', 'ion4', 'ion5', 'ion6', 'ion7']]

@@ -615,12 +615,15 @@ def main():
 
     # Drop rows with NaN in any relevant column
     df = df.dropna(subset=args.X + [args.Y])
+    
+    # 전자 수 조건에 맞지 않는 데이터 필터링
+    df = df[(df['n_electrons'] >= 0) & (df['n_electrons'] <= 10)]
 
     # Exclude ion1~7 columns from saving
     columns_to_save = [col for col in ['metal', 'row', 'coord'] + args.X + [args.Y] if col not in ['ion1', 'ion2', 'ion3', 'ion4', 'ion5', 'ion6', 'ion7']]
     df_to_save = df[columns_to_save]
-    df_to_save.to_csv(f'{root}/bulk_data_cfse.csv', sep=',')
-    df_to_save.to_csv(f'{root}/bulk_data_cfse.tsv', sep='\t', float_format='%.2f')
+    df_to_save.to_csv(f'{root}/bulk_data_edge.csv', sep=',')
+    df_to_save.to_csv(f'{root}/bulk_data_edge.tsv', sep='\t', float_format='%.2f')
 
     X = df[args.X].astype(float)
     Y = df[args.Y].astype(float)
@@ -636,7 +639,7 @@ def main():
     output_suffix = args.output
 
     # Save regression summary
-    with open(os.path.join(root, f'cfse_lr_{output_suffix}.log'), 'w') as f:
+    with open(os.path.join(root, f'edge_lr_{output_suffix}.log'), 'w') as f:
         f.write(f"Intercept: {model.intercept_:.4f}\n")
         for name, coef in zip(args.X, model.coef_):
             f.write(f"{name}: {coef:.4f}\n")
@@ -647,7 +650,7 @@ def main():
     df_result['Y_true'] = Y
     df_result['Y_pred'] = Y_pred
     df_result['residual'] = Y - Y_pred
-    df_result.to_csv(os.path.join(root, f'cfse_lr_{output_suffix}.tsv'), sep='\t', index=False)
+    df_result.to_csv(os.path.join(root, f'edge_lr_{output_suffix}.tsv'), sep='\t', index=False)
 
     # Plot parity with color by 'row' and marker by 'coord'
     row_map = {'3d': 'red', '4d': 'green', '5d': 'blue'}
@@ -678,7 +681,7 @@ def main():
     plt.ylabel(f'Predicted {ylabels[args.Y]}')
     plt.legend(loc='best', fontsize=8)
     plt.tight_layout()
-    plt.savefig(os.path.join(root, f'cfse_lr_{output_suffix}.png'))
+    plt.savefig(os.path.join(root, f'edge_lr_{output_suffix}.png'))
     plt.close()
 
     # Save covariance and correlation matrices
@@ -697,7 +700,7 @@ def main():
     r2_all = model_all.score(X, Y)
     
     # Save results for all features
-    with open(os.path.join(root, f'cfse_lr_{args.output}_all.log'), 'w') as f:
+    with open(os.path.join(root, f'edge_lr_{args.output}_all.log'), 'w') as f:
         f.write(f"Using all features\n")
         f.write(f"Intercept: {model_all.intercept_:.4f}\n")
         for name, coef in zip(args.X, model_all.coef_):
@@ -709,7 +712,7 @@ def main():
     df_result_all['Y_true'] = Y
     df_result_all['Y_pred'] = Y_pred_all
     df_result_all['residual'] = Y - Y_pred_all
-    df_result_all.to_csv(os.path.join(root, f'cfse_lr_{args.output}_all.tsv'), sep='\t', index=False)
+    df_result_all.to_csv(os.path.join(root, f'edge_lr_{args.output}_all.tsv'), sep='\t', index=False)
 
     plt.figure(figsize=(10, 8))
     for r in df['row'].unique():
@@ -735,7 +738,7 @@ def main():
     plt.ylabel(f'Predicted {ylabels[args.Y]}')
     plt.legend(loc='best', fontsize=8)
     plt.tight_layout()
-    plt.savefig(os.path.join(root, f'cfse_lr_{args.output}_all.png'))
+    plt.savefig(os.path.join(root, f'edge_lr_{args.output}_all.png'))
     plt.close()
 
     cmap_forward = plt.get_cmap('coolwarm')
@@ -749,8 +752,8 @@ def main():
     new_cmap = LinearSegmentedColormap.from_list('coolwarm_double', new_colors)
 
     # Save covariance and correlation matrices
-    cov.to_csv(os.path.join(root, f'cfse_covariance_{args.output}_all.tsv'), sep='\t')
-    cor.to_csv(os.path.join(root, f'cfse_correlation_{args.output}_all.tsv'), sep='\t')
+    cov.to_csv(os.path.join(root, f'edge_covariance_{args.output}_all.tsv'), sep='\t')
+    cor.to_csv(os.path.join(root, f'edge_correlation_{args.output}_all.tsv'), sep='\t')
 
     # 다양한 threshold 값에 대해 그룹화 수행
     thresholds = [0.5, 0.6, 0.7, 0.8, 0.9]
@@ -759,7 +762,7 @@ def main():
         correlation_groups = group_highly_correlated_features(cor, threshold)
         
         # 결과를 log 파일로 저장
-        with open(os.path.join(root, f'cfse_correlation_groups_{args.output}_threshold_{threshold}.log'), 'w') as f:
+        with open(os.path.join(root, f'edge_correlation_groups_{args.output}_threshold_{threshold}.log'), 'w') as f:
             f.write(f"Correlation Threshold: {threshold}\n")
             f.write(f"Number of Groups: {len(correlation_groups)}\n\n")
             
@@ -792,7 +795,7 @@ def main():
     plt.yticks(rotation=0)
     
     plt.tight_layout(pad=2.0)  # padding 증가
-    plt.savefig(os.path.join(root, f'cfse_correlation_{args.output}_all.png'), 
+    plt.savefig(os.path.join(root, f'edge_correlation_{args.output}_all.png'), 
                 bbox_inches='tight', dpi=300)
     plt.close()
 
@@ -806,7 +809,7 @@ def main():
     plt.yticks(rotation=0)
     
     plt.tight_layout(pad=2.0)
-    plt.savefig(os.path.join(root, f'cfse_covariance_{args.output}_all.png'),
+    plt.savefig(os.path.join(root, f'edge_covariance_{args.output}_all.png'),
                 bbox_inches='tight', dpi=300)
     plt.close()
 
@@ -833,7 +836,7 @@ def main():
         r2_selected = model_selected.score(X_selected, Y)
         
         # Save results for selected features
-        with open(os.path.join(root, f'cfse_lr_{args.output}_{suffix}.log'), 'w') as f:
+        with open(os.path.join(root, f'edge_lr_{args.output}_{suffix}.log'), 'w') as f:
             f.write(f"Correlation threshold: {threshold}\n")
             f.write(f"Selected Features: {', '.join(selected_features)}\n")
             f.write(f"Intercept: {model_selected.intercept_:.4f}\n")
@@ -846,7 +849,7 @@ def main():
         df_result_selected['Y_true'] = Y
         df_result_selected['Y_pred'] = Y_pred_selected
         df_result_selected['residual'] = Y - Y_pred_selected
-        df_result_selected.to_csv(os.path.join(root, f'cfse_lr_{args.output}_{suffix}.tsv'), sep='\t', index=False)
+        df_result_selected.to_csv(os.path.join(root, f'edge_lr_{args.output}_{suffix}.tsv'), sep='\t', index=False)
 
         plt.figure(figsize=(10, 8))
         for r in df['row'].unique():
@@ -872,7 +875,7 @@ def main():
         plt.ylabel(f'Predicted {ylabels[args.Y]}')
         plt.legend(loc='best', fontsize=8)
         plt.tight_layout()
-        plt.savefig(os.path.join(root, f'cfse_lr_{args.output}_{suffix}.png'))
+        plt.savefig(os.path.join(root, f'edge_lr_{args.output}_{suffix}.png'))
         plt.close()
 
         # Save covariance and correlation matrices for selected features
@@ -880,8 +883,8 @@ def main():
         cov_selected = df_metrics_selected.cov()
         cor_selected = df_metrics_selected.corr()
 
-        cov_selected.to_csv(os.path.join(root, f'cfse_covariance_{args.output}_{suffix}.tsv'), sep='\t')
-        cor_selected.to_csv(os.path.join(root, f'cfse_correlation_{args.output}_{suffix}.tsv'), sep='\t')
+        cov_selected.to_csv(os.path.join(root, f'edge_covariance_{args.output}_{suffix}.tsv'), sep='\t')
+        cor_selected.to_csv(os.path.join(root, f'edge_correlation_{args.output}_{suffix}.tsv'), sep='\t')
 
         plt.figure(figsize=(18, 12))
         sns.heatmap(cov_selected, annot=True, fmt='.2f', cmap=new_cmap,
@@ -892,7 +895,7 @@ def main():
         plt.yticks(rotation=0)
         
         plt.tight_layout(pad=2.0)
-        plt.savefig(os.path.join(root, f'cfse_covariance_{args.output}_{suffix}.png'),
+        plt.savefig(os.path.join(root, f'edge_covariance_{args.output}_{suffix}.png'),
                     bbox_inches='tight',
                     dpi=300)
         plt.close()
@@ -906,7 +909,7 @@ def main():
         plt.yticks(rotation=0)
         
         plt.tight_layout(pad=2.0)
-        plt.savefig(os.path.join(root, f'cfse_correlation_{args.output}_{suffix}.png'),
+        plt.savefig(os.path.join(root, f'edge_correlation_{args.output}_{suffix}.png'),
                     bbox_inches='tight',
                     dpi=300)
         plt.close()

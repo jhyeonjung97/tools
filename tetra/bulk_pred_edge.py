@@ -323,7 +323,7 @@ def plot_coordination_comparison(results, output_dir, output_suffix, model_type,
     plt.xlabel('Predicted Preferred Coordination')
     plt.ylabel('DFT Preferred Coordination')
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'{target}_pred_cfse_{model_type}{threshold_str}_{row_str}_{output_suffix}_coord.png'))
+    plt.savefig(os.path.join(output_dir, f'{target}_pred_edge_{model_type}{threshold_str}_{row_str}_{output_suffix}_coord.png'))
     plt.close()
 
     # 2. Heatmap showing matches and mismatches for coordination types
@@ -350,7 +350,7 @@ def plot_coordination_comparison(results, output_dir, output_suffix, model_type,
     plt.xlabel('Predicted Coordination Type')
     plt.ylabel('DFT Coordination Type')
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, f'{target}_pred_cfse_{model_type}{threshold_str}_{row_str}_{output_suffix}_type.png'))
+    plt.savefig(os.path.join(output_dir, f'{target}_pred_edge_{model_type}{threshold_str}_{row_str}_{output_suffix}_type.png'))
     plt.close()
 
 def plot_feature_importance(X_train, X_test, y_train, y_test, feature_names, output_path, model_type):
@@ -581,22 +581,22 @@ def main():
     threshold_str = str(int(args.corr_threshold * 100)) if args.corr_threshold != 1.0 else '00'
     
     # 파일명 정의
-    log_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}.log')
-    tsv_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}.tsv')
-    png_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}.png')
-    importance_png_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}_importance.png')
-    json_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}.json')
+    log_path = os.path.join(root, f'{args.Y}_pred_edge_{args.model}{threshold_str}_{row_str}_{output_suffix}.log')
+    tsv_path = os.path.join(root, f'{args.Y}_pred_edge_{args.model}{threshold_str}_{row_str}_{output_suffix}.tsv')
+    png_path = os.path.join(root, f'{args.Y}_pred_edge_{args.model}{threshold_str}_{row_str}_{output_suffix}.png')
+    importance_png_path = os.path.join(root, f'{args.Y}_pred_edge_{args.model}{threshold_str}_{row_str}_{output_suffix}_importance.png')
+    json_path = os.path.join(root, f'{args.Y}_pred_edge_{args.model}{threshold_str}_{row_str}_{output_suffix}.json')
 
     # coordination 분석 결과 파일 경로
-    coord_csv_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.csv')
-    coord_log_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.log')
-    coord_png_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.png')
+    coord_csv_path = os.path.join(root, f'{args.Y}_pred_edge_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.csv')
+    coord_log_path = os.path.join(root, f'{args.Y}_pred_edge_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.log')
+    coord_png_path = os.path.join(root, f'{args.Y}_pred_edge_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.png')
 
     try:
         # Load data
         print("Loading data...")
         load_start = time.time()
-        df_bulk = pd.read_csv(os.path.join(root, 'bulk_data_cfse.csv'), index_col=0)
+        df_bulk = pd.read_csv(os.path.join(root, 'bulk_data_edge.csv'), index_col=0)
         print_time("Data loading completed", time.time() - load_start)
     except FileNotFoundError as e:
         print(f"{RED}Error: Required data file not found: {e}{ENDC}")
@@ -1185,7 +1185,7 @@ def main():
 
     # Save results to file if --save option is used
     if args.save:
-        result_filename = f'{args.Y}_pred_cfse_{args.model}{threshold_str}_all_result.log'
+        result_filename = f'{args.Y}_pred_edge_{args.model}{threshold_str}_all_result.log'
         
         with open(result_filename, 'w') as f:
             f.write(f'Model: {args.model}\n')

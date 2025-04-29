@@ -64,18 +64,28 @@ columns_data = [
     {'column': 'form',     'png_name': 'formation_energy',    'ylabel': 'Formation Energy (eV)'},
     {'column': 'volume',   'png_name': 'volume',              'ylabel': 'Volume (Å³)'},
     {'column': 'chg',      'png_name': 'bader_charge',        'ylabel': 'Bader Charge (e⁻)'},
+    {'column': 'chgn',     'png_name': 'bader_charge_normalized', 'ylabel': 'normalized Bader Charge (e⁻)'},
     {'column': 'mag',      'png_name': 'magnetic_moments',    'ylabel': 'Magnetic Moments (μB)'},
     {'column': 'l_bond',   'png_name': 'bond_length',         'ylabel': 'Bond Length (Å)'},
     {'column': '-ICOHPm',  'png_name': 'icohp_per_metal',     'ylabel': '-ICOHP per Metal (eV)'},
     {'column': 'ICOBIm',   'png_name': 'icobi_per_metal',     'ylabel': 'ICOBI per Metal'},
     {'column': '-ICOOPm',  'png_name': 'icoop_per_metal',     'ylabel': '-ICOOP per Metal (eV)'},
+    {'column': '-ICOHPmn', 'png_name': 'icohp_normalized',    'ylabel': 'normalized -ICOHP per Metal (eV)'},
+    {'column': 'ICOBImn',  'png_name': 'icobi_normalized',    'ylabel': 'normalized ICOBI per Metal'},
+    {'column': '-ICOOPmn', 'png_name': 'icoop_normalized',    'ylabel': 'normalized -ICOOP per Metal (eV)'},
     {'column': '-ICOHPn',  'png_name': 'icohp_per_bond',      'ylabel': '-ICOHP per Bond (eV)'},
     {'column': 'ICOBIn',   'png_name': 'icobi_per_bond',      'ylabel': 'ICOBI per Bond'},
     {'column': '-ICOOPn',  'png_name': 'icoop_per_bond',      'ylabel': '-ICOOP per Bond (eV)'},
     {'column': 'madelung', 'png_name': 'madelung',            'ylabel': 'Madelung Energy (Loewdin, eV)'},
-    {'column': 'ion-1',    'png_name': 'ion_minus_1',         'ylabel': 'Ionization Energy -1 (eV)'},
+    {'column': 'ion-1',    'png_name': 'ion-1',               'ylabel': 'Ionization Energy (eV)'},
     {'column': 'ion',      'png_name': 'ion',                 'ylabel': 'Ionization Energy (eV)'},
-    {'column': 'ion+1',    'png_name': 'ion_plus_1',          'ylabel': 'Ionization Energy +1 (eV)'},
+    {'column': 'ion+1',    'png_name': 'ion+1',               'ylabel': 'Ionization Energy (eV)'},
+    {'column': 'ion-1n',   'png_name': 'ion_normalized-1',    'ylabel': 'normalized Ionization Energy (eV)'},
+    {'column': 'ionn',     'png_name': 'ion_normalized',      'ylabel': 'normalized Ionization Energy (eV)'},
+    {'column': 'ion+1n',   'png_name': 'ion_normalized+1',    'ylabel': 'normalized Ionization Energy (eV)'},
+    {'column': 'ionN-1',   'png_name': 'ion_accumulated-1',   'ylabel': 'accumulated Ionization Energy (eV)'},
+    {'column': 'ionN',     'png_name': 'ion_accumulated',     'ylabel': 'accumulated Ionization Energy (eV)'},
+    {'column': 'ionN+1',   'png_name': 'ion_accumulated+1',   'ylabel': 'accumulated Ionization Energy (eV)'},
     {'column': 'pauling',  'png_name': 'pauling',             'ylabel': 'Pauling Electronegativity'},
     {'column': 'Natom',    'png_name': 'atomic_number',       'ylabel': 'Atomic Number'},
     {'column': 'mass',     'png_name': 'mass',                'ylabel': 'Atomic Mass (u)'},
@@ -90,24 +100,35 @@ columns_data = [
     {'column': 'Hevap',    'png_name': 'evaporation_heat',    'ylabel': 'Heat of Evaporation (kJ/mol)'},
     {'column': 'Hfus',     'png_name': 'fusion_heat',         'ylabel': 'Heat of Fusion (kJ/mol)'},
     {'column': 'Hform',    'png_name': 'formation_heat',      'ylabel': 'Heat of Formation (kJ/mol)'},
+    {'column': 'cfse',     'png_name': 'cfse',                'ylabel': 'CFSE (kJ/mol)'},
+    {'column': 'base_cfse', 'png_name': 'base_cfse',          'ylabel': 'Base CFSE (kJ/mol)'},
+    {'column': 'jt_effect', 'png_name': 'jt_effect',          'ylabel': 'Jahn-Teller Effect (kJ/mol)'},
+    {'column': 'ee_repulsion', 'png_name': 'ee_repulsion',    'ylabel': 'Electron-Electron Repulsion (kJ/mol)'},
+    {'column': 'field_strength', 'png_name': 'field_strength', 'ylabel': 'Field Strength (kJ/mol)'},
+    {'column': 'exchange_stabilization', 'png_name': 'exchange_stabilization', 'ylabel': 'Exchange Stabilization (kJ/mol)'},
 ]
 columns = pd.DataFrame(columns_data).set_index('column')
 columns.index.name = None
 
 # 데이터 타입 설정
 bool_cols = []
-int_cols = ['CN', 'OS', 'Natom']
+int_cols = ['CN', 'OS', 'Natom', 'n_electrons', 'd_electrons']
 str_cols = ['coord', 'row', 'numb', 'metal']
-float_cols = ['form', 'volume', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 
-              'ion-1', 'ion', 'ion+1', 'pauling', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
-              'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform']
-
+float_cols = [
+    'form', 'volume', 'chg', 'mag', 'l_bond', 'madelung', 
+    '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPmn', 'ICOBImn', '-ICOOPmn', '-ICOHPn', 'ICOBIn', '-ICOOPn', 
+    'ion-1', 'ion', 'ion+1', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1', 'pauling',
+    'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
+    'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform', 
+    'base_cfse', 'ee_repulsion', 'jt_effect', 'field_strength', 'cfse', 'exchange_stabilization',
+    ]
+    		
 def plot_by_metal_row(df, save_path):
     for row in ['3d', '4d', '5d']:
         for col in columns.index:
             if col in str_cols or col in bool_cols:
                 continue
-            plt.figure(figsize=(12, 8))
+            plt.figure(figsize=(8, 6))
             for coord in coords.index:
                 zorder = coords.loc[coord, 'zorder']
                 marker = coords.loc[coord, 'marker']
@@ -122,9 +143,9 @@ def plot_by_metal_row(df, save_path):
                     # d0-d5, d5-d10을 잇는 선 추가
                     if coord in ['+3', '+4', '+5', '+6']:
                         # +3 ~ +6 coord는 기존 방식대로
-                        d0_mask = (subset['d_electrons'] == 0)
-                        d5_mask = (subset['d_electrons'] == 5)
-                        d10_mask = (subset['d_electrons'] == 10)
+                        d0_mask = (subset['n_electrons'] == 0)
+                        d5_mask = (subset['n_electrons'] == 5)
+                        d10_mask = (subset['n_electrons'] == 10)
                         if d0_mask.any() and d5_mask.any():
                             d0_idx = subset[d0_mask].index[0]
                             d5_idx = subset[d5_mask].index[0]
@@ -143,9 +164,9 @@ def plot_by_metal_row(df, save_path):
                         tetra_subset = df[(df['coord'].isin(tetra_coords)) & (df['row'] == row)]
                         
                         # d0, d5, d10에 해당하는 최소 formation energy 찾기
-                        d0_min = tetra_subset[tetra_subset['d_electrons'] == 0]['form'].min()
-                        d5_min = tetra_subset[tetra_subset['d_electrons'] == 5]['form'].min()
-                        d10_min = tetra_subset[tetra_subset['d_electrons'] == 10]['form'].min()
+                        d0_min = tetra_subset[tetra_subset['n_electrons'] == 0]['form'].min()
+                        d5_min = tetra_subset[tetra_subset['n_electrons'] == 5]['form'].min()
+                        d10_min = tetra_subset[tetra_subset['n_electrons'] == 10]['form'].min()
                         
                         # d0, d5, d10에 해당하는 metal 찾기
                         d0_metal = tetra_subset[tetra_subset['form'] == d0_min]['metal'].iloc[0]
@@ -165,10 +186,11 @@ def plot_by_metal_row(df, save_path):
             plt.xticks(np.arange(len(metals[row])), metals[row])
             plt.xlabel("Metal Index")
             plt.ylabel(columns.loc[col, 'ylabel'])
+            plt.xlim(-0.5, 12.5)  # x축 범위를 0부터 13까지로 설정
             plt.legend()
             plt.tight_layout()
             png_name = f"total_bulk_{row}_{columns.loc[col, 'png_name']}.png"
-            plt.savefig(f"{save_path}/{png_name}")
+            plt.savefig(f"{save_path}/{png_name}", dpi=300)
             plt.close()
             print(f"Figure saved as {png_name}")
             
@@ -181,7 +203,7 @@ def plot_by_coordination(df, save_path):
             base_color = coords.loc[coord, 'color']
             cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', [base_color, 'white'])
             colors = cmap(np.linspace(0.0, 0.6, 3))
-            plt.figure(figsize=(12, 8))
+            plt.figure(figsize=(8, 6))
             for r, row in enumerate(['3d', '4d', '5d']):
                 color = colors[r]
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]           
@@ -191,54 +213,55 @@ def plot_by_coordination(df, save_path):
                     for m, metal in enumerate(metals[row]):
                         plt.scatter(m, metal_df.loc[metal, coord]/23.06, marker=marker, edgecolors=color, facecolors='white')
                     
-                    # d0-d5, d5-d10을 잇는 선 추가
-                    if coord in ['+3', '+4', '+5', '+6']:
-                        # +3 ~ +6 coord는 기존 방식대로
-                        d0_mask = (subset['d_electrons'] == 0)
-                        d5_mask = (subset['d_electrons'] == 5)
-                        d10_mask = (subset['d_electrons'] == 10)
-                        if d0_mask.any() and d5_mask.any():
-                            d0_idx = subset[d0_mask].index[0]
-                            d5_idx = subset[d5_mask].index[0]
-                            plt.plot([subset.loc[d0_idx, 'numb'], subset.loc[d5_idx, 'numb']], 
-                                    [subset.loc[d0_idx, 'form'], subset.loc[d5_idx, 'form']],
-                                    '--', color=color, linewidth=0.5, dashes=(12, 5))
-                        if d5_mask.any() and d10_mask.any():
-                            d5_idx = subset[d5_mask].index[0]
-                            d10_idx = subset[d10_mask].index[0]
-                            plt.plot([subset.loc[d5_idx, 'numb'], subset.loc[d10_idx, 'numb']], 
-                                    [subset.loc[d5_idx, 'form'], subset.loc[d10_idx, 'form']],
-                                    '--', color=color, linewidth=0.5, dashes=(12, 5))
-                    else:
-                        # WZ ~ LT coord는 최소값으로 연결
-                        tetra_coords = ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']
-                        tetra_subset = df[(df['coord'].isin(tetra_coords)) & (df['row'] == row)]
+                    # # d0-d5, d5-d10을 잇는 선 추가
+                    # if coord in ['+3', '+4', '+5', '+6']:
+                    #     # +3 ~ +6 coord는 기존 방식대로
+                    #     d0_mask = (subset['n_electrons'] == 0)
+                    #     d5_mask = (subset['n_electrons'] == 5)
+                    #     d10_mask = (subset['n_electrons'] == 10)
+                    #     if d0_mask.any() and d5_mask.any():
+                    #         d0_idx = subset[d0_mask].index[0]
+                    #         d5_idx = subset[d5_mask].index[0]
+                    #         plt.plot([subset.loc[d0_idx, 'numb'], subset.loc[d5_idx, 'numb']], 
+                    #                 [subset.loc[d0_idx, 'form'], subset.loc[d5_idx, 'form']],
+                    #                 '--', color=color, linewidth=0.5, dashes=(12, 5))
+                    #     if d5_mask.any() and d10_mask.any():
+                    #         d5_idx = subset[d5_mask].index[0]
+                    #         d10_idx = subset[d10_mask].index[0]
+                    #         plt.plot([subset.loc[d5_idx, 'numb'], subset.loc[d10_idx, 'numb']], 
+                    #                 [subset.loc[d5_idx, 'form'], subset.loc[d10_idx, 'form']],
+                    #                 '--', color=color, linewidth=0.5, dashes=(12, 5))
+                    # else:
+                    #     # WZ ~ LT coord는 최소값으로 연결
+                    #     tetra_coords = ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']
+                    #     tetra_subset = df[(df['coord'].isin(tetra_coords)) & (df['row'] == row)]
                         
-                        # d0, d5, d10에 해당하는 최소 formation energy 찾기
-                        d0_min = tetra_subset[tetra_subset['d_electrons'] == 0]['form'].min()
-                        d5_min = tetra_subset[tetra_subset['d_electrons'] == 5]['form'].min()
-                        d10_min = tetra_subset[tetra_subset['d_electrons'] == 10]['form'].min()
+                    #     # d0, d5, d10에 해당하는 최소 formation energy 찾기
+                    #     d0_min = tetra_subset[tetra_subset['n_electrons'] == 0]['form'].min()
+                    #     d5_min = tetra_subset[tetra_subset['n_electrons'] == 5]['form'].min()
+                    #     d10_min = tetra_subset[tetra_subset['n_electrons'] == 10]['form'].min()
                         
-                        # d0, d5, d10에 해당하는 metal 찾기
-                        d0_metal = tetra_subset[tetra_subset['form'] == d0_min]['metal'].iloc[0]
-                        d5_metal = tetra_subset[tetra_subset['form'] == d5_min]['metal'].iloc[0]
-                        d10_metal = tetra_subset[tetra_subset['form'] == d10_min]['metal'].iloc[0]
+                    #     # d0, d5, d10에 해당하는 metal 찾기
+                    #     d0_metal = tetra_subset[tetra_subset['form'] == d0_min]['metal'].iloc[0]
+                    #     d5_metal = tetra_subset[tetra_subset['form'] == d5_min]['metal'].iloc[0]
+                    #     d10_metal = tetra_subset[tetra_subset['form'] == d10_min]['metal'].iloc[0]
                         
-                        # 선 그리기
-                        d0_idx = metals[row].index(d0_metal)
-                        d5_idx = metals[row].index(d5_metal)
-                        d10_idx = metals[row].index(d10_metal)
+                    #     # 선 그리기
+                    #     d0_idx = metals[row].index(d0_metal)
+                    #     d5_idx = metals[row].index(d5_metal)
+                    #     d10_idx = metals[row].index(d10_metal)
                         
-                        plt.plot([d0_idx, d5_idx], [d0_min, d5_min], '--', color='red', linewidth=0.5, dashes=(12, 5))
-                        plt.plot([d5_idx, d10_idx], [d5_min, d10_min], '--', color='red', linewidth=0.5, dashes=(12, 5))
+                    #     plt.plot([d0_idx, d5_idx], [d0_min, d5_min], '--', color='red', linewidth=0.5, dashes=(12, 5))
+                    #     plt.plot([d5_idx, d10_idx], [d5_min, d10_min], '--', color='red', linewidth=0.5, dashes=(12, 5))
                     
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
             plt.ylabel(columns.loc[col, 'ylabel'])
+            plt.xlim(-0.5, 12.5)  # x축 범위를 0부터 13까지로 설정
             plt.legend()
             plt.tight_layout()
             png_name = f"total_bulk_{coord}_{columns.loc[col, 'png_name']}.png"
-            plt.savefig(f"{save_path}/{png_name}")
+            plt.savefig(f"{save_path}/{png_name}", dpi=300)
             plt.close()
             print(f"Figure saved as {png_name}")
 
