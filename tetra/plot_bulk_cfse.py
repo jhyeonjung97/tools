@@ -18,7 +18,7 @@ elif user_name == 'hailey' or user_name == 'root':
 else:
     raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
 
-data_path = f'{root}/bulk_data_total.csv'
+data_path = f'{root}/bulk_data_cfse.csv'
 save_path = f'{root}'
 
 # 데이터 읽기

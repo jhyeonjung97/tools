@@ -188,20 +188,20 @@ def main():
                 if os.path.exists(madelung_path) and os.path.getsize(madelung_path) != 0:
                     madelung = parse_madelung(madelung_path)
                     df.loc[item, ['madelung']] = madelung/MN
-                    
-                df.to_csv(f'{save_path}/comer_bulk_data.csv', sep=',')
-                # df[int_cols] = df[int_cols].astype(int)
-                df[float_cols] = df[float_cols].astype(float).round(2)
-                df.to_csv(f'{save_path}/comer_bulk_data.tsv', sep='\t', float_format='%.2f')
                 
                 match_path = os.path.join(dir_path, 'unmatched')
                 if os.path.exists(match_path) or df.loc[item, 'n_bond'] != df.loc[item, 'CN']:
                     df.loc[item, 'match'] = False
                     df.loc[item, float_cols] = np.nan
+
+    df.to_csv(f'{save_path}/comer_bulk_data.csv', sep=',')
+    # df[int_cols] = df[int_cols].astype(int)
+    df[float_cols] = df[float_cols].astype(float).round(2)
+    df.to_csv(f'{save_path}/comer_bulk_data.tsv', sep='\t', float_format='%.2f')
     
     print(df)
-    plot_by_metal_row(df, save_path)
-    plot_by_coordination(df, save_path)
+    # plot_by_metal_row(df, save_path)
+    # plot_by_coordination(df, save_path)
     
 def plot_by_metal_row(df, save_path):
     for row in ['3d', '4d', '5d']:

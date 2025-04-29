@@ -77,17 +77,6 @@ def select_features_by_correlation(correlation_matrix, target_col, threshold=0.7
     return selected_features
 
 def estimate_d_electrons(metal, row, OS):
-    """
-    금속의 d electron number를 계산합니다.
-    
-    Args:
-        metal: 금속 원소 기호
-        row: 3d, 4d, 5d
-        OS: oxidation state
-        
-    Returns:
-        d_electrons: d 전자 수
-    """
     if row == '3d':
         d_metals = ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
         d_electrons = d_metals.index(metal) + 2 - OS
