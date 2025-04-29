@@ -178,14 +178,14 @@ def main():
                 df[float_cols] = df[float_cols].astype(float).round(2)
                 df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
                 
-                match_path = os.path.join(dir_path, 'unmatched')
-                if os.path.exists(match_path) or df.loc[item, 'n_bond'] != df.loc[item, 'CN']:
-                    df.loc[item, 'match'] = False
-                    df.loc[item, float_cols] = np.nan
+                # match_path = os.path.join(dir_path, 'unmatched')
+                # if os.path.exists(match_path) or df.loc[item, 'n_bond'] != df.loc[item, 'CN']:
+                #     df.loc[item, 'match'] = False
+                #     df.loc[item, float_cols] = np.nan
     
     print(df)
-    plot_by_metal_row(df, save_path)
-    plot_by_coordination(df, save_path)
+    # plot_by_metal_row(df, save_path)
+    # plot_by_coordination(df, save_path)
     
 def plot_by_metal_row(df, save_path):
     for row in ['fm', '3d', '4d', '5d']:
