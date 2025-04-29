@@ -107,6 +107,12 @@ def plot_by_metal_row(df, save_path):
                 if col == 'form':
                     for m, metal in enumerate(metals[row]):
                         plt.scatter(m, metal_df.loc[metal, coord]/23.06, marker=marker, edgecolors=color, facecolors='white', zorder=zorder)
+                    # d0와 d5를 잇는 선 추가
+                    d0_idx = metals[row].index('Ca' if row == '3d' else 'Sr' if row == '4d' else 'Ba')
+                    d5_idx = metals[row].index('Mn' if row == '3d' else 'Tc' if row == '4d' else 'Re')
+                    plt.plot([d0_idx, d5_idx], 
+                            [metal_df.loc[metals[row][d0_idx], coord]/23.06, metal_df.loc[metals[row][d5_idx], coord]/23.06],
+                            '--', color=color, alpha=0.5, zorder=zorder-1)
                             
             plt.xticks(np.arange(len(metals[row])), metals[row])
             plt.xlabel("Metal Index")
@@ -136,6 +142,12 @@ def plot_by_coordination(df, save_path):
                 if col == 'form':
                     for m, metal in enumerate(metals[row]):
                         plt.scatter(m, metal_df.loc[metal, coord]/23.06, marker=marker, edgecolors=color, facecolors='white')
+                    # d0와 d5를 잇는 선 추가
+                    d0_idx = metals[row].index('Ca' if row == '3d' else 'Sr' if row == '4d' else 'Ba')
+                    d5_idx = metals[row].index('Mn' if row == '3d' else 'Tc' if row == '4d' else 'Re')
+                    plt.plot([d0_idx, d5_idx], 
+                            [metal_df.loc[metals[row][d0_idx], coord]/23.06, metal_df.loc[metals[row][d5_idx], coord]/23.06],
+                            '--', color=color, alpha=0.5)
                     
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")

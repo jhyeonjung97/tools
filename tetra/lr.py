@@ -5,6 +5,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+from matplotlib.colors import LinearSegmentedColormap
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 import socket
 
@@ -175,7 +176,7 @@ def main():
     row_map = {'3d': 'red', '4d': 'green', '5d': 'blue'}
     coord_map = {'WZ': '+', 'ZB': 'x', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'D', 'LT': 'h', '+3': 'v', '+4': '^', '+5': '<', '+6': '>'}
 
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(12, 8))
     for r in df['row'].unique():
         for c in df['coord'].unique():
             subset = df[(df['row'] == r) & (df['coord'] == c)]
@@ -233,7 +234,7 @@ def main():
     df_result_all['residual'] = Y - Y_pred_all
     df_result_all.to_csv(os.path.join(root, f'lr_{args.output}_all.tsv'), sep='\t', index=False)
 
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(12, 8))
     for r in df['row'].unique():
         for c in df['coord'].unique():
             subset = df[(df['row'] == r) & (df['coord'] == c)]
@@ -264,18 +265,26 @@ def main():
     cov.to_csv(os.path.join(root, f'covariance_{args.output}_all.tsv'), sep='\t')
     cor.to_csv(os.path.join(root, f'correlation_{args.output}_all.tsv'), sep='\t')
 
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(cov, annot=True, fmt='.2f', cmap='coolwarm', annot_kws={"size": 6},
-                cbar_kws={"shrink": 0.5, "aspect": 20})  # Adjust colorbar width
-    plt.tight_layout(pad=1.0)  # Reduce padding
-    plt.savefig(os.path.join(root, f'covariance_{args.output}_all.png'))
+    cmap_forward = plt.get_cmap('coolwarm')
+    cmap_reverse = plt.get_cmap('coolwarm_r')
+
+    new_colors = np.vstack((
+        cmap_reverse(np.linspace(0, 1, 256)),
+        cmap_forward(np.linspace(0, 1, 256)),
+    ))
+
+    new_cmap = LinearSegmentedColormap.from_list('coolwarm_double', new_colors)
+
+    plt.figure(figsize=(12, 8))
+    sns.heatmap(cov, annot=True, fmt='.2f', cmap=new_cmap, annot_kws={"size": 6},
+                cbar_kws={"shrink": 0.5, "aspect": 20, "pad": 0.02})
+    plt.savefig(os.path.join(root, f'covariance_{args.output}_all.png'), bbox_inches='tight')
     plt.close()
 
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(cor, annot=True, fmt='.2f', cmap='coolwarm', annot_kws={"size": 6},
-                cbar_kws={"shrink": 0.5, "aspect": 20})  # Adjust colorbar width
-    plt.tight_layout(pad=1.0)  # Reduce padding
-    plt.savefig(os.path.join(root, f'correlation_{args.output}_all.png'))
+    plt.figure(figsize=(12, 8))
+    sns.heatmap(cor, annot=True, fmt='.2f', cmap=new_cmap, annot_kws={"size": 6},
+                cbar_kws={"shrink": 0.5, "aspect": 20, "pad": 0.02}, vmin=-1, vmax=1)
+    plt.savefig(os.path.join(root, f'correlation_{args.output}_all.png'), bbox_inches='tight')
     plt.close()
 
     print(f"Saved results using all features")
@@ -316,7 +325,7 @@ def main():
         df_result_selected['residual'] = Y - Y_pred_selected
         df_result_selected.to_csv(os.path.join(root, f'lr_{args.output}_{suffix}.tsv'), sep='\t', index=False)
 
-        plt.figure(figsize=(10, 8))
+        plt.figure(figsize=(12, 8))
         for r in df['row'].unique():
             for c in df['coord'].unique():
                 subset = df[(df['row'] == r) & (df['coord'] == c)]
@@ -351,18 +360,16 @@ def main():
         cov_selected.to_csv(os.path.join(root, f'covariance_{args.output}_{suffix}.tsv'), sep='\t')
         cor_selected.to_csv(os.path.join(root, f'correlation_{args.output}_{suffix}.tsv'), sep='\t')
 
-        plt.figure(figsize=(10, 8))
-        sns.heatmap(cov_selected, annot=True, fmt='.2f', cmap='coolwarm', annot_kws={"size": 6},
-                    cbar_kws={"shrink": 0.5, "aspect": 20})  # Adjust colorbar width
-        plt.tight_layout(pad=1.0)  # Reduce padding
-        plt.savefig(os.path.join(root, f'covariance_{args.output}_{suffix}.png'))
+        plt.figure(figsize=(12, 8))
+        sns.heatmap(cov_selected, annot=True, fmt='.2f', cmap=new_cmap, annot_kws={"size": 6},
+                    cbar_kws={"shrink": 0.5, "aspect": 20, "pad": 0.02})
+        plt.savefig(os.path.join(root, f'covariance_{args.output}_{suffix}.png'), bbox_inches='tight')
         plt.close()
 
-        plt.figure(figsize=(10, 8))
-        sns.heatmap(cor_selected, annot=True, fmt='.2f', cmap='coolwarm', annot_kws={"size": 6},
-                    cbar_kws={"shrink": 0.5, "aspect": 20})  # Adjust colorbar width
-        plt.tight_layout(pad=1.0)  # Reduce padding
-        plt.savefig(os.path.join(root, f'correlation_{args.output}_{suffix}.png'))
+        plt.figure(figsize=(12, 8))
+        sns.heatmap(cor_selected, annot=True, fmt='.2f', cmap=new_cmap, annot_kws={"size": 6},
+                    cbar_kws={"shrink": 0.5, "aspect": 20, "pad": 0.02}, vmin=-1, vmax=1)
+        plt.savefig(os.path.join(root, f'correlation_{args.output}_{suffix}.png'), bbox_inches='tight')
         plt.close()
 
         print(f"Saved results for threshold {threshold} with suffix {suffix}")
