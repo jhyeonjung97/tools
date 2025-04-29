@@ -76,16 +76,43 @@ def select_features_by_correlation(correlation_matrix, target_col, threshold=0.7
     
     return selected_features
 
+def estimate_d_electrons(metal, row, OS):
+    """
+    금속의 d electron number를 계산합니다.
+    
+    Args:
+        metal: 금속 원소 기호
+        row: 3d, 4d, 5d
+        OS: oxidation state
+        
+    Returns:
+        d_electrons: d 전자 수
+    """
+    if row == '3d':
+        d_metals = ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
+        d_electrons = d_metals.index(metal) + 2 - OS
+    elif row == '4d':
+        d_metals = ['Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn']
+        d_electrons = d_metals.index(metal) + 2 - OS
+    elif row == '5d':
+        d_metals = ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb']
+        d_electrons = d_metals.index(metal) + 2 - OS
+    else:
+        raise ValueError(f"Unknown row: {row}")
+    
+    # oxidation state 고려
+    # d_electrons = min(max(0, d_electrons - OS), 10)
+    return d_electrons
+
 def main():
     parser = argparse.ArgumentParser(description='Linear regression using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
         'OS', 'CN', 'numb', 'chg', 'mag', 'volume', 'l_bond', 'madelung',
         'ICOHPm', 'ICOHPmn', 'ICOHPn', 'ICOBIm', 'ICOBImn', 'ICOBIn', 'ICOOPm', 'ICOOPmn', 'ICOOPn', 
-        # 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
         'ion-1', 'ion', 'ion+1', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1', 
         'pauling', 'Natom', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
-        'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
+        'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform', 'd_electrons'
     ], help='List of feature columns from bulk_data.csv and/or mendeleev_data.csv')
     parser.add_argument('--row', nargs='+', type=str, default=None, help='Filter by row: 3d, 4d, or 5d')
     parser.add_argument('--coord', nargs='+', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
@@ -105,6 +132,9 @@ def main():
     df = df.rename(columns={'row_bulk': 'row', 'numb_mend': 'numb'})
     df = df.drop(columns=['row_mend', 'numb_bulk'])
     df = df[df['row'] != 'fm'] ##
+
+    # d electron number 계산 및 추가
+    df['d_electrons'] = df.apply(lambda x: estimate_d_electrons(x['metal'], x['row'], x['OS']), axis=1)
 
     if args.row:
         df = df[df['row'].isin(args.row)]
