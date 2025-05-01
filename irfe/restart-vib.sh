@@ -48,12 +48,14 @@
 #     vaspkit -task 107
 #     mv POSCAR_REV POSCAR
 #     vaspkit -task 103
+#     python3 ~/bin/orange/magmom.py
+#     cd ..
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*
-do
-    cd $dir
-    if [[ -d vib ]] && [[ -f unmatched ]]; then
-        rm -r vib
-    fi
-done
+# for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*
+# do
+#     cd $dir
+#     if [[ -d vib ]] && [[ -f unmatched ]]; then
+#         rm -r vib
+#     fi
+# done
