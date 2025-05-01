@@ -12,7 +12,7 @@
 
 for dir in 1_Ir_top 2_Ir_hol 3_IrFe_top1 4_IrFe_top2 5_IrFe_top3
 do
-    for subdir in 1_V_V 2_V_O 3_V_OH 4_O_O 5_O_OH 6_O_OOH
+    for subdir in 1_V_V 2_V_O 3_V_OH 5_O_OH 6_O_OOH
     do
         cp $dir/$subdir/vib/* .
         mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
