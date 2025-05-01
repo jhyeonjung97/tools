@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=24
-#SBATCH --partition=g3
+#SBATCH --ntasks-per-node=32
+#SBATCH --partition=g1
 #SBATCH -J IrFe-R1
 #SBATCH --time=05-00:00
 #SBATCH -o stdout.%N.%j.out
