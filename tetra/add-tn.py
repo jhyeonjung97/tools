@@ -114,6 +114,8 @@ def submit_job(folder):
                         line = '#SBATCH -q regular\n'
                     elif line.startswith('#SBATCH -t'):
                         line = '#SBATCH -t 02:00:00\n'
+                    elif line.startswith('#SBATCH -G'):
+                        line = '#SBATCH -G 8\n'
                     elif 'run_vasp_gpu' in line:
                         line = line.replace('run_vasp_gpu.py', 'run_vasp_gpu2.py')
                         line = line.replace('run_vasp_gpu1.py', 'run_vasp_gpu2.py')
