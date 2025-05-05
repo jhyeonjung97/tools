@@ -125,7 +125,7 @@ def submit_job(folder):
                     if line.startswith('#SBATCH -N'):
                         line = '#SBATCH -N 2\n'
                     elif line.startswith('#SBATCH -q'):
-                        line = '#SBATCH -q normal\n'
+                        line = '#SBATCH -q regular\n'
                     elif line.startswith('#SBATCH -t'):
                         line = '#SBATCH -t 02:00:00\n'
                     elif 'run_vasp_gpu' in line:
