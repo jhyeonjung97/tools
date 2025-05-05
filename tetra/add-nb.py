@@ -4,7 +4,6 @@ import subprocess
 import numpy as np
 import socket
 from ase.io import read, write
-from ase.build import add_adsorbate
 
 # Define root directory and coordination type
 hostname = socket.gethostname()
@@ -18,7 +17,7 @@ elif user_name == 'hailey' or user_name == 'root':
 else:
     raise ValueError(f"Unknown hostname: {hostname} or user_name: {user_name}. Please set the root path manually.")
 
-coord = '7_Pyramidal_LT'
+coord = '5_SquarePlanar_NB'
 
 rows = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
@@ -37,46 +36,61 @@ def main():
             
             if not os.path.exists(atoms_path) or os.path.exists(os.path.join(path, 'unmatched')):
                 continue
-    
+
             atoms = read(atoms_path)
-    
-            # 1) Add one oxygen atom 2 Å above the topmost atom in z
-            top_z = atoms.positions[:, 2].max()
-            top_index = np.argmax(atoms.positions[:, 2])
-            top_position = atoms.positions[top_index]
-            o_position = top_position + np.array([0, 0, 2.0])
+            
+            # Get positions of all atoms
+            positions = atoms.positions
+            symbols = atoms.get_chemical_symbols()
+            
+            # Separate oxygen and metal atoms
+            o_indices = [i for i, sym in enumerate(symbols) if sym == 'O']
+            metal_indices = [i for i, sym in enumerate(symbols) if sym != 'O']
+            
+            # Sort by z-coordinate
+            o_positions = positions[o_indices]
+            metal_positions = positions[metal_indices]
+            
+            metal_z_sorted = metal_positions[metal_positions[:, 2].argsort()]
+            
+            # Get highest and fourth highest metal atoms
+            highest_metal = metal_z_sorted[-1]
+            fourth_highest_metal = metal_z_sorted[-4]
+            
+            # Calculate bond_vector as half of the distance between highest and fourth highest metal
+            bond_vector = - (fourth_highest_metal - highest_metal) / 2
+            
+            # Add oxygen using bond_vector
+            pos_o = highest_metal + bond_vector
             atoms_o = atoms.copy()
             atoms_o.append('O')
-            atoms_o.positions[-1] = o_position
+            atoms_o.positions[-1] = pos_o
             write(os.path.join(path, 'o.json'), atoms_o)
-    
-            # 2) Add one hydrogen atom on the oxygen atom
+            
+            # Add hydrogen 1 Angstrom in x-direction from oxygen
             atoms_oh = atoms_o.copy()
-            oh_vector = np.array([0.0, 0.8, 0.6])
-            h_position = o_position + oh_vector
+            h_pos = pos_o + np.array([1.0, 0.0, 0.0])
             atoms_oh.append('H')
-            atoms_oh.positions[-1] = h_position
+            atoms_oh.positions[-1] = h_pos
             write(os.path.join(path, 'oh.json'), atoms_oh)
-    
-            # 3) Create directories o/ and oh/
+            
+            # Create directories o/ and oh/
             o_dir = os.path.join(path, 'o')
             oh_dir = os.path.join(path, 'oh')
             os.makedirs(o_dir, exist_ok=True)
             os.makedirs(oh_dir, exist_ok=True)
-    
-            # 4) Put o.json and oh.json into respective directories as restart.json
+            
+            # Put o.json and oh.json into respective directories as restart.json
             shutil.copy(os.path.join(path, 'o.json'), os.path.join(o_dir, 'restart.json'))
             shutil.copy(os.path.join(path, 'oh.json'), os.path.join(oh_dir, 'restart.json'))
-    
-            # 5) Copy submit.sh to both directories
+            
+            # Copy submit.sh to both directories
             submit_path = os.path.join(path, 'submit.sh')
             if os.path.exists(submit_path):
                 shutil.copy(submit_path, o_dir)
                 shutil.copy(submit_path, oh_dir)
-    
                 modify_job_name(os.path.join(o_dir, 'submit.sh'), 'o')
                 modify_job_name(os.path.join(oh_dir, 'submit.sh'), 'oh')
-
                 submit_job(o_dir)
                 submit_job(oh_dir)
 
@@ -101,6 +115,6 @@ def submit_job(folder):
             print(f"Submitted job in {folder}")
         except subprocess.CalledProcessError as e:
             print(f"Failed to submit job in {folder}: {e}")
-            
+
 if __name__ == "__main__":
-    main()
+    main() 

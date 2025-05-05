@@ -17,7 +17,7 @@ elif user_name == 'hailey' or user_name == 'root':
 else:
     raise ValueError(f"Unknown hostname: {hostname} or user_name: {user_name}. Please set the root path manually.")
 
-coord = '3_SquarePlanar_TN'
+coord = '4_SquarePlanar_PD'
 
 rows = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
@@ -38,45 +38,80 @@ def main():
                 continue
 
             atoms = read(atoms_path)
-
-            # Get bond vector from atom 19 to 9
-            bond_vector = atoms.positions[9] - atoms.positions[19]
-
-            # 1) Add oxygen to atom 9 using bond_vector
-            pos_9 = atoms.positions[9] + bond_vector
+            
+            # Get positions of all atoms
+            positions = atoms.positions
+            symbols = atoms.get_chemical_symbols()
+            
+            # Separate oxygen and metal atoms
+            o_indices = [i for i, sym in enumerate(symbols) if sym == 'O']
+            metal_indices = [i for i, sym in enumerate(symbols) if sym != 'O']
+            
+            # Sort by z-coordinate
+            o_positions = positions[o_indices]
+            metal_positions = positions[metal_indices]
+            
+            o_z_sorted = o_positions[o_positions[:, 2].argsort()]
+            metal_z_sorted = metal_positions[metal_positions[:, 2].argsort()]
+            
+            # Get lowest two metal atoms
+            lowest_metals = metal_z_sorted[:2]
+            # Find the metal atom with larger y-coordinate
+            metal_with_larger_y = lowest_metals[np.argmax(lowest_metals[:, 1])]
+            
+            # Get third lowest oxygen
+            third_lowest_o = o_z_sorted[2]
+            
+            # Calculate o1_vector (oxygen - metal)
+            o1_vector = third_lowest_o - metal_with_larger_y
+            bond_length = np.linalg.norm(o1_vector)
+            
+            # Get highest two metal atoms
+            highest_metals = metal_z_sorted[-2:]
+            # Calculate midpoint using cell's x-length
+            x_midpoint = atoms.cell[0, 0] / 2
+            # Find the metal atom that is further from the midpoint
+            x_distances = np.abs(highest_metals[:, 0] - x_midpoint)
+            further_metal = highest_metals[np.argmax(x_distances)]
+            closer_metal = highest_metals[np.argmin(x_distances)]
+            
+            # Add first oxygen using o1_vector to the further metal
+            pos_o1 = further_metal + o1_vector
             atoms_o1 = atoms.copy()
             atoms_o1.append('O')
-            atoms_o1.positions[-1] = pos_9
+            atoms_o1.positions[-1] = pos_o1
             write(os.path.join(path, 'o1.json'), atoms_o1)
-
-            # Add oxygen to atom 11 using flipped y in bond_vector
-            flipped_vector = bond_vector * np.array([1.0, -1.0, 1.0])
-            pos_11 = atoms.positions[11] + flipped_vector
+            
+            # Calculate o2_vector by flipping o1_vector in y-direction
+            o2_vector = o1_vector * np.array([1.0, -1.0, 1.0])
+            
+            # Add second oxygen using o2_vector to the closer metal
+            pos_o2 = closer_metal + o2_vector
             atoms_o2 = atoms.copy()
             atoms_o2.append('O')
-            atoms_o2.positions[-1] = pos_11
+            atoms_o2.positions[-1] = pos_o2
             write(os.path.join(path, 'o2.json'), atoms_o2)
-
-            # 2) Add H on each oxygen in o1 and o2
+            
+            # Add hydrogen atoms in y-direction
             atoms_oh1 = atoms_o1.copy()
-            h1_pos = pos_9 + np.array([0.0, 1.0, 0.0])
+            h1_pos = pos_o1 + np.array([1.0, 0.0, 0.0])
             atoms_oh1.append('H')
             atoms_oh1.positions[-1] = h1_pos
             write(os.path.join(path, 'oh1.json'), atoms_oh1)
-
+            
             atoms_oh2 = atoms_o2.copy()
-            h2_pos = pos_11 + np.array([0.0, -1.0, 0.0])
+            h2_pos = pos_o2 + np.array([1.0, 0.0, 0.0])
             atoms_oh2.append('H')
             atoms_oh2.positions[-1] = h2_pos
             write(os.path.join(path, 'oh2.json'), atoms_oh2)
-
-            # 3) Make folders o1, o2, oh1, oh2 and move each as restart.json
+            
+            # Create directories and move files
             for name in ['o1', 'o2', 'oh1', 'oh2']:
                 subdir = os.path.join(path, name)
                 os.makedirs(subdir, exist_ok=True)
                 shutil.copy(os.path.join(path, f'{name}.json'), os.path.join(subdir, 'restart.json'))
-
-            # 4–5) Copy submit.sh and modify job names
+            
+            # Copy submit.sh and modify job names
             submit_path = os.path.join(path, 'submit.sh')
             if os.path.exists(submit_path):
                 for suffix in ['o1', 'o2', 'oh1', 'oh2']:
