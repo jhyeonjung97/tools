@@ -116,6 +116,34 @@ def submit_job(folder):
     submit_script = os.path.join(folder, 'submit.sh')
     if os.path.exists(submit_script):
         try:
+            # Read and modify submit.sh
+            with open(submit_script, 'r') as f:
+                lines = f.readlines()
+            
+            with open(submit_script, 'w') as f:
+                for line in lines:
+                    if line.startswith('#SBATCH -N'):
+                        line = '#SBATCH -N 2\n'
+                    elif line.startswith('#SBATCH -q'):
+                        line = '#SBATCH -q normal\n'
+                    elif line.startswith('#SBATCH -t'):
+                        line = '#SBATCH -t 02:00:00\n'
+                    elif 'run_vasp_gpu' in line:
+                        line = line.replace('run_vasp_gpu.py', 'run_vasp_gpu2.py')
+                        line = line.replace('run_vasp_gpu1.py', 'run_vasp_gpu2.py')
+                        line = line.replace('run_vasp_gpu3.py', 'run_vasp_gpu2.py')
+                        line = line.replace('run_vasp_gpu4.py', 'run_vasp_gpu2.py')
+                        line = line.replace('run_vasp_gpu8.py', 'run_vasp_gpu2.py')
+                        line = line.replace('run_vasp_gpu16.py', 'run_vasp_gpu2.py')
+                    f.write(line)
+            
+            # Check if run_vasp_gpu2.py is present in the modified file
+            with open(submit_script, 'r') as f:
+                content = f.read()
+                if 'run_vasp_gpu2.py' not in content:
+                    print(f"Warning: run_vasp_gpu2.py not found in {submit_script}")
+                    return
+            
             subprocess.run(['sbatch', 'submit.sh'], cwd=folder, check=True)
             print(f"Submitted job in {folder}")
         except subprocess.CalledProcessError as e:
