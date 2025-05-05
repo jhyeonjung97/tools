@@ -127,7 +127,10 @@ def main():
                     volume = atoms.get_volume()
                     df.loc[item, ['energy', 'volume']] = energy/MN, volume/MN
 
-                    formation = energy/MN - metal_df.loc[metal, 'E'] - (go2 / 2) * (ON /2)
+                    count_O = atoms.get_chemical_symbols().count('O')
+                    count_M = atoms.get_chemical_symbols().count(metal)
+                    # formation = energy/MN - metal_df.loc[metal, 'E'] - (go2 / 2) * (ON /2)
+                    formation = (energy - metal_df.loc[metal, 'E'] * count_M - (go2 / 2) * count_O) / (count_M + count_O)
                     df.loc[item, 'form'] = formation
                     
                     cohesive = mendeleev_df.loc[metal, 'Hform'] / 96.48 + (cohesive_o2 / 2) * (ON /2) - formation
