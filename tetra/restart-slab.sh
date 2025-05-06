@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for dir in /pscratch/sd/j/jiuy97/8_V_slab/*_*_*/*/*_*
+for dir in /pscratch/sd/j/jiuy97/8_V_slab/8_Tetrahedral_WZ/*/*_*
 do
     cd $dir
     IFS='/' read -r -a path <<< $dir
@@ -10,15 +10,11 @@ do
     metal=$(echo "${path[-1]}" | cut -d'_' -f2)
     jobname=${coord}${row}${numb}
     
-    if [[ -n $(squeue --me | grep $jobname) ]] || [[ -f "DONE" ]]; then
-        continue
-    elif [[ -f "submit.sh" ]]; then
-        cp ~/bin/tools/tetra/submit_slab.sh ./submit.sh
+    if [[ -f 'unmatched' ]]; then
+        rm *.*
+    else
         sed -i -e "s/jobname/${jobname}/" submit.sh
-        if [[ $row == 'fm' ]]; then
-            sed -i -e 's/afm/fm/' submit.sh
-        fi
-        python ~/bin/get_restart3.py
+        mv slab.traj start.traj
         pwd; sbatch submit.sh
     fi
 done
