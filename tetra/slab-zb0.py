@@ -20,7 +20,7 @@ elif user_name == 'hailey' or user_name == 'root':
 else:
     raise ValueError(f"Unknown hostname: {hostname} or user_name: {user_name}. Please set the root path manually.")
 
-coord = '1_Tetrahedral_WZ'
+coord = "2_Tetrahedral_ZB"
 
 rows = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
@@ -43,7 +43,10 @@ for row in rows:
         a1 = atoms.cell.angles()[0]
         a2 = atoms.cell.angles()[1]
         a3 = atoms.cell.angles()[2]
-        atoms.cell = (l1, l2, l3, a1, a2, a3)
+        # atoms.cell = (l1/2, l2/2, l3, a1, a2, a3)
+        
+        atoms.wrap()
+        get_duplicate_atoms(atoms, cutoff=1.0, delete=True)
         
         atoms.positions[:, 0] += l1/3
         atoms.positions[:, 1] += l2/3
@@ -68,21 +71,29 @@ for row in rows:
         atoms = sort(atoms)
         
         sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
-        indices_to_fix = [atom.index for atom in sorted_atoms[:8]]
+        indices_to_fix = [atom.index for atom in sorted_atoms[:12]]
         atoms.set_constraint(FixAtoms(indices=indices_to_fix))
         
-        # if sorted_atoms[0].symbol != 'O':
-        #     atoms.positions[:, 0] -= sorted_atoms[0].position[0]
-        #     atoms.positions[:, 1] -= sorted_atoms[0].position[1]
-        # elif sorted_atoms[1].symbol != 'O':
-        #     atoms.positions[:, 0] -= sorted_atoms[1].position[0]
-        #     atoms.positions[:, 1] -= sorted_atoms[1].position[1]
-        atoms.wrap()
+        if sorted_atoms[0].symbol != 'O':
+            atoms.positions[:, 0] -= sorted_atoms[0].position[0]
+            atoms.positions[:, 1] -= sorted_atoms[0].position[1]
+        elif sorted_atoms[1].symbol != 'O':
+            atoms.positions[:, 0] -= sorted_atoms[1].position[0]
+            atoms.positions[:, 1] -= sorted_atoms[1].position[1]
         
+        atoms.positions[:, 1] += 0.2
+        atoms.wrap()
+        get_duplicate_atoms(atoms, cutoff=1.0, delete=True)
+
         output_path = os.path.join(path, "slab.traj")
+        
+        # z축 좌표를 기준으로 원자 정렬
+        atoms = atoms[atoms.positions[:, 2].argsort()]
+        atoms = sort(atoms)
+
         write(output_path, atoms)
 
-        # print(f"Created slab.traj at: {coord}/{numb}_{metal}")
+        # print(f"Created slab.traj at: 2_Tetrahedral_ZB/{numb}_{metal}")
         
-        if len(atoms) != 32:
+        if len(atoms) != 36:
             print(f"Created slab.traj at: {coord}/{numb}_{metal}")

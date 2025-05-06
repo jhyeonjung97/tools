@@ -44,9 +44,9 @@ for coord in coords:
         for m, metal in enumerate(metals):
             numb = str(m).zfill(2)
             path = os.path.join(root, coord_dir, row, f'{numb}_{metal}')
-            unmatched_path = os.path.join(path, 'unmatched')
+            # unmatched_path = os.path.join(path, 'unmatched')
             json_path = os.path.join(path, 'final_with_calculator.json')
-            if os.path.exists(json_path) and not os.path.exists(unmatched_path) :
+            if os.path.exists(json_path): # and not os.path.exists(unmatched_path) :
                 # Step 1: Read the original structure
                 atoms = read(json_path)
 

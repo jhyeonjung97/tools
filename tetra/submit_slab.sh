@@ -4,7 +4,7 @@
 #SBATCH -C gpu
 #SBATCH -q regular
 #SBATCH -J jobname
-#SBATCH -t 04:00:00
+#SBATCH -t 02:00:00
 #SBATCH -A m2997
 #SBATCH -e err.%j.log
 #SBATCH -o out.%j.log
