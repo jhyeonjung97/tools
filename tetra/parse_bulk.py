@@ -50,6 +50,7 @@ columns_data = [
     {'column': 'coord',    'png_name': 'coordination',        'ylabel': 'Coordination'},
     {'column': 'row',      'png_name': 'row',                 'ylabel': 'Row'},
     {'column': 'numb',     'png_name': 'number',              'ylabel': 'Number'},
+    {'column': 'group',    'png_name': 'group',               'ylabel': 'Group'},
     {'column': 'metal',    'png_name': 'metal',               'ylabel': 'Metal'},
     {'column': 'CN',       'png_name': 'coordination_number', 'ylabel': 'Coordination Number'},
     {'column': 'OS',       'png_name': 'oxidation_number',    'ylabel': 'Oxidation Number'},
@@ -76,7 +77,7 @@ columns.index.name = None
 
 df = pd.DataFrame(columns=columns.index, dtype='object')
 bool_cols = ['match']
-int_cols = ['CN', 'OS', 'n_bond']
+int_cols = ['CN', 'OS', 'n_bond', 'group']
 str_cols = ['coord', 'row', 'numb', 'metal']
 float_cols = ['energy', 'form', 'coh', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung']
 
@@ -118,6 +119,7 @@ def main():
                 numb = str(m).zfill(2)
                 item = coord+row+numb
                 df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'OS']] = coord, row, m, metal, CN, ON 
+                df.loc[item, 'group'] = m + 3
                 dir_path = os.path.join(root, coord_dir, row, numb+'_'+metal)
                 
                 atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')                
@@ -129,8 +131,8 @@ def main():
 
                     count_O = atoms.get_chemical_symbols().count('O')
                     count_M = atoms.get_chemical_symbols().count(metal)
-                    # formation = energy/MN - metal_df.loc[metal, 'E'] - (go2 / 2) * (ON /2)
-                    formation = (energy - metal_df.loc[metal, 'E'] * count_M - (go2 / 2) * count_O) / (count_M + count_O)
+                    formation = energy/MN - metal_df.loc[metal, 'E'] - (go2 / 2) * (ON /2)
+                    # formation = (energy - metal_df.loc[metal, 'E'] * count_M - (go2 / 2) * count_O) / (count_M + count_O)
                     df.loc[item, 'form'] = formation
                     
                     cohesive = mendeleev_df.loc[metal, 'Hform'] / 96.48 + (cohesive_o2 / 2) * (ON /2) - formation

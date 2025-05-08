@@ -59,6 +59,8 @@ columns_data = [
     {'column': 'row',      'png_name': 'row',                 'ylabel': 'Row'},
     {'column': 'numb',     'png_name': 'number',              'ylabel': 'Number'},
     {'column': 'metal',    'png_name': 'metal',               'ylabel': 'Metal'},
+    {'column': 'group',    'png_name': 'group',               'ylabel': 'Group Number'},
+    {'column': 'outer_e',  'png_name': 'outer_e',             'ylabel': 'Number of Outer Electrons'},
     {'column': 'CN',       'png_name': 'coordination_number', 'ylabel': 'Coordination Number'},
     {'column': 'OS',       'png_name': 'oxidation_number',    'ylabel': 'Oxidation Number'},
     {'column': 'form',     'png_name': 'formation_energy',    'ylabel': 'Formation Energy (eV)'},
@@ -112,7 +114,7 @@ columns.index.name = None
 
 # 데이터 타입 설정
 bool_cols = []
-int_cols = ['CN', 'OS', 'Natom', 'n_electrons', 'd_electrons']
+int_cols = ['CN', 'OS', 'Natom', 'n_electrons', 'd_electrons', 'outer_e', 'group']
 str_cols = ['coord', 'row', 'numb', 'metal']
 float_cols = [
     'form', 'volume', 'chg', 'mag', 'l_bond', 'madelung', 
@@ -164,24 +166,39 @@ def plot_by_metal_row(df, save_path):
                         tetra_subset = df[(df['coord'].isin(tetra_coords)) & (df['row'] == row)]
                         
                         # d0, d5, d10에 해당하는 최소 formation energy 찾기
-                        d0_min = tetra_subset[tetra_subset['n_electrons'] == 0]['form'].min()
-                        d5_min = tetra_subset[tetra_subset['n_electrons'] == 5]['form'].min()
-                        d10_min = tetra_subset[tetra_subset['n_electrons'] == 10]['form'].min()
+                        d0_mask = tetra_subset['n_electrons'] == 0
+                        d5_mask = tetra_subset['n_electrons'] == 5
+                        d10_mask = tetra_subset['n_electrons'] == 10
                         
-                        # d0, d5, d10에 해당하는 metal 찾기
-                        d0_metal = tetra_subset[tetra_subset['form'] == d0_min]['metal'].iloc[0]
-                        d5_metal = tetra_subset[tetra_subset['form'] == d5_min]['metal'].iloc[0]
-                        d10_metal = tetra_subset[tetra_subset['form'] == d10_min]['metal'].iloc[0]
+                        if d0_mask.any() and d5_mask.any():
+                            d0_min = tetra_subset[d0_mask]['form'].min()
+                            d5_min = tetra_subset[d5_mask]['form'].min()
+                            
+                            # d0, d5에 해당하는 metal 찾기
+                            d0_metal = tetra_subset[(tetra_subset['form'] == d0_min) & d0_mask]['metal'].iloc[0]
+                            d5_metal = tetra_subset[(tetra_subset['form'] == d5_min) & d5_mask]['metal'].iloc[0]
+                            
+                            # 선 그리기
+                            d0_idx = metals[row].index(d0_metal)
+                            d5_idx = metals[row].index(d5_metal)
+                            
+                            plt.plot([d0_idx, d5_idx], [d0_min, d5_min],
+                                    '--', color='red', zorder=zorder-1, linewidth=0.5, dashes=(12, 5))
                         
-                        # 선 그리기
-                        d0_idx = metals[row].index(d0_metal)
-                        d5_idx = metals[row].index(d5_metal)
-                        d10_idx = metals[row].index(d10_metal)
-                        
-                        plt.plot([d0_idx, d5_idx], [d0_min, d5_min],
-                                '--', color='red', zorder=zorder-1, linewidth=0.5, dashes=(12, 5))
-                        plt.plot([d5_idx, d10_idx], [d5_min, d10_min],
-                                '--', color='red', zorder=zorder-1, linewidth=0.5, dashes=(12, 5))
+                        if d5_mask.any() and d10_mask.any():
+                            d5_min = tetra_subset[d5_mask]['form'].min()
+                            d10_min = tetra_subset[d10_mask]['form'].min()
+                            
+                            # d5, d10에 해당하는 metal 찾기
+                            d5_metal = tetra_subset[(tetra_subset['form'] == d5_min) & d5_mask]['metal'].iloc[0]
+                            d10_metal = tetra_subset[(tetra_subset['form'] == d10_min) & d10_mask]['metal'].iloc[0]
+                            
+                            # 선 그리기
+                            d5_idx = metals[row].index(d5_metal)
+                            d10_idx = metals[row].index(d10_metal)
+                            
+                            plt.plot([d5_idx, d10_idx], [d5_min, d10_min],
+                                    '--', color='red', zorder=zorder-1, linewidth=0.5, dashes=(12, 5))
                             
             plt.xticks(np.arange(len(metals[row])), metals[row])
             plt.xlabel("Metal Index")
@@ -213,47 +230,6 @@ def plot_by_coordination(df, save_path):
                     for m, metal in enumerate(metals[row]):
                         plt.scatter(m, metal_df.loc[metal, coord]/23.06, marker=marker, edgecolors=color, facecolors='white')
                     
-                    # # d0-d5, d5-d10을 잇는 선 추가
-                    # if coord in ['+3', '+4', '+5', '+6']:
-                    #     # +3 ~ +6 coord는 기존 방식대로
-                    #     d0_mask = (subset['n_electrons'] == 0)
-                    #     d5_mask = (subset['n_electrons'] == 5)
-                    #     d10_mask = (subset['n_electrons'] == 10)
-                    #     if d0_mask.any() and d5_mask.any():
-                    #         d0_idx = subset[d0_mask].index[0]
-                    #         d5_idx = subset[d5_mask].index[0]
-                    #         plt.plot([subset.loc[d0_idx, 'numb'], subset.loc[d5_idx, 'numb']], 
-                    #                 [subset.loc[d0_idx, 'form'], subset.loc[d5_idx, 'form']],
-                    #                 '--', color=color, linewidth=0.5, dashes=(12, 5))
-                    #     if d5_mask.any() and d10_mask.any():
-                    #         d5_idx = subset[d5_mask].index[0]
-                    #         d10_idx = subset[d10_mask].index[0]
-                    #         plt.plot([subset.loc[d5_idx, 'numb'], subset.loc[d10_idx, 'numb']], 
-                    #                 [subset.loc[d5_idx, 'form'], subset.loc[d10_idx, 'form']],
-                    #                 '--', color=color, linewidth=0.5, dashes=(12, 5))
-                    # else:
-                    #     # WZ ~ LT coord는 최소값으로 연결
-                    #     tetra_coords = ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']
-                    #     tetra_subset = df[(df['coord'].isin(tetra_coords)) & (df['row'] == row)]
-                        
-                    #     # d0, d5, d10에 해당하는 최소 formation energy 찾기
-                    #     d0_min = tetra_subset[tetra_subset['n_electrons'] == 0]['form'].min()
-                    #     d5_min = tetra_subset[tetra_subset['n_electrons'] == 5]['form'].min()
-                    #     d10_min = tetra_subset[tetra_subset['n_electrons'] == 10]['form'].min()
-                        
-                    #     # d0, d5, d10에 해당하는 metal 찾기
-                    #     d0_metal = tetra_subset[tetra_subset['form'] == d0_min]['metal'].iloc[0]
-                    #     d5_metal = tetra_subset[tetra_subset['form'] == d5_min]['metal'].iloc[0]
-                    #     d10_metal = tetra_subset[tetra_subset['form'] == d10_min]['metal'].iloc[0]
-                        
-                    #     # 선 그리기
-                    #     d0_idx = metals[row].index(d0_metal)
-                    #     d5_idx = metals[row].index(d5_metal)
-                    #     d10_idx = metals[row].index(d10_metal)
-                        
-                    #     plt.plot([d0_idx, d5_idx], [d0_min, d5_min], '--', color='red', linewidth=0.5, dashes=(12, 5))
-                    #     plt.plot([d5_idx, d10_idx], [d5_min, d10_min], '--', color='red', linewidth=0.5, dashes=(12, 5))
-                    
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
             plt.ylabel(columns.loc[col, 'ylabel'])
@@ -268,3 +244,15 @@ def plot_by_coordination(df, save_path):
 if __name__ == "__main__":
     plot_by_metal_row(df, save_path)
     plot_by_coordination(df, save_path) 
+
+cfse_ylabels = {
+    'd_electrons': 'Number of d-electrons',
+    'outer_e': 'Number of Outer Electrons',
+    'group': 'Group Number',
+    'base_cfse': 'Base CFSE (eV)',
+    'ee_repulsion': 'Electron-Electron Repulsion (eV)',
+    'jt_effect': 'Jahn-Teller Effect (eV)',
+    'exchange_stabilization': 'Exchange Stabilization (eV)',
+    'field_strength': 'Crystal Field Strength',
+    'cfse': 'Total CFSE (eV)'
+} 

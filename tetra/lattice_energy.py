@@ -68,19 +68,17 @@ def calculate_energies(df):
         metal = row['metal']
         oxidation_state = row['OS']
         
-        # mendeleev에서 금속 정보 가져오기
         metal_element = element(metal)
         
-        # 승화 에너지 (kJ/mol -> eV)
-        sublimation = metal_element.heat_of_formation / 96.485  # kJ/mol -> eV
+        if metal == 'Ru':
+            sublimation = 595 / 96.485  # kJ/mol -> eV
+        else:
+            sublimation = metal_element.evaporation_heat / 96.485  # kJ/mol -> eV
         
-        # 이온화 에너지 (kJ/mol -> eV)
         ionization = sum(metal_element.ionenergies[i] for i in range(1, oxidation_state + 1)) / 96.485  # kJ/mol -> eV
         
-        # 격자 에너지 계산
         lattice = (row['form'] - sublimation - ionization - oxygen_atomization + oxygen_electron_affinity)
         
-        # 데이터프레임에 값 저장
         df.at[idx, 'sublimation_energy'] = sublimation
         df.at[idx, 'ionization_energy'] = ionization
         df.at[idx, 'lattice_energy'] = lattice

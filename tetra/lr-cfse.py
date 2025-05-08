@@ -552,13 +552,13 @@ def main():
     parser = argparse.ArgumentParser(description='Linear regression using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
-        'OS', 'CN', 'numb', 'chg', 'chgn', 'mag', 'volume', 'l_bond', 'madelung',
+        'OS', 'CN', 'numb', 'group', 'chg', 'chgn', 'mag', 'volume', 'l_bond', 'madelung',
         'ICOHPm', 'ICOHPmn', 'ICOHPn', 'ICOBIm', 'ICOBImn', 'ICOBIn', 'ICOOPm', 'ICOOPmn', 'ICOOPn', 
         # 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
         'ion-1', 'ion', 'ion+1', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1', 
         'pauling', 'Natom', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
-        'n_electrons', 'd_electrons', 'base_cfse', 'ee_repulsion', 'jt_effect', 'field_strength', 'cfse', 'exchange_stabilization',
+        'n_electrons', 'd_electrons', 'outer_e', 'base_cfse', 'ee_repulsion', 'jt_effect', 'field_strength', 'cfse', 'exchange_stabilization',
     ], help='List of feature columns from bulk_data.csv and/or mendeleev_data.csv')
     parser.add_argument('--row', nargs='+', type=str, default=None, help='Filter by row: 3d, 4d, or 5d')
     parser.add_argument('--coord', nargs='+', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
@@ -579,6 +579,9 @@ def main():
     df = df.drop(columns=['row_mend', 'numb_bulk'])
     df = df[df['row'] != 'fm'] ##
 
+    # group 컬럼 추가
+    df['group'] = df['numb'] + 3
+
     if args.row:
         df = df[df['row'].isin(args.row)]
     if args.coord:
@@ -588,6 +591,10 @@ def main():
     
     # CFSE 피쳐 추가 - 위치 이동
     df = add_cfse_feature(df)
+    
+    # outer_e 계산 및 음수인 경우 제외
+    df['outer_e'] = df['group'] - df['OS']
+    df = df[df['outer_e'] >= 0]
     
     # Calculate ion values for each row
     df['ion-1'] = df.apply(lambda row: row[f'ion{int(row["OS"])-1}'], axis=1)
@@ -812,110 +819,110 @@ def main():
 
     print(f"Saved results using all features")
 
-    # Test different correlation thresholds
-    thresholds = [0.7, 0.8, 0.9]
-    threshold_suffixes = ['7', '8', '9']
+    # # Test different correlation thresholds
+    # thresholds = [0.7, 0.8, 0.9]
+    # threshold_suffixes = ['7', '8', '9']
 
-    for threshold, suffix in zip(thresholds, threshold_suffixes):
-        print(f"\nTesting correlation threshold: {threshold}")
+    # for threshold, suffix in zip(thresholds, threshold_suffixes):
+    #     print(f"\nTesting correlation threshold: {threshold}")
         
-        # Select features based on correlation threshold
-        selected_features = select_features_by_correlation(cor, args.Y, threshold)
+    #     # Select features based on correlation threshold
+    #     selected_features = select_features_by_correlation(cor, args.Y, threshold)
         
-        # Train new model with selected features
-        X_selected = df[selected_features].astype(float)
-        model_selected = LinearRegression()
-        model_selected.fit(X_selected, Y)
+    #     # Train new model with selected features
+    #     X_selected = df[selected_features].astype(float)
+    #     model_selected = LinearRegression()
+    #     model_selected.fit(X_selected, Y)
         
-        Y_pred_selected = model_selected.predict(X_selected)
-        mae_selected = mean_absolute_error(Y, Y_pred_selected)
-        mse_selected = mean_squared_error(Y, Y_pred_selected)
-        r2_selected = model_selected.score(X_selected, Y)
+    #     Y_pred_selected = model_selected.predict(X_selected)
+    #     mae_selected = mean_absolute_error(Y, Y_pred_selected)
+    #     mse_selected = mean_squared_error(Y, Y_pred_selected)
+    #     r2_selected = model_selected.score(X_selected, Y)
         
-        # Save results for selected features
-        with open(os.path.join(root, f'cfse_lr_{args.output}_{suffix}.log'), 'w') as f:
-            f.write(f"Correlation threshold: {threshold}\n")
-            f.write(f"Selected Features: {', '.join(selected_features)}\n")
-            f.write(f"Intercept: {model_selected.intercept_:.4f}\n")
-            for name, coef in zip(selected_features, model_selected.coef_):
-                f.write(f"{name}: {coef:.4f}\n")
-            f.write(f"\nR2: {r2_selected:.4f}\nMAE: {mae_selected:.4f}\nMSE: {mse_selected:.4f}\n")
+    #     # Save results for selected features
+    #     with open(os.path.join(root, f'cfse_lr_{args.output}_{suffix}.log'), 'w') as f:
+    #         f.write(f"Correlation threshold: {threshold}\n")
+    #         f.write(f"Selected Features: {', '.join(selected_features)}\n")
+    #         f.write(f"Intercept: {model_selected.intercept_:.4f}\n")
+    #         for name, coef in zip(selected_features, model_selected.coef_):
+    #             f.write(f"{name}: {coef:.4f}\n")
+    #         f.write(f"\nR2: {r2_selected:.4f}\nMAE: {mae_selected:.4f}\nMSE: {mse_selected:.4f}\n")
 
-        # Save data with predictions
-        df_result_selected = df[['metal', 'row', 'coord'] + selected_features].copy()
-        df_result_selected['Y_true'] = Y
-        df_result_selected['Y_pred'] = Y_pred_selected
-        df_result_selected['residual'] = Y - Y_pred_selected
-        df_result_selected.to_csv(os.path.join(root, f'cfse_lr_{args.output}_{suffix}.tsv'), sep='\t', index=False)
+    #     # Save data with predictions
+    #     df_result_selected = df[['metal', 'row', 'coord'] + selected_features].copy()
+    #     df_result_selected['Y_true'] = Y
+    #     df_result_selected['Y_pred'] = Y_pred_selected
+    #     df_result_selected['residual'] = Y - Y_pred_selected
+    #     df_result_selected.to_csv(os.path.join(root, f'cfse_lr_{args.output}_{suffix}.tsv'), sep='\t', index=False)
 
-        plt.figure(figsize=(10, 8))
-        for r in df['row'].unique():
-            for c in df['coord'].unique():
-                subset = df[(df['row'] == r) & (df['coord'] == c)]
-                if subset.empty:
-                    continue
-                plt.scatter(
-                    subset[args.Y],
-                    model_selected.predict(subset[selected_features].astype(float)),
-                    label=f'{r}_{c}',
-                    alpha=0.3,
-                    color=row_map.get(r, 'gray'),
-                    marker=coord_map.get(c, 'x')
-                )
-                for _, row_data in subset.iterrows():
-                    row_features = pd.DataFrame([row_data[selected_features].values], columns=selected_features)
-                    y_pred_single = model_selected.predict(row_features)[0]
-                    plt.annotate(row_data['metal'], (row_data[args.Y], y_pred_single), fontsize=8)
+    #     plt.figure(figsize=(10, 8))
+    #     for r in df['row'].unique():
+    #         for c in df['coord'].unique():
+    #             subset = df[(df['row'] == r) & (df['coord'] == c)]
+    #             if subset.empty:
+    #                 continue
+    #             plt.scatter(
+    #                 subset[args.Y],
+    #                 model_selected.predict(subset[selected_features].astype(float)),
+    #                 label=f'{r}_{c}',
+    #                 alpha=0.3,
+    #                 color=row_map.get(r, 'gray'),
+    #                 marker=coord_map.get(c, 'x')
+    #             )
+    #             for _, row_data in subset.iterrows():
+    #                 row_features = pd.DataFrame([row_data[selected_features].values], columns=selected_features)
+    #                 y_pred_single = model_selected.predict(row_features)[0]
+    #                 plt.annotate(row_data['metal'], (row_data[args.Y], y_pred_single), fontsize=8)
 
-        plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], '--', lw=1, color='black')
-        plt.xlabel(f'DFT-calculated {ylabels[args.Y]}')
-        plt.ylabel(f'Predicted {ylabels[args.Y]}')
-        plt.legend(loc='best', fontsize=8)
-        plt.tight_layout()
-        plt.savefig(os.path.join(root, f'cfse_lr_{args.output}_{suffix}.png'))
-        plt.close()
+    #     plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], '--', lw=1, color='black')
+    #     plt.xlabel(f'DFT-calculated {ylabels[args.Y]}')
+    #     plt.ylabel(f'Predicted {ylabels[args.Y]}')
+    #     plt.legend(loc='best', fontsize=8)
+    #     plt.tight_layout()
+    #     plt.savefig(os.path.join(root, f'cfse_lr_{args.output}_{suffix}.png'))
+    #     plt.close()
 
-        # Save covariance and correlation matrices for selected features
-        df_metrics_selected = pd.concat([Y, X_selected], axis=1)  # Place Y first
-        cov_selected = df_metrics_selected.cov()
-        cor_selected = df_metrics_selected.corr()
+    #     # Save covariance and correlation matrices for selected features
+    #     df_metrics_selected = pd.concat([Y, X_selected], axis=1)  # Place Y first
+    #     cov_selected = df_metrics_selected.cov()
+    #     cor_selected = df_metrics_selected.corr()
 
-        cov_selected.to_csv(os.path.join(root, f'cfse_covariance_{args.output}_{suffix}.tsv'), sep='\t')
-        cor_selected.to_csv(os.path.join(root, f'cfse_correlation_{args.output}_{suffix}.tsv'), sep='\t')
+    #     cov_selected.to_csv(os.path.join(root, f'cfse_covariance_{args.output}_{suffix}.tsv'), sep='\t')
+    #     cor_selected.to_csv(os.path.join(root, f'cfse_correlation_{args.output}_{suffix}.tsv'), sep='\t')
 
-        plt.figure(figsize=(18, 12))
-        sns.heatmap(cov_selected, annot=True, fmt='.2f', cmap=new_cmap,
-                    annot_kws={"size": 7},
-                    cbar_kws={"shrink": 0.5, "aspect": 20, "pad": 0.02}, vmin=-1, vmax=1)
+    #     plt.figure(figsize=(18, 12))
+    #     sns.heatmap(cov_selected, annot=True, fmt='.2f', cmap=new_cmap,
+    #                 annot_kws={"size": 7},
+    #                 cbar_kws={"shrink": 0.5, "aspect": 20, "pad": 0.02}, vmin=-1, vmax=1)
         
-        plt.xticks(rotation=45, ha='right')
-        plt.yticks(rotation=0)
+    #     plt.xticks(rotation=45, ha='right')
+    #     plt.yticks(rotation=0)
         
-        plt.tight_layout(pad=2.0)
-        plt.savefig(os.path.join(root, f'cfse_covariance_{args.output}_{suffix}.png'),
-                    bbox_inches='tight',
-                    dpi=300)
-        plt.close()
+    #     plt.tight_layout(pad=2.0)
+    #     plt.savefig(os.path.join(root, f'cfse_covariance_{args.output}_{suffix}.png'),
+    #                 bbox_inches='tight',
+    #                 dpi=300)
+    #     plt.close()
 
-        plt.figure(figsize=(18, 12))
-        sns.heatmap(cor_selected, annot=True, fmt='.2f', cmap=new_cmap,
-                    annot_kws={"size": 7},
-                    cbar_kws={"shrink": 0.5, "aspect": 20, "pad": 0.02}, vmin=-1, vmax=1)
+    #     plt.figure(figsize=(18, 12))
+    #     sns.heatmap(cor_selected, annot=True, fmt='.2f', cmap=new_cmap,
+    #                 annot_kws={"size": 7},
+    #                 cbar_kws={"shrink": 0.5, "aspect": 20, "pad": 0.02}, vmin=-1, vmax=1)
         
-        plt.xticks(rotation=45, ha='right')
-        plt.yticks(rotation=0)
+    #     plt.xticks(rotation=45, ha='right')
+    #     plt.yticks(rotation=0)
         
-        plt.tight_layout(pad=2.0)
-        plt.savefig(os.path.join(root, f'cfse_correlation_{args.output}_{suffix}.png'),
-                    bbox_inches='tight',
-                    dpi=300)
-        plt.close()
+    #     plt.tight_layout(pad=2.0)
+    #     plt.savefig(os.path.join(root, f'cfse_correlation_{args.output}_{suffix}.png'),
+    #                 bbox_inches='tight',
+    #                 dpi=300)
+    #     plt.close()
 
-        print(f"Saved results for threshold {threshold} with suffix {suffix}")
+    #     print(f"Saved results for threshold {threshold} with suffix {suffix}")
 
-    print(f"Saved: lr_{output_suffix}.log, lr_{output_suffix}.tsv")
-    print(f"Saved: covariance_{output_suffix}.tsv, covariance_{output_suffix}.png")
-    print(f"Saved: correlation_{output_suffix}.tsv, correlation_{output_suffix}.png")
+    # print(f"Saved: lr_{output_suffix}.log, lr_{output_suffix}.tsv")
+    # print(f"Saved: covariance_{output_suffix}.tsv, covariance_{output_suffix}.png")
+    # print(f"Saved: correlation_{output_suffix}.tsv, correlation_{output_suffix}.png")
 
     # CFSE 관련 플롯 생성
     # plot_cfse_by_metal_row(df, root)

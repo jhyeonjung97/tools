@@ -43,6 +43,7 @@ columns_data = [
     {'column': 'coord',    'png_name': 'coordination',        'ylabel': 'Coordination'},
     {'column': 'row',      'png_name': 'row',                 'ylabel': 'Row'},
     {'column': 'numb',     'png_name': 'number',              'ylabel': 'Number'},
+    {'column': 'group',    'png_name': 'group',               'ylabel': 'Group'},
     {'column': 'metal',    'png_name': 'metal',               'ylabel': 'Metal'},
     {'column': 'CN',       'png_name': 'coordination_number', 'ylabel': 'Coordination Number'},
     {'column': 'OS',       'png_name': 'oxidation_state',    'ylabel': 'Oxidation State'},
@@ -69,7 +70,7 @@ columns.index.name = None
 
 df = pd.DataFrame(columns=columns.index, dtype='object')
 bool_cols = ['match']
-int_cols = ['CN', 'OS', 'n_bond']
+int_cols = ['CN', 'OS', 'n_bond', 'group']
 str_cols = ['coord', 'row', 'numb', 'metal']
 float_cols = ['energy', 'form', 'coh', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung']
 
@@ -108,6 +109,7 @@ def main():
                 numb = str(m).zfill(2)
                 item = coord+row+numb
                 df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'OS']] = coord, row, m, metal, CN, ON 
+                df.loc[item, 'group'] = m + 3
                 dir_path = os.path.join(root, 'comer', coord_dir, row, numb+'_'+metal)
                 
                 atoms_path = os.path.join(dir_path, 'final_with_calculator.json')
@@ -126,8 +128,8 @@ def main():
 
                 count_O = atoms.get_chemical_symbols().count('O')
                 count_M = atoms.get_chemical_symbols().count(metal)
-                # formation = energy/MN - metal_df.loc[metal, 'E'] - (go2 / 2) * (ON /2)
-                formation = (energy - metal_df.loc[metal, 'E'] * count_M - (go2 / 2) * count_O) / (count_M + count_O)
+                formation = energy/MN - metal_df.loc[metal, 'E'] - (go2 / 2) * (ON /2)
+                # formation = (energy - metal_df.loc[metal, 'E'] * count_M - (go2 / 2) * count_O) / (count_M + count_O)
                 df.loc[item, 'form'] = formation
                 
                 cohesive = mendeleev_df.loc[metal, 'Hform'] / 96.48 + (cohesive_o2 / 2) * (ON /2) - formation
@@ -146,24 +148,23 @@ def main():
                 if os.path.exists(chg_path):
                     with open(chg_path, 'r') as f:
                         bader_data = f.readlines()
-                        # 각 원소별로 전하값을 저장할 딕셔너리
-                        element_charges = {}
+                        # 산소의 전하값을 저장할 리스트
+                        oxygen_charges = []
                         
                         for line in bader_data:
                             parts = line.strip().split()
-                            if len(parts) >= 5:  # index: 0 name: V charge: 1.8983349999999994
+                            if len(parts) >= 5:  # index: 0 name: O charge: -1.8983349999999994
                                 element = parts[3]  # 원소 기호
                                 charge = float(parts[5])  # 전하값
                                 
-                                if element not in element_charges:
-                                    element_charges[element] = []
-                                element_charges[element].append(charge)
+                                if element == 'O':  # 산소 원소인 경우
+                                    oxygen_charges.append(charge)
                         
-                        # 각 원소별 평균 전하값 계산
-                        for element, charges in element_charges.items():
-                            if element == metal:  # 현재 처리 중인 금속 원소인 경우
-                                df.loc[item, 'chg'] = np.mean(charges)
-                                break
+                        # 산소의 평균 전하값 계산
+                        if oxygen_charges:
+                            avg_oxygen_charge = np.mean(oxygen_charges)
+                            avg_metal_charge = -(avg_oxygen_charge * ON / 2) 
+                            df.loc[item, 'chg'] = avg_metal_charge
             
                 mag_path = os.path.join(dir_path, 'moments.json')
                 if os.path.exists(mag_path):
