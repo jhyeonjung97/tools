@@ -138,9 +138,9 @@ def feature_importance(X, y, model, feature_names, model_type='gpr'):
         return pd.Series(importance, index=feature_names)
     elif model_type == 'lgb':
         if isinstance(X, pd.DataFrame):
-            X_array = X.values
-        else:
             X_array = X
+        else:
+            X_array = pd.DataFrame(X, columns=feature_names)
             
         temp_model = lgb.LGBMRegressor()
         temp_model.fit(X_array, y)
@@ -195,6 +195,9 @@ def get_prediction_std(model, X, n_iterations=100, model_type='gpr'):
     elif model_type == 'lgb':
         predictions = []
         for i in range(n_iterations):
+            # X_array가 DataFrame인지 확인하고, 아니면 DataFrame으로 변환
+            if not isinstance(X_array, pd.DataFrame):
+                X_array = pd.DataFrame(X_array, columns=model.feature_names_in_)
             pred = model.predict(X_array, num_iteration=model.best_iteration_)
             predictions.append(pred)
         return np.std(predictions, axis=0)
@@ -765,65 +768,47 @@ def main():
     else:  # lgb
         # LightGBM model setup
         model = lgb.LGBMRegressor(
-            n_estimators=200,
-            learning_rate=0.1,  # 학습률 증가
-            max_depth=6,  # 트리 깊이 증가
-            min_child_samples=10,  # 최소 데이터 수 증가
-            min_child_weight=1e-3,  # 최소 가중치 추가
-            min_split_gain=1e-3,  # 최소 분할 이득 감소
-            subsample=0.8,
-            colsample_bytree=0.8,
-            reg_alpha=0.1,
-            reg_lambda=0.1,
-            random_state=42,
+            n_estimators=1000,
+            learning_rate=0.01,
+            num_leaves=31,
+            random_state=args.random_state,
+            n_jobs=1,  # 단일 프로세스 사용
             verbose=-1  # 경고 메시지 출력 억제
         )
+        
+        # Bayesian Optimization for LightGBM
         search_space = {
-            'n_estimators': Integer(100, 300),
-            'learning_rate': Real(0.05, 0.2),
-            'max_depth': Integer(4, 8),
-            'min_child_samples': Integer(10, 50),
-            'min_child_weight': Real(1e-3, 1e-1),
-            'min_split_gain': Real(1e-3, 1e-1),
-            'subsample': Real(0.6, 0.9),
-            'colsample_bytree': Real(0.6, 0.9),
-            'reg_alpha': Real(0.1, 1.0),
-            'reg_lambda': Real(0.1, 1.0)
+            'n_estimators': Integer(100, 2000),
+            'learning_rate': Real(0.001, 0.1, prior='log-uniform'),
+            'num_leaves': Integer(20, 100),
+            'min_child_samples': Integer(5, 100),
+            'subsample': Real(0.6, 1.0),
+            'colsample_bytree': Real(0.6, 1.0)
         }
-
-    # Train model with hyperparameter optimization
-    print("Performing Bayesian Optimization...")
-    bayes_start = time.time()
-    if args.model != 'lr':  # LR 모델은 하이퍼파라미터 최적화가 필요 없음
-        # Define cross-validation for Bayesian Optimization
-        cv = KFold(n_splits=5, shuffle=True, random_state=args.random_state)
         
-        # 경고 메시지 숨기기
-        import warnings
-        warnings.filterwarnings('ignore', category=UserWarning, module='skopt')
-        
-        # 경고 메시지를 방지하기 위해 NumPy 배열로 변환
+        # Ensure X_train_scaled and X_test_scaled are DataFrames with feature names
         X_train_scaled_values = X_train_scaled.values
+        X_test_scaled_values = X_test_scaled.values
         
         bayes_search = BayesSearchCV(
             model,
             search_space,
             n_iter=50,
-            cv=cv,
-            scoring='neg_mean_squared_error',
-            n_jobs=1,
+            cv=5,
+            n_jobs=1,  # 단일 프로세스 사용
             random_state=args.random_state,
-            verbose=1
+            verbose=0
         )
-        bayes_search.fit(X_train_scaled_values, y_train)
-        print_time("Bayesian Optimization completed", time.time() - bayes_start)
-        print(f"\033[95mBest parameters: {bayes_search.best_params_}\033[0m")
+        
+        # Fit the model with feature names
+        bayes_search.fit(X_train_scaled, y_train)
         model = bayes_search.best_estimator_
-    else:
-        # 경고 메시지를 방지하기 위해 NumPy 배열로 변환
-        X_train_scaled_values = X_train_scaled.values
-        model.fit(X_train_scaled_values, y_train)
-        bayes_search = None
+        
+        # Make predictions with feature names
+        y_pred_train = model.predict(X_train_scaled)
+        y_pred_test = model.predict(X_test_scaled)
+        std_train = get_prediction_std(model, X_train_scaled, model_type=args.model)
+        std_test = get_prediction_std(model, X_test_scaled, model_type=args.model)
 
     # Perform cross-validation
     print("Performing cross-validation...")
@@ -873,10 +858,10 @@ def main():
         std_train = get_prediction_std(model, X_train_scaled_values, model_type=args.model)
         std_test = get_prediction_std(model, X_test_scaled_values, model_type=args.model)
     elif args.model == 'lgb':
-        y_pred_train = model.predict(X_train_scaled_values, num_iteration=model.best_iteration_)
-        y_pred_test = model.predict(X_test_scaled_values, num_iteration=model.best_iteration_)
-        std_train = get_prediction_std(model, X_train_scaled_values, model_type=args.model)
-        std_test = get_prediction_std(model, X_test_scaled_values, model_type=args.model)
+        y_pred_train = model.predict(X_train_scaled, num_iteration=model.best_iteration_)
+        y_pred_test = model.predict(X_test_scaled, num_iteration=model.best_iteration_)
+        std_train = get_prediction_std(model, X_train_scaled, model_type=args.model)
+        std_test = get_prediction_std(model, X_test_scaled, model_type=args.model)
     else:  # xgb
         y_pred_train = model.predict(X_train_scaled_values)
         y_pred_test = model.predict(X_test_scaled_values)

@@ -552,10 +552,9 @@ def main():
     parser = argparse.ArgumentParser(description='Linear regression using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
-        'OS', 'CN', 'numb', 'group', 'chg', 'chgn', 'mag', 'volume', 'l_bond', 'madelung',
+        'OS', 'CN', 'numb', 'group', 'chg', 'chgo', 'chgc', 'chgn', 'mag', 'volume', 'l_bond', 'madelung',
         'ICOHPm', 'ICOHPmn', 'ICOHPn', 'ICOBIm', 'ICOBImn', 'ICOBIn', 'ICOOPm', 'ICOOPmn', 'ICOOPn', 
-        # 'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
-        'ion-1', 'ion', 'ion+1', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1', 
+        'ion-1', 'ion', 'ion+1', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1', 'ionN-1n', 'ionNn', 'ionN+1n', 
         'pauling', 'Natom', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
         'n_electrons', 'd_electrons', 'outer_e', 'base_cfse', 'ee_repulsion', 'jt_effect', 'field_strength', 'cfse', 'exchange_stabilization',
@@ -587,7 +586,12 @@ def main():
     if args.coord:
         df = df[df['coord'].isin(args.coord)]
 
-    df['chgn'] = df['chg'] / df['OS']
+    # # Hf와 Ta의 +4 배위 구조 제외
+    # df = df[~((df['metal'].isin(['Hf', 'Ta'])) & (df['coord'] == '+4'))]
+
+    df['chgo'] = df['chg'] / df['OS']
+    df['chgc'] = df['chg'] / df['CN']
+    df['chgn'] = df['chg'] / df['OS'] / df['CN']
     
     # CFSE 피쳐 추가 - 위치 이동
     df = add_cfse_feature(df)
@@ -601,13 +605,13 @@ def main():
     df['ion'] = df.apply(lambda row: row[f'ion{int(row["OS"])}'], axis=1)
     df['ion+1'] = df.apply(lambda row: row[f'ion{int(row["OS"])+1}'], axis=1)
 
-    df['ion-1n'] = df['ion-1']/df['OS']
-    df['ionn'] = df['ion']/df['OS']
-    df['ion+1n'] = df['ion+1']/df['OS']
+    df['ion-1n'] = df['ion-1'] / df['OS'] / df['CN']
+    df['ionn'] = df['ion'] / df['OS'] / df['CN']
+    df['ion+1n'] = df['ion+1'] / df['OS'] / df['CN']
 
-    df['-ICOHPmn'] = df['-ICOHPm']/df['OS']
-    df['ICOBImn'] = df['ICOBIm']/df['OS']
-    df['-ICOOPmn'] = df['-ICOOPm']/df['OS']
+    df['-ICOHPmn'] = df['-ICOHPm'] / df['OS'] / df['CN']
+    df['ICOBImn'] = df['ICOBIm'] / df['OS'] / df['CN']
+    df['-ICOOPmn'] = df['-ICOOPm'] / df['OS'] / df['CN']
 
     # Initialize columns with float type
     df['ionN-1'] = 0.0
@@ -619,6 +623,11 @@ def main():
             df.at[idx, 'ionN-1'] = float(df.at[idx, 'ionN-1']) + float(row[f'ion{i}'])
         df.at[idx, 'ionN'] = float(df.at[idx, 'ionN-1']) + float(row[f'ion{int(row["OS"])}'])
         df.at[idx, 'ionN+1'] = float(df.at[idx, 'ionN']) + float(row[f'ion{int(row["OS"])+1}'])
+
+    # ionN 관련 피쳐들을 OS로 나누어 정규화
+    df['ionN-1n'] = df['ionN-1'] / df['OS'] / df['CN']
+    df['ionNn'] = df['ionN'] / df['OS'] / df['CN']
+    df['ionN+1n'] = df['ionN+1'] / df['OS'] / df['CN']
 
     # Drop rows with NaN in any relevant column
     df = df.dropna(subset=args.X + [args.Y])

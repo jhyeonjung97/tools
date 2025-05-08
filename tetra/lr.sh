@@ -17,13 +17,7 @@
 # # essential descriptors
 # python ~/bin/tools/tetra/lr.py --Y form --output form
 
-python ~/bin/tools/tetra/lr.py --Y form --output form --X 'OS', 'CN', 'numb', 'chg', 'chgn', 'mag', 'volume', 'l_bond', 'madelung', \
-'ICOHPm', 'ICOHPmn', 'ICOHPn', 'ICOBIm', 'ICOBImn', 'ICOBIn', 'ICOOPm', 'ICOOPmn', 'ICOOPn', \
-'ion-1', 'ion', 'ion+1', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1', \
-'pauling', 'Natom', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', \
-'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform', 'n_electrons', 'd_electrons', \
-'base_cfse', 'ee_repulsion', 'jt_effect', 'field_strength', 'cfse', 'exchange_stabilization'
-
-python ~/bin/tools/tetra/lr.py --Y form --output form --X 'OS', 'CN', 'group', 'outer_e', 'Hevap', 'base_cfse', 'chg', 'chgn', 'mag', 'volume', 'l_bond', \
-'ICOHPm', 'ICOHPmn', 'ICOHPn', 'ICOBIm', 'ICOBImn', 'ICOBIn', 'ICOOPm', 'ICOOPmn', 'ICOOPn', \
-'ion-1', 'ion', 'ion+1', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1'
+python ~/bin/tools/tetra/lr-cfse.py --Y form --X 'OS' 'CN' 'group' 'outer_e' 'Hevap' 'base_cfse' 'ICOHPmn' 'ionNn' 'mag' 'volume' 'l_bond' 'chg' --output form_chg
+# python ~/bin/tools/tetra/lr-cfse.py --Y form --X 'OS' 'CN' 'group' 'outer_e' 'Hevap' 'base_cfse' 'ICOHPmn' 'ionNn' 'mag' 'volume' 'l_bond' 'chgo' --output form_chgo
+# python ~/bin/tools/tetra/lr-cfse.py --Y form --X 'OS' 'CN' 'group' 'outer_e' 'Hevap' 'base_cfse' 'ICOHPmn' 'ionNn' 'mag' 'volume' 'l_bond' 'chgc' --output form_chgc
+# python ~/bin/tools/tetra/lr-cfse.py --Y form --X 'OS' 'CN' 'group' 'outer_e' 'Hevap' 'base_cfse' 'ICOHPmn' 'ionNn' 'mag' 'volume' 'l_bond' 'chgn' --output form_chgn
