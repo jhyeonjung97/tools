@@ -15,7 +15,7 @@ do
                 metal=$(echo "${path[-2]}" | cut -d'_' -f2)
                 ads=$(echo "${path[-1]}" | cut -d'_' -f1)
                 jobname=${coord}${row}${numb}${ads}
-                if [[ ! -f 'DONE' ]] && [[ -z $(squeue --me | grep $jobname) ]]; then
+                if [[ ! -f 'DONE' ]] && [[ -z $(squeue -o "%.12j" --me | grep $jobname) ]]; then
                     echo "\e[31m$jobname\e[0m" $subdir
                     python ~/bin/get_restart3.py
                     sed -i "/#SBATCH -t/c\#SBATCH -t 04:00:00" submit.sh
