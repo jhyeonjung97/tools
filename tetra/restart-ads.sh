@@ -15,12 +15,13 @@ do
                 metal=$(echo "${path[-2]}" | cut -d'_' -f2)
                 ads=$(echo "${path[-1]}" | cut -d'_' -f1)
                 jobname=${coord}${row}${numb}${ads}
-                if [[ ! -f 'DONE' ]] && [[ ! -n $(squeue --me | grep $jobname) ]]; then
-                    python ~/bin/get_restart3.py
-                    sed -i "/#SBATCH -t/c\#SBATCH -t 04:00:00" submit.sh
-                    sed -i "/#SBATCH -q/c\#SBATCH -q regular" submit.sh
-                    pwd; sbatch submit.sh
-                fi
+                echo $jobname
+                # if [[ ! -f 'DONE' ]] && [[ ! -n $(squeue --me | grep $jobname) ]]; then
+                #     python ~/bin/get_restart3.py
+                #     sed -i "/#SBATCH -t/c\#SBATCH -t 04:00:00" submit.sh
+                #     sed -i "/#SBATCH -q/c\#SBATCH -q regular" submit.sh
+                #     pwd; sbatch submit.sh
+                # fi
             fi
         done
     fi
