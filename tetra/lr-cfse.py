@@ -720,13 +720,13 @@ def main():
             for _, row_data in subset.iterrows():
                 row_features = pd.DataFrame([row_data[args.X].values], columns=args.X)
                 y_pred_single = model.predict(row_features)[0]
-                plt.annotate(row_data['metal'], (row_data[args.Y], y_pred_single), fontsize=8)
+                plt.annotate(row_data['metal'], (row_data[args.Y], y_pred_single))
 
     
     plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], '--', lw=1, color='black')
     plt.xlabel(f'DFT-calculated {ylabels[args.Y]}')
     plt.ylabel(f'Predicted {ylabels[args.Y]}')
-    plt.legend(loc='best', fontsize=8)
+    plt.legend(bbox_to_anchor=(-0.10, 1), loc='upper right')
     plt.tight_layout()
     plt.savefig(os.path.join(root, f'cfse_lr_{output_suffix}.png'))
     plt.close()
@@ -778,12 +778,12 @@ def main():
             for _, row_data in subset.iterrows():
                 row_features = pd.DataFrame([row_data[args.X].values], columns=args.X)
                 y_pred_single = model_all.predict(row_features)[0]
-                plt.annotate(row_data['metal'], (row_data[args.Y], y_pred_single), fontsize=8)
+                plt.annotate(row_data['metal'], (row_data[args.Y], y_pred_single))
 
     plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], '--', lw=1, color='black')
     plt.xlabel(f'DFT-calculated {ylabels[args.Y]}')
     plt.ylabel(f'Predicted {ylabels[args.Y]}')
-    plt.legend(loc='best', fontsize=8)
+    plt.legend(bbox_to_anchor=(-0.10, 1), loc='upper right')
     plt.tight_layout()
     plt.savefig(os.path.join(root, f'cfse_lr_{args.output}_all.png'))
     plt.close()
@@ -831,9 +831,9 @@ def main():
             f.write(f"Single-feature Groups: {len(single_feature_groups)}\n")
 
     # Correlation matrix plot 수정
-    plt.figure(figsize=(18, 12))  # 크기 증가
+    plt.figure(figsize=(8, 6))
     sns.heatmap(cor, annot=True, fmt='.2f', cmap=new_cmap, 
-                annot_kws={"size": 7},
+                # annot_kws={"size": 7},
                 cbar_kws={"shrink": 0.5, "aspect": 20, "pad": 0.02}, vmin=-1, vmax=1)
     
     # x축 레이블 수정
@@ -847,9 +847,9 @@ def main():
     plt.close()
 
     # Covariance matrix plot도 동일하게 수정
-    plt.figure(figsize=(18, 12))
+    plt.figure(figsize=(8, 6))
     sns.heatmap(cov, annot=True, fmt='.2f', cmap=new_cmap,
-                annot_kws={"size": 7},
+                # annot_kws={"size": 7},
                 cbar_kws={"shrink": 0.5, "aspect": 20, "pad": 0.02}, vmin=-1, vmax=1)
     
     plt.xticks(rotation=45, ha='right')
@@ -915,12 +915,12 @@ def main():
     #             for _, row_data in subset.iterrows():
     #                 row_features = pd.DataFrame([row_data[selected_features].values], columns=selected_features)
     #                 y_pred_single = model_selected.predict(row_features)[0]
-    #                 plt.annotate(row_data['metal'], (row_data[args.Y], y_pred_single), fontsize=8)
+    #                 plt.annotate(row_data['metal'], (row_data[args.Y], y_pred_single))
 
     #     plt.plot([Y.min(), Y.max()], [Y.min(), Y.max()], '--', lw=1, color='black')
     #     plt.xlabel(f'DFT-calculated {ylabels[args.Y]}')
     #     plt.ylabel(f'Predicted {ylabels[args.Y]}')
-    #     plt.legend(loc='best', fontsize=8)
+    #     plt.legend(loc='best')
     #     plt.tight_layout()
     #     plt.savefig(os.path.join(root, f'cfse_lr_{args.output}_{suffix}.png'))
     #     plt.close()
