@@ -21,5 +21,7 @@ python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e H
 python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hevap base_cfse ICOHPc ionNn mag volume l_bond chg --output normcn
 python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hevap base_cfse ICOHPc ionNo mag volume l_bond chg --output normco
 python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hevap base_cfse ICOHPc ionNc mag volume l_bond chg --output normcc
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hevap base_cfse ICOHP ionN mag volume l_bond chg --output normxx
 
-python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hevap ICOHPc ionNo mag volume l_bond chg --output nocfse
+
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hevap base_cfse ICOHPo ionNo mag volume l_bond chg
