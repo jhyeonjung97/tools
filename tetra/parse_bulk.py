@@ -64,12 +64,12 @@ columns_data = [
     {'column': 'l_bond',   'png_name': 'bond_length',         'ylabel': 'Bond Length (Å)'},
     {'column': 'n_bond',   'png_name': 'number_of_bonds',     'ylabel': 'Number of Bonds per Metal'},
     {'column': 'match',    'png_name': 'match',               'ylabel': 'Bulk Structure Maintain'},
-    {'column': '-ICOHPm',  'png_name': 'icohp_per_metal',     'ylabel': '-ICOHP per Metal (eV)'},
-    {'column': 'ICOBIm',   'png_name': 'icobi_per_metal',     'ylabel': 'ICOBI per Metal'},
-    {'column': '-ICOOPm',  'png_name': 'icoop_per_metal',     'ylabel': '-ICOOP per Metal (eV)'},
+    {'column': '-ICOHP',  'png_name': 'icohp_per_metal',     'ylabel': '-ICOHP per Metal (eV)'},
+    {'column': 'ICOBI',   'png_name': 'icobi_per_metal',     'ylabel': 'ICOBI per Metal'},
+    {'column': '-ICOOP',  'png_name': 'icoop_per_metal',     'ylabel': '-ICOOP per Metal (eV)'},
     {'column': '-ICOHPn',  'png_name': 'icohp_per_bond',      'ylabel': '-ICOHP per Bond (eV)'},
-    {'column': 'ICOBIn',   'png_name': 'icobi_per_bond',      'ylabel': 'ICOBI per Bond'},
-    {'column': '-ICOOPn',  'png_name': 'icoop_per_bond',      'ylabel': '-ICOOP per Bond (eV)'},
+    {'column': 'ICOBIc',   'png_name': 'icobi_per_bond',      'ylabel': 'ICOBI per Bond'},
+    {'column': '-ICOOPc',  'png_name': 'icoop_per_bond',      'ylabel': '-ICOOP per Bond (eV)'},
     {'column': 'madelung', 'png_name': 'madelung',            'ylabel': 'Madelung Energy (Loewdin, eV)'},
 ]
 columns = pd.DataFrame(columns_data).set_index('column')
@@ -79,7 +79,7 @@ df = pd.DataFrame(columns=columns.index, dtype='object')
 bool_cols = ['match']
 int_cols = ['CN', 'OS', 'n_bond', 'group']
 str_cols = ['coord', 'row', 'numb', 'metal']
-float_cols = ['energy', 'form', 'coh', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung']
+float_cols = ['energy', 'form', 'coh', 'volume', 'cell', 'chg', 'mag', 'l_bond', '-ICOHP', 'ICOBI', '-ICOOP', '-ICOHPn', 'ICOBIc', '-ICOOPc', 'madelung']
 
 metal_df = pd.read_csv('~/bin/tools/tetra/metal-data.tsv', sep='\t', index_col=0)
 mendeleev_df = pd.read_csv(os.path.join(save_path, 'mendeleev_data.csv'), index_col=0)
@@ -167,13 +167,13 @@ def main():
                 madelung_path = os.path.join(dir_path, 'MadelungEnergies.lobster')
                 if os.path.exists(icohp_path) and os.path.getsize(icohp_path) != 0:
                     icohp, bond, nbond = parse_icohp(icohp_path)
-                    df.loc[item, ['l_bond', 'n_bond', '-ICOHPn', '-ICOHPm']] = bond, nbond, icohp, icohp*nbond
+                    df.loc[item, ['l_bond', 'n_bond', '-ICOHPn', '-ICOHP']] = bond, nbond, icohp, icohp*nbond
                 if os.path.exists(icobi_path) and os.path.getsize(icobi_path) != 0:
                     icobi, bond, nbond = parse_icohp(icobi_path)
-                    df.loc[item, ['l_bond', 'n_bond', 'ICOBIn', 'ICOBIm']] = bond, nbond, icobi, icobi*nbond
+                    df.loc[item, ['l_bond', 'n_bond', 'ICOBIc', 'ICOBI']] = bond, nbond, icobi, icobi*nbond
                 if os.path.exists(icoop_path) and os.path.getsize(icoop_path) != 0:
                     icoop, bond, nbond = parse_icohp(icoop_path)
-                    df.loc[item, ['l_bond', 'n_bond', '-ICOOPn', '-ICOOPm']] = bond, nbond, icoop, icoop*nbond
+                    df.loc[item, ['l_bond', 'n_bond', '-ICOOPc', '-ICOOP']] = bond, nbond, icoop, icoop*nbond
                 if os.path.exists(madelung_path) and os.path.getsize(madelung_path) != 0:
                     madelung = parse_madelung(madelung_path)
                     df.loc[item, ['madelung']] = madelung/MN

@@ -578,22 +578,20 @@ def main():
     
     # Define paths for all output files
     output_suffix = args.output
-    row_str = ''.join(sorted(args.row)) if args.row else 'all'  # row 정보를 문자열로 변환
-    
-    # corr_threshold가 1.0이 아닐 때만 threshold_str 추가
+    row_str = ''.join(sorted(args.row)) if args.row else 'all'
     threshold_str = str(int(args.corr_threshold * 100)) if args.corr_threshold != 1.0 else '00'
     
     # 파일명 정의
-    log_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}.log')
-    tsv_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}.tsv')
-    png_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}.png')
-    importance_png_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}_importance.png')
-    json_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}.json')
+    log_path = os.path.join(root, f'{args.Y}_pred_earlystop_{args.model}{threshold_str}_{row_str}_{output_suffix}.log')
+    tsv_path = os.path.join(root, f'{args.Y}_pred_earlystop_{args.model}{threshold_str}_{row_str}_{output_suffix}.tsv')
+    png_path = os.path.join(root, f'{args.Y}_pred_earlystop_{args.model}{threshold_str}_{row_str}_{output_suffix}.png')
+    importance_png_path = os.path.join(root, f'{args.Y}_pred_earlystop_{args.model}{threshold_str}_{row_str}_{output_suffix}_importance.png')
+    json_path = os.path.join(root, f'{args.Y}_pred_earlystop_{args.model}{threshold_str}_{row_str}_{output_suffix}.json')
 
     # coordination 분석 결과 파일 경로
-    coord_csv_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.csv')
-    coord_log_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.log')
-    coord_png_path = os.path.join(root, f'{args.Y}_pred_cfse_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.png')
+    coord_csv_path = os.path.join(root, f'{args.Y}_pred_earlystop_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.csv')
+    coord_log_path = os.path.join(root, f'{args.Y}_pred_earlystop_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.log')
+    coord_png_path = os.path.join(root, f'{args.Y}_pred_earlystop_{args.model}{threshold_str}_{row_str}_{output_suffix}_coord.png')
 
     try:
         # Load data
@@ -687,15 +685,8 @@ def main():
             max_iter=1000,
             gtol=1e-3
         )
-
-        # Bayesian Optimization for GPR
-        search_space = {
-            'kernel__k1__k2__length_scale': Real(1e-3, 1e5, prior='log-uniform'),
-            'kernel__k1__k2__alpha': Real(1e-3, 1e5, prior='log-uniform'),
-            'kernel__k2__noise_level': Real(1e-3, 1e5, prior='log-uniform')
-        }
     elif args.model == 'gbr':
-        # GBR model setup
+        # GBR model setup - 조기 종료 적용
         model = GradientBoostingRegressor(
             n_estimators=200,
             learning_rate=0.05,
@@ -704,43 +695,19 @@ def main():
             min_samples_leaf=5,
             subsample=0.85,
             max_features=0.8,
-            validation_fraction=0.15,
-            n_iter_no_change=15,
-            tol=1e-5,
+            validation_fraction=0.2,  # 검증 세트 비율 증가
+            n_iter_no_change=10,  # 조기 종료 기준 감소
+            tol=1e-4,  # 조기 종료 허용 오차 증가
             random_state=args.random_state
         )
-
-        # Bayesian Optimization for GBR
-        search_space = {
-            'n_estimators': Integer(150, 300),
-            'learning_rate': Real(0.03, 0.08),
-            'max_depth': Integer(3, 5),
-            'min_samples_split': Integer(8, 15),
-            'min_samples_leaf': Integer(4, 8),
-            'subsample': Real(0.8, 0.9),
-            'max_features': Real(0.7, 0.9),
-        }
     elif args.model == 'rf':
         # RF model setup
         model = RandomForestRegressor(
             n_estimators=100,
             random_state=args.random_state
         )
-
-        # Bayesian Optimization for RF
-        search_space = {
-            'n_estimators': Integer(50, 500),
-            'max_depth': Integer(1, 20),
-            'min_samples_split': Integer(2, 20),
-            'min_samples_leaf': Integer(1, 10),
-        }
-    elif args.model == 'lr':
-        # LR model setup
-        model = LinearRegression()
-        # No hyperparameter optimization needed for LR
-        search_space = {}
     elif args.model == 'xgb':
-        # XGBoost model setup
+        # XGBoost model setup - 조기 종료 적용
         model = xgb.XGBRegressor(
             objective='reg:squarederror',
             random_state=args.random_state,
@@ -752,28 +719,19 @@ def main():
             colsample_bytree=0.8,
             gamma=0,
             reg_alpha=0,
-            reg_lambda=1
+            reg_lambda=1,
+            eval_metric='rmse'  # 평가 지표 추가
         )
-        search_space = {
-            'n_estimators': Integer(100, 300),
-            'learning_rate': Real(0.01, 0.1),
-            'max_depth': Integer(3, 8),
-            'min_child_weight': Integer(1, 5),
-            'subsample': Real(0.6, 0.9),
-            'colsample_bytree': Real(0.6, 0.9),
-            'gamma': Real(0, 0.5),
-            'reg_alpha': Real(0, 1),
-            'reg_lambda': Real(0, 1)
-        }
     else:  # lgb
-        # LightGBM model setup
+        # LightGBM model setup - 조기 종료 적용
         model = lgb.LGBMRegressor(
             n_estimators=1000,
             learning_rate=0.01,
             num_leaves=31,
             random_state=args.random_state,
-            n_jobs=1,  # 단일 프로세스 사용
-            verbose=-1  # 경고 메시지 출력 억제
+            n_jobs=1,
+            verbose=-1,  # 학습 과정 출력 억제
+            metric='rmse'  # 평가 지표 추가
         )
         
         # Bayesian Optimization for LightGBM
@@ -790,6 +748,14 @@ def main():
         X_train_scaled_values = X_train_scaled.values
         X_test_scaled_values = X_test_scaled.values
         
+        # Validation set 분리
+        X_train_fit, X_val, y_train_fit, y_val = train_test_split(
+            X_train_scaled, y_train, test_size=0.2, random_state=args.random_state
+        )
+        
+        # Early stopping callback 설정
+        early_stopping = lgb.early_stopping(stopping_rounds=50, verbose=False)
+        
         bayes_search = BayesSearchCV(
             model,
             search_space,
@@ -800,15 +766,14 @@ def main():
             verbose=0
         )
         
-        # Fit the model with feature names
-        bayes_search.fit(X_train_scaled, y_train)
+        # Fit the model with feature names and validation set
+        bayes_search.fit(
+            X_train_fit, y_train_fit,
+            eval_set=[(X_val, y_val)],
+            eval_metric='rmse',
+            callbacks=[early_stopping]
+        )
         model = bayes_search.best_estimator_
-        
-        # Make predictions with feature names
-        y_pred_train = model.predict(X_train_scaled)
-        y_pred_test = model.predict(X_test_scaled)
-        std_train = get_prediction_std(model, X_train_scaled, model_type=args.model)
-        std_test = get_prediction_std(model, X_test_scaled, model_type=args.model)
 
     # Perform cross-validation
     print("Performing cross-validation...")
@@ -822,10 +787,52 @@ def main():
     else:
         X_train_scaled_values = X_train_scaled.values
     
-    # Calculate multiple metrics for cross-validation
-    cv_r2 = cross_val_score(model, X_train_scaled_values, y_train, cv=kf, scoring='r2')
-    cv_mae = -cross_val_score(model, X_train_scaled_values, y_train, cv=kf, scoring='neg_mean_absolute_error')
-    cv_mse = -cross_val_score(model, X_train_scaled_values, y_train, cv=kf, scoring='neg_mean_squared_error')
+    if args.model == 'xgb':
+        # XGBoost의 경우 early stopping을 위한 validation set 설정
+        cv_scores = []
+        for train_idx, val_idx in kf.split(X_train_scaled_values):
+            X_train_fold = X_train_scaled_values[train_idx]
+            y_train_fold = y_train.iloc[train_idx]
+            X_val_fold = X_train_scaled_values[val_idx]
+            y_val_fold = y_train.iloc[val_idx]
+            
+            model_fold = xgb.XGBRegressor(
+                objective='reg:squarederror',
+                random_state=args.random_state,
+                n_estimators=200,
+                learning_rate=0.05,
+                max_depth=6,
+                min_child_weight=1,
+                subsample=0.8,
+                colsample_bytree=0.8,
+                gamma=0,
+                reg_alpha=0,
+                reg_lambda=1,
+                eval_metric='rmse'  # 평가 지표 추가
+            )
+            
+            model_fold.fit(
+                X_train_fold, y_train_fold,
+                eval_set=[(X_val_fold, y_val_fold)],
+                early_stopping_rounds=20,
+                verbose=False
+            )
+            
+            score = model_fold.score(X_val_fold, y_val_fold)
+            cv_scores.append(score)
+        
+        cv_r2 = np.array(cv_scores)
+        cv_mae = -np.array([mean_absolute_error(y_train.iloc[val_idx], 
+                                              model_fold.predict(X_train_scaled_values[val_idx])) 
+                           for train_idx, val_idx in kf.split(X_train_scaled_values)])
+        cv_mse = -np.array([mean_squared_error(y_train.iloc[val_idx], 
+                                             model_fold.predict(X_train_scaled_values[val_idx])) 
+                           for train_idx, val_idx in kf.split(X_train_scaled_values)])
+    else:
+        # 다른 모델들의 경우 기존 방식대로 cross-validation 수행
+        cv_r2 = cross_val_score(model, X_train_scaled_values, y_train, cv=kf, scoring='r2')
+        cv_mae = -cross_val_score(model, X_train_scaled_values, y_train, cv=kf, scoring='neg_mean_absolute_error')
+        cv_mse = -cross_val_score(model, X_train_scaled_values, y_train, cv=kf, scoring='neg_mean_squared_error')
     
     print_time("Cross-validation completed", time.time() - cv_start)
     print(f"{MAGENTA}Cross-validation R2 scores: {cv_r2}{ENDC}")
@@ -837,7 +844,25 @@ def main():
     
     # 모델 학습 추가
     print("Fitting model...")
-    model.fit(X_train_scaled_values, y_train)
+    if args.model in ['xgb', 'lgb']:
+        # 조기 종료를 위한 검증 세트 분리
+        X_train_fit, X_val, y_train_fit, y_val = train_test_split(
+            X_train_scaled_values, y_train, test_size=0.2, random_state=args.random_state
+        )
+        
+        if args.model == 'xgb':
+            model.fit(
+                X_train_fit, y_train_fit,
+                eval_set=[(X_val, y_val)],
+                verbose=False
+            )
+        else:  # lgb
+            model.fit(
+                X_train_fit, y_train_fit,
+                eval_set=[(X_val, y_val)]
+            )
+    else:
+        model.fit(X_train_scaled_values, y_train)
     
     # Make predictions
     print("Making predictions...")
@@ -866,7 +891,7 @@ def main():
         std_train = get_prediction_std(model, X_train_scaled_values, model_type=args.model)
         std_test = get_prediction_std(model, X_test_scaled_values, model_type=args.model)
     elif args.model == 'lgb':
-        # LightGBM의 경우 feature names를 유지
+        # LightGBM의 경우 feature names 유지
         y_pred_train = model.predict(X_train_scaled)
         y_pred_test = model.predict(X_test_scaled)
         std_train = get_prediction_std(model, X_train_scaled, model_type=args.model)
@@ -918,17 +943,17 @@ def main():
     # Save metrics and cross-validation results
     with open(log_path, 'w') as f:
         f.write("Training Metrics:\n")
-        f.write(f"train R2: {metrics['train']['r2']:.4f}\n")
-        f.write(f"train MAE: {metrics['train']['mae']:.4f}\n")
-        f.write(f"train MSE: {metrics['train']['mse']:.4f}\n")
-        f.write(f"train RMSE: {metrics['train']['rmse']:.4f}\n")
-        f.write(f"train Max Error: {metrics['train']['max_error']:.4f}\n\n")
+        f.write(f"R2: {metrics['train']['r2']:.4f}\n")
+        f.write(f"MAE: {metrics['train']['mae']:.4f}\n")
+        f.write(f"MSE: {metrics['train']['mse']:.4f}\n")
+        f.write(f"RMSE: {metrics['train']['rmse']:.4f}\n")
+        f.write(f"Max Error: {metrics['train']['max_error']:.4f}\n\n")
         f.write("Test Metrics:\n")
-        f.write(f"test R2: {metrics['test']['r2']:.4f}\n")
-        f.write(f"test MAE: {metrics['test']['mae']:.4f}\n")
-        f.write(f"test MSE: {metrics['test']['mse']:.4f}\n")
-        f.write(f"test RMSE: {metrics['test']['rmse']:.4f}\n")
-        f.write(f"test Max Error: {metrics['test']['max_error']:.4f}\n\n")
+        f.write(f"R2: {metrics['test']['r2']:.4f}\n")
+        f.write(f"MAE: {metrics['test']['mae']:.4f}\n")
+        f.write(f"MSE: {metrics['test']['mse']:.4f}\n")
+        f.write(f"RMSE: {metrics['test']['rmse']:.4f}\n")
+        f.write(f"Max Error: {metrics['test']['max_error']:.4f}\n\n")
         f.write("Cross-validation Results:\n")
         f.write(f"R2 scores: {cv_r2}\n")
         f.write(f"Mean R2 score: {cv_r2.mean():.4f} (+/- {cv_r2.std() * 2:.4f})\n")
@@ -981,19 +1006,19 @@ def main():
     
     # 예측 결과를 DataFrame으로 저장
     predictions_df = pd.DataFrame({
-        'Y_true': df[args.Y].values,
+        'Y_true': df[args.Y],
         'Y_pred': y_pred_all,
-        'row': df['row'].values,
-        'coord': df['coord'].values,
-        'metal': df['metal'].values
+        'row': df['row'],
+        'coord': df['coord'],
+        'metal': df['metal']
     })
     
     # DataFrame 생성
     df_result = pd.DataFrame({
-        'metal': df['metal'].values,
-        'row': df['row'].values,
-        'coord': df['coord'].values,
-        'Y_true': y.values,
+        'metal': df['metal'],
+        'row': df['row'],
+        'coord': df['coord'],
+        'Y_true': y,
         'Y_pred': y_pred_all,
         'std': std_all
     })
@@ -1086,91 +1111,91 @@ def main():
     print(f"{BLUE}Results saved as {json_path}{ENDC}")
 
     # Analyze coordination preferences
-    # print("Analyzing coordination preferences...")
-    # coord_results = analyze_coordination_preference(df, predictions_df, args.energy_threshold, args.Y)
+    print("Analyzing coordination preferences...")
+    coord_results = analyze_coordination_preference(df, predictions_df, args.energy_threshold, args.Y)
     
-    # if len(coord_results) > 0:
-    #     # Save coordination comparison results
-    #     coord_results.to_csv(coord_csv_path)
+    if len(coord_results) > 0:
+        # Save coordination comparison results
+        coord_results.to_csv(coord_csv_path)
         
-    #     # Create coordination summary file
-    #     with open(coord_log_path, 'w') as f:
-    #         # Overall statistics
-    #         f.write("Overall Statistics:\n")
-    #         f.write("-----------------\n")
-    #         f.write(f"Total metals analyzed: {len(coord_results)}\n")
-    #         if 'match' in coord_results.columns:
-    #             correct_predictions = coord_results['match'].sum()
-    #             incorrect_predictions = len(coord_results) - correct_predictions
-    #             f.write(f"Correct predictions: {int(correct_predictions)} metals\n")
-    #             f.write(f"Incorrect predictions: {int(incorrect_predictions)} metals\n")
-    #             f.write(f"Overall accuracy: {coord_results['match'].mean():.2f}\n")
-    #             f.write(f"Average energy difference: {coord_results['energy_diff'].mean():.2f} eV\n\n")
+        # Create coordination summary file
+        with open(coord_log_path, 'w') as f:
+            # Overall statistics
+            f.write("Overall Statistics:\n")
+            f.write("-----------------\n")
+            f.write(f"Total metals analyzed: {len(coord_results)}\n")
+            if 'match' in coord_results.columns:
+                correct_predictions = coord_results['match'].sum()
+                incorrect_predictions = len(coord_results) - correct_predictions
+                f.write(f"Correct predictions: {int(correct_predictions)} metals\n")
+                f.write(f"Incorrect predictions: {int(incorrect_predictions)} metals\n")
+                f.write(f"Overall accuracy: {coord_results['match'].mean():.2f}\n")
+                f.write(f"Average energy difference: {coord_results['energy_diff'].mean():.2f} eV\n\n")
                 
-    #             # Add coordination type statistics
-    #             type_correct = coord_results['type_match'].sum()
-    #             type_incorrect = len(coord_results) - type_correct
-    #             f.write("\nCoordination Type Statistics:\n")
-    #             f.write("-------------------------\n")
-    #             f.write(f"Correct type predictions: {int(type_correct)} metals\n")
-    #             f.write(f"Incorrect type predictions: {int(type_incorrect)} metals\n")
-    #             f.write(f"Type prediction accuracy: {coord_results['type_match'].mean():.2f}\n\n")
+                # Add coordination type statistics
+                type_correct = coord_results['type_match'].sum()
+                type_incorrect = len(coord_results) - type_correct
+                f.write("\nCoordination Type Statistics:\n")
+                f.write("-------------------------\n")
+                f.write(f"Correct type predictions: {int(type_correct)} metals\n")
+                f.write(f"Incorrect type predictions: {int(type_incorrect)} metals\n")
+                f.write(f"Type prediction accuracy: {coord_results['type_match'].mean():.2f}\n\n")
                 
-    #             # Add statistics by coordination type
-    #             f.write("Statistics by Coordination Type:\n")
-    #             f.write("-----------------------------\n")
-    #             for coord_type in ['tetrahedral', 'squareplanar', 'octahedral', 'pyramidal']:
-    #                 type_data = coord_results[coord_results['dft_type'] == coord_type]
-    #                 if len(type_data) > 0:
-    #                     f.write(f"\n{coord_type.capitalize()} coordination:\n")
-    #                     f.write(f"Number of metals: {len(type_data)}\n")
-    #                     type_correct = type_data['type_match'].sum()
-    #                     type_incorrect = len(type_data) - type_correct
-    #                     f.write(f"Correct type predictions: {int(type_correct)} metals\n")
-    #                     f.write(f"Incorrect type predictions: {int(type_incorrect)} metals\n")
-    #                     f.write(f"Type prediction accuracy: {type_data['type_match'].mean():.2f}\n")
-    #                     f.write(f"Average energy difference: {type_data['energy_diff'].mean():.2f} eV\n")
+                # Add statistics by coordination type
+                f.write("Statistics by Coordination Type:\n")
+                f.write("-----------------------------\n")
+                for coord_type in ['tetrahedral', 'squareplanar', 'octahedral', 'pyramidal']:
+                    type_data = coord_results[coord_results['dft_type'] == coord_type]
+                    if len(type_data) > 0:
+                        f.write(f"\n{coord_type.capitalize()} coordination:\n")
+                        f.write(f"Number of metals: {len(type_data)}\n")
+                        type_correct = type_data['type_match'].sum()
+                        type_incorrect = len(type_data) - type_correct
+                        f.write(f"Correct type predictions: {int(type_correct)} metals\n")
+                        f.write(f"Incorrect type predictions: {int(type_incorrect)} metals\n")
+                        f.write(f"Type prediction accuracy: {type_data['type_match'].mean():.2f}\n")
+                        f.write(f"Average energy difference: {type_data['energy_diff'].mean():.2f} eV\n")
             
-    #         # Statistics by row
-    #         f.write("\nStatistics by Row:\n")
-    #         f.write("----------------\n")
-    #         for row in ['3d', '4d', '5d']:
-    #             row_data = coord_results[coord_results['row'] == row]
-    #             f.write(f"\n{row} metals:\n")
-    #             f.write(f"Number of metals: {len(row_data)}\n")
-    #             if 'match' in coord_results.columns:
-    #                 row_correct = row_data['match'].sum()
-    #                 row_incorrect = len(row_data) - row_correct
-    #                 f.write(f"Correct predictions: {int(row_correct)} metals\n")
-    #                 f.write(f"Incorrect predictions: {int(row_incorrect)} metals\n")
-    #                 f.write(f"Accuracy: {row_data['match'].mean():.2f}\n")
-    #                 f.write(f"Average energy difference: {row_data['energy_diff'].mean():.2f} eV\n")
+            # Statistics by row
+            f.write("\nStatistics by Row:\n")
+            f.write("----------------\n")
+            for row in ['3d', '4d', '5d']:
+                row_data = coord_results[coord_results['row'] == row]
+                f.write(f"\n{row} metals:\n")
+                f.write(f"Number of metals: {len(row_data)}\n")
+                if 'match' in coord_results.columns:
+                    row_correct = row_data['match'].sum()
+                    row_incorrect = len(row_data) - row_correct
+                    f.write(f"Correct predictions: {int(row_correct)} metals\n")
+                    f.write(f"Incorrect predictions: {int(row_incorrect)} metals\n")
+                    f.write(f"Accuracy: {row_data['match'].mean():.2f}\n")
+                    f.write(f"Average energy difference: {row_data['energy_diff'].mean():.2f} eV\n")
                     
-    #                 # Add row-wise coordination type statistics
-    #                 row_type_correct = row_data['type_match'].sum()
-    #                 row_type_incorrect = len(row_data) - row_type_correct
-    #                 f.write(f"Correct type predictions: {int(row_type_correct)} metals\n")
-    #                 f.write(f"Incorrect type predictions: {int(row_type_incorrect)} metals\n")
-    #                 f.write(f"Type prediction accuracy: {row_data['type_match'].mean():.2f}\n")
+                    # Add row-wise coordination type statistics
+                    row_type_correct = row_data['type_match'].sum()
+                    row_type_incorrect = len(row_data) - row_type_correct
+                    f.write(f"Correct type predictions: {int(row_type_correct)} metals\n")
+                    f.write(f"Incorrect type predictions: {int(row_type_incorrect)} metals\n")
+                    f.write(f"Type prediction accuracy: {row_data['type_match'].mean():.2f}\n")
             
-    #         # Detailed analysis of mismatches
-    #         if 'match' in coord_results.columns:
-    #             f.write("\nMismatch Analysis:\n")
-    #             f.write("----------------\n")
-    #             mismatches = coord_results[~coord_results['match']]
-    #             for _, row in mismatches.iterrows():
-    #                 f.write(f"\n{row['metal']} ({row['row']}):\n")
-    #                 f.write(f"DFT preferred: {row['dft_preferred']} ({row['dft_type']})\n")
-    #                 f.write(f"Predicted preferred: {row['pred_preferred']} ({row['pred_type']})\n")
-    #                 f.write(f"Energy difference: {row['energy_diff']:.2f} eV\n")
-    #                 f.write(f"DFT all preferred: {row['dft_all_preferred']}\n")
-    #                 f.write(f"Predicted all preferred: {row['pred_all_preferred']}\n")
+            # Detailed analysis of mismatches
+            if 'match' in coord_results.columns:
+                f.write("\nMismatch Analysis:\n")
+                f.write("----------------\n")
+                mismatches = coord_results[~coord_results['match']]
+                for _, row in mismatches.iterrows():
+                    f.write(f"\n{row['metal']} ({row['row']}):\n")
+                    f.write(f"DFT preferred: {row['dft_preferred']} ({row['dft_type']})\n")
+                    f.write(f"Predicted preferred: {row['pred_preferred']} ({row['pred_type']})\n")
+                    f.write(f"Energy difference: {row['energy_diff']:.2f} eV\n")
+                    f.write(f"DFT all preferred: {row['dft_all_preferred']}\n")
+                    f.write(f"Predicted all preferred: {row['pred_all_preferred']}\n")
         
-    #     # Create coordination comparison plots
-    #     plot_coordination_comparison(coord_results, root, output_suffix, args.model, args.Y, row_str, threshold_str)
-    #     print("Coordination preference analysis completed")
-    # else:
-    #     print(f"{YELLOW}No valid results for coordination preference analysis{ENDC}")
+        # Create coordination comparison plots
+        plot_coordination_comparison(coord_results, root, output_suffix, args.model, args.Y, row_str, threshold_str)
+        print("Coordination preference analysis completed")
+    else:
+        print(f"{YELLOW}No valid results for coordination preference analysis{ENDC}")
 
     # Print total execution time
     total_time = time.time() - start_time
@@ -1195,7 +1220,7 @@ def main():
 
     # Save results to file if --save option is used
     if args.save:
-        result_filename = f'{args.Y}_pred_cfse_{args.model}{threshold_str}_all_result.log'
+        result_filename = f'{args.Y}_pred_earlystop_{args.model}{threshold_str}_all_result.log'
         
         with open(result_filename, 'w') as f:
             f.write(f'Model: {args.model}\n')

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd ~/Desktop/
+sh ./vbulk.sh
+
+python ~/bin/tools/tetra/mendeleev2tsv.py
+python ~/bin/tools/tetra/parse_bulk.py
+python ~/bin/tools/tetra/parse_bulk_comer.py
+python ~/bin/tools/tetra/lr-cfse.py
+python ~/bin/tools/tetra/lr-cfse.py --Y form --X OS CN group outer_e Hevap base_cfse ICOHPmn ionNn mag volume l_bond chg --output compact

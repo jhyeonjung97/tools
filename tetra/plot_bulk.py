@@ -66,12 +66,12 @@ columns_data = [
     {'column': 'chg',      'png_name': 'bader_charge',        'ylabel': 'Bader Charge (e⁻)'},
     {'column': 'mag',      'png_name': 'magnetic_moments',    'ylabel': 'Magnetic Moments (μB)'},
     {'column': 'l_bond',   'png_name': 'bond_length',         'ylabel': 'Bond Length (Å)'},
-    {'column': '-ICOHPm',  'png_name': 'icohp_per_metal',     'ylabel': '-ICOHP per Metal (eV)'},
-    {'column': 'ICOBIm',   'png_name': 'icobi_per_metal',     'ylabel': 'ICOBI per Metal'},
-    {'column': '-ICOOPm',  'png_name': 'icoop_per_metal',     'ylabel': '-ICOOP per Metal (eV)'},
+    {'column': '-ICOHP',  'png_name': 'icohp_per_metal',     'ylabel': '-ICOHP per Metal (eV)'},
+    {'column': 'ICOBI',   'png_name': 'icobi_per_metal',     'ylabel': 'ICOBI per Metal'},
+    {'column': '-ICOOP',  'png_name': 'icoop_per_metal',     'ylabel': '-ICOOP per Metal (eV)'},
     {'column': '-ICOHPn',  'png_name': 'icohp_per_bond',      'ylabel': '-ICOHP per Bond (eV)'},
-    {'column': 'ICOBIn',   'png_name': 'icobi_per_bond',      'ylabel': 'ICOBI per Bond'},
-    {'column': '-ICOOPn',  'png_name': 'icoop_per_bond',      'ylabel': '-ICOOP per Bond (eV)'},
+    {'column': 'ICOBIc',   'png_name': 'icobi_per_bond',      'ylabel': 'ICOBI per Bond'},
+    {'column': '-ICOOPc',  'png_name': 'icoop_per_bond',      'ylabel': '-ICOOP per Bond (eV)'},
     {'column': 'madelung', 'png_name': 'madelung',            'ylabel': 'Madelung Energy (Loewdin, eV)'},
     {'column': 'ion-1',    'png_name': 'ion_minus_1',         'ylabel': 'Ionization Energy -1 (eV)'},
     {'column': 'ion',      'png_name': 'ion',                 'ylabel': 'Ionization Energy (eV)'},
@@ -98,7 +98,7 @@ columns.index.name = None
 bool_cols = []
 int_cols = ['CN', 'OS', 'Natom']
 str_cols = ['coord', 'row', 'numb', 'metal']
-float_cols = ['form', 'volume', 'chg', 'mag', 'l_bond', '-ICOHPm', 'ICOBIm', '-ICOOPm', '-ICOHPn', 'ICOBIn', '-ICOOPn', 'madelung', 
+float_cols = ['form', 'volume', 'chg', 'mag', 'l_bond', '-ICOHP', 'ICOBI', '-ICOOP', '-ICOHPn', 'ICOBIc', '-ICOOPc', 'madelung', 
               'ion-1', 'ion', 'ion+1', 'pauling', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
               'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform']
 

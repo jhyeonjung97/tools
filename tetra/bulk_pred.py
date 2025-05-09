@@ -540,7 +540,7 @@ def main():
                       help='Target column from bulk_data_total.csv (form or coh)')
     parser.add_argument('--X', nargs='+', default=[
         'OS', 'CN', 'numb', 'chg', 'mag', 'volume', 'l_bond', 'madelung', 
-        'ICOHPm', 'ICOHPmn', 'ICOHPn', 'ICOBIm', 'ICOBImn', 'ICOBIn', 'ICOOPm', 'ICOOPmn', 'ICOOPn', 
+        'ICOHP', 'ICOHPo', 'ICOHPc', 'ICOBI', 'ICOBIo', 'ICOBIc', 'ICOOP', 'ICOOPo', 'ICOOPc', 
         'ion-1', 'ion', 'ion+1', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1', 
         'pauling', 'Natom', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',

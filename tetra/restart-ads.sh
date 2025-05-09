@@ -15,7 +15,7 @@ do
                 metal=$(echo "${path[-2]}" | cut -d'_' -f2)
                 ads=$(echo "${path[-1]}" | cut -d'_' -f1)
                 jobname=${coord}${row}${numb}${ads}
-                if [[ ! -f 'DONE' ]]; then
+                if [[ ! -f 'DONE' ]] && [[ ! -n $(squeue --me | grep $jobname) ]]; then
                     python ~/bin/get_restart3.py
                     pwd; sbatch submit.sh
                 fi

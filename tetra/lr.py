@@ -98,7 +98,7 @@ def main():
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
         'OS', 'CN', 'numb', 'chg', 'mag', 'volume', 'l_bond', 'madelung',
-        'ICOHPm', 'ICOHPmn', 'ICOHPn', 'ICOBIm', 'ICOBImn', 'ICOBIn', 'ICOOPm', 'ICOOPmn', 'ICOOPn', 
+        'ICOHP', 'ICOHPo', 'ICOHPc', 'ICOBI', 'ICOBIo', 'ICOBIc', 'ICOOP', 'ICOOPo', 'ICOOPc', 
         'ion-1', 'ion', 'ion+1', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1', 
         'pauling', 'Natom', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform', 'd_electrons'
@@ -139,9 +139,9 @@ def main():
     df['ionn'] = df['ion']/df['OS']
     df['ion+1n'] = df['ion+1']/df['OS']
 
-    df['-ICOHPmn'] = df['-ICOHPm']/df['OS']
-    df['ICOBImn'] = df['ICOBIm']/df['OS']
-    df['-ICOOPmn'] = df['-ICOOPm']/df['OS']
+    df['-ICOHPo'] = df['-ICOHP']/df['OS']
+    df['ICOBIo'] = df['ICOBI']/df['OS']
+    df['-ICOOPo'] = df['-ICOOP']/df['OS']
 
     # Initialize columns with float type
     df['ionN-1'] = 0.0

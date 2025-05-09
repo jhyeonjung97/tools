@@ -62,12 +62,12 @@ ylabels = {
     'l_bond': 'Bond Length (Å)',
     'n_bond': 'Number of Bonds per Metal',
     'match': 'Bulk Structure Maintain',
-    '-ICOHPm': '-ICOHP per Metal (eV)',
-    'ICOBIm': 'ICOBI per Metal',
-    '-ICOOPm': '-ICOOP per Metal (eV)',
+    '-ICOHP': '-ICOHP per Metal (eV)',
+    'ICOBI': 'ICOBI per Metal',
+    '-ICOOP': '-ICOOP per Metal (eV)',
     '-ICOHPn': '-ICOHP per Bond (eV)',
-    'ICOBIn': 'ICOBI per Bond',
-    '-ICOOPn': '-ICOOP per Bond (eV)',
+    'ICOBIc': 'ICOBI per Bond',
+    '-ICOOPc': '-ICOOP per Bond (eV)',
     'madelung': 'Madelung Energy (Loewdin eV)',
     'grosspop': 'Gross Population (Loewdin e⁻)',
 }
@@ -151,7 +151,7 @@ def main():
     parser = argparse.ArgumentParser(description='Coordination prediction using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--X', nargs='+', default=[
         'numb', 'chg', 'mag', 'volume', 'l_bond', 'n_bond',
-        'grosspop', 'madelung', '-ICOHPm', '-ICOHPn', 'ICOBIm', 'ICOBIn', '-ICOOPm', '-ICOOPn', 
+        'grosspop', 'madelung', '-ICOHP', '-ICOHPn', 'ICOBI', 'ICOBIc', '-ICOOP', '-ICOOPc', 
         'pauling', 'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
         'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
         'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',

@@ -18,7 +18,7 @@ else:
 # Define the full feature list
 features = [
     'numb', 'chg', 'mag', 'volume', 'l_bond', 'n_bond', 'grosspop', 'madelung', 
-    'ICOHPm', 'ICOHPn', 'ICOBIm', 'ICOBIn', 'ICOOPm', 'ICOOPn', 
+    'ICOHP', 'ICOHPc', 'ICOBI', 'ICOBIc', 'ICOOP', 'ICOOPc', 
     'pauling', 'ion1', 'ion2', 'ion12', 'ion3', 'Natom', 'mass', 'density', 
     'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 'Tboil', 'Tmelt', 
     'Hevap', 'Hfus', 'Hform'
