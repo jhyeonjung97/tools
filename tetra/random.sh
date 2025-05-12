@@ -1,3 +1,4 @@
-for i in {80..100}; do
-    python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hevap base_cfse ICOHPo ionNo mag volume l_bond chg --random_state ${i} --output random${i}
+for i in {1..100}; do
+    python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --random_state ${i} --output edge${i} \
+    --X OS CN group outer_e Hevap base_cfse ICOHPc ionNo mag volume l_bond chg --filter_n_electrons
 done

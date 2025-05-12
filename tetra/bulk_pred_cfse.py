@@ -83,7 +83,7 @@ class MyGPR(GaussianProcessRegressor):
         return theta_opt, func_min
 
 def feature_importance(X, y, model, feature_names, model_type='gpr'):
-    """Calculate feature importance"""
+    """Calculate feature importance (permutation importance, MAE 기준)"""
     if model_type == 'gpr':
         kernel = ConstantKernel(1.0, constant_value_bounds=(1e-3, 1e5)) * RationalQuadratic(
             length_scale=1.0,
@@ -97,29 +97,22 @@ def feature_importance(X, y, model, feature_names, model_type='gpr'):
             X_array = X.values
         else:
             X_array = X
-            
+        
+        # 원래 MAE 계산
+        base_mae = mean_absolute_error(y, model.predict(X_array))
         importance = []
-        for i in tqdm(range(X_array.shape[1]), desc="Calculating feature importance"):
+        for i in tqdm(range(X_array.shape[1]), desc="Calculating feature importance (MAE)"):
             X_permuted = X_array.copy()
             X_permuted[:, i] = np.random.permutation(X_permuted[:, i])
-            
-            temp_model = MyGPR(
-                kernel=kernel,
-                random_state=42,
-                n_restarts_optimizer=10,
-                alpha=1e-3,
-                normalize_y=True
-            )
-            temp_model.fit(X_permuted, y)
-            score = temp_model.score(X_permuted, y)
-            importance.append(1 - score)
+            permuted_mae = mean_absolute_error(y, model.predict(X_permuted))
+            importance.append(permuted_mae - base_mae)
         return pd.Series(importance, index=feature_names)
     elif model_type in ['gbr', 'rf']:
         if isinstance(X, pd.DataFrame):
             X_array = X.values
         else:
             X_array = X
-            
+        
         from sklearn.base import clone
         temp_model = clone(model)
         temp_model.fit(X_array, y)
@@ -131,7 +124,7 @@ def feature_importance(X, y, model, feature_names, model_type='gpr'):
             X_array = X.values
         else:
             X_array = X
-            
+        
         temp_model = xgb.XGBRegressor()
         temp_model.fit(X_array, y)
         importance = temp_model.feature_importances_
@@ -141,7 +134,7 @@ def feature_importance(X, y, model, feature_names, model_type='gpr'):
             X_array = X
         else:
             X_array = pd.DataFrame(X, columns=feature_names)
-            
+        
         temp_model = lgb.LGBMRegressor()
         temp_model.fit(X_array, y)
         importance = temp_model.feature_importances_
@@ -151,7 +144,7 @@ def feature_importance(X, y, model, feature_names, model_type='gpr'):
             X_array = X.values
         else:
             X_array = X
-            
+        
         importance = np.abs(model.coef_)
         return pd.Series(importance, index=feature_names)
 
@@ -553,11 +546,12 @@ def main():
     parser.add_argument('--coord', nargs='+', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
     parser.add_argument('--output', type=str, default='result', help='Output filename suffix')
     parser.add_argument('--test_size', type=float, default=0.2, help='Test set size (default: 0.2)')
-    parser.add_argument('--random_state', type=int, default=39, help='Random state for reproducibility (default: 40)')
+    parser.add_argument('--random_state', type=int, default=50, help='Random state for reproducibility (default: 50)')
     parser.add_argument('--energy_threshold', type=float, default=0.2,
                        help='Energy threshold (eV) for considering multiple coordinations in preference analysis')
     parser.add_argument('--corr_threshold', type=float, default=1.0,
                        help='Correlation threshold for feature selection (0.7, 0.8, 0.9 등)')
+    parser.add_argument('--filter_n_electrons', action='store_true', help='n_electrons가 0~10인 데이터만 사용 (기본값: off)')
     parser.add_argument('--save', action='store_true', help='Save results to file')
     args = parser.parse_args()
     
@@ -613,6 +607,9 @@ def main():
         df = df[df['row'].isin(args.row)]
     if args.coord:
         df = df[df['coord'].isin(args.coord)]
+    # n_electrons 필터 옵션 적용
+    if args.filter_n_electrons:
+        df = df[(df['n_electrons'] >= 0) & (df['n_electrons'] <= 10)]
 
     # Handle missing values in both X and y
     X = df[args.X].astype(float)
@@ -1062,7 +1059,7 @@ def main():
     plt.plot([y.min(), y.max()], [y.min(), y.max()], '--', lw=1, color='black')
     plt.xlabel(f'DFT-calculated {ylabels[args.Y]}')
     plt.ylabel(f'Predicted {ylabels[args.Y]}')
-    plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left')
+    plt.legend(bbox_to_anchor=(-0.10, 1), loc='upper right')
     plt.tight_layout()
     
     # Save plot
