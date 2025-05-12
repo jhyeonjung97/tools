@@ -117,4 +117,4 @@ done
 cd ../..
 ls
 
-rm 2_layer_brg/*.*.*.* 3_Ir_top/*.*.*.* 4_Ir_brg/*.*.*.* 6_M_brg/*.*.*.*
+remove 2_layer_brg/*.*.*.* 3_Ir_top/*.*.*.* 4_Ir_brg/*.*.*.* 6_M_brg/*.*.*.*
