@@ -34,7 +34,7 @@
 #     python3 ~/bin/orange/magmom.py
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/2_OH/8_IrNi/*_*_*
+for dir in /home/hyeonjung/scratch/4_IrFe3/5_R2/*_*_*/*_*_*
 do
     cd $dir
     if [[ -f CONTCAR ]]; then
@@ -49,7 +49,6 @@ do
     mv POSCAR_REV POSCAR
     vaspkit -task 103
     python3 ~/bin/orange/magmom.py
-    cd ..
 done
 
 # for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*
