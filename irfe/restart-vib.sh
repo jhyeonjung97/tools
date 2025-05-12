@@ -34,10 +34,10 @@
 #     python3 ~/bin/orange/magmom.py
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/2_OH/6_IrFe/*_*_*
+for dir in /home/hyeonjung/scratch/4_IrFe3/2_OH/8_IrNi/*_*_*
 do
     cd $dir
-    if [[ ! -d vib ]] && [[ -f CONTCAR ]]; then
+    if [[ -f CONTCAR ]]; then
         python ~/bin/tools/irfe/vib.py
         mkdir -p vib
         cp vib.vasp vib/POSCAR
