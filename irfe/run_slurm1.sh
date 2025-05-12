@@ -10,7 +10,7 @@
 ## HPC ENVIRONMENT DON'T REMOVE THIS PART
 . /etc/profile.d/TMI.sh
 
-for dir in 1_layer_top 2_layer_brg
+for dir in 1_layer_top 2_layer_brg 3_Ir_top 4_Ir_brg
 do
     cp $dir/vib/* .
     mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
