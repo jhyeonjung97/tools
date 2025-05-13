@@ -551,12 +551,12 @@ def main():
                        help='Energy threshold (eV) for considering multiple coordinations in preference analysis')
     parser.add_argument('--corr_threshold', type=float, default=1.0,
                        help='Correlation threshold for feature selection (0.7, 0.8, 0.9 등)')
-    parser.add_argument('--edge', action='store_true', help='n_electrons가 0~10인 데이터만 사용 (기본값: off)')
+    parser.add_argument('--filter_n_electrons', action='store_true', help='n_electrons가 0~10인 데이터만 사용 (기본값: off)')
     parser.add_argument('--save', action='store_true', help='Save results to file')
     args = parser.parse_args()
     
     # Convert feature names if they start with ICOHP or ICOOP (prepend '-')
-    args.X = [('-' + x if x.startswith('ICOHP') or x.startswith('ICOOP') else x) for x in args.X]
+    args.X = [('-' + x if x.startswith('ICOHP') or x.startswith('ICOOP') or x.startswith('Hevap') or x.startswith('ion') else x) for x in args.X]
     
     # 서버 주소 가져오기
     hostname = socket.gethostname()
@@ -593,7 +593,7 @@ def main():
         # Load data
         print("Loading data...")
         load_start = time.time()
-        df_bulk = pd.read_csv(os.path.join(root, 'bulk_data_cfse.csv'), index_col=0)
+        df_bulk = pd.read_csv(os.path.join(root, 'bulk_data_minus.csv'), index_col=0)
         print_time("Data loading completed", time.time() - load_start)
     except FileNotFoundError as e:
         print(f"{RED}Error: Required data file not found: {e}{ENDC}")
@@ -608,7 +608,7 @@ def main():
     if args.coord:
         df = df[df['coord'].isin(args.coord)]
     # n_electrons 필터 옵션 적용
-    if args.edge:
+    if args.filter_n_electrons:
         df = df[(df['n_electrons'] >= 0) & (df['n_electrons'] <= 10)]
 
     # Handle missing values in both X and y

@@ -19,7 +19,7 @@ elif user_name == 'hailey' or user_name == 'root':
 else:
     raise ValueError(f"Unknown hostname: {hostname}. Please set the root path manually.")
 
-data_path = f'{root}/bulk_data_total.csv'
+data_path = f'{root}/bulk_data_cfse.csv'
 save_path = f'{root}'
 
 # 데이터 읽기
@@ -75,7 +75,7 @@ def calculate_energies(df):
         else:
             sublimation = metal_element.evaporation_heat / 96.485  # kJ/mol -> eV
         
-        ionization = sum(metal_element.ionenergies[i] for i in range(1, oxidation_state + 1)) / 96.485  # kJ/mol -> eV
+        ionization = sum(metal_element.ionenergies[i] for i in range(1, oxidation_state + 1))
         
         lattice = (row['form'] - sublimation - ionization - oxygen_atomization + oxygen_electron_affinity)
         
@@ -88,7 +88,7 @@ def calculate_energies(df):
 def plot_by_metal_row(df, save_path):
     for row in ['3d', '4d', '5d']:
         for col in ['form', 'sublimation_energy', 'ionization_energy', 'lattice_energy']:
-            plt.figure(figsize=(12, 8))
+            plt.figure(figsize=(6, 4))
             for coord in coords.index:
                 zorder = coords.loc[coord, 'zorder']
                 marker = coords.loc[coord, 'marker']
@@ -114,7 +114,7 @@ def plot_by_coordination(df, save_path):
             base_color = coords.loc[coord, 'color']
             cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', [base_color, 'white'])
             colors = cmap(np.linspace(0.0, 0.6, 3))
-            plt.figure(figsize=(12, 8))
+            plt.figure(figsize=(6, 4))
             for r, row in enumerate(['3d', '4d', '5d']):
                 color = colors[r]
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]           

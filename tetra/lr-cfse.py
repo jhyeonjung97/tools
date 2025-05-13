@@ -408,7 +408,8 @@ def add_cfse_feature(df):
     df['ee_repulsion'] = cfse_components.apply(lambda x: x['ee_repulsion'])
     df['jt_effect'] = cfse_components.apply(lambda x: x['jt_effect'])
     df['exchange_stabilization'] = cfse_components.apply(lambda x: x['exchange_stabilization'])
-    df['cfse'] = cfse_components.apply(lambda x: x['total_cfse'])
+    # df['cfse'] = cfse_components.apply(lambda x: x['total_cfse'])
+    df['cfse'] = df['base_cfse']*df['OS']
     
     return df
 
@@ -658,6 +659,56 @@ def main():
     df['ionN-1n'] = df['ionN-1'] / df['OS'] / df['CN']
     df['ionNn'] = df['ionN'] / df['OS'] / df['CN']
     df['ionN+1n'] = df['ionN+1'] / df['OS'] / df['CN']
+
+    # # 음수 버전의 피처 추가
+    # negative_features = []
+    # features_to_remove = []
+    # for xx in ['Hevap', 'Hfus', 'Hform', 'ion-1', 'ion', 'ion+1', 'ion-1o', 'iono', 'ion+1o', 'ion-1c', 'ionc', 'ion+1c', 'ion-1n', 'ionn', 'ion+1n', 'ionN-1', 'ionN', 'ionN+1', 'ionN-1o', 'ionNo', 'ionN+1o', 'ionN-1c', 'ionNc', 'ionN+1c', 'ionN-1n', 'ionNn', 'ionN+1n']:
+    #     if xx in args.X:
+    #         features_to_remove.append(xx)
+    #         negative_features.append(f'-{xx}')
+    
+    # # 기존 피처 제거 및 음수 버전 추가
+    # for feature in features_to_remove:
+    #     args.X.remove(feature)
+    # args.X.extend(negative_features)
+
+    # # DataFrame 컬럼 수정
+    # for col in ['Hevap', 'Hfus', 'Hform']:
+    #     if col in df.columns:
+    #         df[f'-{col}'] = df[col] * -1
+
+    # for col in ['ion-1', 'ion', 'ion+1']:
+    #     if col in df.columns:
+    #         df[f'-{col}'] = df[col] * -1
+
+    # for col in ['ion-1o', 'iono', 'ion+1o']:
+    #     if col in df.columns:
+    #         df[f'-{col}'] = df[col] * -1
+
+    # for col in ['ion-1c', 'ionc', 'ion+1c']:
+    #     if col in df.columns:
+    #         df[f'-{col}'] = df[col] * -1
+
+    # for col in ['ion-1n', 'ionn', 'ion+1n']:
+    #     if col in df.columns:
+    #         df[f'-{col}'] = df[col] * -1
+
+    # for col in ['ionN-1', 'ionN', 'ionN+1']:
+    #     if col in df.columns:
+    #         df[f'-{col}'] = df[col] * -1
+
+    # for col in ['ionN-1o', 'ionNo', 'ionN+1o']:
+    #     if col in df.columns:
+    #         df[f'-{col}'] = df[col] * -1
+
+    # for col in ['ionN-1c', 'ionNc', 'ionN+1c']:
+    #     if col in df.columns:
+    #         df[f'-{col}'] = df[col] * -1
+
+    # for col in ['ionN-1n', 'ionNn', 'ionN+1n']:
+    #     if col in df.columns:
+    #         df[f'-{col}'] = df[col] * -1
 
     # Drop rows with NaN in any relevant column
     df = df.dropna(subset=args.X + [args.Y])
