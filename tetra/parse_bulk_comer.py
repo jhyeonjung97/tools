@@ -148,7 +148,6 @@ def main():
                 if os.path.exists(chg_path):
                     with open(chg_path, 'r') as f:
                         bader_data = f.readlines()
-                        # 산소의 전하값을 저장할 리스트
                         oxygen_charges = []
                         
                         for line in bader_data:
