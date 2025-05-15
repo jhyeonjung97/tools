@@ -12,18 +12,18 @@
 #     cp *.vasp POSCAR
 # done
 
-# for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_M_*
-# do
-#     cd $dir
-#     cp ~/bin/tools/irfe/INCAR .
-#     cp ~/bin/tools/irfe/KPOINTS .
-#     cp *.vasp POSCAR
-#     vaspkit -task 107
-#     mv POSCAR_REV POSCAR
-#     rm POTCAR
-#     vaspkit -task 103
-#     python3 ~/bin/orange/magmom.py
-# done
+for dir in /home/hyeonjung/scratch/4_IrFe3/seg/*_*/*_*
+do
+    cd $dir
+    cp ~/bin/tools/irfe/INCAR .
+    cp ~/bin/tools/irfe/KPOINTS .
+    cp *.vasp POSCAR
+    vaspkit -task 107
+    mv POSCAR_REV POSCAR
+    rm POTCAR
+    vaspkit -task 103
+    python3 ~/bin/orange/magmom.py
+done
 
 # for dir in /home/hyeonjung/scratch/4_IrFe3/*_*
 # do
@@ -117,64 +117,64 @@
 # cd ../..
 # ls
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*
-do
-    IFS='/' read -r -a path <<< $dir
-    site=${path[-1]}
-    metal=$(echo "${path[-2]}" | cut -d'_' -f2)
-    ads=$(echo "${path[-3]}" | cut -d'_' -f2)
+# for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*
+# do
+#     IFS='/' read -r -a path <<< $dir
+#     site=${path[-1]}
+#     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
+#     ads=$(echo "${path[-3]}" | cut -d'_' -f2)
 
-    if [[ $ads == 'H' ]]; then
-        if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
-            if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
-                rm $dir/DONE
-                continue
-            fi
-        fi
-        if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
-            if [[ $site == '2_layer_hol' ]] || [[ $site == '6_atom_hol2' ]]; then
-                rm $dir/DONE
-                continue
-            fi
-        fi
-    elif [[ $ads == 'OH' ]]; then
-        if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
-            if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
-                rm $dir/DONE
-                continue
-            fi
-        fi
-        if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
-            if [[ $site == '2_layer_brg' ]]; then
-                rm $dir/DONE
-                continue
-            fi
-        fi
-    elif [[ $ads == 'O' ]]; then
-        if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
-            if [[ $site == '5_M_top' ]]; then
-                rm $dir/DONE
-                continue
-            fi
-        fi
-        if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
-            if [[ $site == '2_layer_hol' ]]; then
-                rm $dir/DONE
-                continue
-            fi
-        fi
-    elif [[ $ads == 'R1' ]] || [[ $ads == 'R2' ]]; then
-        site=${path[-2]}
-        if [[ $site == '6_IrFe_hol1' ]] || [[ $site == '7_IrFe_hol2' ]] || [[ $site == '8_IrFe_hol3' ]]; then
-            rm $dir/DONE
-            continue
-        fi
-    else
-        continue
-    fi
+#     if [[ $ads == 'H' ]]; then
+#         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
+#             if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
+#                 rm $dir/DONE
+#                 continue
+#             fi
+#         fi
+#         if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
+#             if [[ $site == '2_layer_hol' ]] || [[ $site == '6_atom_hol2' ]]; then
+#                 rm $dir/DONE
+#                 continue
+#             fi
+#         fi
+#     elif [[ $ads == 'OH' ]]; then
+#         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
+#             if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
+#                 rm $dir/DONE
+#                 continue
+#             fi
+#         fi
+#         if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
+#             if [[ $site == '2_layer_brg' ]]; then
+#                 rm $dir/DONE
+#                 continue
+#             fi
+#         fi
+#     elif [[ $ads == 'O' ]]; then
+#         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
+#             if [[ $site == '5_M_top' ]]; then
+#                 rm $dir/DONE
+#                 continue
+#             fi
+#         fi
+#         if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
+#             if [[ $site == '2_layer_hol' ]]; then
+#                 rm $dir/DONE
+#                 continue
+#             fi
+#         fi
+#     elif [[ $ads == 'R1' ]] || [[ $ads == 'R2' ]]; then
+#         site=${path[-2]}
+#         if [[ $site == '6_IrFe_hol1' ]] || [[ $site == '7_IrFe_hol2' ]] || [[ $site == '8_IrFe_hol3' ]]; then
+#             rm $dir/DONE
+#             continue
+#         fi
+#     else
+#         continue
+#     fi
 
-    cd $dir
-    if [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
-        pwd
-    fi
-done
+#     cd $dir
+#     if [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
+#         pwd
+#     fi
+# done

@@ -5,182 +5,285 @@ from ase.io import read
 import pandas as pd
 import re
 
-# 전압 범위 정의
-Umin, Umax = -0.5, 1.5
-ymin, ymax = -2.0, 1.0
-
-def count_hydrogen(atoms):
+def count_adsorbates(atoms, adsorbate_type='H'):
+    """원자 객체에서 흡착물 원자 개수 계산"""
     symbols = atoms.get_chemical_symbols()
-    return symbols.count('H')
+    if adsorbate_type == 'H':
+        return symbols.count('H')
+    elif adsorbate_type == 'OH':
+        # OH는 O와 H의 쌍으로 구성
+        return symbols.count('O')  # O 개수로 OH 개수 계산
+    elif adsorbate_type == 'O':
+        return symbols.count('O')
+    return 0
 
-def calculate_free_energy(E, E0, n_H, U, G_vib=0.0, pH=0):
-    kT = 0.026
-    const = kT * np.log(10)
-    e_h2 = -6.77108058
-    zpe_h2 = 0.268
-    cv_h2 = 0.0905
-    ts_h2 = 0.408
-    g_h2 = e_h2 + zpe_h2 - ts_h2 + cv_h2
-    surface_term = E - E0 + G_vib
-    n_e = n_H
-    G = surface_term + n_e * U + n_e * const * pH
-    G -= n_H * 0.5 * g_h2
-    return G/8
+def read_vib_correction(vib_file):
+    """vib.txt 파일에서 G(T) 보정값을 읽는 함수"""
+    try:
+        with open(vib_file, 'r') as f:
+            content = f.read()
+            # Thermal correction to G(T) 값을 찾아서 eV 단위로 반환
+            for line in content.split('\n'):
+                if 'Zero-point energy E_ZPE' in line:
+                    zpe = float(line.split()[-2])  # eV 값 반환
+                if 'Entropy contribution T*S' in line:
+                    ts = float(line.split()[-2])  # eV 값 반환
+            return zpe - ts
+    except:
+        return 0.0  # 파일이 없거나 읽을 수 없는 경우 0 반환
 
-def get_label_from_subfolder(subfolder):
-    return subfolder
-
-def get_gvib_dict(csv_path):
-    """csv에서 H/layer/top, H/layer/hol의 G_vib 값을 dict로 반환"""
-    df = pd.read_csv(csv_path)
-    gvib_dict = {}
-    for _, row in df.iterrows():
-        if row['ads'] == 'H' and row['site1'] == 'layer':
-            if row['site2'] == 'top':
-                gvib_dict['top'] = row['G_vib']
-            elif row['site2'] == 'hol':
-                gvib_dict['hol'] = row['G_vib']
-    return gvib_dict
-
-def save_data_to_files(data, U_range, base_path, folder, h_folder):
-    """데이터를 CSV와 TSV 파일로 저장"""
-    df_data = []
-    for entry in data:
-        Gmin = calculate_free_energy(entry['energy'], entry['energy0'], entry['n_H'], Umin, entry['G_vib'])
-        Gmax = calculate_free_energy(entry['energy'], entry['energy0'], entry['n_H'], Umax, entry['G_vib'])
-        G0 = calculate_free_energy(entry['energy'], entry['energy0'], entry['n_H'], 0, entry['G_vib'])
-        row_data = {
-            'label': entry['label'],
-            'n_H': entry['n_H'],
-            'E': entry['energy'],
-            'E0': entry['energy0'],
-            'G_vib': entry['G_vib'],
-            'Gmin': Gmin,
-            'Gmax': Gmax,
-            'G0': G0
-        }
-        df_data.append(row_data)
-    df = pd.DataFrame(df_data)
-    csv_path = os.path.join(base_path, f"hbe_{folder}_{h_folder}.csv")
-    tsv_path = os.path.join(base_path, f"hbe_{folder}_{h_folder}.tsv")
-    df.to_csv(csv_path, index=False)
-    df.round(2).to_csv(tsv_path, sep='\t', index=False)
-
-def strip_leading_number(s):
-    """앞에 붙은 숫자와 언더바를 제거"""
-    return re.sub(r'^\d+_', '', s)
-
-def calc_h_adsorption_energies(data, g_h2):
+def calculate_adsorption_energy(ads_energy, clean_energy, n_adsorbate=1, ref_energy=None, adsorbate_type='H', vib_correction=0.0):
     """
-    data: nH별로 정렬된 리스트, 각 원소는 dict (label, n_H, G0 등 포함)
-    g_h2: H2의 깁스 자유에너지
+    흡착 에너지 계산 함수
+    - H: E_bind = (E_ads - E_clean - n_H * 0.5 * E_H2) / n_H
+    - OH: E_bind = (E_ads - E_clean - n_OH * (E_H2O - 0.5 * E_H2)) / n_OH
+    - O: E_bind = (E_ads - E_clean - n_O * 0.5 * E_O2) / n_O
     """
-    # nH 오름차순 정렬
-    sorted_data = sorted(data, key=lambda x: int(re.sub(r'\D', '', x['label'])))
-    results = []
-    for i in range(1, len(sorted_data)):
-        n = sorted_data[i]['n_H']
-        G_n = sorted_data[i]['energy'] + sorted_data[i]['G_vib']
-        G_n_1 = sorted_data[i-1]['energy'] + sorted_data[i-1]['G_vib']
-        delta_G_H = G_n - G_n_1 - 0.5 * g_h2
-        results.append({
-            'from': sorted_data[i-1]['label'],
-            'to': sorted_data[i]['label'],
-            'n_H': n,
-            'delta_G_H': delta_G_H
-        })
-    return results
+    if adsorbate_type == 'H':
+        # H2 분자의 DFT 에너지
+        if ref_energy is None:
+            ref_energy = -6.77108058
+        return (ads_energy - clean_energy - n_adsorbate * 0.5 * ref_energy + vib_correction) / n_adsorbate
+    
+    elif adsorbate_type == 'OH':
+        # H2O 및 H2 분자의 DFT 에너지
+        if ref_energy is None:
+            h2o_energy = -14.22930  # H2O 에너지
+            h2_energy = -6.77108058  # H2 에너지
+            ref_energy = h2o_energy - 0.5 * h2_energy  # OH 레퍼런스
+        return (ads_energy - clean_energy - n_adsorbate * ref_energy + vib_correction) / n_adsorbate
+    
+    elif adsorbate_type == 'O':
+        # O2 분자의 DFT 에너지
+        if ref_energy is None:
+            ref_energy = -9.85663  # O2 에너지
+        return (ads_energy - clean_energy - n_adsorbate * 0.5 * ref_energy + vib_correction) / n_adsorbate
+    
+    return 0
+
+def is_calculation_done(directory):
+    """DONE 파일이 디렉토리에 존재하는지 확인"""
+    done_file = os.path.join(directory, "DONE")
+    return os.path.exists(done_file)
 
 def main():
-    base_path = "/Users/hailey/Desktop/4_IrFe3"
-    U_range = [Umin, Umax]
-
-    # G_vib 값 미리 읽기
-    gvib_ir = get_gvib_dict(os.path.join(base_path, "pourbaix_data_Ir.csv"))
-    gvib_irfe = get_gvib_dict(os.path.join(base_path, "pourbaix_data_IrFe.csv"))
-
-    # H2의 깁스 자유에너지 (pourbaix.py와 동일)
-    e_h2 = -6.77108058
-    zpe_h2 = 0.268
-    cv_h2 = 0.0905
-    ts_h2 = 0.408
-    g_h2 = e_h2 + zpe_h2 - ts_h2 + cv_h2
-
-    for folder in sorted(os.listdir(base_path)):
-        if not ("Ir" in folder and os.path.isdir(os.path.join(base_path, folder))):
+    # 기본 디렉토리 설정
+    base_dir = "/Users/hailey/Desktop/4_IrFe3"
+    
+    # 레퍼런스 에너지 설정
+    h2_energy = -6.77108058   # H2 분자 에너지
+    o2_energy = -9.85663      # O2 분자 에너지
+    h2o_energy = -14.22930    # H2O 분자 에너지
+    oh_ref_energy = h2o_energy - 0.5 * h2_energy  # OH 레퍼런스 에너지
+    
+    # 사용할 표면 리스트
+    selected_systems = ['5_IrMn', '6_IrFe', '7_IrCo', '8_IrNi', '0_Ir']
+    system_names = ['IrMn', 'IrFe', 'IrCo', 'IrNi', 'Ir']
+    
+    # 흡착물 리스트
+    adsorbates = {
+        '1_H': {'name': 'H', 'ref_energy': h2_energy, 'type': 'H'},
+        '2_OH': {'name': 'OH', 'ref_energy': oh_ref_energy, 'type': 'OH'},
+        '3_O': {'name': 'O', 'ref_energy': o2_energy, 'type': 'O'}
+    }
+    
+    # 결과 저장을 위한 리스트
+    all_results = []
+    
+    # 1. Clean surface 에너지 읽기
+    clean_energies = {}
+    clean_atoms = {}  # Clean surface 원자 객체도 저장
+    slab_dir = os.path.join(base_dir, "slab")
+    
+    print("Reading clean surface energies...")
+    for system in selected_systems:
+        system_dir = os.path.join(slab_dir, system)
+        
+        # DONE 파일 확인
+        if not is_calculation_done(system_dir):
+            print(f"Warning: DONE file not found for {system}, skipping...")
             continue
-        folder_path = os.path.join(base_path, folder)
-        folder_stripped = strip_leading_number(folder)
-
-        # 시스템 종류에 따라 clean surface 경로 결정
-        if "IrFe" in folder:
-            slab_subfolder = "2_Fe"
-            gvib_source = gvib_irfe
-        else:
-            slab_subfolder = "0_Ir"
-            gvib_source = gvib_ir
-
-        slab_clean_path = os.path.join(base_path, "slab", slab_subfolder, "final_with_calculator.json")
-        if not os.path.exists(slab_clean_path):
-            print(f"Clean surface not found: {slab_clean_path}")
+        
+        # final_with_calculator.json 파일 확인
+        json_path = os.path.join(system_dir, "final_with_calculator.json")
+        if not os.path.exists(json_path):
+            print(f"Warning: Clean surface file not found for {system}")
             continue
-        clean_atoms = read(slab_clean_path)
-        energy0 = clean_atoms.get_potential_energy()
-
-        for h_folder in sorted(os.listdir(folder_path)):
-            if not ("_H_" in h_folder and os.path.isdir(os.path.join(folder_path, h_folder))):
+        
+        # ASE로 파일 읽기
+        try:
+            atoms = read(json_path)
+            energy = atoms.get_potential_energy()
+            clean_energies[system] = energy
+            clean_atoms[system] = atoms
+            print(f"  {system}: {energy:.4f} eV")
+        except Exception as e:
+            print(f"Error reading {json_path}: {e}")
+    
+    # 2. 각 흡착물에 대한 흡착 에너지 계산
+    for ads_dir, ads_info in adsorbates.items():
+        ads_name = ads_info['name']
+        ads_ref_energy = ads_info['ref_energy']
+        ads_type = ads_info['type']
+        
+        # 결과 저장을 위한 딕셔너리
+        results = []
+        
+        ads_path = os.path.join(base_dir, ads_dir)
+        print(f"\nReading {ads_name} adsorption data...")
+        
+        for system in selected_systems:
+            system_dir = os.path.join(ads_path, system)
+            if not os.path.exists(system_dir) or not os.path.isdir(system_dir):
+                print(f"Warning: {ads_name} adsorption directory not found for {system}")
                 continue
-            h_folder_path = os.path.join(folder_path, h_folder)
-            h_folder_stripped = strip_leading_number(h_folder)
-
-            data = []
-            for subfolder in sorted(os.listdir(h_folder_path), key=lambda x: int(re.sub(r'\D', '', x)) if re.match(r'\d+H', x) else 0):
-                subfolder_path = os.path.join(h_folder_path, subfolder)
-                json_path = os.path.join(subfolder_path, "final_with_calculator.json")
-                if not os.path.exists(json_path):
+            
+            # Clean surface 에너지 확인
+            if system not in clean_energies:
+                print(f"Warning: No clean surface energy for {system}, skipping...")
+                continue
+            
+            clean_energy = clean_energies[system]
+            
+            # Coverage_site 서브폴더 확인
+            for site_dir in os.listdir(system_dir):
+                site_path = os.path.join(system_dir, site_dir)
+                if not os.path.isdir(site_path):
                     continue
-                atoms = read(json_path)
-                energy = atoms.get_potential_energy()
-                n_H = count_hydrogen(atoms)
-                if "top" in h_folder:
-                    gvib = gvib_source.get('top', 0.0) * n_H / 8
-                elif "hol" in h_folder:
-                    gvib = gvib_source.get('hol', 0.0) * n_H / 8
-                else:
-                    gvib = 0.0
-                G0 = calculate_free_energy(energy, energy0, n_H, 0, gvib)
-                data.append({
-                    'label': get_label_from_subfolder(subfolder),
-                    'energy': energy,
-                    'energy0': energy0,
-                    'n_H': n_H,
-                    'G_vib': gvib,
-                    'G0': G0
-                })
+                
+                # DONE 파일 확인
+                if not is_calculation_done(site_path):
+                    print(f"Warning: DONE file not found for {system}/{site_dir}, skipping...")
+                    continue
+                
+                # final_with_calculator.json 파일 확인
+                json_path = os.path.join(site_path, "final_with_calculator.json")
+                if not os.path.exists(json_path):
+                    print(f"Warning: No final data for {system}/{site_dir}")
+                    continue
+                
+                # 진동 자유에너지 보정값 읽기
+                vib_file = os.path.join(site_path, "vib", "vib.txt")
+                vib_correction = read_vib_correction(vib_file)
+                
+                # ASE로 파일 읽기
+                try:
+                    atoms = read(json_path)
+                    ads_energy = atoms.get_potential_energy()
+                    
+                    # 흡착물 개수 계산
+                    n_adsorbate = count_adsorbates(atoms, ads_type)
+                    
+                    # Layer 여부에 따른 normalization 처리
+                    is_layer = 'layer' in site_dir.lower()
+                    
+                    # 흡착 에너지 계산
+                    binding_energy = calculate_adsorption_energy(
+                        ads_energy, clean_energy, 
+                        n_adsorbate if is_layer else 1, 
+                        ads_ref_energy, ads_type,
+                        vib_correction
+                    )
+                    
+                    # 결과 저장
+                    system_name = system_names[selected_systems.index(system)]
+                    result = {
+                        'Adsorbate': ads_name,
+                        'System': system,
+                        'System_name': system_name,
+                        'Site': site_dir,
+                        'Clean_energy': clean_energy,
+                        'Ads_energy': ads_energy,
+                        'Ads_count': n_adsorbate,
+                        'Is_layer': is_layer,
+                        'Vib_correction': vib_correction,
+                        'Binding_energy': binding_energy
+                    }
+                    
+                    results.append(result)
+                    all_results.append(result)
+                    
+                    print(f"  {system}/{site_dir}: {n_adsorbate} {ads_name} atoms, {binding_energy:.4f} eV{'(normalized)' if is_layer else ''}, vib: {vib_correction:.4f} eV")
+                except Exception as e:
+                    print(f"Error processing {json_path}: {e}")
+        
+        # 결과를 DataFrame으로 변환
+        if results:
+            df = pd.DataFrame(results)
+            
+            # CSV 및 TSV로 저장
+            csv_output = os.path.join(base_dir, 'figures', f'{ads_name}_binding_energies.csv')
+            tsv_output = os.path.join(base_dir, 'figures', f'{ads_name}_binding_energies.tsv')
+            
+            df.to_csv(csv_output, index=False)
+            df.to_csv(tsv_output, sep='\t', index=False, float_format='%.4f')
+            
+            print(f"Results saved to {csv_output} and {tsv_output}")
+            
+            # 그래프 그리기
+            plot_binding_energies(df, base_dir, ads_name)
+    
+    # 모든 흡착물 데이터 저장
+    if all_results:
+        df_all = pd.DataFrame(all_results)
+        csv_output = os.path.join(base_dir, 'figures', 'all_binding_energies.csv')
+        tsv_output = os.path.join(base_dir, 'figures', 'all_binding_energies.tsv')
+        
+        df_all.to_csv(csv_output, index=False)
+        df_all.to_csv(tsv_output, sep='\t', index=False, float_format='%.4f')
+        
+        print(f"\nAll results saved to {csv_output} and {tsv_output}")
 
-            save_data_to_files(data, U_range, base_path, folder_stripped, h_folder_stripped)
-
-            h_ads_results = calc_h_adsorption_energies(data, g_h2)
-            print(f"\n[{folder_stripped}/{h_folder_stripped}] H adsorption ΔG (U=0):")
-            for res in h_ads_results:
-                print(f"{res['from']} → {res['to']}: ΔG_H = {res['delta_G_H']:.4f} eV")
-
-            plt.figure(figsize=(5, 4))
-            plt.plot(U_range, [0, 0], color='black', label='clean')
-            for entry in data:
-                Gmin = calculate_free_energy(entry['energy'], energy0, entry['n_H'], Umin, entry['G_vib'])
-                Gmax = calculate_free_energy(entry['energy'], energy0, entry['n_H'], Umax, entry['G_vib'])
-                plt.plot(U_range, [Gmin, Gmax], label=entry['label'])
-
-            plt.xlabel('Potential (V vs RHE)')
-            plt.ylabel('Relative Gibbs Free Energy (eV)')
-            plt.xlim(Umin, Umax)
-            plt.ylim(ymin, ymax)
-            plt.legend(bbox_to_anchor=(1.05, 1.05), loc='upper left', fontsize='small', labelspacing=0.2)
-            save_path = os.path.join(base_path, f"hbe_{folder_stripped}_{h_folder_stripped}.png")
-            plt.savefig(save_path, bbox_inches='tight')
-            plt.close()
-            print(f"Saved: {save_path}")
+def plot_binding_energies(df, base_dir, adsorbate='H'):
+    """
+    흡착 에너지 그래프 생성
+    x축: 표면 종류
+    y축: 흡착 에너지
+    범례: coverage_site
+    """
+    plt.figure(figsize=(4, 3))
+    
+    # 시스템 순서와 이름 정의
+    system_order = {'5_IrMn': 0, '6_IrFe': 1, '7_IrCo': 2, '8_IrNi': 3, '0_Ir': 4}
+    df['Order'] = df['System'].map(system_order)
+    df = df.sort_values('Order')
+    
+    # 고유한 사이트 목록 가져오기 (이름순 정렬)
+    sites = sorted(df['Site'].unique())
+    
+    # 컬러맵 설정
+    colors = plt.cm.tab10(np.linspace(0, 1, len(sites)))
+    
+    # 각 사이트별로 그래프 그리기
+    for i, site in enumerate(sites):
+        site_data = df[df['Site'] == site]
+        x = site_data['Order']
+        y = site_data['Binding_energy']
+        
+        plt.scatter(x, y, color=colors[i], label=f"{site} ({site_data['Ads_count'].iloc[0]} {adsorbate})", zorder=3)
+        plt.plot(x, y, color=colors[i], linestyle='-', zorder=2)
+    
+    # 이상적인 흡착 에너지 값 (약 0 eV)
+    plt.axhline(y=0, color='gray', linestyle='--', zorder=1)
+    
+    # x축 레이블 설정
+    x_ticks = range(len(df['System_name'].unique()))
+    x_labels = [name for name in df.sort_values('Order')['System_name'].unique()]
+    plt.xticks(x_ticks, x_labels)
+    
+    # 그래프 꾸미기
+    plt.ylabel(f'{adsorbate} Binding Energy (eV)')
+    plt.legend(title='Coverage & Site', bbox_to_anchor=(1.05, 1), loc='upper left')
+    
+    # x축 범위 설정 (약간의 여백)
+    plt.xlim(-0.5, len(x_labels) - 0.5)
+    
+    # 저장 및 표시
+    plot_output = os.path.join(base_dir, 'figures', f'{adsorbate}_binding_energies.png')
+    os.makedirs(os.path.dirname(plot_output), exist_ok=True)
+    plt.savefig(plot_output, bbox_inches='tight')
+    print(f"Plot saved to {plot_output}")
+    plt.close()
 
 if __name__ == "__main__":
     main() 

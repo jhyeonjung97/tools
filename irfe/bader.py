@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from ase.geometry import get_distances
+from collections import defaultdict
 
 # Base directory
 base_dir = '/Users/hailey/Desktop/4_IrFe3'
@@ -14,13 +15,23 @@ base_dir = '/Users/hailey/Desktop/4_IrFe3'
 # Initialize results list
 results = []
 
-# Find all atoms_bader_charge.json files and sort them
-pattern = os.path.join(base_dir, '*_*/*_*/*_*_*/atoms_bader_charge.json')
-json_files = sorted(glob.glob(pattern))
+# 사용할 표면 리스트
+selected_systems = ['5_IrMn', '6_IrFe', '7_IrCo', '8_IrNi', '0_Ir']
+system_names = ['IrMn', 'IrFe', 'IrCo', 'IrNi', 'Ir']
 
-# Find slab atoms_bader_charge.json files
+# 사용할 흡착물 리스트
+selected_adsorbates = ['1_H', '2_OH', '3_O']
+coverages = ['layer', 'atom']
+
+# Find all atoms_bader_charge.json files and sort them (선택된 표면, 흡착물만)
+pattern = os.path.join(base_dir, '*_*/*_*/*_*_*/atoms_bader_charge.json')
+json_files = [f for f in sorted(glob.glob(pattern))
+              if any(f'/{sys}/' in f for sys in selected_systems)
+              and any(f'/{ads}/' in f for ads in selected_adsorbates)]
+
+# Find slab atoms_bader_charge.json files (선택된 표면만)
 slab_pattern = os.path.join(base_dir, 'slab/*_*/atoms_bader_charge.json')
-slab_json_files = sorted(glob.glob(slab_pattern))
+slab_json_files = [f for f in sorted(glob.glob(slab_pattern)) if any(f'/{sys}/' in f for sys in selected_systems)]
 
 def get_layer_charges_and_distances(atoms):
     # Get z-coordinates and sort atoms
@@ -28,21 +39,32 @@ def get_layer_charges_and_distances(atoms):
     sorted_indices = np.argsort(z_coords)
     sorted_atoms = atoms[sorted_indices]
     
-    # Group atoms by z-coordinate to identify layers
-    z_coords_sorted = z_coords[sorted_indices]
-    z_diff = np.diff(z_coords_sorted)
-    layer_boundaries = np.where(z_diff > 0.5)[0] + 1  # Threshold for layer separation
+    # 고정된 크기(8개씩)로 레이어 분할
+    layer_size = 8
+    num_atoms = len(atoms)
+    # 레이어 수 계산 (원자 수가 8의 배수가 아닐 경우 마지막 레이어는 더 적은 원자를 가질 수 있음)
+    num_layers = int(np.ceil(num_atoms / layer_size))
     
-    # Split atoms into layers
-    layer_indices = np.split(np.arange(len(atoms)), layer_boundaries)
+    # 각 레이어에 속하는 원자 인덱스 계산
+    layer_indices = []
+    for i in range(num_layers):
+        start_idx = i * layer_size
+        end_idx = min((i + 1) * layer_size, num_atoms)
+        layer_indices.append(np.arange(start_idx, end_idx))
     
     # Initialize layer charges and distances
     layer_charges = {}
     layer_distances = {}
+    layer_z_avg = {}  # 각 레이어의 평균 z좌표 저장
     
     # Process each layer
     for layer_idx, indices in enumerate(layer_indices):
+        # 인덱스가 1부터 시작하도록 layer 번호 조정 (L1, L2, L3, L4...)
+        layer_num = layer_idx + 1
+        
         layer_atoms = sorted_atoms[indices]
+        layer_z_positions = layer_atoms.get_positions()[:, 2]
+        layer_z_avg[f'L{layer_num}_z'] = round(np.mean(layer_z_positions), 2)  # 레이어의 평균 z좌표 저장
         
         # Calculate average Bader charges for Ir and TM
         ir_charges = []
@@ -62,8 +84,8 @@ def get_layer_charges_and_distances(atoms):
                 tm_indices.append(i)
         
         # Store average charges for this layer
-        layer_charges[f'L{layer_idx+1}_Ir'] = round(sum(ir_charges) / len(ir_charges), 2) if ir_charges else None
-        layer_charges[f'L{layer_idx+1}_TM'] = round(sum(tm_charges) / len(tm_charges), 2) if tm_charges else None
+        layer_charges[f'L{layer_num}_Ir'] = round(sum(ir_charges) / len(ir_charges), 2) if ir_charges else None
+        layer_charges[f'L{layer_num}_TM'] = round(sum(tm_charges) / len(tm_charges), 2) if tm_charges else None
         
         # Calculate distances within the layer
         if ir_indices and tm_indices:
@@ -74,7 +96,7 @@ def get_layer_charges_and_distances(atoms):
             # Find all distances within threshold
             valid_distances = distances[distances < 3.0]  # Threshold for neighboring atoms
             if len(valid_distances) > 0:
-                layer_distances[f'L{layer_idx+1}_Ir-TM'] = round(np.mean(valid_distances), 2)
+                layer_distances[f'L{layer_num}_Ir-TM'] = round(np.mean(valid_distances), 2)
         
         if len(ir_indices) > 1:
             # Calculate Ir-Ir distances within layer
@@ -84,7 +106,7 @@ def get_layer_charges_and_distances(atoms):
             distances = distances[distances > 0]
             valid_distances = distances[distances < 3.0]  # Threshold for neighboring atoms
             if len(valid_distances) > 0:
-                layer_distances[f'L{layer_idx+1}_Ir-Ir'] = round(np.mean(valid_distances), 2)
+                layer_distances[f'L{layer_num}_Ir-Ir'] = round(np.mean(valid_distances), 2)
         
         if len(tm_indices) > 1:
             # Calculate TM-TM distances within layer
@@ -94,10 +116,11 @@ def get_layer_charges_and_distances(atoms):
             distances = distances[distances > 0]
             valid_distances = distances[distances < 3.0]  # Threshold for neighboring atoms
             if len(valid_distances) > 0:
-                layer_distances[f'L{layer_idx+1}_TM-TM'] = round(np.mean(valid_distances), 2)
+                layer_distances[f'L{layer_num}_TM-TM'] = round(np.mean(valid_distances), 2)
         
         # Calculate distances between layers
         if layer_idx < len(layer_indices) - 1:
+            next_layer_num = layer_num + 1
             next_layer_atoms = sorted_atoms[layer_indices[layer_idx + 1]]
             next_ir_indices = [i for i, atom in enumerate(next_layer_atoms) if atom.symbol == 'Ir']
             next_tm_indices = [i for i, atom in enumerate(next_layer_atoms) if atom.symbol in ['Mn', 'Fe', 'Co', 'Ni']]
@@ -109,7 +132,7 @@ def get_layer_charges_and_distances(atoms):
                 distances = get_distances(ir_positions, next_tm_positions, cell=atoms.get_cell(), pbc=True)[1]
                 valid_distances = distances[distances < 3.0]  # Threshold for neighboring atoms
                 if len(valid_distances) > 0:
-                    layer_distances[f'L{layer_idx+1}-L{layer_idx+2}_Ir-TM'] = round(np.mean(valid_distances), 2)
+                    layer_distances[f'L{layer_num}-L{next_layer_num}_Ir-TM'] = round(np.mean(valid_distances), 2)
             
             if tm_indices and next_ir_indices:
                 tm_positions = layer_atoms[tm_indices].get_positions()
@@ -117,7 +140,7 @@ def get_layer_charges_and_distances(atoms):
                 distances = get_distances(tm_positions, next_ir_positions, cell=atoms.get_cell(), pbc=True)[1]
                 valid_distances = distances[distances < 3.0]  # Threshold for neighboring atoms
                 if len(valid_distances) > 0:
-                    layer_distances[f'L{layer_idx+1}-L{layer_idx+2}_TM-Ir'] = round(np.mean(valid_distances), 2)
+                    layer_distances[f'L{layer_num}-L{next_layer_num}_TM-Ir'] = round(np.mean(valid_distances), 2)
             
             if ir_indices and next_ir_indices:
                 # Calculate Ir-Ir distances between layers
@@ -126,7 +149,7 @@ def get_layer_charges_and_distances(atoms):
                 distances = get_distances(ir_positions, next_ir_positions, cell=atoms.get_cell(), pbc=True)[1]
                 valid_distances = distances[distances < 3.0]  # Threshold for neighboring atoms
                 if len(valid_distances) > 0:
-                    layer_distances[f'L{layer_idx+1}-L{layer_idx+2}_Ir-Ir'] = round(np.mean(valid_distances), 2)
+                    layer_distances[f'L{layer_num}-L{next_layer_num}_Ir-Ir'] = round(np.mean(valid_distances), 2)
             
             if tm_indices and next_tm_indices:
                 # Calculate TM-TM distances between layers
@@ -135,35 +158,62 @@ def get_layer_charges_and_distances(atoms):
                 distances = get_distances(tm_positions, next_tm_positions, cell=atoms.get_cell(), pbc=True)[1]
                 valid_distances = distances[distances < 3.0]  # Threshold for neighboring atoms
                 if len(valid_distances) > 0:
-                    layer_distances[f'L{layer_idx+1}-L{layer_idx+2}_TM-TM'] = round(np.mean(valid_distances), 2)
+                    layer_distances[f'L{layer_num}-L{next_layer_num}_TM-TM'] = round(np.mean(valid_distances), 2)
     
-    return layer_charges, layer_distances
+    # 인접한 레이어 간 z좌표 차이 계산
+    for i in range(1, len(layer_indices)):
+        current_layer = i + 1
+        prev_layer = i
+        if f'L{current_layer}_z' in layer_z_avg and f'L{prev_layer}_z' in layer_z_avg:
+            layer_distances[f'L{prev_layer}-L{current_layer}_z_diff'] = round(
+                abs(layer_z_avg[f'L{current_layer}_z'] - layer_z_avg[f'L{prev_layer}_z']), 2)
+    
+    return layer_charges, layer_distances, layer_z_avg
 
-# Process regular files
+# 가장 안정한 site만 남기기
+best_results = dict()  # key: (adsorbate, coverage, system_name)
 for json_file in json_files:
-    # Extract path information
     path_parts = json_file.split('/')
     adsorbate = path_parts[-4]
     system_name = path_parts[-3]
     site = path_parts[-2]
-    
-    # Read the atoms with Bader charges
-    atoms = read(json_file)
-    
-    # Get layer charges and distances based on z-coordinates
-    layer_charges, layer_distances = get_layer_charges_and_distances(atoms)
-    
-    # Add to results
-    result = {
+    # coverage 추출
+    coverage = 'layer' if 'layer' in site else ('atom' if 'atom' in site else None)
+    if coverage is None:
+        continue
+    # final_with_calculator.json 경로
+    final_json = os.path.join(os.path.dirname(json_file), 'final_with_calculator.json')
+    if not os.path.exists(final_json):
+        continue
+    try:
+        atoms = read(final_json)
+        energy = atoms.get_potential_energy()
+    except:
+        continue
+    key = (adsorbate, coverage, system_name)
+    if (key not in best_results) or (energy < best_results[key]['energy']):
+        best_results[key] = {
+            'energy': energy,
+            'json_file': json_file,
+            'site': site
+        }
+
+# results에 best_results만 추가
+results = []
+for (adsorbate, coverage, system_name), info in best_results.items():
+    atoms = read(info['json_file'])
+    layer_charges, layer_distances, layer_z_avg = get_layer_charges_and_distances(atoms)
+    results.append({
         'Adsorbate': adsorbate,
         'System': system_name,
-        'Site': site,
+        'Coverage': coverage,
+        'Site': info['site'],
         **layer_charges,
-        **layer_distances
-    }
-    results.append(result)
+        **layer_distances,
+        **layer_z_avg
+    })
 
-# Process slab files
+# slab 데이터는 기존 방식 유지
 for json_file in slab_json_files:
     # Extract path information
     path_parts = json_file.split('/')
@@ -173,7 +223,7 @@ for json_file in slab_json_files:
     atoms = read(json_file)
     
     # Get layer charges and distances based on z-coordinates
-    layer_charges, layer_distances = get_layer_charges_and_distances(atoms)
+    layer_charges, layer_distances, layer_z_avg = get_layer_charges_and_distances(atoms)
     
     # Add to results
     result = {
@@ -181,213 +231,231 @@ for json_file in slab_json_files:
         'System': system_name,
         'Site': 'slab',
         **layer_charges,
-        **layer_distances
+        **layer_distances,
+        **layer_z_avg
     }
     results.append(result)
 
 # Convert to DataFrame
 df = pd.DataFrame(results)
 
-# Save as tsv with 2 decimal places
-tsv_output = os.path.join(base_dir, 'bader_charges_and_distances.tsv')
+# 그래프에 사용한 데이터만 저장
+df_graph = df[df['Adsorbate'] != 'slab'].copy()
+graph_tsv_output = os.path.join(base_dir, 'figures', 'bader_charges_for_graph.tsv')
+graph_csv_output = os.path.join(base_dir, 'figures', 'bader_charges_for_graph.csv')
+df_graph.to_csv(graph_tsv_output, sep='\t', index=False, float_format='%.2f')
+df_graph.to_csv(graph_csv_output, index=False, float_format='%.4f')
+print(f"Graph data saved to {graph_tsv_output} and {graph_csv_output}")
+
+# 기존 전체 데이터 저장
+tsv_output = os.path.join(base_dir, 'figures', 'bader_charges_and_distances.tsv')
 df.to_csv(tsv_output, sep='\t', index=False, float_format='%.2f')
-
-# Save as csv with 4 decimal places
-csv_output = os.path.join(base_dir, 'bader_charges_and_distances.csv')
+csv_output = os.path.join(base_dir, 'figures', 'bader_charges_and_distances.csv')
 df.to_csv(csv_output, index=False, float_format='%.4f')
-
 print(f"Results saved to {tsv_output} and {csv_output}")
 
-# Create plots for each adsorbate and site combination
+# 그래프: 흡착물+커버리지별로 하나씩만 그림
 sns.set_theme(style="ticks")
-
-# Define colormaps for different distance types
-ir_tm_cmap = plt.cm.Greens(np.linspace(0.3, 0.9, 4))  # Green gradient for Ir-TM
-ir_ir_cmap = plt.cm.Blues(np.linspace(0.3, 0.9, 4))   # Blue gradient for Ir-Ir
-tm_tm_cmap = plt.cm.Reds(np.linspace(0.3, 0.9, 4))    # Red gradient for TM-TM
-
-# Get unique adsorbates and sites
-adsorbates = df['Adsorbate'].unique()
-sites = df['Site'].unique()
-
-# Define system names for x-axis
-system_names = ['Ir', 'IrMn', 'IrFe', 'IrCo', 'IrNi']
-
-# Create a figure for each adsorbate-site combination
-for adsorbate in adsorbates:
-    for site in sites:
-        # Skip slab data in the main loop
-        if adsorbate == 'slab' and site == 'slab':
-            continue
-            
-        # Filter data for current adsorbate and site
-        subset = df[(df['Adsorbate'] == adsorbate) & (df['Site'] == site)]
+for ads in selected_adsorbates:
+    for cov in coverages:
+        subset = df[(df['Adsorbate'] == ads) & (df['Coverage'] == cov)].copy()  # copy() 추가로 SettingWithCopyWarning 방지
         if len(subset) == 0:
             continue
-            
-        # Create figure for Bader charges
+        
+        # 원하는 순서대로 정렬 (selected_systems의 순서 사용)
+        system_order = {sys: i for i, sys in enumerate(selected_systems)}
+        subset['Order'] = subset['System'].map(system_order)
+        subset = subset.sort_values('Order').reset_index(drop=True)
+        
+        # 순서대로 정렬된 시스템 목록
+        available_systems = subset['System'].tolist()
+        # 시스템 이름 매핑 (0_Ir -> Ir 형식으로 변환)
+        system_name_mapping = {sys: name for sys, name in zip(selected_systems, system_names)}
+        x = range(len(available_systems))
+        
+        # Bader charge plot
         plt.figure(figsize=(4, 3))
+        blues = plt.cm.Blues(np.linspace(0.9, 0.4, 4))  # Ir용 블루 컬러맵
+        reds = plt.cm.Reds(np.linspace(0.9, 0.4, 4))    # TM용 레드 컬러맵
         
-        # Prepare data for plotting
-        systems = subset['System']
-        x = range(len(systems))
+        # 금속, 레이어 순으로 정렬하기 위해 루프 순서 변경
+        # 먼저 Ir의 모든 레이어 (L4부터 L1 순서로)
+        for i, layer in zip(range(4), range(4, 0, -1)):
+            if f'L{layer}_Ir' in subset.columns and not subset[f'L{layer}_Ir'].isna().all():
+                charges = subset[f'L{layer}_Ir']
+                plt.plot(x, charges, marker='o', color=blues[i], label=f'Ir L{layer}')
         
-        # Plot Ir charges
-        for layer in range(1, 5):
-            charges = subset[f'L{layer}_Ir']
-            plt.plot(x, charges, marker='o', label=f'L{layer} Ir', color=ir_ir_cmap[layer-1])
+        # 그 다음 TM의 모든 레이어 (L4부터 L1 순서로)
+        for i, layer in zip(range(4), range(4, 0, -1)):
+            if f'L{layer}_TM' in subset.columns and not subset[f'L{layer}_TM'].isna().all():
+                charges = subset[f'L{layer}_TM']
+                plt.plot(x, charges, marker='s', color=reds[i], label=f'TM L{layer}')
         
-        # Plot TM charges
-        for layer in range(1, 5):
-            charges = subset[f'L{layer}_TM']
-            plt.plot(x, charges, marker='s', label=f'L{layer} TM', color=tm_tm_cmap[layer-1])
-        
-        # Customize the plot
         plt.ylabel('Bader Charge')
-        plt.xticks(x, system_names)
+        # 시스템 코드명(0_Ir 등)을 표시 이름(Ir 등)으로 변환
+        display_names = [system_name_mapping.get(sys, sys) for sys in available_systems]
+        plt.xticks(x, display_names)
         plt.yticks(np.arange(-1.25, 1.01, 0.25))
         plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left')
-        
-        # Save the plot
-        plot_output = os.path.join(base_dir, 'figures', f'bader_charges_{adsorbate}_{site}.png')
+        plot_output = os.path.join(base_dir, 'figures', f'bader_charges_{ads}_{cov}.png')
+        os.makedirs(os.path.dirname(plot_output), exist_ok=True)
         plt.savefig(plot_output, bbox_inches='tight')
         plt.close()
-        
         print(f"Plot saved to {plot_output}")
         
-        # Create figure for distances
-        plt.figure(figsize=(4, 3))
-        
-        # Plot intra-layer distances
-        for layer in range(1, 5):
-            # Ir-TM distances
-            if f'L{layer}_Ir-TM' in subset.columns:
-                distances = subset[f'L{layer}_Ir-TM']
-                plt.plot(x, distances, marker='o', label=f'L{layer} Ir-TM', color=ir_tm_cmap[layer-1])
-            
-            # Ir-Ir distances
-            if f'L{layer}_Ir-Ir' in subset.columns:
-                distances = subset[f'L{layer}_Ir-Ir']
-                plt.plot(x, distances, marker='o', label=f'L{layer} Ir-Ir', color=ir_ir_cmap[layer-1])
-            
-            # TM-TM distances
-            if f'L{layer}_TM-TM' in subset.columns:
-                distances = subset[f'L{layer}_TM-TM']
-                plt.plot(x, distances, marker='o', label=f'L{layer} TM-TM', color=tm_tm_cmap[layer-1])
-        
-        # Plot inter-layer distances
-        for layer in range(1, 4):
-            # Ir-TM distances
-            if f'L{layer}-L{layer+1}_Ir-TM' in subset.columns:
-                distances = subset[f'L{layer}-L{layer+1}_Ir-TM']
-                plt.plot(x, distances, marker='^', label=f'L{layer}-L{layer+1} Ir-TM', color=ir_tm_cmap[layer-1])
-            if f'L{layer}-L{layer+1}_TM-Ir' in subset.columns:
-                distances = subset[f'L{layer}-L{layer+1}_TM-Ir']
-                plt.plot(x, distances, marker='^', label=f'L{layer}-L{layer+1} TM-Ir', color=ir_tm_cmap[layer-1])
-            
-            # Ir-Ir distances
-            if f'L{layer}-L{layer+1}_Ir-Ir' in subset.columns:
-                distances = subset[f'L{layer}-L{layer+1}_Ir-Ir']
-                plt.plot(x, distances, marker='^', label=f'L{layer}-L{layer+1} Ir-Ir', color=ir_ir_cmap[layer-1])
-            
-            # TM-TM distances
-            if f'L{layer}-L{layer+1}_TM-TM' in subset.columns:
-                distances = subset[f'L{layer}-L{layer+1}_TM-TM']
-                plt.plot(x, distances, marker='^', label=f'L{layer}-L{layer+1} TM-TM', color=tm_tm_cmap[layer-1])
-        
-        # Customize the plot
-        plt.ylabel('Distance (Å)')
-        plt.xticks(x, system_names)
-        plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', ncol=2)
-        
-        # Save the plot
-        plot_output = os.path.join(base_dir, 'figures', f'distances_{adsorbate}_{site}.png')
-        plt.savefig(plot_output, bbox_inches='tight')
-        plt.close()
-        
-        print(f"Plot saved to {plot_output}")
+        # 레이어 간 거리 그래프는 제거 (comparison 그래프로 대체)
 
-# Create separate plots for slab data
-slab_data = df[(df['Adsorbate'] == 'slab') & (df['Site'] == 'slab')]
-if len(slab_data) > 0:
-    # Create figure for Bader charges
+# slab (clean surface) 데이터에 대한 그래프 생성
+slab_subset = df[df['Adsorbate'] == 'slab'].copy()
+if len(slab_subset) > 0:
+    # 원하는 순서대로 정렬 (selected_systems의 순서 사용)
+    system_order = {sys: i for i, sys in enumerate(selected_systems)}
+    slab_subset['Order'] = slab_subset['System'].map(system_order)
+    slab_subset = slab_subset.sort_values('Order').reset_index(drop=True)
+    
+    # 순서대로 정렬된 시스템 목록
+    available_systems = slab_subset['System'].tolist()
+    # 시스템 이름 매핑 (0_Ir -> Ir 형식으로 변환)
+    system_name_mapping = {sys: name for sys, name in zip(selected_systems, system_names)}
+    x = range(len(available_systems))
+    
+    # Bader charge plot
     plt.figure(figsize=(4, 3))
+    blues = plt.cm.Blues(np.linspace(0.9, 0.4, 4))  # Ir용 블루 컬러맵
+    reds = plt.cm.Reds(np.linspace(0.9, 0.4, 4))    # TM용 레드 컬러맵
     
-    # Prepare data for plotting
-    systems = slab_data['System']
-    x = range(len(systems))
+    # 금속, 레이어 순으로 정렬하기 위해 루프 순서 변경
+    # 먼저 Ir의 모든 레이어 (L4부터 L1 순서로)
+    for i, layer in zip(range(4), range(4, 0, -1)):
+        if f'L{layer}_Ir' in slab_subset.columns and not slab_subset[f'L{layer}_Ir'].isna().all():
+            charges = slab_subset[f'L{layer}_Ir']
+            plt.plot(x, charges, marker='o', color=blues[i], label=f'Ir L{layer}')
     
-    # Plot Ir charges
-    for layer in range(1, 5):
-        charges = slab_data[f'L{layer}_Ir']
-        plt.plot(x, charges, marker='o', label=f'L{layer} Ir', color=ir_ir_cmap[layer-1])
+    # 그 다음 TM의 모든 레이어 (L4부터 L1 순서로)
+    for i, layer in zip(range(4), range(4, 0, -1)):
+        if f'L{layer}_TM' in slab_subset.columns and not slab_subset[f'L{layer}_TM'].isna().all():
+            charges = slab_subset[f'L{layer}_TM']
+            plt.plot(x, charges, marker='s', color=reds[i], label=f'TM L{layer}')
     
-    # Plot TM charges
-    for layer in range(1, 5):
-        charges = slab_data[f'L{layer}_TM']
-        plt.plot(x, charges, marker='s', label=f'L{layer} TM', color=tm_tm_cmap[layer-1])
-    
-    # Customize the plot
     plt.ylabel('Bader Charge')
-    plt.xticks(x, system_names)
+    # 시스템 코드명(0_Ir 등)을 표시 이름(Ir 등)으로 변환
+    display_names = [system_name_mapping.get(sys, sys) for sys in available_systems]
+    plt.xticks(x, display_names)
     plt.yticks(np.arange(-1.25, 1.01, 0.25))
     plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left')
-    
-    # Save the plot
-    slab_plot_output = os.path.join(base_dir, 'figures', 'bader_charges_slab.png')
-    plt.savefig(slab_plot_output, bbox_inches='tight')
+    plot_output = os.path.join(base_dir, 'figures', 'bader_charges_slab.png')
+    os.makedirs(os.path.dirname(plot_output), exist_ok=True)
+    plt.savefig(plot_output, bbox_inches='tight')
     plt.close()
+    print(f"Plot saved to {plot_output}")
     
-    print(f"Slab plot saved to {slab_plot_output}")
+    # 레이어 간 거리 그래프는 제거 (comparison 그래프로 대체)
+
+# ============== 새로운 그래프: L3-L4 레이어 사이 거리 - 흡착물을 범례로 ================
+# 새로운 그래프 생성 - 표면 종류를 x축으로, 흡착물을 범례로 사용
+
+# 각 레이어 간 거리에 대한 비교 그래프를 위한 함수
+def create_layer_distance_comparison(layer_pair, df, selected_systems, system_names, selected_adsorbates, coverages, base_dir):
+    prev_layer, current_layer = layer_pair
+    col_name = f'L{prev_layer}-L{current_layer}_z_diff'
     
-    # Create figure for distances
-    plt.figure(figsize=(4, 3))
+    # 모든 표면에 대해 하나의 그래프 생성
+    plt.figure(figsize=(6, 4))
     
-    # Plot intra-layer distances
-    for layer in range(1, 5):
-        # Ir-TM distances
-        if f'L{layer}_Ir-TM' in slab_data.columns:
-            distances = slab_data[f'L{layer}_Ir-TM']
-            plt.plot(x, distances, marker='o', label=f'L{layer} Ir-TM', color=ir_tm_cmap[layer-1])
-        
-        # Ir-Ir distances
-        if f'L{layer}_Ir-Ir' in slab_data.columns:
-            distances = slab_data[f'L{layer}_Ir-Ir']
-            plt.plot(x, distances, marker='o', label=f'L{layer} Ir-Ir', color=ir_ir_cmap[layer-1])
-        
-        # TM-TM distances
-        if f'L{layer}_TM-TM' in slab_data.columns:
-            distances = slab_data[f'L{layer}_TM-TM']
-            plt.plot(x, distances, marker='o', label=f'L{layer} TM-TM', color=tm_tm_cmap[layer-1])
+    # 색상 맵 정의
+    colors = {
+        'slab': 'black',
+        '1_H': 'blue',
+        '2_OH': 'red',
+        '3_O': 'green'
+    }
     
-    # Plot inter-layer distances
-    for layer in range(1, 4):
-        # Ir-TM distances
-        if f'L{layer}-L{layer+1}_Ir-TM' in slab_data.columns:
-            distances = slab_data[f'L{layer}-L{layer+1}_Ir-TM']
-            plt.plot(x, distances, marker='^', label=f'L{layer}-L{layer+1} Ir-TM', color=ir_tm_cmap[layer-1])
-        if f'L{layer}-L{layer+1}_TM-Ir' in slab_data.columns:
-            distances = slab_data[f'L{layer}-L{layer+1}_TM-Ir']
-            plt.plot(x, distances, marker='^', label=f'L{layer}-L{layer+1} TM-Ir', color=ir_tm_cmap[layer-1])
-        
-        # Ir-Ir distances
-        if f'L{layer}-L{layer+1}_Ir-Ir' in slab_data.columns:
-            distances = slab_data[f'L{layer}-L{layer+1}_Ir-Ir']
-            plt.plot(x, distances, marker='^', label=f'L{layer}-L{layer+1} Ir-Ir', color=ir_ir_cmap[layer-1])
-        
-        # TM-TM distances
-        if f'L{layer}-L{layer+1}_TM-TM' in slab_data.columns:
-            distances = slab_data[f'L{layer}-L{layer+1}_TM-TM']
-            plt.plot(x, distances, marker='^', label=f'L{layer}-L{layer+1} TM-TM', color=tm_tm_cmap[layer-1])
+    # 불투명도 정의
+    alpha_values = {
+        'layer': 1.0,
+        'atom': 0.5
+    }
     
-    # Customize the plot
-    plt.ylabel('Distance (Å)')
-    plt.xticks(x, system_names)
-    plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', ncol=2)
+    # 전체 데이터에서 시스템 순서대로 정렬
+    system_order = {sys: i for i, sys in enumerate(selected_systems)}
+    system_name_mapping = {sys: name for sys, name in zip(selected_systems, system_names)}
     
-    # Save the plot
-    slab_plot_output = os.path.join(base_dir, 'figures', 'distances_slab.png')
-    plt.savefig(slab_plot_output, bbox_inches='tight')
+    # 모든 흡착물에 대한 데이터 하나의 그래프에 표시
+    for adsorbate in ['slab'] + selected_adsorbates:
+        if adsorbate == 'slab':
+            # slab 데이터
+            subset = df[df['Adsorbate'] == 'slab'].copy()
+            if len(subset) > 0:
+                subset['Order'] = subset['System'].map(system_order)
+                subset = subset.sort_values('Order').reset_index(drop=True)
+                
+                # 레이어 간 거리가 존재하는 경우에만 그래프 표시
+                if col_name in subset.columns and not subset[col_name].isna().all():
+                    available_systems = subset['System'].tolist()
+                    display_names = [system_name_mapping.get(sys, sys) for sys in available_systems]
+                    x = range(len(available_systems))
+                    
+                    distances = subset[col_name]
+                    plt.plot(x, distances, marker='o', linestyle='-', 
+                             color=colors.get(adsorbate, 'gray'), 
+                             label=f'Clean Surface')
+        else:
+            # 흡착물 데이터 - 각 coverage별로 표시
+            for cov in coverages:
+                subset = df[(df['Adsorbate'] == adsorbate) & (df['Coverage'] == cov)].copy()
+                if len(subset) > 0:
+                    subset['Order'] = subset['System'].map(system_order)
+                    subset = subset.sort_values('Order').reset_index(drop=True)
+                    
+                    # 레이어 간 거리가 존재하는 경우에만 그래프 표시
+                    if col_name in subset.columns and not subset[col_name].isna().all():
+                        available_systems = subset['System'].tolist()
+                        display_names = [system_name_mapping.get(sys, sys) for sys in available_systems]
+                        x = range(len(available_systems))
+                        
+                        # 흡착물 표시 이름 설정
+                        if adsorbate == '1_H':
+                            ads_name = 'H'
+                        elif adsorbate == '2_OH':
+                            ads_name = 'OH'
+                        elif adsorbate == '3_O':
+                            ads_name = 'O'
+                        else:
+                            ads_name = adsorbate
+                        
+                        distances = subset[col_name]
+                        plt.plot(x, distances, marker='o', linestyle='-', 
+                                 color=colors.get(adsorbate, 'gray'),
+                                 alpha=alpha_values.get(cov, 1.0),
+                                 label=f'{ads_name} ({cov})')
+    
+    # x축 설정 - 모든 가능한 시스템 표시
+    all_systems = []
+    for sys_code, sys_name in zip(selected_systems, system_names):
+        if df['System'].str.contains(sys_code).any():
+            all_systems.append((sys_code, sys_name))
+    
+    x_ticks = range(len(all_systems))
+    x_labels = [name for _, name in all_systems]
+    
+    plt.xticks(x_ticks, x_labels)
+    # x축 범위 설정 (-0.5부터 4.5까지)
+    plt.xlim(-0.5, len(all_systems) - 0.5)
+    plt.ylabel(f'L{prev_layer}-L{current_layer} Distance (Å)')
+    plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left')
+    plt.grid(True, linestyle='--', alpha=0.7)
+    
+    plot_output = os.path.join(base_dir, 'figures', f'layer_distances_L{prev_layer}-L{current_layer}_comparison.png')
+    os.makedirs(os.path.dirname(plot_output), exist_ok=True)
+    plt.savefig(plot_output, bbox_inches='tight')
     plt.close()
-    
-    print(f"Slab distances plot saved to {slab_plot_output}") 
+    print(f"Plot saved to {plot_output}")
+
+# L3-L4 레이어 간 거리 비교 그래프
+create_layer_distance_comparison((3, 4), df, selected_systems, system_names, selected_adsorbates, coverages, base_dir)
+
+# L2-L3 레이어 간 거리 비교 그래프
+create_layer_distance_comparison((2, 3), df, selected_systems, system_names, selected_adsorbates, coverages, base_dir)
+
+# L1-L2 레이어 간 거리 비교 그래프
+create_layer_distance_comparison((1, 2), df, selected_systems, system_names, selected_adsorbates, coverages, base_dir) 
