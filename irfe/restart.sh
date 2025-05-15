@@ -46,20 +46,20 @@
 #     fi
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/*_Ir*/*_*_*/*_*_*
-do
-    cd $dir
-    if [[ ! -f OUTCAR ]]; then
-        cp ~/bin/tools/irfe/INCAR .
-        cp ~/bin/tools/irfe/KPOINTS .
-        mv *.vasp POSCAR
-        vaspkit -task 107
-        mv POSCAR_REV POSCAR
-        rm POTCAR
-        vaspkit -task 103
-        python3 ~/bin/orange/magmom.py
-    fi
-done
+# for dir in /home/hyeonjung/scratch/4_IrFe3/*_Ir*/*_*_*/*_*_*
+# do
+#     cd $dir
+#     if [[ ! -f OUTCAR ]]; then
+#         cp ~/bin/tools/irfe/INCAR .
+#         cp ~/bin/tools/irfe/KPOINTS .
+#         mv *.vasp POSCAR
+#         vaspkit -task 107
+#         mv POSCAR_REV POSCAR
+#         rm POTCAR
+#         vaspkit -task 103
+#         python3 ~/bin/orange/magmom.py
+#     fi
+# done
 
 # for dir in 5_IrMn 6_IrFe 7_IrCo 8_IrNi
 # do
@@ -85,36 +85,80 @@ done
 #     done
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/5_OXRb/*_*_*/*_*_*
+# for dir in /home/hyeonjung/scratch/4_IrFe3/5_OXRb/*_*_*/*_*_*
+# do
+#     cd $dir
+#     if [[ -f *.vasp ]]; then
+#         pwd
+#             cp ~/bin/tools/irfe/INCAR .
+#             cp ~/bin/tools/irfe/KPOINTS .
+#             mv *.vasp POSCAR
+#             vaspkit -task 107
+#             mv POSCAR_REV POSCAR
+#             rm POTCAR
+#             vaspkit -task 103
+#             python3 ~/bin/orange/magmom.py
+#     fi
+# done
+
+
+# for dir in /home/hyeonjung/scratch/4_IrFe3/2_OH/5_IrMn/*_*_*
+# do
+#     cd $dir
+#     cp CONTCAR POSCAR
+#     cp ~/bin/tools/irfe/INCAR .
+#     cp ~/bin/tools/irfe/KPOINTS .
+#     vaspkit -task 107
+#     mv POSCAR_REV POSCAR
+#     rm POTCAR
+#     vaspkit -task 103
+#     python3 ~/bin/orange/magmom.py
+# done
+# cd ../..
+# ls
+
+for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*
 do
-    cd $dir
-    if [[ -f *.vasp ]]; then
-        pwd
-            cp ~/bin/tools/irfe/INCAR .
-            cp ~/bin/tools/irfe/KPOINTS .
-            mv *.vasp POSCAR
-            vaspkit -task 107
-            mv POSCAR_REV POSCAR
-            rm POTCAR
-            vaspkit -task 103
-            python3 ~/bin/orange/magmom.py
+    IFS='/' read -r -a path <<< $dir
+    site=${path[-1]}
+    metal=$(echo "${path[-2]}" | cut -d'_' -f2)
+    ads=$(echo "${path[-3]}" | cut -d'_' -f2)
+
+    if [[ $ads == 'H' ]]; then
+        if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
+            if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
+                continue
+            fi
+        fi
+        if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
+            if [[ $site == '2_layer_hol' ]] || [[ $site == '6_atom_hol2' ]]; then
+                continue
+            fi
+        fi
     fi
+    if [[ $ads == 'OH' ]]; then
+        if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
+            if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
+                continue
+            fi
+        fi
+        if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
+            if [[ $site == '2_layer_brg' ]]; then
+                continue
+            fi
+        fi
+    fi
+    if [[ $ads == 'O' ]]; then
+        if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
+            if [[ $site == '5_M_top' ]]; then
+                continue
+            fi
+        fi
+        if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
+            if [[ $site == '2_layer_hol' ]]; then
+                continue
+            fi
+        fi
+    fi
+    echo $ads $metal $site
 done
-
-
-for dir in /home/hyeonjung/scratch/4_IrFe3/2_OH/5_IrMn/*_*_*
-do
-    cd $dir
-    cp CONTCAR POSCAR
-    cp ~/bin/tools/irfe/INCAR .
-    cp ~/bin/tools/irfe/KPOINTS .
-    vaspkit -task 107
-    mv POSCAR_REV POSCAR
-    rm POTCAR
-    vaspkit -task 103
-    python3 ~/bin/orange/magmom.py
-done
-cd ../..
-ls
-
-remove 2_layer_brg/*.*.*.* 3_Ir_top/*.*.*.* 4_Ir_brg/*.*.*.* 6_M_brg/*.*.*.*
