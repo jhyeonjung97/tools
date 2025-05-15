@@ -8,7 +8,7 @@ import pandas as pd
 
 # 전압 범위 정의
 Umin, Umax = -0.5, 1.5
-ymin, ymax = -2.0, 1.0
+ymin, ymax = -1.5, 0.5
 
 def count_elements(atoms):
     """원자 구조에서 O와 H의 개수를 세는 함수"""
@@ -179,68 +179,93 @@ def create_pourbaix_diagram(base_path):
     for target_metal in metal_systems.keys():
         # 각 시스템별 clean surface 읽기
         clean_path = os.path.join(base_path, 'slab', target_metal, 'final_with_calculator.json')
+        if not os.path.exists(clean_path):
+            continue
+            
+        # clean surface의 DONE 파일 체크
+        clean_done_path = os.path.join(base_path, 'slab', target_metal, 'DONE')
+        if not os.path.exists(clean_done_path):
+            continue
+            
         clean_atoms = read(clean_path)
         energy_clean = clean_atoms.get_potential_energy()
         
-        data = []
+        # 각 흡착물-흡착위치별로 가장 안정한 사이트를 저장할 딕셔너리
+        stable_sites = {}
         
         for ads in ['1_H', '2_OH', '3_O']:
             metal_path = os.path.join(base_path, ads, target_metal)
-            
             for site in os.listdir(metal_path):
                 if site.startswith('.') or site == 'vib':
                     continue
-                
                 if os.path.exists(os.path.join(metal_path, site, 'unmatched')):
                     continue
-
                 full_path = os.path.join(metal_path, site, 'final_with_calculator.json')
                 if not os.path.exists(full_path):
                     continue
-                
-                # 진동 보정값 읽기
+                done_path = os.path.join(metal_path, site, 'DONE')
+                if not os.path.exists(done_path):
+                    continue
                 vib_file = os.path.join(base_path, ads, target_metal, site, 'vib', 'vib.txt')
                 G_vib = read_vib_correction(vib_file)
-                    
                 atoms = read(full_path)
                 energy = atoms.get_potential_energy()
                 counts = count_elements(atoms)
-
                 Gmin = calculate_free_energy(energy, energy_clean, counts['H'], counts['O'], Umin, G_vib)
                 Gmax = calculate_free_energy(energy, energy_clean, counts['H'], counts['O'], Umax, G_vib)
                 G0 = calculate_free_energy(energy, energy_clean, counts['H'], counts['O'], 0, G_vib)
-
-                data.append({
-                    'path': full_path,
-                    'E': energy,
-                    'E0': energy_clean,
-                    'n_H': counts['H'],
-                    'n_O': counts['O'],
-                    'G_vib': G_vib,
-                    'Gmin': Gmin,
-                    'Gmax': Gmax,
-                    'G0': G0,
-                    'colormap': colormaps[ads],
-                    'site_number': get_site_number(site),
-                    'site': site,
-                    'ads': ads
-                })
-
-        # 데이터 정렬
-        sorted_data = sorted(data, key=get_sort_key)
+                # 그룹핑 키: 흡착물 종류(H, OH, O) + 흡착 위치(layer, atom)
+                # 예: H_layer, H_atom, OH_layer, OH_atom, O_layer, O_atom
+                if 'layer' in site:
+                    group_key = f"{ads.split('_')[1]}_layer"
+                elif 'atom' in site:
+                    group_key = f"{ads.split('_')[1]}_atom"
+                else:
+                    group_key = f"{ads.split('_')[1]}_other"
+                if group_key not in stable_sites or G0 < stable_sites[group_key]['G0']:
+                    stable_sites[group_key] = {
+                        'path': full_path,
+                        'E': energy,
+                        'E0': energy_clean,
+                        'n_H': counts['H'],
+                        'n_O': counts['O'],
+                        'G_vib': G_vib,
+                        'Gmin': Gmin,
+                        'Gmax': Gmax,
+                        'G0': G0,
+                        'colormap': colormaps[ads],
+                        'site_number': get_site_number(site),
+                        'site': site,
+                        'ads': ads,
+                        'group_key': group_key
+                    }
+        
+        # 선택된 안정한 사이트들만 사용하여 데이터 정렬
+        sorted_data = sorted(stable_sites.values(), key=lambda x: x['group_key'])
         
         # 데이터 파일 저장
         save_data_to_files(sorted_data, base_path, metal_systems[target_metal])
         
         # 그래프 생성 및 저장
         plt.figure(figsize=(5, 4))
+        # clean plot
         plt.plot(U_range, [0]*len(U_range), color='black', label='clean')
 
+        # 색상 및 alpha 설정 딕셔너리
+        color_alpha_dict = {
+            'clean': ('black', 1.0),
+            'H_layer': ('b', 1.0),
+            'H_atom': ('b', 0.5),
+            'OH_layer': ('g', 1.0),
+            'OH_atom': ('g', 0.5),
+            'O_layer': ('r', 1.0),
+            'O_atom': ('r', 0.5)
+        }
+
         for entry in sorted_data:
-            
-            color = entry['colormap'](0.8 - (entry['site_number'] / 8))
-            label = clean_label(entry['ads'], entry['site'])
-            plt.plot(U_range, [entry['Gmin'], entry['Gmax']], color=color, label=label)
+            label = entry['group_key']
+            color, alpha = color_alpha_dict.get(label, ('gray', 1.0))
+            plt.plot(U_range, [entry['Gmin'], entry['Gmax']], color=color, alpha=alpha, label=label)
 
         plt.xlabel('Potential (V vs RHE)')
         plt.ylabel('Relative Gibbs Free Energy (eV)')
@@ -249,10 +274,8 @@ def create_pourbaix_diagram(base_path):
         plt.legend(bbox_to_anchor=(1.05, 1.05), 
                   loc='upper left', 
                   fontsize='small',
-                  labelspacing=0.2)  # 줄 간격 조절 (기본값은 0.5)
-        # plt.tight_layout()
+                  labelspacing=0.2)
         
-        # 저장 경로를 base_path로 변경
         save_path = os.path.join(base_path, f'pourbaix_diagram_{metal_systems[target_metal]}.png')
         plt.savefig(save_path, bbox_inches='tight')
         plt.close()
