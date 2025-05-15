@@ -168,6 +168,6 @@ do
 
     cd $dir
     if [[ ! -f DONE ]]; then
-        ls
+        pwd
     fi
 done
