@@ -157,8 +157,14 @@ do
                 continue
             fi
         fi
+    elif [[ $ads == 'R1' ]] || [[ $ads == 'R2' ]]; then
+        site=${path[-2]}
+        if [[ $site == '6_IrFe_hol1' ]] || [[ $site == '7_IrFe_hol2' ]] || [[ $site == '8_IrFe_hol3' ]]; then
+            continue
+        fi
     else
         continue
     fi
+
     echo $ads $metal $site
 done
