@@ -135,8 +135,7 @@ do
                 continue
             fi
         fi
-    fi
-    if [[ $ads == 'OH' ]]; then
+    elif [[ $ads == 'OH' ]]; then
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
             if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
                 continue
@@ -147,8 +146,7 @@ do
                 continue
             fi
         fi
-    fi
-    if [[ $ads == 'O' ]]; then
+    elif [[ $ads == 'O' ]]; then
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
             if [[ $site == '5_M_top' ]]; then
                 continue
@@ -159,6 +157,8 @@ do
                 continue
             fi
         fi
+    else
+        continue
     fi
     echo $ads $metal $site
 done
