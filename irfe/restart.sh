@@ -166,5 +166,8 @@ do
         continue
     fi
 
-    echo $ads $metal $site
+    cd $dir
+    if [[ ! -f DONE ]]; then
+        ls
+    fi
 done
