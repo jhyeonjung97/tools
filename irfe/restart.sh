@@ -167,7 +167,7 @@ do
     fi
 
     cd $dir
-    if [[ ! -f DONE ]]; then
+    if [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
         pwd
     fi
 done
