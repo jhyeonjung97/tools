@@ -51,6 +51,7 @@ for dir in "${directories[@]}"; do
     cp $dir/INCAR .
     cp $dir/KPOINTS .
     cp $dir/POTCAR .
+    sed -i '/NSW/c\NSW = 200' INCAR
     touch continue.log
     mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
     cp * $dir/
