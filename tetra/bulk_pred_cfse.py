@@ -615,6 +615,10 @@ def main():
     X = df[args.X].astype(float)
     y = df[args.Y].astype(float)
     
+    # 4d와 5d 원소들의 CFSE 관련 컬럼 값을 0으로 설정
+    cfse_columns = [col for col in X.columns if 'cfse' in col.lower()]
+    X.loc[df['row'].isin(['4d', '5d']), cfse_columns] = 0.0
+    
     # Drop rows where y is NaN
     valid_indices = ~y.isna()
     X = X[valid_indices]
