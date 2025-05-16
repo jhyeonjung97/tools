@@ -15,12 +15,14 @@ do
                 metal=$(echo "${path[-2]}" | cut -d'_' -f2)
                 ads=$(echo "${path[-1]}" | cut -d'_' -f1)
                 jobname=${coord}${row}${numb}${ads}
-                if [[ ! -f 'DONE' ]] && [[ -z $(squeue -o "%.12j" --me | grep $jobname) ]]; then
+                if [[ ! -f 'DONE' ]] && [[ ! -f 'unmatched' ]]; then #&& [[ -z $(squeue -o "%.12j" --me | grep $jobname) ]]; then
                     echo "\e[31m$jobname\e[0m" $subdir
                     python ~/bin/get_restart3.py
-                    sed -i "/#SBATCH -t/c\#SBATCH -t 04:00:00" submit.sh
-                    sed -i "/#SBATCH -q/c\#SBATCH -q regular" submit.sh
-                    sed -i "/#SBATCH -J/c\#SBATCH -J ${jobname}" submit.sh
+                    sed -i "/#SBATCH -G/d" submit.sh
+                    sed -i "/#SBATCH -N/c\#SBATCH -N 1" submit.sh
+                    sed -i "/#SBATCH -C/c\#SBATCH -C cpu" submit.sh
+                    sed -i "/#SBATCH -t/c\#SBATCH -t 12:00:00" submit.sh
+                    sed -i "s/run_vasp_gpu2.py/run_vasp_cpu.py/" submit.sh
                     pwd; sbatch submit.sh
                 fi
             fi
