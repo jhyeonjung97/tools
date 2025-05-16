@@ -20,9 +20,9 @@ do
                     python ~/bin/get_restart3.py
                     sed -i "/#SBATCH -G/d" submit.sh
                     sed -i "/#SBATCH -N/c\#SBATCH -N 1" submit.sh
-                    sed -i "/#SBATCH -C/c\#SBATCH -C cpu" submit.sh
                     sed -i "/#SBATCH -t/c\#SBATCH -t 12:00:00" submit.sh
-                    sed -i "s/run_vasp_gpu2.py/run_vasp_cpu.py/" submit.sh
+                    sed -i "s/gpu/cpu/" submit.sh
+                    sed -i "s/run_vasp_cpu2.py/run_vasp_cpu.py/" submit.sh
                     pwd; sbatch submit.sh
                 fi
             fi
