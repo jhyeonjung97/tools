@@ -12,7 +12,7 @@
 
 for dir in 5_IrMn 6_IrFe 7_IrCo 8_IrNi
 do
-    cp $dir/* .
+    cp $dir/vib/* .
     mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
-    cp * $dir/
+    cp * $dir/vib/
 done

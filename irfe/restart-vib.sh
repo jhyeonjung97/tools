@@ -34,7 +34,7 @@
 #     python3 ~/bin/orange/magmom.py
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/5_R2/*_*_*/*_*_*
+for dir in /home/hyeonjung/scratch/4_IrFe3/sgr/*_*_*/*_*
 do
     cd $dir
     if [[ -f CONTCAR ]]; then
