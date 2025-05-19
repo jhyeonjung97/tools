@@ -127,6 +127,7 @@ def submit_job(folder):
                         continue
                     elif 'run_vasp_gpu' in line:
                         line = line.replace('run_vasp_gpu1.py', 'run_vasp_cpu.py')
+                        line = line.replace('run_vasp_gpu2.py', 'run_vasp_cpu.py')
                         line = line.replace('run_vasp_gpu3.py', 'run_vasp_cpu.py')
                         line = line.replace('run_vasp_gpu4.py', 'run_vasp_cpu.py')
                         line = line.replace('run_vasp_gpu8.py', 'run_vasp_cpu.py')
