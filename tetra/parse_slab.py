@@ -78,9 +78,9 @@ def get_lowest_energy_adsorption(adsorption_paths, clean_energy):
     """여러 흡착 구조 중 가장 낮은 에너지를 가진 것을 선택하고 흡착 에너지를 계산합니다."""
     energies = {}
     for path in adsorption_paths:
-        # 흡착물 폴더에 DONE 파일이 있는지 확인
+        # 흡착물 폴더에 DONE 파일이 있는지 확인하고 unmatched 파일이 없는지 확인
         ads_dir = os.path.dirname(path)
-        if not os.path.exists(os.path.join(ads_dir, 'DONE')):
+        if not os.path.exists(os.path.join(ads_dir, 'DONE')) or os.path.exists(os.path.join(ads_dir, 'unmatched')):
             continue
             
         energy = get_energy(path)
@@ -108,7 +108,7 @@ def main():
     
     for path in all_paths:
         # DONE 파일이 있는지 확인
-        if not os.path.exists(os.path.join(path, 'DONE')):
+        if not os.path.exists(os.path.join(path, 'DONE')) or os.path.exists(os.path.join(path, 'unmatched')):
             continue
             
         # 경로에서 정보 추출
