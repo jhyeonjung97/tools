@@ -34,7 +34,7 @@ def main():
             path = os.path.join(root, coord, row, f'{numb}_{metal}')
             atoms_path = os.path.join(path, 'final_with_calculator.json')
             
-            if not os.path.exists(atoms_path) or os.path.exists(os.path.join(path, 'unmatched')):
+            if not os.path.exists(atoms_path) or not os.path.exists(os.path.join(path, 'unstable')):
                 continue
 
             atoms = read(atoms_path)
