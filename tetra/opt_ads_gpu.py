@@ -27,6 +27,8 @@ ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
             'Cu':{'L':2, 'U':9.00,  'J':0.0}
             }
 
+atoms = read('restart.json')
+
 lmaxmix = 2
 for atom in atoms:
     if atom.symbol in ldau_luj:
