@@ -69,6 +69,8 @@ def main():
             second_lowest_metal = metal_z_sorted[1]
             o_vector = third_lowest_o - second_lowest_metal
 
+            if metal in ['Ti', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir']:
+                o_vector = np.array([0.0, 0.0, 2.0])
             new_o_position = further_metal + o_vector
             
             # Create new structure with additional oxygen
