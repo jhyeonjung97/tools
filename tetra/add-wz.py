@@ -55,13 +55,6 @@ def main():
             o_z_sorted = o_positions[o_positions[:, 2].argsort()]
             metal_z_sorted = metal_positions[metal_positions[:, 2].argsort()]
             
-            # Get second highest oxygen and third highest metal
-            second_highest_o = o_z_sorted[-2]
-            third_highest_metal = metal_z_sorted[-3]
-            
-            # Calculate o_vector
-            o_vector = second_highest_o - third_highest_metal
-            
             # Get highest two metal atoms
             highest_metals = metal_z_sorted[-2:]
             # Calculate midpoint using cell's x-length
@@ -70,6 +63,12 @@ def main():
             x_distances = np.abs(highest_metals[:, 0] - x_midpoint)
             further_metal = highest_metals[np.argmax(x_distances)]
             closer_metal = highest_metals[np.argmin(x_distances)]
+
+            # Get second highest oxygen and third highest metal
+            third_lowest_o = o_z_sorted[2]
+            second_lowest_metal = metal_z_sorted[1]
+            o_vector = third_lowest_o - second_lowest_metal
+
             new_o_position = further_metal + o_vector
             
             # Create new structure with additional oxygen
