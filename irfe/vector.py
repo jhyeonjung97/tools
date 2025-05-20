@@ -16,11 +16,26 @@ def compare_atomic_positions(base_path):
     all_dirs = glob.glob(base_path)
     
     for dir_path in all_dirs:
+        done_path = os.path.join(dir_path, 'DONE')
         contcar_path = os.path.join(dir_path, 'CONTCAR')
         poscar_path = os.path.join(dir_path, 'vib', 'POSCAR')
         
-        # 두 파일이 모두 존재하는지 확인
-        if not (os.path.exists(contcar_path) and os.path.exists(poscar_path)):
+        # DONE 파일이 있는지 확인
+        if not os.path.exists(done_path):
+            continue
+        
+        # 파일 존재 여부 확인
+        contcar_exists = os.path.exists(contcar_path)
+        poscar_exists = os.path.exists(poscar_path)
+        
+        if not contcar_exists and not poscar_exists:
+            print(f"두 파일 모두 없음: {dir_path}")
+            continue
+        elif not contcar_exists:
+            print(f"CONTCAR 파일 없음: {dir_path}")
+            continue
+        elif not poscar_exists:
+            print(f"vib/POSCAR 파일 없음: {dir_path}")
             continue
         
         try:
