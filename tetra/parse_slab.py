@@ -50,6 +50,8 @@ coords_data = [
     {'coord': 'NB', 'CN': 4, 'OS': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'zorder': 1, 'marker': 's', 'color': 'limegreen',},
     {'coord': 'RS', 'CN': 6, 'OS': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'zorder': 6, 'marker': 'd', 'color': 'orchid',},
     {'coord': 'LT', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'zorder': 0, 'marker': 'h', 'color': 'silver',},
+    {'coord': 'WW', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '8_Tetrahedral_WZ',  'zorder': 5, 'marker': '>', 'color': 'darkorange',},
+    {'coord': 'ZZ', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '9_Tetrahedral_ZB',  'zorder': 4, 'marker': '<', 'color': 'gold',},
 ]
 
 coords = pd.DataFrame(coords_data).set_index('coord')
@@ -81,19 +83,16 @@ def get_clean_surface_energy(path):
 
 def get_calculation_status(path):
     """계산 폴더의 상태를 확인합니다."""
-    if not os.path.exists(path):
-        print(f"Path does not exist: {path}")
-        return ''
+    if not os.path.exists(os.path.join(path, 'submit.sh')):
+        return '-'
     if os.path.exists(os.path.join(path, 'unmatched')):
         return 'unmtch'
     elif os.path.exists(os.path.join(path, 'unstable')):
         return 'unstbl'
     elif os.path.exists(os.path.join(path, 'DONE')):
         return 'done'
-    elif os.path.exists(os.path.join(path, 'submit.sh')):
-        return 'submit'
     else:
-        return '-'
+        return 'submit'
 
 def get_lowest_energy_adsorption(adsorption_paths, clean_energy):
     """여러 흡착 구조 중 가장 낮은 에너지를 가진 것을 선택하고 흡착 에너지를 계산합니다."""
@@ -138,10 +137,8 @@ def create_progress_file():
             clean_status = []
             for i in range(13):
                 path = os.path.join(root, coord_dir, row, f'{i:02d}_{metals[row][i]}')
-                print(f"Checking path: {path}")
                 status = get_calculation_status(path)
                 clean_status.append(status)
-                print(f"  {i:02d}_{metals[row][i]}: {status}")
             df.loc[len(df)] = [coord, row, 'clean'] + clean_status
             
             # o, o1, o2 상태 추가
@@ -149,10 +146,8 @@ def create_progress_file():
                 ads_status = []
                 for i in range(13):
                     path = os.path.join(root, coord_dir, row, f'{i:02d}_{metals[row][i]}', ads)
-                    print(f"Checking path: {path}")
                     status = get_calculation_status(path)
                     ads_status.append(status)
-                    print(f"  {i:02d}_{metals[row][i]}/{ads}: {status}")
                 df.loc[len(df)] = [coord, row, ads] + ads_status
             
             # oh, oh1, oh2 상태 추가
@@ -160,15 +155,13 @@ def create_progress_file():
                 ads_status = []
                 for i in range(13):
                     path = os.path.join(root, coord_dir, row, f'{i:02d}_{metals[row][i]}', ads)
-                    print(f"Checking path: {path}")
                     status = get_calculation_status(path)
                     ads_status.append(status)
-                    print(f"  {i:02d}_{metals[row][i]}/{ads}: {status}")
                 df.loc[len(df)] = [coord, row, ads] + ads_status
     
     # 모든 금속 데이터가 비어있는 행 삭제
     metal_columns = [str(i).zfill(2) for i in range(13)]
-    df = df[df[metal_columns].apply(lambda x: x != '').any(axis=1)]
+    df = df[df[metal_columns].apply(lambda x: x != '-').any(axis=1)]
     
     # TSV 파일로 저장
     output_path = os.path.join(save_path, 'calculation_progress.tsv')
