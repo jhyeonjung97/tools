@@ -72,7 +72,7 @@ def main():
 
             # 3) Make folders o1, o2, oh1, oh2 and move each as restart.json
             for name in ['o1', 'o2', 'oh1', 'oh2']:
-                subdir = os.path.join(path, name)
+                subdir = os.path.join(root, coord, row, f'{numb}_{metal}', name)
                 os.makedirs(subdir, exist_ok=True)
                 shutil.copy(os.path.join(path, f'{name}.json'), os.path.join(subdir, 'restart.json'))
 
