@@ -34,7 +34,7 @@ def main():
             path = os.path.join(root, coord, row, f'{numb}_{metal}')
             atoms_path = os.path.join(path, 'final_with_calculator.json')
             
-            if not os.path.exists(atoms_path) or os.path.exists(os.path.join(path, 'unmatched')):
+            if not os.path.exists(atoms_path) or not os.path.exists(os.path.join(path, 'unstable')):
                 continue
 
             atoms = read(atoms_path)
@@ -118,29 +118,27 @@ def submit_job(folder):
             with open(submit_script, 'w') as f:
                 for line in lines:
                     if line.startswith('#SBATCH -N'):
-                        line = '#SBATCH -N 1\n'
+                        line = '#SBATCH -N 2\n'
                     elif line.startswith('#SBATCH -q'):
                         line = '#SBATCH -q regular\n'
                     elif line.startswith('#SBATCH -t'):
-                        line = '#SBATCH -t 12:00:00\n'
+                        line = '#SBATCH -t 04:00:00\n'
                     elif line.startswith('#SBATCH -G'):
-                        continue
+                        line = '#SBATCH -G 8\n'
                     elif 'run_vasp_gpu' in line:
-                        line = line.replace('run_vasp_gpu1.py', 'run_vasp_cpu.py')
-                        line = line.replace('run_vasp_gpu2.py', 'run_vasp_cpu.py')
-                        line = line.replace('run_vasp_gpu3.py', 'run_vasp_cpu.py')
-                        line = line.replace('run_vasp_gpu4.py', 'run_vasp_cpu.py')
-                        line = line.replace('run_vasp_gpu8.py', 'run_vasp_cpu.py')
-                        line = line.replace('run_vasp_gpu16.py', 'run_vasp_cpu.py')
-                    elif 'gpu' in line:
-                        line = line.replace('gpu', 'cpu')
+                        line = line.replace('run_vasp_gpu.py', 'run_vasp_gpu2.py')
+                        line = line.replace('run_vasp_gpu1.py', 'run_vasp_gpu2.py')
+                        line = line.replace('run_vasp_gpu3.py', 'run_vasp_gpu2.py')
+                        line = line.replace('run_vasp_gpu4.py', 'run_vasp_gpu2.py')
+                        line = line.replace('run_vasp_gpu8.py', 'run_vasp_gpu2.py')
+                        line = line.replace('run_vasp_gpu16.py', 'run_vasp_gpu2.py')
                     f.write(line)
             
             # Check if run_vasp_gpu2.py is present in the modified file
             with open(submit_script, 'r') as f:
                 content = f.read()
-                if 'run_vasp_cpu.py' not in content:
-                    print(f"Warning: run_vasp_cpu.py not found in {submit_script}")
+                if 'run_vasp_gpu2.py' not in content:
+                    print(f"Warning: run_vasp_gpu2.py not found in {submit_script}")
                     return
             
             subprocess.run(['sbatch', 'submit.sh'], cwd=folder, check=True)
