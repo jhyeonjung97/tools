@@ -80,7 +80,7 @@ def main():
             submit_path = os.path.join(path, 'submit.sh')
             if os.path.exists(submit_path):
                 for suffix in ['o1', 'o2', 'oh1', 'oh2']:
-                    subdir = os.path.join(path, suffix)
+                    subdir = os.path.join(root, coord, row, f'{numb}_{metal}', suffix)
                     shutil.copy(submit_path, os.path.join(subdir, 'submit.sh'))
                     modify_job_name(os.path.join(subdir, 'submit.sh'), suffix)
                     submit_job(subdir)
