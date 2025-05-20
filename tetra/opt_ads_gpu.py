@@ -27,19 +27,6 @@ ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
             'Cu':{'L':2, 'U':9.00,  'J':0.0}
             }
 
-if path.exists('restart.json'):
-    atoms = read('restart.json')
-elif path.exists('start.traj'):
-    atoms = read('start.traj')
-    for atom in atoms:
-        if atom.symbol in spin_states_plus_2:
-            if atom.index % 2 == 1: 
-                atom.magmom = spin_states_plus_2[atom.symbol]
-            else:
-                atom.magmom = -spin_states_plus_2[atom.symbol]
-else:
-    raise ValueError('Neither restart.json nor start.traj file found')
-
 lmaxmix = 2
 for atom in atoms:
     if atom.symbol in ldau_luj:
@@ -70,8 +57,8 @@ atoms.calc = vasp_calculator.Vasp(
                     #amix_mag=0.05,
                     #bmix_mag=0.0001,
                     kpts=kpoints,
-                    kpar=4,
-                    npar=16,
+                    kpar=3,
+                    npar=1,
                     gamma=False,
                     ismear=0,
                     sigma=0.05,
@@ -95,10 +82,6 @@ atoms.calc = vasp_calculator.Vasp(
                     ldauprint=2,
                     lmaxmix=lmaxmix,
                     setups={'base': 'recommended', 'W': '_sv'},
-                    # idipol=3,
-                    # dipol=(0, 0, 0.5),
-                    # ldipol=True
-                    nupdown=0
                     )
 
 energy = atoms.get_potential_energy()
