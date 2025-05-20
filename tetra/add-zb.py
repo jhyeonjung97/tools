@@ -32,10 +32,10 @@ def main():
         metals = rows[row]
         for m, metal in enumerate(metals):
             numb = str(m).zfill(2)
-            path = os.path.join(root, coord, row, f'{numb}_{metal}')
+            path = os.path.join(root, coord, row, f'{numb}_{metal}', 'clean')
             atoms_path = os.path.join(path, 'restart.json')
             
-            if not os.path.exists(atoms_path) or not os.path.exists(os.path.join(path, 'unstable')):
+            if not os.path.exists(atoms_path) or os.path.exists(os.path.join(path, 'unmatched')):
                 continue
     
             atoms = read(atoms_path)
