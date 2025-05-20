@@ -100,8 +100,8 @@ def get_lowest_energy_adsorption(adsorption_paths, clean_energy):
     for path in adsorption_paths:
         # 흡착물 폴더에 DONE 파일이 있는지 확인하고 unmatched 파일이 없는지 확인
         ads_dir = os.path.dirname(path)
-        # if not os.path.exists(os.path.join(ads_dir, 'DONE')) or os.path.exists(os.path.join(ads_dir, 'unmatched')):
-        #     continue
+        if not os.path.exists(os.path.join(ads_dir, 'DONE')) or os.path.exists(os.path.join(ads_dir, 'unmatched')):
+            continue
             
         energy = get_energy(path)
         # o1, o2와 같은 숫자를 제거하여 기본 흡착물 종류를 얻습니다
