@@ -35,7 +35,7 @@ def main():
             path = os.path.join(root, coord, row, f'{numb}_{metal}')
             atoms_path = os.path.join(path, 'final_with_calculator.json')
             
-            if not os.path.exists(atoms_path) or os.path.exists(os.path.join(path, 'unmatched')):
+            if not os.path.exists(atoms_path) or not os.path.exists(os.path.join(path, 'unstable')):
                 continue
     
             atoms = read(atoms_path)
@@ -79,25 +79,25 @@ def main():
             atoms_oh.positions[-1] = h_position
             write(os.path.join(path, 'oh.json'), atoms_oh)
     
-            # # Create directories o/ and oh/
-            # o_dir = os.path.join(path, 'o')
-            # oh_dir = os.path.join(path, 'oh')
-            # os.makedirs(o_dir, exist_ok=True)
-            # os.makedirs(oh_dir, exist_ok=True)
+            # Create directories o/ and oh/
+            o_dir = os.path.join(path, 'o')
+            oh_dir = os.path.join(path, 'oh')
+            os.makedirs(o_dir, exist_ok=True)
+            os.makedirs(oh_dir, exist_ok=True)
     
-            # # Put o.json and oh.json into respective directories as restart.json
-            # shutil.copy(os.path.join(path, 'o.json'), os.path.join(o_dir, 'restart.json'))
-            # shutil.copy(os.path.join(path, 'oh.json'), os.path.join(oh_dir, 'restart.json'))
+            # Put o.json and oh.json into respective directories as restart.json
+            shutil.copy(os.path.join(path, 'o.json'), os.path.join(o_dir, 'restart.json'))
+            shutil.copy(os.path.join(path, 'oh.json'), os.path.join(oh_dir, 'restart.json'))
     
-            # # Copy submit.sh to both directories
-            # submit_path = os.path.join(path, 'submit.sh')
-            # if os.path.exists(submit_path):
-            #     shutil.copy(submit_path, o_dir)
-            #     shutil.copy(submit_path, oh_dir)
-            #     modify_job_name(os.path.join(o_dir, 'submit.sh'), 'o')
-            #     modify_job_name(os.path.join(oh_dir, 'submit.sh'), 'oh')
-            #     submit_job(o_dir)
-            #     submit_job(oh_dir)
+            # Copy submit.sh to both directories
+            submit_path = os.path.join(path, 'submit.sh')
+            if os.path.exists(submit_path):
+                shutil.copy(submit_path, o_dir)
+                shutil.copy(submit_path, oh_dir)
+                modify_job_name(os.path.join(o_dir, 'submit.sh'), 'o')
+                modify_job_name(os.path.join(oh_dir, 'submit.sh'), 'oh')
+                submit_job(o_dir)
+                submit_job(oh_dir)
 
 # Update the job name in submit.sh files
 def modify_job_name(file_path, suffix):

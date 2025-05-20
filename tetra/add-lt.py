@@ -38,6 +38,9 @@ def main():
             if not os.path.exists(atoms_path) or os.path.exists(os.path.join(path, 'unmatched')):
                 continue
     
+            if os.path.exists(os.path.join(path, 'o')) or os.path.exists(os.path.join(path, 'oh')):
+                continue
+            
             atoms = read(atoms_path)
     
             # 1) Add one oxygen atom 2 Å above the topmost atom in z
