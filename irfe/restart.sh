@@ -124,36 +124,43 @@ do
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     ads=$(echo "${path[-3]}" | cut -d'_' -f2)
 
+    cd $dir
     if [[ $ads == 'H' ]]; then
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
             if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
+                touch unmatched
                 continue
             fi
         fi
         if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
             if [[ $site == '2_layer_hol' ]] || [[ $site == '6_atom_hol2' ]]; then
+                touch unmatched
                 continue
             fi
         fi
     elif [[ $ads == 'OH' ]]; then
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
             if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
+                touch unmatched
                 continue
             fi
         fi
         if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
             if [[ $site == '2_layer_brg' ]]; then
+                touch unmatched
                 continue
             fi
         fi
     elif [[ $ads == 'O' ]]; then
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
             if [[ $site == '5_M_top' ]]; then
+                touch unmatched
                 continue
             fi
         fi
         if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
             if [[ $site == '2_layer_hol' ]]; then
+                touch unmatched
                 continue
             fi
         fi
@@ -161,6 +168,7 @@ do
         site=${path[-2]}
         intermediate=${path[-1]}
         if [[ $site == '6_IrFe_hol1' ]] || [[ $site == '7_IrFe_hol2' ]] || [[ $site == '8_IrFe_hol3' ]]; then
+            touch unmatched
             continue
         elif [[ $intermediate == '4_O_O' ]]; then
             continue
