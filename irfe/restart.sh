@@ -159,7 +159,10 @@ do
         fi
     elif [[ $ads == 'R1' ]] || [[ $ads == 'R2' ]]; then
         site=${path[-2]}
+        intermediate=${path[-3]}
         if [[ $site == '6_IrFe_hol1' ]] || [[ $site == '7_IrFe_hol2' ]] || [[ $site == '8_IrFe_hol3' ]]; then
+            continue
+        elif [[ $intermediate == '4_O_O' ]]; then
             continue
         fi
     else
@@ -167,11 +170,15 @@ do
     fi
 
     cd $dir
-    if [[ -f DONE ]]; then
-        ase convert -f -n -1 OUTCAR final.json
-    elif [[ -f OUTCAR ]]; then
-        pwd
-    else
-        pwd; echo "no OUTCAR"
+    if [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
+        cp CONTCAR POSCAR
+        cp ~/bin/tools/irfe/INCAR .
+        cp ~/bin/tools/irfe/KPOINTS .
+        vaspkit -task 107
+        mv POSCAR_REV POSCAR
+        rm POTCAR
+        vaspkit -task 103
+        python3 ~/bin/orange/magmom.py
+        pwd; sbatch run_slurm.sh
     fi
 done
