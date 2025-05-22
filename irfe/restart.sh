@@ -185,6 +185,7 @@ do
         # numb2=$(echo "${path[-2]}" | cut -d'_' -f1)
         # jobname=vib_${ads}${numb2}${numb1}
         # sh ~/bin/verve/jobname.sh $jobname
+        rm vib/run_slurm.sh
         pwd
     fi
 done
