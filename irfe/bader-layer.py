@@ -21,7 +21,7 @@ system_names = ['IrMn', 'IrFe', 'IrCo', 'IrNi', 'Ir']
 
 # 사용할 흡착물 리스트
 selected_adsorbates = ['1_H', '2_OH', '3_O']
-coverages = ['layer', 'atom']
+coverages = ['layer']
 
 # Find all atoms_bader_charge.json files and sort them (선택된 표면, 흡착물만)
 pattern = os.path.join(base_dir, '*_*/*_*/*_*_*/atoms_bader_charge.json')

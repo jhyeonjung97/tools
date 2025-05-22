@@ -164,4 +164,8 @@ do
     else
         continue
     fi
+
+    if [[ -f DONE ]]; then
+        python ~/bin/verve/bader.py
+    fi
 done
