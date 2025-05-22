@@ -168,6 +168,6 @@ do
 
     cd $dir
     if [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
-        python ~/bin/get_restart.py
+        pwd
     fi
 done
