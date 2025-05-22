@@ -2,7 +2,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=20
 #SBATCH --partition=g2
-#SBATCH -J IrFe-H
+#SBATCH -J IrFe
 #SBATCH --time=05-00:00
 #SBATCH -o stdout.%N.%j.out
 #SBATCH -e STDERR.%N.%j.err

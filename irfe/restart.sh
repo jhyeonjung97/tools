@@ -179,6 +179,7 @@ do
         # rm POTCAR
         # vaspkit -task 103
         # python3 ~/bin/orange/magmom.py
+        cp ~/bin/tools/irfe/run_slurm.sh .
         pwd
     fi
 done
