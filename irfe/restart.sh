@@ -167,7 +167,11 @@ do
     fi
 
     cd $dir
-    if [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
+    if [[ -f DONE ]]; then
+        ase convert -f -n -1 OUTCAR final.json
+    elif [[ -f OUTCAR ]]; then
         pwd
+    else
+        pwd; echo "no OUTCAR"
     fi
 done
