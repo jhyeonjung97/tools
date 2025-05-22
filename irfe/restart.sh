@@ -159,7 +159,7 @@ do
         fi
     elif [[ $ads == 'R1' ]] || [[ $ads == 'R2' ]]; then
         site=${path[-2]}
-        intermediate=${path[-3]}
+        intermediate=${path[-1]}
         if [[ $site == '6_IrFe_hol1' ]] || [[ $site == '7_IrFe_hol2' ]] || [[ $site == '8_IrFe_hol3' ]]; then
             continue
         elif [[ $intermediate == '4_O_O' ]]; then
