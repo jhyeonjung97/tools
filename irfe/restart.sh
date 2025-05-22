@@ -171,14 +171,14 @@ do
 
     cd $dir
     if [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
-        cp CONTCAR POSCAR
-        cp ~/bin/tools/irfe/INCAR .
-        cp ~/bin/tools/irfe/KPOINTS .
-        vaspkit -task 107
-        mv POSCAR_REV POSCAR
-        rm POTCAR
-        vaspkit -task 103
-        python3 ~/bin/orange/magmom.py
+        # cp CONTCAR POSCAR
+        # cp ~/bin/tools/irfe/INCAR .
+        # cp ~/bin/tools/irfe/KPOINTS .
+        # vaspkit -task 107
+        # mv POSCAR_REV POSCAR
+        # rm POTCAR
+        # vaspkit -task 103
+        # python3 ~/bin/orange/magmom.py
         pwd
     fi
 done
