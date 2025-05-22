@@ -117,7 +117,7 @@
 # cd ../..
 # ls
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/1_H/*_*/*_*_*
+for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*
 do
     IFS='/' read -r -a path <<< $dir
     site=${path[-1]}
@@ -168,6 +168,6 @@ do
 
     cd $dir
     if [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
-        pwd
+        python ~/bin/get_restart
     fi
 done
