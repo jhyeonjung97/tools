@@ -2,6 +2,7 @@
 import os
 import glob
 import numpy as np
+import shutil
 from ase.io import read
 
 def compare_atomic_positions(base_path):
@@ -55,6 +56,13 @@ def compare_atomic_positions(base_path):
             # 위치 차이 확인 (작은 수치 오차 허용)
             if not np.allclose(contcar_positions, poscar_positions, atol=1e-5):
                 print(f"원자 위치가 다릅니다: {dir_path}")
+                vib_folder = os.path.join(dir_path, 'vib')
+                if os.path.exists(vib_folder):
+                    try:
+                        shutil.rmtree(vib_folder)
+                        print(f"vib 폴더 삭제 완료: {vib_folder}")
+                    except Exception as e:
+                        print(f"vib 폴더 삭제 중 오류 발생: {vib_folder} - {str(e)}")
         
         except Exception as e:
             print(f"파일 처리 중 오류 발생: {dir_path} - {str(e)}")
