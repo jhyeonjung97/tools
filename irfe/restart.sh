@@ -170,7 +170,7 @@ do
     fi
 
     cd $dir
-    if [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
+    if [[ -f OUTCAR ]] && [[ ! -f DONE ]] && [[ -d vib ]]; then
         rm -r vib
     fi
     if [[ -f vib/CONTCAR ]]; then
