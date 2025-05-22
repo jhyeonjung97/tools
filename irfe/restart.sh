@@ -170,19 +170,19 @@ do
     fi
 
     cd $dir
-    if [[ -f DONE ]] && [[ ! -d vib ]]; then
-        if [[ -f vib.txt ]]; then
-            rm vib.txt
-        fi
-        python ~/bin/tools/irfe/vib.py
-        mkdir -p vib
-        cp vib.vasp vib/POSCAR
-        cd vib
-        cp ~/bin/tools/irfe/INCAR_vib INCAR
-        cp ~/bin/tools/irfe/KPOINTS .
-        vaspkit -task 107
-        mv POSCAR_REV POSCAR
-        vaspkit -task 103
-        python3 ~/bin/orange/magmom.py
+    if [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
+        cp ~/bin/tools/irfe/run_slurm.sh .
+        numb1=$(echo "${path[-1]}" | cut -d'_' -f1)
+        numb2=$(echo "${path[-2]}" | cut -d'_' -f1)
+        jobname=IrFe-${ads}${numb2}${numb1}
+        sh ~/bin/verve/jobname.sh $jobname
+        pwd
+    elif [[ -f DONE ]] && [[ ! -d vib ]]; then
+        cp ~/bin/tools/irfe/run_slurm_vib.sh run_slurm.sh
+        numb1=$(echo "${path[-1]}" | cut -d'_' -f1)
+        numb2=$(echo "${path[-2]}" | cut -d'_' -f1)
+        jobname=vib_${ads}${numb2}${numb1}
+        sh ~/bin/verve/jobname.sh $jobname
+        # pwd
     fi
 done
