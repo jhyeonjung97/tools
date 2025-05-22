@@ -170,16 +170,19 @@ do
     fi
 
     cd $dir
-    if [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
-        # cp CONTCAR POSCAR
-        # cp ~/bin/tools/irfe/INCAR .
-        # cp ~/bin/tools/irfe/KPOINTS .
-        # vaspkit -task 107
-        # mv POSCAR_REV POSCAR
-        # rm POTCAR
-        # vaspkit -task 103
-        # python3 ~/bin/orange/magmom.py
-        cp ~/bin/tools/irfe/run_slurm.sh .
-        pwd
+    if [[ -f DONE ]] && [[ ! -d vib]]; then
+        if [[ -f vib.txt ]]; then
+            rm vib.txt
+        fi
+        python ~/bin/tools/irfe/vib.py
+        mkdir -p vib
+        cp vib.vasp vib/POSCAR
+        cd vib
+        cp ~/bin/tools/irfe/INCAR_vib INCAR
+        cp ~/bin/tools/irfe/KPOINTS .
+        vaspkit -task 107
+        mv POSCAR_REV POSCAR
+        vaspkit -task 103
+        python3 ~/bin/orange/magmom.py
     fi
 done
