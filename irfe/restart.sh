@@ -139,7 +139,6 @@ do
     elif [[ $ads == 'OH' ]]; then
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
             if [[ $site == '1_layer_top' ]] || [[ $site == '3_Ir_top' ]] || [[ $site == '4_Ir_brg' ]] || [[ $site == '5_M_top' ]] || [[ $site == '6_M_brg' ]]; then
-                touch unmatched
                 continue
             fi
         fi
@@ -151,11 +150,6 @@ do
     elif [[ $ads == 'O' ]]; then
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
             if [[ $site == '5_M_top' ]]; then
-                continue
-            fi
-        fi
-        if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
-            if [[ $site == '2_layer_hol' ]]; then
                 continue
             fi
         fi
