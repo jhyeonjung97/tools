@@ -176,6 +176,7 @@ do
         numb2=$(echo "${path[-2]}" | cut -d'_' -f1)
         jobname=IrFe-${ads}${numb2}${numb1}
         sh ~/bin/verve/jobname.sh $jobname
+        sbatch run_slurm.sh
     elif [[ ! -f vib/CONTCAR ]]; then
         cd vib
         cp ~/bin/tools/irfe/run_slurm_vib.sh run_slurm.sh
