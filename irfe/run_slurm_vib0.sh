@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=32
-#SBATCH --partition=g1
+#SBATCH --ntasks-per-node=20
+#SBATCH --partition=g2
 #SBATCH -J IrFe
 #SBATCH --time=05-00:00
 #SBATCH -o stdout.%N.%j.out
@@ -54,12 +54,7 @@ directories=(
 )
 
 for dir in "${directories[@]}"; do
-    cp $dir/CONTCAR ./POSCAR
-    cp $dir/INCAR .
-    cp $dir/KPOINTS .
-    cp $dir/POTCAR .
-    sed -i '/NSW/c\NSW = 200' INCAR
-    touch continue.log
+    cp $dir/vib/* .
     mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
-    cp * $dir/
+    cp * $dir/vib/
 done
