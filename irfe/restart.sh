@@ -170,7 +170,7 @@ do
     fi
 
     cd $dir
-    if [[ -f DONE ]] && [[ ! -d vib]]; then
+    if [[ -f DONE ]] && [[ ! -d vib ]]; then
         if [[ -f vib.txt ]]; then
             rm vib.txt
         fi
