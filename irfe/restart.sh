@@ -176,13 +176,11 @@ do
         numb2=$(echo "${path[-2]}" | cut -d'_' -f1)
         jobname=IrFe-${ads}${numb2}${numb1}
         sh ~/bin/verve/jobname.sh $jobname
-        pwd
     elif [[ ! -f vib/CONTCAR ]]; then
         cp ~/bin/tools/irfe/run_slurm_vib.sh run_slurm.sh
         numb1=$(echo "${path[-1]}" | cut -d'_' -f1)
         numb2=$(echo "${path[-2]}" | cut -d'_' -f1)
         jobname=vib_${ads}${numb2}${numb1}
         sh ~/bin/verve/jobname.sh $jobname
-        # pwd
     fi
 done
