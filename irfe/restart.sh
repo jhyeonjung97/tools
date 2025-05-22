@@ -177,13 +177,13 @@ do
         continue
     fi
 
-    cd $dir
-    if [[ -f OUTCAR ]] && [[ ! -f DONE ]] && [[ -d vib ]]; then
-        rm -r vib
-    fi
-    if [[ -f vib/CONTCAR ]]; then
-        cd vib
-        vaspkit -task 501 > vib.txt
-        mv vib.txt $dir/
-    fi
+    # cd $dir
+    # if [[ -f OUTCAR ]] && [[ ! -f DONE ]] && [[ -d vib ]]; then
+    #     rm -r vib
+    # fi
+    # if [[ -f vib/CONTCAR ]]; then
+    #     cd vib
+    #     vaspkit -task 501 > vib.txt
+    #     mv vib.txt $dir/
+    # fi
 done
