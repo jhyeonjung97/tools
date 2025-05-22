@@ -66,15 +66,21 @@ dgo = zpeo + cvo - tso
 dgh = 0.217
 
 df = pd.DataFrame()
-df.loc['E0',     ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-412.4041388, 0, 0, 0, 0, 0, 0,  0]
-df.loc['E0*H1',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-416.8018053, 0, 1, 0, 0, 0, 0,  0]
-df.loc['E0*H2',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-419.8147836, 0, 2, 0, 0, 0, 0,  0]
-df.loc['E3',     ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-423.8152177, 0, 3, 0, 0, 0, 0,  0]
-df.loc['E3*H1',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-427.9188670, 0, 4, 0, 0, 0, 0,  0]
-df.loc['E3*H2',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-430.6141604, 0, 5, 0, 0, 0, 0,  0]
+df.loc['E₀',     ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-412.4041388, 0, 0, 0, 0, 0, 0,  0]
+df.loc['E₀*H',   ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-416.8018053, 0, 1, 0, 0, 0, 0,  0]
+df.loc['E₀*H₂',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-419.8147836, 0, 2, 0, 0, 0, 0,  0]
+df.loc['E₁',     ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-416.1486068, 0, 1, 0, 0, 0, 0,  0]
+df.loc['E₁*H',   ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-420.5210881, 0, 2, 0, 0, 0, 0,  0]
+df.loc['E₁*H₂',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-423.4465657, 0, 3, 0, 0, 0, 0,  0]
+df.loc['E₂',     ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-420.0688973, 0, 2, 0, 0, 0, 0,  0]
+df.loc['E₂*H',   ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-424.3006724, 0, 3, 0, 0, 0, 0,  0]
+df.loc['E₂*H₂',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-427.0052327, 0, 4, 0, 0, 0, 0,  0]
 df.loc['Vac',    ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-414.4369611, 0, 2, 0, 0, 0, 0, -1]
-df.loc['Vac*H1', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-418.5229228, 0, 3, 0, 0, 0, 0, -1]
-df.loc['Vac*H2', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-421.2139338, 0, 4, 0, 0, 0, 0, -1]
+df.loc['Vac*H',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-418.5229228, 0, 3, 0, 0, 0, 0, -1]
+df.loc['Vac*H₂', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-421.2139338, 0, 4, 0, 0, 0, 0, -1]
+df.loc['E₃',     ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-423.8152177, 0, 3, 0, 0, 0, 0,  0]
+df.loc['E₃*H',   ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-427.9188670, 0, 4, 0, 0, 0, 0,  0]
+df.loc['E₃*H₂',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-430.6141604, 0, 5, 0, 0, 0, 0,  0]
 
 df['comp'] = (
     'X'
@@ -156,7 +162,7 @@ def plot_pourbaix(entries, png_name):
     stable_entries = pourbaix.stable_entries
     
     fig, ax = plt.subplots(figsize=(6, 5))    
-    plotter.get_pourbaix_plot(limits=[[0, 14], [-2, 1]], label_domains=False,
+    plotter.get_pourbaix_plot(limits=[[0, 14], [-2, 1]], label_domains=True,
                               show_water_lines=False, show_neutral_axes=False, ax=ax)
     
     for line in ax.lines:
@@ -186,17 +192,8 @@ def plot_pourbaix(entries, png_name):
         'S[-2] + XH3(s)': 'XH3(s) + S[-2]',
         'S[-2] + XH4(s)': 'XH4(s) + S[-2]',
     }
-    
+
     name_mapping2 = {
-        'XS(s)': r'E$_{0}$', 
-        'XHS(s)': r'E$_{0}$*H', 
-        'XH2S(s)': r'E$_{0}$*H₂', 
-        'XH3S(s)': r'E$_{3}$',
-        'XH4S(s)': r'E$_{3}$*H',
-        'XH5S(s)': r'E$_{3}$*H₂',
-        'XH2(s)': r'E$_{v}$',
-        'XH3(s)': r'E$_{v}$*H',
-        'XH4(s)': r'E$_{v}$*H₂',
         ' S[-2]': ' S²⁻',
         ' HS[-1]': ' HS⁻',
         ' H2S(s)': ' H₂S(aq)',
@@ -206,6 +203,26 @@ def plot_pourbaix(entries, png_name):
         ' H2SO4(aq)': ' H₂SO₄(aq)',
     }
 
+    count_mapping = {}
+    for _, row in df.iterrows():
+        comp = row['comp']
+        count_mapping[comp] = count_mapping.get(comp, 0) + 1
+    
+    for comp, count in count_mapping.items():
+        print(f"{comp}: {count}")
+        if count == 1:
+            matching_index = df[df['comp'] == comp].index[0]
+            name_mapping2[comp] = matching_index
+        else:
+            matching_rows = df[df['comp'] == comp]
+            min_energy_index = matching_rows.loc[matching_rows['E'].idxmin()].name
+            name_mapping2[comp] = min_energy_index
+
+    name_mapping2 = {k.replace('S0', ''): v for k, v in name_mapping2.items()}
+    name_mapping2 = {k.replace('S1', 'S'): v for k, v in name_mapping2.items()}
+    name_mapping2 = {k.replace('H0', ''): v for k, v in name_mapping2.items()}
+    name_mapping2 = {k.replace('H1', 'H'): v for k, v in name_mapping2.items()}
+    
     for text in ax.texts:
         old_name = text.get_text()
         new_name = old_name
@@ -280,20 +297,6 @@ def plot_pourbaix(entries, png_name):
         elif 'XH4(s)' in entry.name:
             color = vacancy_colors4[vacancy_names4.index(ion_part)]
         ax.fill(x, y, color=color)
-        
-    if 'bulk' in png_name:
-        ax.text(10, 0.5, r"$\mathbf{E_{v} + SO_{4}^{2-}}$", fontsize=14, ha='center')
-        ax.text(0.4, 0.8, r"$\mathbf{E_{v} + HSO_{4}^{-}}$", fontsize=14)
-        ax.text(0.4, 0.65, r"$\mathbf{E_{0}}$", fontsize=14)
-
-        ax.text(12, -0.5, r"$\mathbf{E_{0}\text{*}H}$", fontsize=14, ha='center')
-        ax.text(12, -1.1, r"$\mathbf{E_{3}\text{*}H}$", fontsize=14, ha='center')
-
-        ax.text(4, -1.35, r"$\mathbf{E_{v}\text{*}H + H_{2}S(aq)}$", fontsize=14, ha='center')
-        ax.text(4, -1.75, r"$\mathbf{E_{v}\text{*}H_{2} + H_{2}S(aq)}$", fontsize=14, ha='center')
-
-        ax.text(11, -1.65, r"$\mathbf{E_{v}\text{*}H + HS^{-}}$", fontsize=14, ha='center')
-        ax.text(11, -1.95, r"$\mathbf{E_{v}\text{*}H_{2} + HS^{-}}$", fontsize=14, ha='center')
         
     ax.set_xlabel("pH", fontsize=14)
     ax.set_ylabel("Potential (V vs SHE)", fontsize=14)
