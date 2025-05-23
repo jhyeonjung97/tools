@@ -165,7 +165,9 @@ do
         continue
     fi
 
-    if [[ -f DONE ]] && [[ ! -f unmatched ]] && [[ ! -d vib ]]; then
+    if [[ -f vib/CONTCAR ]] && [[ ! -f vib.txt ]]; then
+        cd vib
+        vaspkit -task 501 > ../vib.txt
         pwd
     fi
 done
