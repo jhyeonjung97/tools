@@ -120,7 +120,7 @@ def main():
                 continue
             
             # 진동 자유에너지 보정값 읽기
-            vib_file = os.path.join(site_path, "vib", "vib.txt")
+            vib_file = os.path.join(site_path, "vib.txt")
             vib_correction = read_vib_correction(vib_file)
             
             # ASE로 파일 읽기

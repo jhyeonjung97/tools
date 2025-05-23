@@ -210,7 +210,7 @@ def create_pourbaix_diagram(base_path):
                 done_path = os.path.join(metal_path, site, 'DONE')
                 if not os.path.exists(done_path):
                     continue
-                vib_file = os.path.join(metal_path, site, 'vib', 'vib.txt')
+                vib_file = os.path.join(metal_path, site, 'vib.txt')
                 G_vib = read_vib_correction(vib_file)
                 atoms = read(full_path)
                 energy = atoms.get_potential_energy()

@@ -59,10 +59,12 @@ def calculate_energies(df):
     df['lattice_energy'] = 0.0      # eV
     
     # 산소 원자의 원자화 에너지 (eV)
-    oxygen_atomization = 2.58  # eV
+    oxygen_element = element('O')
+    oxygen_atomization = oxygen_element.heat_of_formation / 96.485  # kJ/mol -> eV
     
     # 산소의 전자 친화도 (eV)
-    oxygen_electron_affinity = 1.46  # eV
+    oxygen_electron_affinity = 1.461 - 7.714  # eV
+    oxygen_electron_affinity = 1.461 - 844/96.485  # eV
     
     for idx, row in df.iterrows():
         metal = row['metal']
@@ -77,7 +79,7 @@ def calculate_energies(df):
         
         ionization = sum(metal_element.ionenergies[i] for i in range(1, oxidation_state + 1))
         
-        lattice = (row['form'] - sublimation - ionization - oxygen_atomization + oxygen_electron_affinity)
+        lattice = -(row['form'] - sublimation - ionization - oxygen_atomization + oxygen_electron_affinity)
         
         df.at[idx, 'sublimation_energy'] = sublimation
         df.at[idx, 'ionization_energy'] = ionization
@@ -96,7 +98,12 @@ def plot_by_metal_row(df, save_path):
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, 
                          linestyle='-', label=coord, zorder=zorder)
-            
+
+            # if row == '3d' and not '+' in coord:
+            #     xx = [0, 2, 3, 5, 6, 7, 8, 10]
+            #     yy = [35.97, 40.39, 40.75, 39.58, 40.85, 41.66, 42.52, 42.07]
+            #     plt.scatter(xx, yy, marker='o', edgecolor='black', facecolor='white', zorder=3)
+
             plt.xticks(np.arange(len(metals[row])), metals[row])
             plt.xlabel("Metal Index")
             plt.ylabel(f"{col.replace('_', ' ').title()} (eV)")
@@ -120,7 +127,12 @@ def plot_by_coordination(df, save_path):
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]           
                 plt.plot(subset['numb'], subset[col], marker=marker, color=color, 
                          linestyle='-', label=row)
-            
+
+                if row == '3d' and coord == 'RS':
+                    xx = [0, 2, 3, 5, 6, 7, 8, 10]
+                    yy = [35.97, 40.39, 40.75, 39.58, 40.85, 41.66, 42.52, 42.07]
+                    plt.scatter(xx, yy, marker=marker, edgecolor='black', facecolor='white', zorder=3)
+
             plt.xticks(np.arange(len(indice)), indice)
             plt.xlabel("Metal Index")
             plt.ylabel(f"{col.replace('_', ' ').title()} (eV)")
@@ -134,6 +146,11 @@ def plot_by_coordination(df, save_path):
 if __name__ == "__main__":
     # 에너지 계산
     df = calculate_energies(df)
+    
+    # 데이터 저장
+    df.to_csv(f'{save_path}/calculated_energies.csv')
+    df.to_csv(f'{save_path}/calculated_energies.tsv', sep='\t')
+    print(f"Data saved as calculated_energies.csv and calculated_energies.tsv in {save_path}")
     
     # 플롯 생성
     plot_by_metal_row(df, save_path)

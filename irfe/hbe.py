@@ -95,19 +95,16 @@ def main():
     clean_atoms = {}  # Clean surface 원자 객체도 저장
     slab_dir = os.path.join(base_dir, "slab")
     
-    print("Reading clean surface energies...")
     for system in selected_systems:
         system_dir = os.path.join(slab_dir, system)
         
         # DONE 파일 확인
         if not is_calculation_done(system_dir):
-            print(f"Warning: DONE file not found for {system}, skipping...")
             continue
         
         # final_with_calculator.json 파일 확인
         json_path = os.path.join(system_dir, "final_with_calculator.json")
         if not os.path.exists(json_path):
-            print(f"Warning: Clean surface file not found for {system}")
             continue
         
         # ASE로 파일 읽기
@@ -116,7 +113,6 @@ def main():
             energy = atoms.get_potential_energy()
             clean_energies[system] = energy
             clean_atoms[system] = atoms
-            print(f"  {system}: {energy:.4f} eV")
         except Exception as e:
             print(f"Error reading {json_path}: {e}")
     
@@ -130,17 +126,14 @@ def main():
         results = []
         
         ads_path = os.path.join(base_dir, ads_dir)
-        print(f"\nReading {ads_name} adsorption data...")
         
         for system in selected_systems:
             system_dir = os.path.join(ads_path, system)
             if not os.path.exists(system_dir) or not os.path.isdir(system_dir):
-                print(f"Warning: {ads_name} adsorption directory not found for {system}")
                 continue
             
             # Clean surface 에너지 확인
             if system not in clean_energies:
-                print(f"Warning: No clean surface energy for {system}, skipping...")
                 continue
             
             clean_energy = clean_energies[system]
@@ -153,17 +146,15 @@ def main():
                 
                 # DONE 파일 확인
                 if not is_calculation_done(site_path):
-                    print(f"Warning: DONE file not found for {system}/{site_dir}, skipping...")
                     continue
                 
                 # final_with_calculator.json 파일 확인
                 json_path = os.path.join(site_path, "final_with_calculator.json")
                 if not os.path.exists(json_path):
-                    print(f"Warning: No final data for {system}/{site_dir}")
                     continue
                 
                 # 진동 자유에너지 보정값 읽기
-                vib_file = os.path.join(site_path, "vib", "vib.txt")
+                vib_file = os.path.join(site_path, "vib.txt")
                 vib_correction = read_vib_correction(vib_file)
                 
                 # ASE로 파일 읽기
@@ -203,7 +194,6 @@ def main():
                     results.append(result)
                     all_results.append(result)
                     
-                    print(f"  {system}/{site_dir}: {n_adsorbate} {ads_name} atoms, {binding_energy:.4f} eV{'(normalized)' if is_layer else ''}, vib: {vib_correction:.4f} eV")
                 except Exception as e:
                     print(f"Error processing {json_path}: {e}")
         
@@ -217,9 +207,7 @@ def main():
             
             df.to_csv(csv_output, index=False)
             df.to_csv(tsv_output, sep='\t', index=False, float_format='%.4f')
-            
-            print(f"Results saved to {csv_output} and {tsv_output}")
-            
+                        
             # 그래프 그리기
             plot_binding_energies(df, base_dir, ads_name)
     
@@ -232,8 +220,6 @@ def main():
         df_all.to_csv(csv_output, index=False)
         df_all.to_csv(tsv_output, sep='\t', index=False, float_format='%.4f')
         
-        print(f"\nAll results saved to {csv_output} and {tsv_output}")
-
 def plot_binding_energies(df, base_dir, adsorbate='H'):
     """
     흡착 에너지 그래프 생성
@@ -282,7 +268,6 @@ def plot_binding_energies(df, base_dir, adsorbate='H'):
     plot_output = os.path.join(base_dir, 'figures', f'{adsorbate}_binding_energies.png')
     os.makedirs(os.path.dirname(plot_output), exist_ok=True)
     plt.savefig(plot_output, bbox_inches='tight')
-    print(f"Plot saved to {plot_output}")
     plt.close()
 
 if __name__ == "__main__":

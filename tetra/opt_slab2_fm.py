@@ -57,7 +57,7 @@ def get_kpoints(atoms, l=25, bulk=True):
 kpoints = get_kpoints(atoms, l=25, bulk=False)
 
 atoms.calc = vasp_calculator.Vasp(
-                    encut=600,
+                    encut=520,
                     xc='PBE',
                     gga='PE',
                     prec='Normal',

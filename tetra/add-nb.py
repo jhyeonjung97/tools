@@ -23,7 +23,7 @@ rows = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
     '4d': ['Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn'],
     '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb'],
-    'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
+    # 'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
 }
 
 def main():
@@ -31,8 +31,8 @@ def main():
         metals = rows[row]
         for m, metal in enumerate(metals):
             numb = str(m).zfill(2)
-            path = os.path.join(root, coord, row, f'{numb}_{metal}')
-            atoms_path = os.path.join(path, 'final_with_calculator.json')
+            path = os.path.join(root, coord, row, f'{numb}_{metal}', 'clean')
+            atoms_path = os.path.join(path, 'restart.json')
             
             if not os.path.exists(atoms_path) or os.path.exists(os.path.join(path, 'unmatched')):
                 continue
@@ -75,8 +75,8 @@ def main():
             write(os.path.join(path, 'oh.json'), atoms_oh)
             
             # Create directories o/ and oh/
-            o_dir = os.path.join(path, 'o')
-            oh_dir = os.path.join(path, 'oh')
+            o_dir = os.path.join(root, coord, row, f'{numb}_{metal}', 'o')
+            oh_dir = os.path.join(root, coord, row, f'{numb}_{metal}', 'oh')
             os.makedirs(o_dir, exist_ok=True)
             os.makedirs(oh_dir, exist_ok=True)
             
@@ -118,27 +118,34 @@ def submit_job(folder):
             with open(submit_script, 'w') as f:
                 for line in lines:
                     if line.startswith('#SBATCH -N'):
-                        line = '#SBATCH -N 2\n'
+                        line = '#SBATCH -N 1\n'
                     elif line.startswith('#SBATCH -q'):
                         line = '#SBATCH -q regular\n'
                     elif line.startswith('#SBATCH -t'):
-                        line = '#SBATCH -t 02:00:00\n'
+                        line = '#SBATCH -t 12:00:00\n'
                     elif line.startswith('#SBATCH -G'):
-                        line = '#SBATCH -G 8\n'
+                        continue
                     elif 'run_vasp_gpu' in line:
-                        line = line.replace('run_vasp_gpu.py', 'run_vasp_gpu2.py')
-                        line = line.replace('run_vasp_gpu1.py', 'run_vasp_gpu2.py')
-                        line = line.replace('run_vasp_gpu3.py', 'run_vasp_gpu2.py')
-                        line = line.replace('run_vasp_gpu4.py', 'run_vasp_gpu2.py')
-                        line = line.replace('run_vasp_gpu8.py', 'run_vasp_gpu2.py')
-                        line = line.replace('run_vasp_gpu16.py', 'run_vasp_gpu2.py')
+                        line = line.replace('run_vasp_gpu.py', 'run_vasp_cpu.py')
+                        line = line.replace('run_vasp_gpu1.py', 'run_vasp_cpu.py')
+                        line = line.replace('run_vasp_gpu2.py', 'run_vasp_cpu.py')
+                        line = line.replace('run_vasp_gpu3.py', 'run_vasp_cpu.py')
+                        line = line.replace('run_vasp_gpu4.py', 'run_vasp_cpu.py')
+                        line = line.replace('run_vasp_gpu8.py', 'run_vasp_cpu.py')
+                        line = line.replace('run_vasp_gpu16.py', 'run_vasp_cpu.py')
+                    elif 'gpu' in line:
+                        line = line.replace('gpu', 'cpu')
+                    elif 'opt_slab2_afm.py' in line:
+                        line = line.replace('opt_slab2_afm.py', 'opt_ads_cpu.py')
+                    elif 'opt_slab2_fm.py' in line:
+                        line = line.replace('opt_slab2_fm.py', 'opt_ads_cpu.py')
                     f.write(line)
             
             # Check if run_vasp_gpu2.py is present in the modified file
             with open(submit_script, 'r') as f:
                 content = f.read()
-                if 'run_vasp_gpu2.py' not in content:
-                    print(f"Warning: run_vasp_gpu2.py not found in {submit_script}")
+                if 'run_vasp_cpu.py' not in content:
+                    print(f"Warning: run_vasp_cpu.py not found in {submit_script}")
                     return
             
             subprocess.run(['sbatch', 'submit.sh'], cwd=folder, check=True)

@@ -29,16 +29,8 @@ ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
 
 if path.exists('restart.json'):
     atoms = read('restart.json')
-elif path.exists('start.traj'):
-    atoms = read('start.traj')
-    for atom in atoms:
-        if atom.symbol in spin_states_plus_2:
-            if atom.index % 2 == 1: 
-                atom.magmom = spin_states_plus_2[atom.symbol]
-            else:
-                atom.magmom = -spin_states_plus_2[atom.symbol]
 else:
-    raise ValueError('Neither restart.json nor start.traj file found')
+    raise ValueError('Missing: restart.json')
 
 lmaxmix = 2
 for atom in atoms:
@@ -47,6 +39,17 @@ for atom in atoms:
     else:
         ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
+def get_bands(atoms):
+    nbands = 0
+    nbands_per_orbital = {'s': 1, 'p': 3, 'd': 5, 'f': 7}
+    for symbol in atoms.get_chemical_symbols():
+        if symbol == 'H':  # H is bugged
+            nbands += 1
+            continue
+        orbitals = element(symbol).ec.get_valence().to_str().split()
+        nbands += sum(nbands_per_orbital[orbital[1]] * int(orbital[2:]) for orbital in orbitals)
+    return nbands
+    
 def get_kpoints(atoms, l=25, bulk=True):
     cell = atoms.get_cell()
     nkx = int(round(l/np.linalg.norm(cell[0]),0))
@@ -60,7 +63,7 @@ def get_kpoints(atoms, l=25, bulk=True):
 kpoints = get_kpoints(atoms, l=25, bulk=False)
                             
 atoms.calc = vasp_calculator.Vasp(
-                    encut=520,
+                    encut=600,
                     xc='PBE',
                     gga='PE',
                     prec='Normal',

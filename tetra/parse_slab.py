@@ -4,7 +4,7 @@ import os
 import socket
 import numpy as np
 import pandas as pd
-from ase.io import read
+from ase.io import read, write
 import glob
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
@@ -50,6 +50,8 @@ coords_data = [
     {'coord': 'NB', 'CN': 4, 'OS': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'zorder': 1, 'marker': 's', 'color': 'limegreen',},
     {'coord': 'RS', 'CN': 6, 'OS': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'zorder': 6, 'marker': 'd', 'color': 'orchid',},
     {'coord': 'LT', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'zorder': 0, 'marker': 'h', 'color': 'silver',},
+    {'coord': 'WW', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '8_Tetrahedral_WZ',  'zorder': 5, 'marker': '>', 'color': 'darkorange',},
+    {'coord': 'ZZ', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '9_Tetrahedral_ZB',  'zorder': 4, 'marker': '<', 'color': 'gold',},
 ]
 
 coords = pd.DataFrame(coords_data).set_index('coord')
@@ -68,19 +70,37 @@ def get_energy(atoms_path):
     return atoms.get_total_energy()
 
 def get_clean_surface_energy(path):
-    """깨끗한 표면의 에너지를 계산합니다."""
-    clean_path = os.path.join(path, 'final_with_calculator.json')  # clean 폴더 제거
+    """깨끗한 표면의 에너지를 계산하고 x축 뷰 이미지를 저장합니다."""
+    clean_path = os.path.join(path, 'final_with_calculator.json')
     if os.path.exists(clean_path):
-        return get_energy(clean_path)
+        atoms = read(clean_path)
+        atoms_for_image = atoms.copy()
+        atoms_for_image = atoms_for_image.repeat((2, 2, 1))
+        slab_path = os.path.join(path, 'slab.png')
+        write(slab_path, atoms_for_image, rotation='-90x', show_unit_cell=2)
+        return atoms.get_total_energy()
     return None
+
+def get_calculation_status(path):
+    """계산 폴더의 상태를 확인합니다."""
+    if not os.path.exists(os.path.join(path, 'submit.sh')):
+        return '-'
+    if os.path.exists(os.path.join(path, 'unmatched')):
+        return 'unmtch'
+    elif os.path.exists(os.path.join(path, 'unstable')):
+        return 'unstbl'
+    elif os.path.exists(os.path.join(path, 'DONE')):
+        return 'done'
+    else:
+        return 'submit'
 
 def get_lowest_energy_adsorption(adsorption_paths, clean_energy):
     """여러 흡착 구조 중 가장 낮은 에너지를 가진 것을 선택하고 흡착 에너지를 계산합니다."""
     energies = {}
     for path in adsorption_paths:
-        # 흡착물 폴더에 DONE 파일이 있는지 확인
+        # 흡착물 폴더에 DONE 파일이 있는지 확인하고 unmatched 파일이 없는지 확인
         ads_dir = os.path.dirname(path)
-        if not os.path.exists(os.path.join(ads_dir, 'DONE')):
+        if not os.path.exists(os.path.join(ads_dir, 'DONE')) or os.path.exists(os.path.join(ads_dir, 'unmatched')):
             continue
             
         energy = get_energy(path)
@@ -99,6 +119,56 @@ def get_lowest_energy_adsorption(adsorption_paths, clean_energy):
             energies[base_ads] = {'energy': ads_energy, 'path': path}
     return energies
 
+def create_progress_file():
+    """계산 진행 상황을 추적하는 TSV 파일을 생성합니다."""
+    # 컬럼 생성
+    columns = ['coord', 'row', 'ads']
+    columns.extend([str(i).zfill(2) for i in range(13)])  # 00부터 12까지
+    
+    # 데이터프레임 생성
+    df = pd.DataFrame(columns=columns)
+    
+    # 각 coord와 row에 대해
+    for coord in coords.index:
+        coord_dir = coords.loc[coord, 'coord_dir']
+        for row in ['3d', '4d', '5d']:
+            print(f"\nProcessing {coord} {row}...")
+            # clean 상태 추가
+            clean_status = []
+            for i in range(13):
+                path = os.path.join(root, coord_dir, row, f'{i:02d}_{metals[row][i]}')
+                status = get_calculation_status(path)
+                clean_status.append(status)
+            df.loc[len(df)] = [coord, row, 'clean'] + clean_status
+            
+            # o, o1, o2 상태 추가
+            for ads in ['o', 'o1', 'o2']:
+                ads_status = []
+                for i in range(13):
+                    path = os.path.join(root, coord_dir, row, f'{i:02d}_{metals[row][i]}', ads)
+                    status = get_calculation_status(path)
+                    ads_status.append(status)
+                df.loc[len(df)] = [coord, row, ads] + ads_status
+            
+            # oh, oh1, oh2 상태 추가
+            for ads in ['oh', 'oh1', 'oh2']:
+                ads_status = []
+                for i in range(13):
+                    path = os.path.join(root, coord_dir, row, f'{i:02d}_{metals[row][i]}', ads)
+                    status = get_calculation_status(path)
+                    ads_status.append(status)
+                df.loc[len(df)] = [coord, row, ads] + ads_status
+    
+    # 모든 금속 데이터가 비어있는 행 삭제
+    metal_columns = [str(i).zfill(2) for i in range(13)]
+    df = df[df[metal_columns].apply(lambda x: x != '-').any(axis=1)]
+    
+    # TSV 파일로 저장
+    output_path = os.path.join(save_path, 'calculation_progress.tsv')
+    df.to_csv(output_path, sep='\t', index=False)
+    print(f"\nProgress file saved to: {output_path}")
+    return df
+
 def main():
     df = pd.DataFrame(columns=['coord', 'row', 'numb', 'metal', 'o_energy', 'oh_energy'])
     
@@ -108,7 +178,7 @@ def main():
     
     for path in all_paths:
         # DONE 파일이 있는지 확인
-        if not os.path.exists(os.path.join(path, 'DONE')):
+        if not os.path.exists(os.path.join(path, 'DONE')) or os.path.exists(os.path.join(path, 'unmatched')):
             continue
             
         # 경로에서 정보 추출
@@ -167,6 +237,12 @@ def main():
     df['numb'] = df['numb'].astype(int)
     df = df.sort_values(['coord', 'row', 'numb'])
     print(df)
+    
+    # 계산 진행 상황 파일 생성
+    print("\nCreating calculation progress file...")
+    progress_df = create_progress_file()
+    print("\nCalculation Progress:")
+    print(progress_df)
     
     # 그래프 그리기
     plot_by_metal_row(df, save_path)

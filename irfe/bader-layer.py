@@ -21,7 +21,7 @@ system_names = ['IrMn', 'IrFe', 'IrCo', 'IrNi', 'Ir']
 
 # 사용할 흡착물 리스트
 selected_adsorbates = ['1_H', '2_OH', '3_O']
-coverages = ['layer', 'atom']
+coverages = ['layer']
 
 # Find all atoms_bader_charge.json files and sort them (선택된 표면, 흡착물만)
 pattern = os.path.join(base_dir, '*_*/*_*/*_*_*/atoms_bader_charge.json')
@@ -445,7 +445,7 @@ def create_layer_distance_comparison(layer_pair, df, selected_systems, system_na
     plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left')
     plt.grid(True, linestyle='--', alpha=0.7)
     
-    plot_output = os.path.join(base_dir, 'figures', f'layer_distances_L{prev_layer}-L{current_layer}_comparison.png')
+    plot_output = os.path.join(base_dir, 'figures', f'layer_distances_L{prev_layer}-L{current_layer}_comparison_layer.png')
     os.makedirs(os.path.dirname(plot_output), exist_ok=True)
     plt.savefig(plot_output, bbox_inches='tight')
     plt.close()

@@ -32,9 +32,9 @@ def main():
         for m, metal in enumerate(metals):
             numb = str(m).zfill(2)
             path = os.path.join(root, coord, row, f'{numb}_{metal}')
-            atoms_path = os.path.join(path, 'final_with_calculator.json')
+            atoms_path = os.path.join(path, 'restart.json')
             
-            if not os.path.exists(atoms_path) or os.path.exists(os.path.join(path, 'unmatched')):
+            if not os.path.exists(atoms_path) or not os.path.exists(os.path.join(path, 'unstable')):
                 continue
 
             atoms = read(atoms_path)
@@ -148,7 +148,7 @@ def submit_job(folder):
                     elif line.startswith('#SBATCH -q'):
                         line = '#SBATCH -q regular\n'
                     elif line.startswith('#SBATCH -t'):
-                        line = '#SBATCH -t 02:00:00\n'
+                        line = '#SBATCH -t 04:00:00\n'
                     elif line.startswith('#SBATCH -G'):
                         line = '#SBATCH -G 8\n'
                     elif 'run_vasp_gpu' in line:
