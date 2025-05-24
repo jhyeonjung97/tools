@@ -43,6 +43,7 @@ for i, tm_ads_dir in enumerate(tm_ads_dirs):
                         zpe = float(line.split()[-2])
                     if 'Entropy contribution T*S' in line:
                         ts = float(line.split()[-2])
+                print(zpe, ts)
                 tm_energy += zpe - ts
                 
             ir_vib_path = f'{ir_path}/vib.txt'
@@ -63,12 +64,12 @@ for i, tm_ads_dir in enumerate(tm_ads_dirs):
 print(df)
 
 # Create the plot
-plt.figure(figsize=(6, 4))
+plt.figure(figsize=(4, 3))
 df.plot(marker='o', ax=plt.gca())
 plt.axhline(y=0, color='black', linewidth=1.0)
-plt.xlabel('Surface')
-plt.ylabel('Energy Difference / Surface Area (eV/Å²)')
-plt.legend(title='Adsorbate')
+plt.ylim(-0.1, 0.4)
+plt.ylabel('ΔG / Surface Area (eV/Å²)')
+plt.legend()
 plt.tight_layout()
 plt.savefig('segregation_plot.png')
 plt.show()
