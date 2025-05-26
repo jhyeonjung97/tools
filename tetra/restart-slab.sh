@@ -1,26 +1,16 @@
 #!/bin/bash
 
-for coord in 1_Tetrahedral_WZ 2_Tetrahedral_ZB 3_SquarePlanar_TN 4_SquarePlanar_PD 5_SquarePlanar_NB 6_Octahedral_RS 7_Pyramidal_LT
+for coord in 1_Tetrahedral_WZ 2_Tetrahedral_ZB 3_SquarePlanar_TN 4_SquarePlanar_PD 5_SquarePlanar_NB 6_Octahedral_RS 7_Pyramidal_LT 8_Tetrahedral_WZ 9_Tetrahedral_ZB
 do
-    for row in 3d 4d 5d fm
+    for row in 3d 4d 5d
     do
         for dir in /pscratch/sd/j/jiuy97/8_V_slab/${coord}/${row}/*_*/
         do
             cd ${dir}
-            if [[ -f 'DONE' ]] || [[ -f 'unmatched' ]]; then
-                mkdir -p clean
-                mv * clean
-                if [[ -d 'clean/o' ]]; then
-                    mv clean/o/ old_o
-                    mv clean/oh/ old_oh
-                elif [[ -d 'clean/o1' ]]; then
-                    mv clean/o1/ old_o1
-                    mv clean/o2/ old_o2
-                    mv clean/oh1/ old_oh1
-                    mv clean/oh2/ old_oh2
-                fi
+            if [[ -f 'unmatched' ]] || [[ -f 'DONE' ]]; then
+                continue
             else
-                pwd
+                echo ${dir}
             fi
         done
     done
