@@ -155,6 +155,8 @@ def submit_job(folder):
                         line = line.replace('run_vasp_gpu16.py', 'run_vasp_gpu2.py')
                     elif 'cpu' in line:
                         line = line.replace('cpu', 'gpu')
+                    elif 'WZ' in line:
+                        line = line.replace('WZ', 'WW')
                     elif 'opt_slab2_afm.py' in line:
                         line = line.replace('opt_slab2_afm.py', 'opt_ads_gpu.py')
                     elif 'opt_slab2_fm.py' in line:
