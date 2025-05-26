@@ -64,7 +64,7 @@ def main():
             closer_metal = highest_metals[np.argmin(x_distances)]
             
             # Get highest two metal atoms
-            highest_oxygens = o_z_sorted[-2:]
+            highest_oxygens = o_z_sorted[-4:-2]
             # Calculate midpoint using cell's x-length
             x_midpoint = atoms.cell[0, 0] / 2
             # Find the metal atom that is further from the midpoint
