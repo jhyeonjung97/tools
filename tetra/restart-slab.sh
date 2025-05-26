@@ -20,18 +20,21 @@ for coord in 1_Tetrahedral_WZ 2_Tetrahedral_ZB 3_SquarePlanar_TN 4_SquarePlanar_
 do
     for row in 3d 4d 5d
     do
-        for dir in /pscratch/sd/j/jiuy97/8_V_slab/${coord}/${row}/*_*/clean/o
+        for ads in o oh
         do
-            cd ${dir}
-            IFS='/' read -r -a path <<< $dir
-            coordi=$(echo "${path[-3]}" | cut -d'_' -f3)
-            numb=$(echo "${path[-1]}" | cut -d'_' -f1)
-            jobname=${coordi}${row}${numb}
-            if [[ -f 'unmatched' ]] || [[ -f 'DONE' ]] || [[ -n $(squeue --me | grep $jobname) ]]; then
-                continue
-            elif [[ -f 'submit.sh' ]]; then
-                python ~/bin/get_restart3
-            fi
+            for dir in /pscratch/sd/j/jiuy97/8_V_slab/${coord}/${row}/*_*/${ads}
+            do
+                cd ${dir}
+                IFS='/' read -r -a path <<< $dir
+                coordi=$(echo "${path[-3]}" | cut -d'_' -f3)
+                numb=$(echo "${path[-1]}" | cut -d'_' -f1)
+                jobname=${coordi}${row}${numb}${ads}
+                if [[ -f 'unmatched' ]] || [[ -f 'DONE' ]] || [[ -n $(squeue --me | grep $jobname) ]]; then
+                    continue
+                elif [[ -f 'submit.sh' ]]; then
+                    python ~/bin/get_restart3
+                fi
+            done
         done
     done
 done
