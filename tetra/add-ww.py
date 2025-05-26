@@ -72,11 +72,14 @@ def main():
             x_distances = np.abs(lowest_oxygens[:, 0] - x_midpoint)
             further_oxygen = lowest_oxygens[np.argmax(x_distances)]
             closer_oxygen = lowest_oxygens[np.argmin(x_distances)]
-
-            if metal == 'Ti':
-                print(highest_metal, closer_metal, closer_oxygen)
                 
             o_vector = closer_oxygen - closer_metal
+
+            if metal in ['Ru', 'Rh', 'Pd', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']:
+                o_vector = (0, o_vector[1], np.sqrt(o_vector[0]**2 + o_vector[2]**2))
+            elif metal == 'Zr':
+                o_vector = (0, 0, np.linalg.norm(o_vector))
+            
             new_o_position = highest_metal + o_vector
             
             # Create new structure with additional oxygen
