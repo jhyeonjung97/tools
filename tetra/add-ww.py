@@ -76,9 +76,9 @@ def main():
             o_vector = closer_oxygen - closer_metal
 
             if metal in ['Ru', 'Rh', 'Pd', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt']:
-                o_vector = (0, o_vector[1], np.sqrt(o_vector[0]**2 + o_vector[2]**2))
+                o_vector = (0.2, o_vector[1], np.sqrt((o_vector[0]-0.2)**2 + o_vector[2]**2))
             elif metal == 'Zr':
-                o_vector = (0, 0, np.linalg.norm(o_vector))
+                o_vector = (0.2, 0, np.linalg.norm(o_vector-(0.2, 0, 0)))
             
             new_o_position = highest_metal + o_vector
             
