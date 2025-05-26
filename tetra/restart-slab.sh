@@ -16,7 +16,7 @@
 #     done
 # done
 
-for coord in 1_Tetrahedral_WZ 2_Tetrahedral_ZB 3_SquarePlanar_TN 4_SquarePlanar_PD 5_SquarePlanar_NB 6_Octahedral_RS 7_Pyramidal_LT 8_Tetrahedral_WZ 9_Tetrahedral_ZB
+for coord in 1_Tetrahedral_WZ 2_Tetrahedral_ZB # 3_SquarePlanar_TN 4_SquarePlanar_PD 5_SquarePlanar_NB 6_Octahedral_RS 7_Pyramidal_LT 8_Tetrahedral_WZ 9_Tetrahedral_ZB
 do
     for row in 3d 4d 5d
     do
@@ -32,7 +32,7 @@ do
                 if [[ -f 'unmatched' ]] || [[ -f 'DONE' ]] || [[ -n $(squeue --me | grep $jobname) ]]; then
                     continue
                 elif [[ -f 'submit.sh' ]]; then
-                    pwd; python ~/bin/get_restart3
+                    pwd; # python ~/bin/get_restart3
                 fi
             done
         done
