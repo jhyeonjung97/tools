@@ -57,30 +57,25 @@ def main():
             
             # Get highest two metal atoms
             highest_metals = metal_z_sorted[-2:]
-            # Calculate midpoint using cell's x-length
             x_midpoint = atoms.cell[0, 0] / 2
-            # Find the metal atom that is further from the midpoint
             x_distances = np.abs(highest_metals[:, 0] - x_midpoint)
             highest_metal = highest_metals[np.argmin(x_distances)]
 
             # Get highest two metal atoms
             lowest_metals = metal_z_sorted[:2]
-            # Calculate midpoint using cell's x-length
-            x_midpoint = atoms.cell[0, 0] / 2
-            # Find the metal atom that is further from the midpoint
             x_distances = np.abs(lowest_metals[:, 0] - x_midpoint)
             further_metal = lowest_metals[np.argmax(x_distances)]
             closer_metal = lowest_metals[np.argmin(x_distances)]
 
             # Get highest two metal atoms
             lowest_oxygens = o_z_sorted[:2]
-            # Calculate midpoint using cell's x-length
-            x_midpoint = atoms.cell[0, 0] / 2
-            # Find the metal atom that is further from the midpoint
             x_distances = np.abs(lowest_oxygens[:, 0] - x_midpoint)
             further_oxygen = lowest_oxygens[np.argmax(x_distances)]
             closer_oxygen = lowest_oxygens[np.argmin(x_distances)]
 
+            if metal == 'Ti':
+                print(highest_metal, closer_metal, closer_oxygen)
+                
             o_vector = closer_oxygen - closer_metal
             new_o_position = highest_metal + o_vector
             
