@@ -83,7 +83,9 @@ def main():
             write(os.path.join(path, 'o1.json'), atoms_o1)
             
             # Calculate o2_vector by flipping o1_vector in y-direction
-            o2_vector = o1_vector * np.array([1.0, -1.0, 1.0])
+            a = atoms.cell.cellpar()[0]
+            b = atoms.cell.cellpar()[1]
+            o2_vector = np.array([a/4, b/4, o1_vector[2]-0.5])
             
             # Add second oxygen using o2_vector to the closer metal
             pos_o2 = closer_metal + o2_vector
