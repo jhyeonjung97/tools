@@ -102,7 +102,7 @@ def main():
             write(os.path.join(path, 'oh1.json'), atoms_oh1)
             
             atoms_oh2 = atoms_o2.copy()
-            h2_pos = pos_o2 + np.array([1.0, 0.0, 0.0])
+            h2_pos = pos_o2 + np.array([0.0, 0.0, 1.0])
             atoms_oh2.append('H')
             atoms_oh2.positions[-1] = h2_pos
             write(os.path.join(path, 'oh2.json'), atoms_oh2)
