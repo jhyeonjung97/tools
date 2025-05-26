@@ -68,7 +68,7 @@ def main():
             closer_metal = lowest_metals[np.argmin(x_distances)]
 
             # Get highest two metal atoms
-            lowest_oxygens = o_z_sorted[:2]
+            lowest_oxygens = o_z_sorted[2:4]
             x_distances = np.abs(lowest_oxygens[:, 0] - x_midpoint)
             further_oxygen = lowest_oxygens[np.argmax(x_distances)]
             closer_oxygen = lowest_oxygens[np.argmin(x_distances)]
