@@ -171,8 +171,8 @@ def submit_job(folder):
                     print(f"Warning: run_vasp_cpu.py not found in {submit_script}")
                     return
             
-            subprocess.run(['sbatch', 'submit.sh'], cwd=folder, check=True)
-            print(f"Submitted job in {folder}")
+            # subprocess.run(['sbatch', 'submit.sh'], cwd=folder, check=True)
+            # print(f"Submitted job in {folder}")
         except subprocess.CalledProcessError as e:
             print(f"Failed to submit job in {folder}: {e}")
             
