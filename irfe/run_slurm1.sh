@@ -12,7 +12,7 @@
 
 for dir in 1_Ir_top 2_Ir_hol 3_IrFe_top1 4_IrFe_top2 5_IrFe_top3
 do
-    cp $dir/7_OH_OH/* .
+    cp ../$dir/7_OH_OH/* .
     mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
-    cp * $dir/7_OH_OH/
+    cp * ../$dir/7_OH_OH/
 done
