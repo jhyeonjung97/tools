@@ -158,6 +158,12 @@ def submit_job(folder):
                         line = line.replace('run_vasp_gpu4.py', 'run_vasp_gpu2.py')
                         line = line.replace('run_vasp_gpu8.py', 'run_vasp_gpu2.py')
                         line = line.replace('run_vasp_gpu16.py', 'run_vasp_gpu2.py')
+                    elif 'cpu' in line:
+                        line = line.replace('cpu', 'gpu')
+                    elif 'opt_slab2_afm.py' in line:
+                        line = line.replace('opt_slab2_afm.py', 'opt_ads_gpu.py')
+                    elif 'opt_slab2_fm.py' in line:
+                        line = line.replace('opt_slab2_fm.py', 'opt_ads_gpu.py')
                     f.write(line)
             
             # Check if run_vasp_gpu2.py is present in the modified file
