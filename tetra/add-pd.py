@@ -31,10 +31,10 @@ def main():
         metals = rows[row]
         for m, metal in enumerate(metals):
             numb = str(m).zfill(2)
-            path = os.path.join(root, coord, row, f'{numb}_{metal}')
+            path = os.path.join(root, coord, row, f'{numb}_{metal}', 'clean')
             atoms_path = os.path.join(path, 'restart.json')
             
-            if not os.path.exists(atoms_path) or not os.path.exists(os.path.join(path, 'unstable')):
+            if not os.path.exists(atoms_path) or os.path.exists(os.path.join(path, 'unmatched')):
                 continue
 
             atoms = read(atoms_path)
@@ -107,7 +107,7 @@ def main():
             
             # Create directories and move files
             for name in ['o1', 'o2', 'oh1', 'oh2']:
-                subdir = os.path.join(path, name)
+                subdir = os.path.join(root, coord, row, f'{numb}_{metal}', name)
                 os.makedirs(subdir, exist_ok=True)
                 shutil.copy(os.path.join(path, f'{name}.json'), os.path.join(subdir, 'restart.json'))
             
@@ -115,7 +115,7 @@ def main():
             submit_path = os.path.join(path, 'submit.sh')
             if os.path.exists(submit_path):
                 for suffix in ['o1', 'o2', 'oh1', 'oh2']:
-                    subdir = os.path.join(path, suffix)
+                    subdir = os.path.join(root, coord, row, f'{numb}_{metal}', suffix)
                     shutil.copy(submit_path, os.path.join(subdir, 'submit.sh'))
                     modify_job_name(os.path.join(subdir, 'submit.sh'), suffix)
                     submit_job(subdir)
