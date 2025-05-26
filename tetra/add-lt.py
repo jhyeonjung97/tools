@@ -24,7 +24,7 @@ rows = {
     '3d': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge'],
     '4d': ['Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn'],
     '5d': ['Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb'],
-    'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
+    # 'fm': ['Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge']
 }
 
 def main():
@@ -134,8 +134,8 @@ def submit_job(folder):
                     print(f"Warning: run_vasp_cpu.py not found in {submit_script}")
                     return
             
-            # subprocess.run(['sbatch', 'submit.sh'], cwd=folder, check=True)
-            # print(f"Submitted job in {folder}")
+            subprocess.run(['sbatch', 'submit.sh'], cwd=folder, check=True)
+            print(f"Submitted job in {folder}")
         except subprocess.CalledProcessError as e:
             print(f"Failed to submit job in {folder}: {e}")
             
