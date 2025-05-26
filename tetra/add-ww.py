@@ -90,7 +90,7 @@ def main():
             
             # Add hydrogen atom 0.9 Angstroms in x-direction from the new oxygen
             atoms_oh = atoms_o.copy()
-            h_position = new_o_position + np.array([0.9, 0.0, 0.0])
+            h_position = new_o_position - np.array([0.9, 0.0, 0.0])
             atoms_oh.append('H')
             atoms_oh.positions[-1] = h_position
             write(os.path.join(path, 'oh.json'), atoms_oh)
