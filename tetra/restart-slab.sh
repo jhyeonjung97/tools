@@ -10,7 +10,7 @@ do
             if [[ -f 'unmatched' ]] || [[ -f 'DONE' ]]; then
                 continue
             elif [[ -f 'submit.sh' ]]; then
-                echo ${dir}
+                python ~/bin/get_restart3
             fi
         done
     done
