@@ -32,7 +32,7 @@ do
                 if [[ -f 'unmatched' ]] || [[ -f 'DONE' ]] || [[ -n $(squeue --me | grep $jobname) ]]; then
                     continue
                 elif [[ -f 'submit.sh' ]]; then
-                    python ~/bin/get_restart3
+                    pwd; python ~/bin/get_restart3
                 fi
             done
         done
