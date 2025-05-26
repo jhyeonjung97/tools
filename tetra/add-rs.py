@@ -54,19 +54,30 @@ def main():
             o_z_sorted = o_positions[o_positions[:, 2].argsort()]
             metal_z_sorted = metal_positions[metal_positions[:, 2].argsort()]
             
-            # Get highest metal and third highest oxygen atoms
-            highest_metal = metal_z_sorted[-1]
-            third_highest_oxygen = o_z_sorted[-3]
+            # Get highest two metal atoms
+            highest_metals = metal_z_sorted[-2:]
+            # Calculate midpoint using cell's x-length
+            x_midpoint = atoms.cell[0, 0] / 2
+            # Find the metal atom that is further from the midpoint
+            x_distances = np.abs(highest_metals[:, 0] - x_midpoint)
+            further_metal = highest_metals[np.argmax(x_distances)]
+            closer_metal = highest_metals[np.argmin(x_distances)]
             
+            # Get highest two metal atoms
+            highest_oxygens = o_z_sorted[-2:]
+            # Calculate midpoint using cell's x-length
+            x_midpoint = atoms.cell[0, 0] / 2
+            # Find the metal atom that is further from the midpoint
+            x_distances = np.abs(highest_oxygens[:, 0] - x_midpoint)
+            further_oxygen = highest_oxygens[np.argmax(x_distances)]
+            closer_oxygen = highest_oxygens[np.argmin(x_distances)]
+
             # Calculate bond_vector as z-difference between highest metal and third highest oxygen
-            dz = highest_metal[2] - third_highest_oxygen[2]
+            dz = closer_metal[2] - closer_oxygen[2]
             bond_vector = np.array([0.0, 0.0, dz])
             
-            # Calculate reference point (center of x,y cell at highest z)
-            ref_point = np.array([atoms.cell[0, 0]/2, atoms.cell[1, 1]/2, highest_metal[2]])
-            
             # Add oxygen using bond_vector from reference point
-            pos_o = ref_point + bond_vector
+            pos_o = closer_metal + bond_vector
             atoms_o = atoms.copy()
             atoms_o.append('O')
             atoms_o.positions[-1] = pos_o
