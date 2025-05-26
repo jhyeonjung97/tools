@@ -117,63 +117,76 @@
 # cd ../..
 # ls
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*
-do
-    IFS='/' read -r -a path <<< $dir
-    site=${path[-1]}
-    metal=$(echo "${path[-2]}" | cut -d'_' -f2)
-    ads=$(echo "${path[-3]}" | cut -d'_' -f2)
+# for dir in /home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*
+# do
+#     IFS='/' read -r -a path <<< $dir
+#     site=${path[-1]}
+#     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
+#     ads=$(echo "${path[-3]}" | cut -d'_' -f2)
 
-    cd $dir
-    if [[ $ads == 'H' ]]; then
-        if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
-            if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
-                continue
-            fi
-        fi
-        if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
-            if [[ $site == '2_layer_hol' ]] || [[ $site == '6_atom_hol2' ]]; then
-                continue
-            fi
-        fi
-    elif [[ $ads == 'OH' ]]; then
-        if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
-            if [[ $site == '1_layer_top' ]] || [[ $site == '3_Ir_top' ]] || [[ $site == '4_Ir_brg' ]] || [[ $site == '5_M_top' ]] || [[ $site == '6_M_brg' ]]; then
-                continue
-            fi
-        fi
-        if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
-            if [[ $site == '2_layer_brg' ]]; then
-                continue
-            fi
-        fi
-    elif [[ $ads == 'O' ]]; then
-        if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
-            if [[ $site == '5_M_top' ]]; then
-                continue
-            fi
-        fi
-    elif [[ $ads == 'R1' ]] || [[ $ads == 'R2' ]]; then
-        site=${path[-2]}
-        intermediate=${path[-1]}
-        if [[ $site == '6_IrFe_hol1' ]] || [[ $site == '7_IrFe_hol2' ]] || [[ $site == '8_IrFe_hol3' ]]; then
-            continue
-        elif [[ $intermediate == '4_O_O' ]]; then
-            continue
-        fi
-    else
-        continue
-    fi
+#     cd $dir
+#     if [[ $ads == 'H' ]]; then
+#         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
+#             if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
+#                 continue
+#             fi
+#         fi
+#         if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
+#             if [[ $site == '2_layer_hol' ]] || [[ $site == '6_atom_hol2' ]]; then
+#                 continue
+#             fi
+#         fi
+#     elif [[ $ads == 'OH' ]]; then
+#         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
+#             if [[ $site == '1_layer_top' ]] || [[ $site == '3_Ir_top' ]] || [[ $site == '4_Ir_brg' ]] || [[ $site == '5_M_top' ]] || [[ $site == '6_M_brg' ]]; then
+#                 continue
+#             fi
+#         fi
+#         if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
+#             if [[ $site == '2_layer_brg' ]]; then
+#                 continue
+#             fi
+#         fi
+#     elif [[ $ads == 'O' ]]; then
+#         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
+#             if [[ $site == '5_M_top' ]]; then
+#                 continue
+#             fi
+#         fi
+#     elif [[ $ads == 'R1' ]] || [[ $ads == 'R2' ]]; then
+#         site=${path[-2]}
+#         intermediate=${path[-1]}
+#         if [[ $site == '6_IrFe_hol1' ]] || [[ $site == '7_IrFe_hol2' ]] || [[ $site == '8_IrFe_hol3' ]]; then
+#             continue
+#         elif [[ $intermediate == '4_O_O' ]]; then
+#             continue
+#         fi
+#     else
+#         continue
+#     fi
 
-    if [[ -f vib/CONTCAR ]] && [[ ! -f vib.txt ]]; then
-        cd vib
-        vaspkit -task 501 > ../vib.txt
-        pwd
-    fi
-done
+#     if [[ -f vib/CONTCAR ]] && [[ ! -f vib.txt ]]; then
+#         cd vib
+#         vaspkit -task 501 > ../vib.txt
+#         pwd
+#     fi
+# done
 
 # for dir in /home/hyeonjung/scratch/4_IrFe3/sgr/*_*_*/*_*
 # do
 #     cd $dir/vib/
 #     vaspkit -task 501 > $dir/vib.txt
 # done
+
+for dir in /home/hyeonjung/scratch/4_IrFe3/*_R*/*_*_*/7_OH_OH
+do
+    cd $dir
+    cp ~/bin/tools/irfe/INCAR .
+    cp ~/bin/tools/irfe/KPOINTS .
+    mv *.vasp POSCAR
+    vaspkit -task 107
+    mv POSCAR_REV POSCAR
+    rm POTCAR
+    vaspkit -task 103
+    python3 ~/bin/orange/magmom.py
+done
