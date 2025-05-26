@@ -9,7 +9,7 @@ do
             cd ${dir}
             if [[ -f 'unmatched' ]] || [[ -f 'DONE' ]]; then
                 continue
-            else
+            elif [[ -f 'submit.sh' ]]; then
                 echo ${dir}
             fi
         done
