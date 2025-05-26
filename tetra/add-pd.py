@@ -88,7 +88,7 @@ def main():
             o2_vector = np.array([a/4, b/4, o1_vector[2]-0.5])
             
             # Add second oxygen using o2_vector to the closer metal
-            pos_o2 = closer_metal + o2_vector
+            pos_o2 = further_metal + o2_vector
             atoms_o2 = atoms.copy()
             atoms_o2.append('O')
             atoms_o2.positions[-1] = pos_o2
