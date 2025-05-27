@@ -60,7 +60,6 @@ atoms.calc = vasp_calculator.Vasp(
                     #bmix_mag=0.0001,
                     kpts=kpoints,
                     kpar=3,
-                    npar=1,
                     gamma=False,
                     ismear=0,
                     sigma=0.05,
