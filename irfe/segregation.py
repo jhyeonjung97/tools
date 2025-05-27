@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-adsorbates = ['None', 'H_1ML', 'O_1ML']
+adsorbates = ['Clean', 'H', 'O']
 tm_ads_dirs = ['0_slab', '2_H_hol', '4_O_hol'] # '3_O_top',
 surface_dirs = ['5_IrMn', '6_IrFe', '7_IrCo', '8_IrNi']
 surfaces = ['IrMn', 'IrFe', 'IrCo', 'IrNi']
@@ -65,7 +65,8 @@ print(df)
 
 # Create the plot
 plt.figure(figsize=(4, 3))
-df.plot(marker='o', ax=plt.gca())
+colors = {'Clean': 'black', 'H': 'blue', 'O': 'red'}
+df.plot(marker='o', ax=plt.gca(), color=[colors[col] for col in df.columns])
 plt.axhline(y=0, color='black', linewidth=1.0)
 plt.ylim(-0.1, 0.4)
 plt.ylabel('ΔG / Surface Area (eV/Å²)')

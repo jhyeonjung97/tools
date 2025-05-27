@@ -131,6 +131,7 @@ def create_pourbaix_diagram(base_path):
     U_range = [Umin, Umax]
 
     cross_potentials = []  # (system_name, x_cross) 저장용 리스트
+    zero_crossings = []    # (system_name, adsorbate, x_cross) 저장용 리스트
     
     for metal_code, system_name in zip(selected_systems, system_names):
         clean_path = os.path.join(base_path, 'slab', metal_code, 'final_with_calculator.json')
@@ -152,61 +153,55 @@ def create_pourbaix_diagram(base_path):
             if not os.path.exists(metal_path):
                 continue
                 
-            for site in os.listdir(metal_path):
-                # layer_top 데이터만 처리
-                if 'layer_top' not in site:
-                    continue
-                    
-                if site.startswith('.'):
-                    continue
-                    
-                site_path = os.path.join(metal_path, site)
-                if not os.path.isdir(site_path):
-                    continue
-                    
-                # DONE 파일 확인
-                if not is_calculation_done(site_path):
-                    continue
-                    
-                full_path = os.path.join(site_path, 'final_with_calculator.json')
-                if not os.path.exists(full_path):
-                    continue
-                    
-                vib_file = os.path.join(site_path, 'vib.txt')
-                G_vib = read_vib_correction(vib_file)
-                atoms = read(full_path)
-                energy = atoms.get_potential_energy()
-                counts = count_elements(atoms)
+            # 1_layer_top 데이터만 처리
+            site = '1_layer_top'
+            site_path = os.path.join(metal_path, site)
+            if not os.path.exists(site_path) or not os.path.isdir(site_path):
+                continue
                 
-                Gmin = calculate_free_energy(energy, energy_clean, counts['H'], counts['O'], Umin, G_vib)
-                Gmax = calculate_free_energy(energy, energy_clean, counts['H'], counts['O'], Umax, G_vib)
-                G0 = calculate_free_energy(energy, energy_clean, counts['H'], counts['O'], 0, G_vib)
+            # DONE 파일 확인
+            if not is_calculation_done(site_path):
+                continue
                 
-                # 흡착물 이름 추출 (1_H -> H)
-                ads_name = clean_label(ads)
+            full_path = os.path.join(site_path, 'final_with_calculator.json')
+            if not os.path.exists(full_path):
+                continue
                 
-                # 모든 데이터 저장
-                all_data.append({
-                    'ads': ads_name,
-                    'site': site,
-                    'E': energy,
-                    'E0': energy_clean,
-                    'n_H': counts['H'],
-                    'n_O': counts['O'],
-                    'G_vib': G_vib,
+            vib_file = os.path.join(site_path, 'vib.txt')
+            G_vib = read_vib_correction(vib_file)
+            atoms = read(full_path)
+            energy = atoms.get_potential_energy()
+            counts = count_elements(atoms)
+            
+            Gmin = calculate_free_energy(energy, energy_clean, counts['H'], counts['O'], Umin, G_vib)
+            Gmax = calculate_free_energy(energy, energy_clean, counts['H'], counts['O'], Umax, G_vib)
+            G0 = calculate_free_energy(energy, energy_clean, counts['H'], counts['O'], 0, G_vib)
+            
+            # 흡착물 이름 추출 (1_H -> H)
+            ads_name = clean_label(ads)
+            
+            # 모든 데이터 저장
+            all_data.append({
+                'ads': ads_name,
+                'site': site,
+                'E': energy,
+                'E0': energy_clean,
+                'n_H': counts['H'],
+                'n_O': counts['O'],
+                'G_vib': G_vib,
+                'Gmin': Gmin,
+                'Gmax': Gmax,
+                'G0': G0
+            })
+            
+            # 가장 안정한 것만 저장
+            if ads_name not in ads_data or G0 < ads_data[ads_name]['G0']:
+                ads_data[ads_name] = {
                     'Gmin': Gmin,
                     'Gmax': Gmax,
-                    'G0': G0
-                })
-                
-                # 가장 안정한 것만 저장
-                if ads_name not in ads_data or G0 < ads_data[ads_name]['G0']:
-                    ads_data[ads_name] = {
-                        'Gmin': Gmin,
-                        'Gmax': Gmax,
-                        'G0': G0,
-                        'site': site
-                    }
+                    'G0': G0,
+                    'site': site
+                }
 
         # 데이터가 없으면 건너뜀
         if not all_data:
@@ -224,12 +219,20 @@ def create_pourbaix_diagram(base_path):
         for ads_name, entry in ads_data.items():
             color = color_dict.get(ads_name, 'gray')
             plt.plot(U_range, [entry['Gmin'], entry['Gmax']], color=color, label=f"{ads_name}")
+            
+            # x절편 계산 (ΔG = 0이 되는 전위)
+            a = (entry['Gmax'] - entry['Gmin']) / (Umax - Umin)
+            b = entry['Gmin'] - a * Umin
+            if a != 0:  # 기울기가 0이 아닌 경우에만
+                x_cross = -b / a
+                if Umin <= x_cross <= Umax:
+                    zero_crossings.append((system_name, ads_name, x_cross))
         
         plt.xlabel('Potential (V vs RHE)')
         plt.ylabel('ΔG (eV)')
         plt.xlim(Umin, Umax)
         plt.ylim(ymin, ymax)
-        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.legend(bbox_to_anchor=(0.2, 0), loc='lower left', handletextpad=0.5, labelspacing=0.2)
         
         plot_output = os.path.join(base_path, f'pourbaix_diagram_{system_name}.png')
         plt.savefig(plot_output, bbox_inches='tight')
@@ -250,10 +253,18 @@ def create_pourbaix_diagram(base_path):
                     cross_potentials.append((system_name, x_cross))
 
     # 원하는 순서대로 출력
+    print("\nOH -> O transition potentials:")
     for sys in system_names:
         for name, x_cross in cross_potentials:
             if name == sys:
                 print(f"{name}: OH -> O = {x_cross:.2f} V")
+    
+    print("\nZero crossing potentials (ΔG = 0):")
+    for sys in system_names:
+        print(f"\n{sys}:")
+        for name, ads, x_cross in zero_crossings:
+            if name == sys:
+                print(f"  {ads}: {x_cross:.2f} V")
 
 if __name__ == "__main__":
     base_path = "/Users/hailey/Desktop/4_IrFe3"
