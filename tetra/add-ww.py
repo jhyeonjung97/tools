@@ -146,6 +146,8 @@ def submit_job(folder):
                         line = '#SBATCH -t 12:00:00\n'
                     elif line.startswith('#SBATCH -G'):
                         continue
+                    elif 'WZ' in line:
+                        line = line.replace('WZ', 'WW')
                     elif 'run_vasp_gpu' in line:
                         line = line.replace('run_vasp_gpu.py', 'run_vasp_cpu.py')
                         line = line.replace('run_vasp_gpu1.py', 'run_vasp_cpu.py')
