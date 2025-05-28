@@ -176,15 +176,19 @@ done
 #     vaspkit -task 501 > $dir/vib.txt
 # done
 
-# for dir in /home/hyeonjung/scratch/4_IrFe3/*_R*/*_*_*/7_OH_OH
-# do
-#     cd $dir
-#     cp ~/bin/tools/irfe/INCAR .
-#     cp ~/bin/tools/irfe/KPOINTS .
-#     mv *.vasp POSCAR
-#     vaspkit -task 107
-#     mv POSCAR_REV POSCAR
-#     rm POTCAR
-#     vaspkit -task 103
-#     python3 ~/bin/orange/magmom.py
-# done
+for metal in 0_Ir 1_Mn 2_Fe 3_Co 4_Ni
+do
+    for site in 3_layer_top1 4_layer_top2 5_layer_top3
+    do
+        dir="/home/hyeonjung/scratch/4_IrFe3/2_OH/$metal/$site"
+        cd $dir
+        cp ~/bin/tools/irfe/INCAR .
+        cp ~/bin/tools/irfe/KPOINTS .
+        mv *.vasp POSCAR
+        vaspkit -task 107
+        mv POSCAR_REV POSCAR
+        rm POTCAR
+        vaspkit -task 103
+        python3 ~/bin/orange/magmom.py
+    done
+done
