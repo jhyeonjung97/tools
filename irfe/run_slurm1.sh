@@ -12,7 +12,7 @@
 
 for dir in 0_Ir 1_Mn 2_Fe 3_Co 4_Ni
 do
-    cp ../$dir/3_layer_top1/* .
+    cp ../$dir/3_vac_hol/* .
     mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
-    cp * ../$dir/3_layer_top1/
+    cp * ../$dir/3_vac_hol/
 done

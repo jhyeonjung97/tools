@@ -178,9 +178,9 @@ done
 
 for metal in 0_Ir 1_Mn 2_Fe 3_Co 4_Ni
 do
-    for site in 3_layer_top1 4_layer_top2 5_layer_top3
+    for site in 3_vac_hol 4_vac_hol
     do
-        dir="/home/hyeonjung/scratch/4_IrFe3/2_OH/$metal/$site"
+        dir="/home/hyeonjung/scratch/4_IrFe3/1_H/$metal/$site"
         cd $dir
         cp ~/bin/tools/irfe/INCAR .
         cp ~/bin/tools/irfe/KPOINTS .
