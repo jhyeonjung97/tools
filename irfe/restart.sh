@@ -85,7 +85,7 @@
 #     done
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/oxide/*_*
+for dir in /home/hyeonjung/scratch/4_IrFe3/run/*_*
 do
     cd $dir
     cp ~/bin/tools/irfe/INCAR .
