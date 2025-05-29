@@ -85,8 +85,9 @@
 #     done
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/run/*_*
+for dir in /home/hyeonjung/scratch/4_IrFe3/*_R_*/*_Fe/*_*_*
 do
+    if [[ -f $dir/POSCAR ]]; then
     cd $dir
     cp ~/bin/tools/irfe/INCAR .
     cp ~/bin/tools/irfe/KPOINTS .
