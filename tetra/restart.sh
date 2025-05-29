@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for dir in /pscratch/sd/j/jiuy97/8_V_slab/*_*_*/*/*_*
+for dir in /home/hyeonjung/scratch/4_IrFe3/oxide/*_*
 do
     cd $dir    
     if [[ ! -f 'unmatched' ]]; then
