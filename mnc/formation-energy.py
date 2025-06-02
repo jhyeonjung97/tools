@@ -45,11 +45,11 @@ elements_data = {
 
 vacancy = {}
 for i in range(9):
-    path = f"/Users/hailey/Desktop/6_MNC/empty/{i}_/final_with_calculator.json"
-    # path = f"/Users/hailey/Desktop/6_MNC/empty/2_/final_with_calculator.json"
+    path = f"/Users/jiuy97/Desktop/6_MNC/empty/{i}_/final_with_calculator.json"
+    # path = f"/Users/jiuy97/Desktop/6_MNC/empty/2_/final_with_calculator.json"
     atoms = read(path)
     vacancy[i] = atoms.get_total_energy()
-save_path = '/Users/hailey/Desktop/6_MNC/figures/formation_energy'
+save_path = '/Users/jiuy97/Desktop/6_MNC/figures/formation_energy'
 
 # spins = {'LS': '#ffe2cc', 'IS': '#cceaff', 'HS': '#e8dff2'}
 spins = {'LS': '#ffd199', 'IS': '#a8d9f9', 'HS': '#d5c8e4'}
@@ -320,19 +320,19 @@ def main():
             #         png_filename = f'{row_key}_{m+2}{metal}{category}{suffix}.png'
             
             for spin in spins.keys():
-                path_pattern = f'/Users/hailey/Desktop/6_MNC/0_clean/{row_key}/*_{metal}/*_{spin}'
+                path_pattern = f'/Users/jiuy97/Desktop/6_MNC/0_clean/{row_key}/*_{metal}/*_{spin}'
                 matching_paths = glob.glob(path_pattern)
-                path_O_pattern = f'/Users/hailey/Desktop/6_MNC/1_O/*_{metal}/*_{spin}'
+                path_O_pattern = f'/Users/jiuy97/Desktop/6_MNC/1_O/*_{metal}/*_{spin}'
                 matching_O_paths = glob.glob(path_O_pattern)
-                path_OH_pattern = f'/Users/hailey/Desktop/6_MNC/2_OH/*_{metal}/*_{spin}'
+                path_OH_pattern = f'/Users/jiuy97/Desktop/6_MNC/2_OH/*_{metal}/*_{spin}'
                 matching_OH_paths = glob.glob(path_OH_pattern)
-                path_OOH_pattern = f'/Users/hailey/Desktop/6_MNC/3_OOH/*_{metal}/*_{spin}'
+                path_OOH_pattern = f'/Users/jiuy97/Desktop/6_MNC/3_OOH/*_{metal}/*_{spin}'
                 matching_OOH_paths = glob.glob(path_OOH_pattern)
-                path_O_O_pattern = f'/Users/hailey/Desktop/6_MNC/4_O_O/*_{metal}/*_{spin}'
+                path_O_O_pattern = f'/Users/jiuy97/Desktop/6_MNC/4_O_O/*_{metal}/*_{spin}'
                 matching_O_O_paths = glob.glob(path_O_O_pattern)
-                path_O_OH_pattern = f'/Users/hailey/Desktop/6_MNC/5_O_OH/*_{metal}/*_{spin}'
+                path_O_OH_pattern = f'/Users/jiuy97/Desktop/6_MNC/5_O_OH/*_{metal}/*_{spin}'
                 matching_O_OH_paths = glob.glob(path_O_OH_pattern)
-                path_OH_OH_pattern = f'/Users/hailey/Desktop/6_MNC/6_OH_OH/*_{metal}/*_{spin}'
+                path_OH_OH_pattern = f'/Users/jiuy97/Desktop/6_MNC/6_OH_OH/*_{metal}/*_{spin}'
                 matching_OH_OH_paths = glob.glob(path_OH_OH_pattern)
                 
                 path = None
@@ -864,19 +864,19 @@ def main():
                             df_OH_OH_relaxed_bond1.at[dz_relaxed, spin] = 0
                             df_OH_OH_relaxed_bond2.at[dz_relaxed, spin] = 0
                             
-            path_pattern = f'/Users/hailey/Desktop/6_MNC/0_clean/{row_key}/*_{metal}'
+            path_pattern = f'/Users/jiuy97/Desktop/6_MNC/0_clean/{row_key}/*_{metal}'
             matching_paths = glob.glob(path_pattern)
-            path_O_pattern = f'/Users/hailey/Desktop/6_MNC/1_O/*_{metal}'
+            path_O_pattern = f'/Users/jiuy97/Desktop/6_MNC/1_O/*_{metal}'
             matching_O_paths = glob.glob(path_O_pattern)
-            path_OH_pattern = f'/Users/hailey/Desktop/6_MNC/2_OH/*_{metal}'
+            path_OH_pattern = f'/Users/jiuy97/Desktop/6_MNC/2_OH/*_{metal}'
             matching_OH_paths = glob.glob(path_OH_pattern)
-            path_OOH_pattern = f'/Users/hailey/Desktop/6_MNC/3_OOH/*_{metal}'
+            path_OOH_pattern = f'/Users/jiuy97/Desktop/6_MNC/3_OOH/*_{metal}'
             matching_OOH_paths = glob.glob(path_OOH_pattern)
-            path_O_O_pattern = f'/Users/hailey/Desktop/6_MNC/4_O_O/*_{metal}'
+            path_O_O_pattern = f'/Users/jiuy97/Desktop/6_MNC/4_O_O/*_{metal}'
             matching_O_O_paths = glob.glob(path_O_O_pattern)
-            path_O_OH_pattern = f'/Users/hailey/Desktop/6_MNC/5_O_OH/*_{metal}'
+            path_O_OH_pattern = f'/Users/jiuy97/Desktop/6_MNC/5_O_OH/*_{metal}'
             matching_O_OH_paths = glob.glob(path_O_OH_pattern)
-            path_OH_OH_pattern = f'/Users/hailey/Desktop/6_MNC/6_OH_OH/*_{metal}'
+            path_OH_OH_pattern = f'/Users/jiuy97/Desktop/6_MNC/6_OH_OH/*_{metal}'
             matching_OH_OH_paths = glob.glob(path_OH_OH_pattern)
             
             for path in matching_paths:
@@ -1572,7 +1572,7 @@ if __name__ == '__main__':
     ax.legend(handles=custom_legend, ncol=3)
     ax.axis('off')
     png_filename = "custom_legend_markers_only.png"  # Update with your file path
-    plt.savefig(os.path.join(save_path, png_filename), bbox_inches="tight")
+    plt.savefig(os.path.join(save_path, png_filename), bbox_inches="tight", dpi=300)
     print(f"Figure saved as {png_filename}")
     plt.close()
 
@@ -1580,8 +1580,8 @@ if __name__ == '__main__':
     ax.legend(handles=custom_legend, ncol=1)
     ax.axis('off')
     png_filename = "custom_legend_markers_only2.png"  # Update with your file path
-    plt.savefig(os.path.join(save_path, png_filename), bbox_inches="tight")
+    plt.savefig(os.path.join(save_path, png_filename), bbox_inches="tight", dpi=300)
     print(f"Figure saved as {png_filename}")
     plt.close()
 
-    main()
+    # main()
