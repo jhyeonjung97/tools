@@ -24,17 +24,19 @@ do
         do
             for ads in clean o oh
             do
-                dir="/pscratch/sd/j/jiuy97/8_V_slab/${coord}/${row}/${numb}_*/${ads}"
-                cd ${dir}
-                IFS='/' read -r -a path <<< $dir
-                coordi=$(echo "${path[-3]}" | cut -d'_' -f3)
-                numb=$(echo "${path[-1]}" | cut -d'_' -f1)
-                jobname=${coordi}${row}${numb}${ads}
-                if [[ -f 'unmatched' ]] || [[ -f 'DONE' ]] || [[ -n $(squeue --me | grep $jobname) ]]; then
-                    continue
-                elif [[ -f 'submit.sh' ]]; then
-                    python ~/bin/get_restart3.py                
-                fi
+                for dir in /pscratch/sd/j/jiuy97/8_V_slab/${coord}/${row}/${numb}_*/${ads}
+                do
+                    cd ${dir}
+                    IFS='/' read -r -a path <<< $dir
+                    coordi=$(echo "${path[-3]}" | cut -d'_' -f3)
+                    numb=$(echo "${path[-1]}" | cut -d'_' -f1)
+                    jobname=${coordi}${row}${numb}${ads}
+                    if [[ -f 'unmatched' ]] || [[ -f 'DONE' ]] || [[ -n $(squeue --me | grep $jobname) ]]; then
+                        continue
+                    elif [[ -f 'submit.sh' ]]; then
+                        python ~/bin/get_restart3.py                
+                    fi
+                done
             done
         done
     done
