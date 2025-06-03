@@ -24,7 +24,8 @@ do
         do
             for ads in clean o oh
             do
-                for dir in /pscratch/sd/j/jiuy97/8_V_slab/${coord}/${row}/${numb}_*/${ads}
+                printf "\e[31m${coord} ${row} ${numb} ${ads}\e[0m\n"
+                for dir in /pscratch/sd/j/jiuy97/8_V_slab/${coord}/${row}/${numb}_*/${ads}/
                 do
                     cd ${dir}
                     IFS='/' read -r -a path <<< $dir
