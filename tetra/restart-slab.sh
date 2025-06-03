@@ -20,7 +20,7 @@ for coord in 1_Tetrahedral_WZ 2_Tetrahedral_ZB 3_SquarePlanar_TN 4_SquarePlanar_
 do
     for row in 3d 4d 5d
     do
-        for numb in 00 01 02 03 04 05 06 07 08 09 10 11 12
+        for numb in '00' '01' '02' '03' '04' '05' '06' '07' '08' '09' '10' '11' '12'
         do
             for ads in clean o oh
             do
