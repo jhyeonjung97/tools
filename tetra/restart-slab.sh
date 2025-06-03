@@ -24,15 +24,23 @@ do
         do
             for dir in /pscratch/sd/j/jiuy97/8_V_slab/${coord}/${row}/*_*/${ads}/
             do
-                cd ${dir}; pwd
+                cd ${dir}
                 IFS='/' read -r -a path <<< $dir
-                coordi=$(echo "${path[-3]}" | cut -d'_' -f3)
-                numb=$(echo "${path[-1]}" | cut -d'_' -f1)
-                jobname=${coordi}${row}${numb}${ads}
-                if [[ -f 'unmatched' ]] || [[ -f 'DONE' ]] || [[ -n $(squeue --me | grep $jobname) ]]; then
+                coordination=$(echo "${path[-4]}" | cut -d'_' -f3)
+                numb=$(echo "${path[-2]}" | cut -d'_' -f1)
+                if [[ $ads == 'clean' ]]; then
+                    jobname=${coordination}${row}${numb}_
+                else
+                    jobname=${coordination}${row}${numb}${ads}
+                fi
+                if [[ -f 'unmatched' ]] || [[ -n $(squeue --me | grep $jobname) ]]; then
+                    continue
+                elif [[ -f 'DONE' ]]; then
                     continue
                 elif [[ -f 'submit.sh' ]]; then
-                    python ~/bin/get_restart3.py                
+                    cp ~/bin/tools/tetra/submit_slab.sh submit.sh
+                    sed -i -e "s/jobname/${jobname}/g" submit.sh
+                    pwd; sbatch submit.sh
                 fi
             done
         done
