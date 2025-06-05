@@ -2,7 +2,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=20
 #SBATCH --partition=g2
-#SBATCH -J IrFe
+#SBATCH -J IrFe-vib0
 #SBATCH --time=05-00:00
 #SBATCH -o stdout.%N.%j.out
 #SBATCH -e STDERR.%N.%j.err
@@ -11,12 +11,15 @@
 . /etc/profile.d/TMI.sh
 
 directories=(
-    /home/hyeonjung/scratch/4_IrFe3/4_R1/1_Ir_top/1_V_V
-    /home/hyeonjung/scratch/4_IrFe3/4_R1/2_Ir_hol/5_O_OH
-    /home/hyeonjung/scratch/4_IrFe3/4_R1/2_Ir_hol/6_O_OOH
-    /home/hyeonjung/scratch/4_IrFe3/4_R1/3_IrFe_top1/1_V_V
-    /home/hyeonjung/scratch/4_IrFe3/4_R1/4_IrFe_top2/1_V_V
-    /home/hyeonjung/scratch/4_IrFe3/4_R1/4_IrFe_top2/6_O_OOH
+    /home/hyeonjung/scratch/4_IrFe3/4_R_top/2_Ir/7_OH_OH
+    /home/hyeonjung/scratch/4_IrFe3/4_R_top/3_Fe/2_V_O
+    /home/hyeonjung/scratch/4_IrFe3/4_R_top/3_Fe/5_O_OH
+    /home/hyeonjung/scratch/4_IrFe3/4_R_top/4_Fe/5_O_OH
+    /home/hyeonjung/scratch/4_IrFe3/4_R_top/4_Fe/6_O_OOH
+    /home/hyeonjung/scratch/4_IrFe3/4_R_top/5_Fe/1_V_V
+    /home/hyeonjung/scratch/4_IrFe3/4_R_top/5_Fe/2_V_O
+    /home/hyeonjung/scratch/4_IrFe3/4_R_top/5_Fe/7_OH_OH
+    /home/hyeonjung/scratch/4_IrFe3/4_R_top/6_Fe/7_OH_OH
 )
 
 for dir in "${directories[@]}"; do

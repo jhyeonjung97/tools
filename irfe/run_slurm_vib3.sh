@@ -2,7 +2,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=20
 #SBATCH --partition=g2
-#SBATCH -J IrFe
+#SBATCH -J IrFe-vib0
 #SBATCH --time=05-00:00
 #SBATCH -o stdout.%N.%j.out
 #SBATCH -e STDERR.%N.%j.err
@@ -11,12 +11,8 @@
 . /etc/profile.d/TMI.sh
 
 directories=(
-    /home/hyeonjung/scratch/4_IrFe3/3_O/5_IrMn/3_atom_top1
-    /home/hyeonjung/scratch/4_IrFe3/3_O/5_IrMn/5_atom_hol1
-    /home/hyeonjung/scratch/4_IrFe3/3_O/6_IrFe/3_atom_top1
-    /home/hyeonjung/scratch/4_IrFe3/3_O/7_IrCo/3_atom_top1
-    /home/hyeonjung/scratch/4_IrFe3/3_O/8_IrNi/3_atom_top1
-    /home/hyeonjung/scratch/4_IrFe3/3_O/8_IrNi/5_atom_hol1
+    /home/hyeonjung/scratch/4_IrFe3/3_O/6_IrFe/2_layer_hol
+    /home/hyeonjung/scratch/4_IrFe3/3_O/8_IrNi/2_layer_hol
 )
 
 for dir in "${directories[@]}"; do

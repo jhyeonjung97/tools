@@ -121,7 +121,6 @@ do
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     ads=$(echo "${path[-3]}" | cut -d'_' -f2)
 
-    cd $dir
     if [[ $ads == 'H' ]]; then
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
             if [[ $site == '1_layer_top' ]] || [[ $site == '7_M_top' ]]; then
@@ -151,7 +150,6 @@ do
             fi
         fi
     elif [[ $ads == 'R' ]]; then
-        site=${path[-2]}
         intermediate=${path[-1]}
         if [[ $intermediate == '4_O_O' ]]; then
             continue
@@ -160,10 +158,22 @@ do
         continue
     fi
 
+    cd $dir
+
     if [[ -f POSCAR ]] && [[ ! -f DONE ]] && [[ ! -f unmatched ]]; then
         continue
     elif [[ -f DONE ]] && [[ ! -f vib/OUTCAR ]]; then
         pwd
+        python ~/bin/tools/irfe/vib.py
+        mkdir -p vib
+        cp vib.vasp vib/POSCAR
+        cd vib
+        cp ~/bin/tools/irfe/INCAR_vib INCAR
+        cp ~/bin/tools/irfe/KPOINTS .
+        vaspkit -task 107
+        mv POSCAR_REV POSCAR
+        vaspkit -task 103
+        python3 ~/bin/orange/magmom.py
     fi
 done
 
