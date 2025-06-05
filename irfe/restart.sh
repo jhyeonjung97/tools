@@ -124,7 +124,7 @@ do
     cd $dir
     if [[ $ads == 'H' ]]; then
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
-            if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
+            if [[ $site == '1_layer_top' ]] || [[ $site == '7_M_top' ]]; then
                 continue
             fi
         fi
@@ -135,7 +135,7 @@ do
         fi
     elif [[ $ads == 'OH' ]]; then
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
-            if [[ $site == '1_layer_top' ]] || [[ $site == '3_Ir_top' ]] || [[ $site == '4_Ir_brg' ]] || [[ $site == '5_M_top' ]] || [[ $site == '6_M_brg' ]]; then
+            if [[ $site == '1_layer_top' ]] || [[ $site == '6_Ir_top' ]] || [[ $site == '7_Ir_brg' ]] || [[ $site == '8_M_top' ]] || [[ $site == '9_M_brg' ]]; then
                 continue
             fi
         fi
@@ -150,7 +150,7 @@ do
                 continue
             fi
         fi
-    elif [[ $ads == 'R1' ]] || [[ $ads == 'R2' ]]; then
+    elif [[ $ads == 'R' ]]; then
         site=${path[-2]}
         intermediate=${path[-1]}
         if [[ $site == '6_IrFe_hol1' ]] || [[ $site == '7_IrFe_hol2' ]] || [[ $site == '8_IrFe_hol3' ]]; then
