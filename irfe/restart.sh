@@ -160,7 +160,7 @@ do
         continue
     fi
 
-    if [[ -f POSCAR ]] && [[ ! -f DONE ]]; then
+    if [[ -f POSCAR ]] && [[ ! -f DONE ]] && [[ ! -f unmatched ]]; then
         pwd
     fi
 done
