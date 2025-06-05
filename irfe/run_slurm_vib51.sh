@@ -11,6 +11,7 @@
 . /etc/profile.d/TMI.sh
 
 directories=(
+    /home/hyeonjung/scratch/4_IrFe3/5_R_hol/2_Ir/7_OH_OH
     /home/hyeonjung/scratch/4_IrFe3/5_R_hol/3_Fe/1_V_V
     /home/hyeonjung/scratch/4_IrFe3/5_R_hol/3_Fe/2_V_O
     /home/hyeonjung/scratch/4_IrFe3/5_R_hol/3_Fe/3_V_OH
