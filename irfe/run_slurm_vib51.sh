@@ -11,6 +11,8 @@
 . /etc/profile.d/TMI.sh
 
 directories=(
+    /home/hyeonjung/scratch/4_IrFe3/4_R_top/1_Ir/6_O_OOH
+    /home/hyeonjung/scratch/4_IrFe3/5_R_hol/1_Ir/6_O_OOH
     /home/hyeonjung/scratch/4_IrFe3/5_R_hol/2_Ir/7_OH_OH
     /home/hyeonjung/scratch/4_IrFe3/5_R_hol/3_Fe/1_V_V
     /home/hyeonjung/scratch/4_IrFe3/5_R_hol/3_Fe/2_V_O
@@ -18,11 +20,6 @@ directories=(
     /home/hyeonjung/scratch/4_IrFe3/5_R_hol/3_Fe/5_O_OH
     /home/hyeonjung/scratch/4_IrFe3/5_R_hol/3_Fe/6_O_OOH
     /home/hyeonjung/scratch/4_IrFe3/5_R_hol/3_Fe/7_OH_OH
-    /home/hyeonjung/scratch/4_IrFe3/5_R_hol/4_Fe/2_V_O
-    /home/hyeonjung/scratch/4_IrFe3/5_R_hol/4_Fe/3_V_OH
-    /home/hyeonjung/scratch/4_IrFe3/5_R_hol/4_Fe/5_O_OH
-    /home/hyeonjung/scratch/4_IrFe3/5_R_hol/4_Fe/6_O_OOH
-    /home/hyeonjung/scratch/4_IrFe3/5_R_hol/4_Fe/7_OH_OH
 )
 
 for dir in "${directories[@]}"; do
