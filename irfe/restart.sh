@@ -162,7 +162,7 @@ do
 
     if [[ -f POSCAR ]] && [[ ! -f DONE ]] && [[ ! -f unmatched ]]; then
         continue
-    elif [[ -f DONE ]] && [[ ! -f vib/OUTCAR ]]; then
+    elif [[ -f DONE ]] && [[ -d vib ]] && [[ ! -f vib/OUTCAR ]]; then
         pwd
     fi
 done
