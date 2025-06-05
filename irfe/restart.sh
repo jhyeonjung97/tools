@@ -161,6 +161,8 @@ do
     fi
 
     if [[ -f POSCAR ]] && [[ ! -f DONE ]] && [[ ! -f unmatched ]]; then
+        continue
+    elif [[ -f DONE ]] && [[ ! -f vib/OUTCAR ]]; then
         pwd
     fi
 done
