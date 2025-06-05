@@ -38,7 +38,7 @@ python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e H
 
 python ~/bin/tools/tetra/plot_mae_matrix.py
 
-python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hevap base_cfse ICOHPc ionNo mag volume l_bond chg
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hevap base_cfse ICOHPn ionNn mag volume l_bond chg --output proposal
 
 python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hevap cfse ICOHPc ionNo mag volume l_bond chg --output cfse
 

@@ -1,1376 +1,0 @@
-Starting bulk prediction analysis at Mon Mar 31 14:47:59 PDT 2025
-----------------------------------------
-Running model: gpr, target: form
-Script started...
-Importing required libraries...
-Starting bulk prediction analysis...
-Loading data...
-[1mData loading completed: 0.01 seconds[0m
-Preprocessing data...
-Scaling features...
-[1mFeature scaling completed: 0.00 seconds[0m
-Setting up GPR model...
-Performing Bayesian Optimization...
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-[1mBayesian Optimization completed: 689.05 seconds[0m
-[95mBest parameters: OrderedDict([('kernel__k1__k2__alpha', 0.0013170907453210021), ('kernel__k1__k2__length_scale', 0.07994182210314012), ('kernel__k2__noise_level', 90451.24303504943)])[0m
-Performing cross-validation...
-[1mCross-validation completed: 40.86 seconds[0m
-[95mCross-validation R2 scores: [0.95506872 0.94205279 0.96023008 0.96584813 0.96079656][0m
-[95mMean CV R2 score: 0.9568 (+/- 0.0163)[0m
-[95mCross-validation MAE scores: [0.29758087 0.3321807  0.26653994 0.2722389  0.28844789][0m
-[95mMean CV MAE score: 0.2914 (+/- 0.0464)[0m
-[95mCross-validation MSE scores: [0.18032242 0.19769347 0.14635182 0.12215625 0.1451594 ][0m
-[95mMean CV MSE score: 0.1583 (+/- 0.0541)[0m
-Making predictions...
-[1mPredictions completed: 0.00 seconds[0m
-Calculating metrics...
-[1mMetrics calculation completed: 0.00 seconds[0m
-Calculating feature importance...
-Calculating feature importance:   0%|          | 0/32 [00:00<?, ?it/s]Calculating feature importance:   3%|▎         | 1/32 [00:00<00:17,  1.78it/s]Calculating feature importance:   6%|▋         | 2/32 [00:01<00:18,  1.64it/s]Calculating feature importance:   9%|▉         | 3/32 [00:01<00:16,  1.74it/s]Calculating feature importance:  12%|█▎        | 4/32 [00:02<00:15,  1.76it/s]Calculating feature importance:  16%|█▌        | 5/32 [00:02<00:15,  1.75it/s]Calculating feature importance:  19%|█▉        | 6/32 [00:03<00:14,  1.77it/s]Calculating feature importance:  22%|██▏       | 7/32 [00:03<00:13,  1.79it/s]Calculating feature importance:  25%|██▌       | 8/32 [00:04<00:13,  1.81it/s]Calculating feature importance:  28%|██▊       | 9/32 [00:05<00:12,  1.81it/s]Calculating feature importance:  31%|███▏      | 10/32 [00:05<00:12,  1.82it/s]Calculating feature importance:  34%|███▍      | 11/32 [00:06<00:11,  1.83it/s]Calculating feature importance:  38%|███▊      | 12/32 [00:06<00:11,  1.82it/s]Calculating feature importance:  41%|████      | 13/32 [00:07<00:10,  1.80it/s]Calculating feature importance:  44%|████▍     | 14/32 [00:07<00:09,  1.82it/s]Calculating feature importance:  47%|████▋     | 15/32 [00:08<00:09,  1.79it/s]Calculating feature importance:  50%|█████     | 16/32 [00:08<00:08,  1.80it/s]Calculating feature importance:  53%|█████▎    | 17/32 [00:09<00:08,  1.80it/s]Calculating feature importance:  56%|█████▋    | 18/32 [00:10<00:07,  1.80it/s]Calculating feature importance:  59%|█████▉    | 19/32 [00:10<00:07,  1.78it/s]Calculating feature importance:  62%|██████▎   | 20/32 [00:11<00:06,  1.79it/s]Calculating feature importance:  66%|██████▌   | 21/32 [00:11<00:06,  1.80it/s]Calculating feature importance:  69%|██████▉   | 22/32 [00:12<00:05,  1.78it/s]Calculating feature importance:  72%|███████▏  | 23/32 [00:12<00:05,  1.73it/s]Calculating feature importance:  75%|███████▌  | 24/32 [00:13<00:04,  1.74it/s]Calculating feature importance:  78%|███████▊  | 25/32 [00:14<00:03,  1.76it/s]Calculating feature importance:  81%|████████▏ | 26/32 [00:14<00:03,  1.78it/s]Calculating feature importance:  84%|████████▍ | 27/32 [00:15<00:02,  1.78it/s]Calculating feature importance:  88%|████████▊ | 28/32 [00:15<00:02,  1.79it/s]Calculating feature importance:  91%|█████████ | 29/32 [00:16<00:01,  1.80it/s]Calculating feature importance:  94%|█████████▍| 30/32 [00:16<00:01,  1.81it/s]Calculating feature importance:  97%|█████████▋| 31/32 [00:17<00:00,  1.81it/s]Calculating feature importance: 100%|██████████| 32/32 [00:17<00:00,  1.82it/s]Calculating feature importance: 100%|██████████| 32/32 [00:17<00:00,  1.79it/s]
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_all_result_importance.png[0m
-[1mFeature importance calculation completed: 23.26 seconds[0m
-Saving results...
-[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_all_result.log[0m
-[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_all_result.tsv[0m
-Creating parity plot...
-[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_all_result.png[0m
-[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_all_result.json[0m
-Analyzing coordination preferences...
-Coordination preference analysis completed
-Execution Summary:
-[1mTotal execution time: 753.77 seconds[0m
-[1mModel training and evaluation time: 753.75 seconds[0m
-Running model: gpr, target: form, row: 3d
-Script started...
-Importing required libraries...
-Starting bulk prediction analysis...
-Loading data...
-[1mData loading completed: 0.01 seconds[0m
-Preprocessing data...
-Scaling features...
-[1mFeature scaling completed: 0.00 seconds[0m
-Setting up GPR model...
-Performing Bayesian Optimization...
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-[1mBayesian Optimization completed: 177.00 seconds[0m
-[95mBest parameters: OrderedDict([('kernel__k1__k2__alpha', 0.12619425629415187), ('kernel__k1__k2__length_scale', 101.15402653101344), ('kernel__k2__noise_level', 21314.737499132883)])[0m
-Performing cross-validation...
-[1mCross-validation completed: 9.86 seconds[0m
-[95mCross-validation R2 scores: [0.95830667 0.93726815 0.92975445 0.90809678 0.76680078][0m
-[95mMean CV R2 score: 0.9000 (+/- 0.1371)[0m
-[95mCross-validation MAE scores: [0.26968416 0.30101854 0.30880209 0.41652912 0.53728374][0m
-[95mMean CV MAE score: 0.3667 (+/- 0.1973)[0m
-[95mCross-validation MSE scores: [0.1105001  0.1759969  0.14293224 0.3496479  0.40932618][0m
-[95mMean CV MSE score: 0.2377 (+/- 0.2383)[0m
-Making predictions...
-[1mPredictions completed: 0.00 seconds[0m
-Calculating metrics...
-[1mMetrics calculation completed: 0.00 seconds[0m
-Calculating feature importance...
-Calculating feature importance:   0%|          | 0/32 [00:00<?, ?it/s]Calculating feature importance:   3%|▎         | 1/32 [00:00<00:04,  6.70it/s]Calculating feature importance:   6%|▋         | 2/32 [00:00<00:04,  6.75it/s]Calculating feature importance:   9%|▉         | 3/32 [00:00<00:04,  6.98it/s]Calculating feature importance:  12%|█▎        | 4/32 [00:00<00:03,  7.01it/s]Calculating feature importance:  16%|█▌        | 5/32 [00:00<00:03,  7.12it/s]Calculating feature importance:  19%|█▉        | 6/32 [00:00<00:03,  6.81it/s]Calculating feature importance:  22%|██▏       | 7/32 [00:01<00:03,  6.77it/s]Calculating feature importance:  25%|██▌       | 8/32 [00:01<00:03,  6.82it/s]Calculating feature importance:  28%|██▊       | 9/32 [00:01<00:03,  7.00it/s]Calculating feature importance:  31%|███▏      | 10/32 [00:01<00:03,  7.24it/s]Calculating feature importance:  34%|███▍      | 11/32 [00:01<00:02,  7.34it/s]Calculating feature importance:  38%|███▊      | 12/32 [00:01<00:02,  7.42it/s]Calculating feature importance:  41%|████      | 13/32 [00:01<00:02,  7.27it/s]Calculating feature importance:  44%|████▍     | 14/32 [00:01<00:02,  7.18it/s]Calculating feature importance:  47%|████▋     | 15/32 [00:02<00:02,  6.87it/s]Calculating feature importance:  50%|█████     | 16/32 [00:02<00:02,  7.04it/s]Calculating feature importance:  53%|█████▎    | 17/32 [00:02<00:02,  7.02it/s]Calculating feature importance:  56%|█████▋    | 18/32 [00:02<00:01,  7.14it/s]Calculating feature importance:  59%|█████▉    | 19/32 [00:02<00:01,  7.27it/s]Calculating feature importance:  62%|██████▎   | 20/32 [00:02<00:01,  7.29it/s]Calculating feature importance:  66%|██████▌   | 21/32 [00:02<00:01,  7.23it/s]Calculating feature importance:  69%|██████▉   | 22/32 [00:03<00:01,  7.23it/s]Calculating feature importance:  72%|███████▏  | 23/32 [00:03<00:01,  7.38it/s]Calculating feature importance:  75%|███████▌  | 24/32 [00:03<00:01,  7.38it/s]Calculating feature importance:  78%|███████▊  | 25/32 [00:03<00:00,  7.40it/s]Calculating feature importance:  81%|████████▏ | 26/32 [00:03<00:00,  7.37it/s]Calculating feature importance:  84%|████████▍ | 27/32 [00:03<00:00,  7.34it/s]Calculating feature importance:  88%|████████▊ | 28/32 [00:03<00:00,  7.47it/s]Calculating feature importance:  91%|█████████ | 29/32 [00:04<00:00,  7.37it/s]Calculating feature importance:  94%|█████████▍| 30/32 [00:04<00:00,  7.47it/s]Calculating feature importance:  97%|█████████▋| 31/32 [00:04<00:00,  7.43it/s]Calculating feature importance: 100%|██████████| 32/32 [00:04<00:00,  7.49it/s]Calculating feature importance: 100%|██████████| 32/32 [00:04<00:00,  7.21it/s]
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_3d_result_importance.png[0m
-[1mFeature importance calculation completed: 6.20 seconds[0m
-Saving results...
-[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_3d_result.log[0m
-[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_3d_result.tsv[0m
-Creating parity plot...
-[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_3d_result.png[0m
-[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_3d_result.json[0m
-Analyzing coordination preferences...
-Coordination preference analysis completed
-Execution Summary:
-[1mTotal execution time: 193.45 seconds[0m
-[1mModel training and evaluation time: 193.44 seconds[0m
-Running model: gpr, target: form, row: 4d
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-Script started...
-Importing required libraries...
-Starting bulk prediction analysis...
-Loading data...
-[1mData loading completed: 0.01 seconds[0m
-Preprocessing data...
-Scaling features...
-[1mFeature scaling completed: 0.00 seconds[0m
-Setting up GPR model...
-Performing Bayesian Optimization...
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-[1mBayesian Optimization completed: 174.75 seconds[0m
-[95mBest parameters: OrderedDict([('kernel__k1__k2__alpha', 22.81421524976766), ('kernel__k1__k2__length_scale', 29.083542801139156), ('kernel__k2__noise_level', 99370.30436386135)])[0m
-Performing cross-validation...
-[1mCross-validation completed: 9.29 seconds[0m
-[95mCross-validation R2 scores: [0.89521947 0.90735385 0.96267157 0.83984981 0.93870663][0m
-[95mMean CV R2 score: 0.9088 (+/- 0.0836)[0m
-[95mCross-validation MAE scores: [0.44359252 0.4527995  0.22336766 0.51127876 0.29774771][0m
-[95mMean CV MAE score: 0.3858 (+/- 0.2149)[0m
-[95mCross-validation MSE scores: [0.37980276 0.32129904 0.06623124 0.46009046 0.14414409][0m
-[95mMean CV MSE score: 0.2743 (+/- 0.2941)[0m
-Making predictions...
-[1mPredictions completed: 0.00 seconds[0m
-Calculating metrics...
-[1mMetrics calculation completed: 0.00 seconds[0m
-Calculating feature importance...
-Calculating feature importance:   0%|          | 0/32 [00:00<?, ?it/s]Calculating feature importance:   3%|▎         | 1/32 [00:00<00:04,  7.28it/s]Calculating feature importance:   6%|▋         | 2/32 [00:00<00:04,  7.37it/s]Calculating feature importance:   9%|▉         | 3/32 [00:00<00:03,  7.51it/s]Calculating feature importance:  12%|█▎        | 4/32 [00:00<00:03,  7.67it/s]Calculating feature importance:  16%|█▌        | 5/32 [00:00<00:03,  7.54it/s]Calculating feature importance:  19%|█▉        | 6/32 [00:00<00:03,  7.64it/s]Calculating feature importance:  22%|██▏       | 7/32 [00:00<00:03,  7.84it/s]Calculating feature importance:  25%|██▌       | 8/32 [00:01<00:03,  7.88it/s]Calculating feature importance:  28%|██▊       | 9/32 [00:01<00:03,  7.64it/s]Calculating feature importance:  31%|███▏      | 10/32 [00:01<00:02,  7.70it/s]Calculating feature importance:  34%|███▍      | 11/32 [00:01<00:02,  7.64it/s]Calculating feature importance:  38%|███▊      | 12/32 [00:01<00:02,  7.54it/s]Calculating feature importance:  41%|████      | 13/32 [00:01<00:02,  7.57it/s]Calculating feature importance:  44%|████▍     | 14/32 [00:01<00:02,  7.60it/s]Calculating feature importance:  47%|████▋     | 15/32 [00:01<00:02,  7.82it/s]Calculating feature importance:  50%|█████     | 16/32 [00:02<00:02,  7.80it/s]Calculating feature importance:  53%|█████▎    | 17/32 [00:02<00:01,  7.75it/s]Calculating feature importance:  56%|█████▋    | 18/32 [00:02<00:01,  7.67it/s]Calculating feature importance:  59%|█████▉    | 19/32 [00:02<00:01,  7.61it/s]Calculating feature importance:  62%|██████▎   | 20/32 [00:02<00:01,  7.57it/s]Calculating feature importance:  66%|██████▌   | 21/32 [00:02<00:01,  7.65it/s]Calculating feature importance:  69%|██████▉   | 22/32 [00:02<00:01,  7.63it/s]Calculating feature importance:  72%|███████▏  | 23/32 [00:03<00:01,  7.57it/s]Calculating feature importance:  75%|███████▌  | 24/32 [00:03<00:01,  7.57it/s]Calculating feature importance:  78%|███████▊  | 25/32 [00:03<00:00,  7.69it/s]Calculating feature importance:  81%|████████▏ | 26/32 [00:03<00:00,  7.65it/s]Calculating feature importance:  84%|████████▍ | 27/32 [00:03<00:00,  7.74it/s]Calculating feature importance:  88%|████████▊ | 28/32 [00:03<00:00,  7.79it/s]Calculating feature importance:  91%|█████████ | 29/32 [00:03<00:00,  7.73it/s]Calculating feature importance:  94%|█████████▍| 30/32 [00:03<00:00,  7.82it/s]Calculating feature importance:  97%|█████████▋| 31/32 [00:04<00:00,  7.77it/s]Calculating feature importance: 100%|██████████| 32/32 [00:04<00:00,  7.67it/s]Calculating feature importance: 100%|██████████| 32/32 [00:04<00:00,  7.67it/s]
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_4d_result_importance.png[0m
-[1mFeature importance calculation completed: 5.75 seconds[0m
-Saving results...
-[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_4d_result.log[0m
-[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_4d_result.tsv[0m
-Creating parity plot...
-[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_4d_result.png[0m
-[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_4d_result.json[0m
-Analyzing coordination preferences...
-Coordination preference analysis completed
-Execution Summary:
-[1mTotal execution time: 190.18 seconds[0m
-[1mModel training and evaluation time: 190.17 seconds[0m
-Running model: gpr, target: form, row: 5d
-Script started...
-Importing required libraries...
-Starting bulk prediction analysis...
-Loading data...
-[1mData loading completed: 0.01 seconds[0m
-Preprocessing data...
-Scaling features...
-[1mFeature scaling completed: 0.00 seconds[0m
-Setting up GPR model...
-Performing Bayesian Optimization...
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-[1mBayesian Optimization completed: 186.67 seconds[0m
-[95mBest parameters: OrderedDict([('kernel__k1__k2__alpha', 0.3347980123816741), ('kernel__k1__k2__length_scale', 10951.529090054002), ('kernel__k2__noise_level', 9.379955931979504e-05)])[0m
-Performing cross-validation...
-[1mCross-validation completed: 9.68 seconds[0m
-[95mCross-validation R2 scores: [0.94491131 0.95740673 0.84597411 0.97130469 0.8895461 ][0m
-[95mMean CV R2 score: 0.9218 (+/- 0.0940)[0m
-[95mCross-validation MAE scores: [0.3555517  0.25407632 0.5487314  0.34354532 0.46989313][0m
-[95mMean CV MAE score: 0.3944 (+/- 0.2065)[0m
-[95mCross-validation MSE scores: [0.17260524 0.10531258 0.55101102 0.16661001 0.3777956 ][0m
-[95mMean CV MSE score: 0.2747 (+/- 0.3320)[0m
-Making predictions...
-[1mPredictions completed: 0.00 seconds[0m
-Calculating metrics...
-[1mMetrics calculation completed: 0.00 seconds[0m
-Calculating feature importance...
-Calculating feature importance:   0%|          | 0/32 [00:00<?, ?it/s]Calculating feature importance:   3%|▎         | 1/32 [00:00<00:04,  6.54it/s]Calculating feature importance:   6%|▋         | 2/32 [00:00<00:04,  7.03it/s]Calculating feature importance:   9%|▉         | 3/32 [00:00<00:03,  7.60it/s]Calculating feature importance:  12%|█▎        | 4/32 [00:00<00:03,  7.55it/s]Calculating feature importance:  16%|█▌        | 5/32 [00:00<00:03,  7.81it/s]Calculating feature importance:  19%|█▉        | 6/32 [00:00<00:03,  8.01it/s]Calculating feature importance:  22%|██▏       | 7/32 [00:00<00:03,  8.03it/s]Calculating feature importance:  25%|██▌       | 8/32 [00:01<00:02,  8.02it/s]Calculating feature importance:  28%|██▊       | 9/32 [00:01<00:02,  7.85it/s]Calculating feature importance:  31%|███▏      | 10/32 [00:01<00:02,  7.78it/s]Calculating feature importance:  34%|███▍      | 11/32 [00:01<00:02,  7.75it/s]Calculating feature importance:  38%|███▊      | 12/32 [00:01<00:02,  7.70it/s]Calculating feature importance:  41%|████      | 13/32 [00:01<00:02,  7.12it/s]Calculating feature importance:  44%|████▍     | 14/32 [00:01<00:02,  7.22it/s]Calculating feature importance:  47%|████▋     | 15/32 [00:01<00:02,  7.42it/s]Calculating feature importance:  50%|█████     | 16/32 [00:02<00:02,  7.40it/s]Calculating feature importance:  53%|█████▎    | 17/32 [00:02<00:02,  7.40it/s]Calculating feature importance:  56%|█████▋    | 18/32 [00:02<00:01,  7.41it/s]Calculating feature importance:  59%|█████▉    | 19/32 [00:02<00:01,  7.34it/s]Calculating feature importance:  62%|██████▎   | 20/32 [00:02<00:01,  7.59it/s]Calculating feature importance:  66%|██████▌   | 21/32 [00:02<00:01,  7.77it/s]Calculating feature importance:  69%|██████▉   | 22/32 [00:02<00:01,  7.77it/s]Calculating feature importance:  72%|███████▏  | 23/32 [00:03<00:01,  7.81it/s]Calculating feature importance:  75%|███████▌  | 24/32 [00:03<00:01,  7.92it/s]Calculating feature importance:  78%|███████▊  | 25/32 [00:03<00:00,  7.72it/s]Calculating feature importance:  81%|████████▏ | 26/32 [00:03<00:00,  7.87it/s]Calculating feature importance:  84%|████████▍ | 27/32 [00:03<00:00,  7.76it/s]Calculating feature importance:  88%|████████▊ | 28/32 [00:03<00:00,  7.81it/s]Calculating feature importance:  91%|█████████ | 29/32 [00:03<00:00,  7.96it/s]Calculating feature importance:  94%|█████████▍| 30/32 [00:03<00:00,  7.96it/s]Calculating feature importance:  97%|█████████▋| 31/32 [00:04<00:00,  8.08it/s]Calculating feature importance: 100%|██████████| 32/32 [00:04<00:00,  8.00it/s]Calculating feature importance: 100%|██████████| 32/32 [00:04<00:00,  7.70it/s]
-[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_5d_result_importance.png[0m
-[1mFeature importance calculation completed: 5.76 seconds[0m
-Saving results...
-[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_5d_result.log[0m
-[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_5d_result.tsv[0m
-Creating parity plot...
-[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_5d_result.png[0m
-[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_5d_result.json[0m
-Analyzing coordination preferences...
-Coordination preference analysis completed
-Execution Summary:
-[1mTotal execution time: 202.50 seconds[0m
-[1mModel training and evaluation time: 202.49 seconds[0m
-Running model: gpr, target: form, row: 4d 5d
-Script started...
-Importing required libraries...
-Starting bulk prediction analysis...
-Loading data...
-[1mData loading completed: 0.01 seconds[0m
-Preprocessing data...
-Scaling features...
-[1mFeature scaling completed: 0.00 seconds[0m
-Setting up GPR model...
-Performing Bayesian Optimization...
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-[1mBayesian Optimization completed: 355.65 seconds[0m
-[95mBest parameters: OrderedDict([('kernel__k1__k2__alpha', 0.12619425629415187), ('kernel__k1__k2__length_scale', 101.15402653101344), ('kernel__k2__noise_level', 21314.737499132883)])[0m
-Performing cross-validation...
-[1mCross-validation completed: 21.28 seconds[0m
-[95mCross-validation R2 scores: [0.97010699 0.93482046 0.94314485 0.94729498 0.96473621][0m
-[95mMean CV R2 score: 0.9520 (+/- 0.0266)[0m
-[95mCross-validation MAE scores: [0.26704045 0.36390341 0.41734127 0.33611898 0.27367154][0m
-[95mMean CV MAE score: 0.3316 (+/- 0.1129)[0m
-[95mCross-validation MSE scores: [0.14891402 0.22486144 0.33411891 0.18198985 0.11283179][0m
-[95mMean CV MSE score: 0.2005 (+/- 0.1527)[0m
-Making predictions...
-[1mPredictions completed: 0.00 seconds[0m
-Calculating metrics...
-[1mMetrics calculation completed: 0.00 seconds[0m
-Calculating feature importance...
-Calculating feature importance:   0%|          | 0/32 [00:00<?, ?it/s]Calculating feature importance:   3%|▎         | 1/32 [00:00<00:09,  3.28it/s]Calculating feature importance:   6%|▋         | 2/32 [00:00<00:09,  3.30it/s]Calculating feature importance:   9%|▉         | 3/32 [00:00<00:08,  3.29it/s]Calculating feature importance:  12%|█▎        | 4/32 [00:01<00:08,  3.21it/s]Calculating feature importance:  16%|█▌        | 5/32 [00:01<00:08,  3.20it/s]Calculating feature importance:  19%|█▉        | 6/32 [00:01<00:08,  3.15it/s]Calculating feature importance:  22%|██▏       | 7/32 [00:02<00:07,  3.17it/s]Calculating feature importance:  25%|██▌       | 8/32 [00:02<00:07,  3.16it/s]Calculating feature importance:  28%|██▊       | 9/32 [00:02<00:07,  3.16it/s]Calculating feature importance:  31%|███▏      | 10/32 [00:03<00:06,  3.19it/s]Calculating feature importance:  34%|███▍      | 11/32 [00:03<00:06,  3.24it/s]Calculating feature importance:  38%|███▊      | 12/32 [00:03<00:06,  3.26it/s]Calculating feature importance:  41%|████      | 13/32 [00:04<00:05,  3.29it/s]Calculating feature importance:  44%|████▍     | 14/32 [00:04<00:05,  3.30it/s]Calculating feature importance:  47%|████▋     | 15/32 [00:04<00:05,  3.32it/s]Calculating feature importance:  50%|█████     | 16/32 [00:04<00:04,  3.32it/s]Calculating feature importance:  53%|█████▎    | 17/32 [00:05<00:04,  3.29it/s]Calculating feature importance:  56%|█████▋    | 18/32 [00:05<00:04,  3.27it/s]Calculating feature importance:  59%|█████▉    | 19/32 [00:05<00:03,  3.30it/s]Calculating feature importance:  62%|██████▎   | 20/32 [00:06<00:03,  3.33it/s]Calculating feature importance:  66%|██████▌   | 21/32 [00:06<00:03,  3.35it/s]Calculating feature importance:  69%|██████▉   | 22/32 [00:06<00:03,  3.31it/s]Calculating feature importance:  72%|███████▏  | 23/32 [00:07<00:02,  3.29it/s]Calculating feature importance:  75%|███████▌  | 24/32 [00:07<00:02,  3.16it/s]Calculating feature importance:  78%|███████▊  | 25/32 [00:07<00:02,  3.15it/s]Calculating feature importance:  81%|████████▏ | 26/32 [00:08<00:01,  3.14it/s]Calculating feature importance:  84%|████████▍ | 27/32 [00:08<00:01,  3.20it/s]Calculating feature importance:  88%|████████▊ | 28/32 [00:08<00:01,  3.18it/s]Calculating feature importance:  91%|█████████ | 29/32 [00:08<00:00,  3.19it/s]Calculating feature importance:  94%|█████████▍| 30/32 [00:09<00:00,  3.18it/s]Calculating feature importance:  97%|█████████▋| 31/32 [00:09<00:00,  3.16it/s]Calculating feature importance: 100%|██████████| 32/32 [00:09<00:00,  3.16it/s]Calculating feature importance: 100%|██████████| 32/32 [00:09<00:00,  3.23it/s]
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_4d5d_result_importance.png[0m
-[1mFeature importance calculation completed: 12.80 seconds[0m
-Saving results...
-[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_4d5d_result.log[0m
-[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_4d5d_result.tsv[0m
-Creating parity plot...
-[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_4d5d_result.png[0m
-[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/form_pred_gpr_4d5d_result.json[0m
-Analyzing coordination preferences...
-Coordination preference analysis completed
-Execution Summary:
-[1mTotal execution time: 390.23 seconds[0m
-[1mModel training and evaluation time: 390.22 seconds[0m
-Running model: gpr, target: coh
-Script started...
-Importing required libraries...
-Starting bulk prediction analysis...
-Loading data...
-[1mData loading completed: 0.01 seconds[0m
-Preprocessing data...
-Scaling features...
-[1mFeature scaling completed: 0.00 seconds[0m
-Setting up GPR model...
-Performing Bayesian Optimization...
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-[1mBayesian Optimization completed: 721.60 seconds[0m
-[95mBest parameters: OrderedDict([('kernel__k1__k2__alpha', 6.461928783105927), ('kernel__k1__k2__length_scale', 2.31981078783736), ('kernel__k2__noise_level', 0.023005079007526772)])[0m
-Performing cross-validation...
-[1mCross-validation completed: 42.17 seconds[0m
-[95mCross-validation R2 scores: [0.973837   0.97909418 0.97714748 0.98310979 0.98127545][0m
-[95mMean CV R2 score: 0.9789 (+/- 0.0065)[0m
-[95mCross-validation MAE scores: [0.27858395 0.31827851 0.26119253 0.28281886 0.30138323][0m
-[95mMean CV MAE score: 0.2885 (+/- 0.0393)[0m
-[95mCross-validation MSE scores: [0.15268007 0.18932701 0.15066336 0.13562713 0.15797794][0m
-[95mMean CV MSE score: 0.1573 (+/- 0.0353)[0m
-Making predictions...
-[1mPredictions completed: 0.00 seconds[0m
-Calculating metrics...
-[1mMetrics calculation completed: 0.00 seconds[0m
-Calculating feature importance...
-Calculating feature importance:   0%|          | 0/32 [00:00<?, ?it/s]Calculating feature importance:   3%|▎         | 1/32 [00:00<00:16,  1.85it/s]Calculating feature importance:   6%|▋         | 2/32 [00:01<00:17,  1.75it/s]Calculating feature importance:   9%|▉         | 3/32 [00:01<00:16,  1.79it/s]Calculating feature importance:  12%|█▎        | 4/32 [00:02<00:15,  1.83it/s]Calculating feature importance:  16%|█▌        | 5/32 [00:02<00:16,  1.66it/s]Calculating feature importance:  19%|█▉        | 6/32 [00:03<00:15,  1.71it/s]Calculating feature importance:  22%|██▏       | 7/32 [00:04<00:14,  1.70it/s]Calculating feature importance:  25%|██▌       | 8/32 [00:04<00:13,  1.74it/s]Calculating feature importance:  28%|██▊       | 9/32 [00:05<00:12,  1.79it/s]Calculating feature importance:  31%|███▏      | 10/32 [00:05<00:12,  1.80it/s]Calculating feature importance:  34%|███▍      | 11/32 [00:06<00:12,  1.73it/s]Calculating feature importance:  38%|███▊      | 12/32 [00:06<00:11,  1.76it/s]Calculating feature importance:  41%|████      | 13/32 [00:07<00:11,  1.71it/s]Calculating feature importance:  44%|████▍     | 14/32 [00:08<00:10,  1.70it/s]Calculating feature importance:  47%|████▋     | 15/32 [00:08<00:10,  1.68it/s]Calculating feature importance:  50%|█████     | 16/32 [00:09<00:09,  1.63it/s]Calculating feature importance:  53%|█████▎    | 17/32 [00:09<00:09,  1.64it/s]Calculating feature importance:  56%|█████▋    | 18/32 [00:10<00:08,  1.66it/s]Calculating feature importance:  59%|█████▉    | 19/32 [00:11<00:07,  1.69it/s]Calculating feature importance:  62%|██████▎   | 20/32 [00:11<00:07,  1.70it/s]Calculating feature importance:  66%|██████▌   | 21/32 [00:12<00:06,  1.74it/s]Calculating feature importance:  69%|██████▉   | 22/32 [00:12<00:05,  1.73it/s]Calculating feature importance:  72%|███████▏  | 23/32 [00:13<00:05,  1.66it/s]Calculating feature importance:  75%|███████▌  | 24/32 [00:14<00:04,  1.65it/s]Calculating feature importance:  78%|███████▊  | 25/32 [00:14<00:04,  1.65it/s]Calculating feature importance:  81%|████████▏ | 26/32 [00:15<00:03,  1.61it/s]Calculating feature importance:  84%|████████▍ | 27/32 [00:16<00:03,  1.57it/s]Calculating feature importance:  88%|████████▊ | 28/32 [00:16<00:02,  1.60it/s]Calculating feature importance:  91%|█████████ | 29/32 [00:17<00:01,  1.63it/s]Calculating feature importance:  94%|█████████▍| 30/32 [00:17<00:01,  1.69it/s]Calculating feature importance:  97%|█████████▋| 31/32 [00:18<00:00,  1.75it/s]Calculating feature importance: 100%|██████████| 32/32 [00:18<00:00,  1.80it/s]Calculating feature importance: 100%|██████████| 32/32 [00:18<00:00,  1.70it/s]
-[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_all_result_importance.png[0m
-[1mFeature importance calculation completed: 24.66 seconds[0m
-Saving results...
-[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_all_result.log[0m
-[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_all_result.tsv[0m
-Creating parity plot...
-[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_all_result.png[0m
-[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_all_result.json[0m
-Analyzing coordination preferences...
-Coordination preference analysis completed
-Execution Summary:
-[1mTotal execution time: 789.03 seconds[0m
-[1mModel training and evaluation time: 789.02 seconds[0m
-Running model: gpr, target: coh, row: 3d
-Script started...
-Importing required libraries...
-Starting bulk prediction analysis...
-Loading data...
-[1mData loading completed: 0.01 seconds[0m
-Preprocessing data...
-Scaling features...
-[1mFeature scaling completed: 0.00 seconds[0m
-Setting up GPR model...
-Performing Bayesian Optimization...
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-[1mBayesian Optimization completed: 185.78 seconds[0m
-[95mBest parameters: OrderedDict([('kernel__k1__k2__alpha', 14.818136294411476), ('kernel__k1__k2__length_scale', 338.07119372989183), ('kernel__k2__noise_level', 0.038925062558140405)])[0m
-Performing cross-validation...
-[1mCross-validation completed: 10.79 seconds[0m
-[95mCross-validation R2 scores: [0.96928477 0.97289241 0.96378044 0.92755539 0.88413581][0m
-[95mMean CV R2 score: 0.9435 (+/- 0.0676)[0m
-[95mCross-validation MAE scores: [0.27183601 0.29131856 0.30598829 0.37923382 0.56080449][0m
-[95mMean CV MAE score: 0.3618 (+/- 0.2118)[0m
-[95mCross-validation MSE scores: [0.11049697 0.15917954 0.13711026 0.28520087 0.43137993][0m
-[95mMean CV MSE score: 0.2247 (+/- 0.2390)[0m
-Making predictions...
-[1mPredictions completed: 0.00 seconds[0m
-Calculating metrics...
-[1mMetrics calculation completed: 0.00 seconds[0m
-Calculating feature importance...
-Calculating feature importance:   0%|          | 0/32 [00:00<?, ?it/s]Calculating feature importance:   3%|▎         | 1/32 [00:00<00:04,  6.79it/s]Calculating feature importance:   6%|▋         | 2/32 [00:00<00:04,  6.81it/s]Calculating feature importance:   9%|▉         | 3/32 [00:00<00:04,  6.90it/s]Calculating feature importance:  12%|█▎        | 4/32 [00:00<00:03,  7.04it/s]Calculating feature importance:  16%|█▌        | 5/32 [00:00<00:03,  7.11it/s]Calculating feature importance:  19%|█▉        | 6/32 [00:00<00:03,  7.17it/s]Calculating feature importance:  22%|██▏       | 7/32 [00:01<00:03,  6.60it/s]Calculating feature importance:  25%|██▌       | 8/32 [00:01<00:03,  6.54it/s]Calculating feature importance:  28%|██▊       | 9/32 [00:01<00:03,  6.67it/s]Calculating feature importance:  31%|███▏      | 10/32 [00:01<00:03,  6.78it/s]Calculating feature importance:  34%|███▍      | 11/32 [00:01<00:03,  6.86it/s]Calculating feature importance:  38%|███▊      | 12/32 [00:01<00:02,  6.84it/s]Calculating feature importance:  41%|████      | 13/32 [00:01<00:02,  6.90it/s]Calculating feature importance:  44%|████▍     | 14/32 [00:02<00:02,  7.06it/s]Calculating feature importance:  47%|████▋     | 15/32 [00:02<00:02,  7.00it/s]Calculating feature importance:  50%|█████     | 16/32 [00:02<00:02,  7.06it/s]Calculating feature importance:  53%|█████▎    | 17/32 [00:02<00:02,  7.11it/s]Calculating feature importance:  56%|█████▋    | 18/32 [00:02<00:01,  7.20it/s]Calculating feature importance:  59%|█████▉    | 19/32 [00:02<00:01,  7.23it/s]Calculating feature importance:  62%|██████▎   | 20/32 [00:02<00:01,  7.28it/s]Calculating feature importance:  66%|██████▌   | 21/32 [00:02<00:01,  7.34it/s]Calculating feature importance:  69%|██████▉   | 22/32 [00:03<00:01,  7.45it/s]Calculating feature importance:  72%|███████▏  | 23/32 [00:03<00:01,  7.42it/s]Calculating feature importance:  75%|███████▌  | 24/32 [00:03<00:01,  7.37it/s]Calculating feature importance:  78%|███████▊  | 25/32 [00:03<00:00,  7.35it/s]Calculating feature importance:  81%|████████▏ | 26/32 [00:03<00:00,  6.95it/s]Calculating feature importance:  84%|████████▍ | 27/32 [00:03<00:00,  6.86it/s]Calculating feature importance:  88%|████████▊ | 28/32 [00:03<00:00,  6.79it/s]Calculating feature importance:  91%|█████████ | 29/32 [00:04<00:00,  6.79it/s]Calculating feature importance:  94%|█████████▍| 30/32 [00:04<00:00,  6.72it/s]Calculating feature importance:  97%|█████████▋| 31/32 [00:04<00:00,  6.84it/s]Calculating feature importance: 100%|██████████| 32/32 [00:04<00:00,  7.01it/s]Calculating feature importance: 100%|██████████| 32/32 [00:04<00:00,  7.00it/s]
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__alpha is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:452: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified upper bound 100000.0. Increasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__alpha is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:452: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified upper bound 100000.0. Increasing the bound and calling fit again may find a better value.
-  warnings.warn(
-[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_3d_result_importance.png[0m
-[1mFeature importance calculation completed: 6.54 seconds[0m
-Saving results...
-[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_3d_result.log[0m
-[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_3d_result.tsv[0m
-Creating parity plot...
-[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_3d_result.png[0m
-[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_3d_result.json[0m
-Analyzing coordination preferences...
-Coordination preference analysis completed
-Execution Summary:
-[1mTotal execution time: 203.54 seconds[0m
-[1mModel training and evaluation time: 203.53 seconds[0m
-Running model: gpr, target: coh, row: 4d
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-07. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-Script started...
-Importing required libraries...
-Starting bulk prediction analysis...
-Loading data...
-[1mData loading completed: 0.01 seconds[0m
-Preprocessing data...
-Scaling features...
-[1mFeature scaling completed: 0.00 seconds[0m
-Setting up GPR model...
-Performing Bayesian Optimization...
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-[1mBayesian Optimization completed: 188.65 seconds[0m
-[95mBest parameters: OrderedDict([('kernel__k1__k2__alpha', 0.010109934442340698), ('kernel__k1__k2__length_scale', 0.03351478609361237), ('kernel__k2__noise_level', 263.50347113270743)])[0m
-Performing cross-validation...
-[1mCross-validation completed: 9.80 seconds[0m
-[95mCross-validation R2 scores: [0.93596921 0.96418521 0.9919489  0.94915054 0.97954158][0m
-[95mMean CV R2 score: 0.9642 (+/- 0.0403)[0m
-[95mCross-validation MAE scores: [0.46472805 0.4030096  0.1904316  0.4451513  0.33105006][0m
-[95mMean CV MAE score: 0.3669 (+/- 0.1988)[0m
-[95mCross-validation MSE scores: [0.5246807  0.28289862 0.06165688 0.29664976 0.18394345][0m
-[95mMean CV MSE score: 0.2700 (+/- 0.3054)[0m
-Making predictions...
-[1mPredictions completed: 0.00 seconds[0m
-Calculating metrics...
-[1mMetrics calculation completed: 0.00 seconds[0m
-Calculating feature importance...
-Calculating feature importance:   0%|          | 0/32 [00:00<?, ?it/s]Calculating feature importance:   3%|▎         | 1/32 [00:00<00:04,  6.98it/s]Calculating feature importance:   6%|▋         | 2/32 [00:00<00:04,  7.23it/s]Calculating feature importance:   9%|▉         | 3/32 [00:00<00:03,  7.35it/s]Calculating feature importance:  12%|█▎        | 4/32 [00:00<00:03,  7.80it/s]Calculating feature importance:  16%|█▌        | 5/32 [00:00<00:03,  7.84it/s]Calculating feature importance:  19%|█▉        | 6/32 [00:00<00:03,  7.34it/s]Calculating feature importance:  22%|██▏       | 7/32 [00:00<00:03,  7.46it/s]Calculating feature importance:  25%|██▌       | 8/32 [00:01<00:03,  7.48it/s]Calculating feature importance:  28%|██▊       | 9/32 [00:01<00:03,  7.50it/s]Calculating feature importance:  31%|███▏      | 10/32 [00:01<00:03,  7.32it/s]Calculating feature importance:  34%|███▍      | 11/32 [00:01<00:02,  7.04it/s]Calculating feature importance:  38%|███▊      | 12/32 [00:01<00:02,  6.87it/s]Calculating feature importance:  41%|████      | 13/32 [00:01<00:02,  6.94it/s]Calculating feature importance:  44%|████▍     | 14/32 [00:01<00:02,  7.28it/s]Calculating feature importance:  47%|████▋     | 15/32 [00:02<00:02,  7.71it/s]Calculating feature importance:  50%|█████     | 16/32 [00:02<00:02,  7.80it/s]Calculating feature importance:  53%|█████▎    | 17/32 [00:02<00:01,  8.01it/s]Calculating feature importance:  56%|█████▋    | 18/32 [00:02<00:01,  8.13it/s]Calculating feature importance:  59%|█████▉    | 19/32 [00:02<00:01,  8.28it/s]Calculating feature importance:  62%|██████▎   | 20/32 [00:02<00:01,  8.21it/s]Calculating feature importance:  66%|██████▌   | 21/32 [00:02<00:01,  8.18it/s]Calculating feature importance:  69%|██████▉   | 22/32 [00:02<00:01,  8.13it/s]Calculating feature importance:  72%|███████▏  | 23/32 [00:03<00:01,  7.90it/s]Calculating feature importance:  75%|███████▌  | 24/32 [00:03<00:01,  7.89it/s]Calculating feature importance:  78%|███████▊  | 25/32 [00:03<00:00,  8.05it/s]Calculating feature importance:  81%|████████▏ | 26/32 [00:03<00:00,  8.05it/s]Calculating feature importance:  84%|████████▍ | 27/32 [00:03<00:00,  7.90it/s]Calculating feature importance:  88%|████████▊ | 28/32 [00:03<00:00,  7.91it/s]Calculating feature importance:  91%|█████████ | 29/32 [00:03<00:00,  7.89it/s]Calculating feature importance:  94%|█████████▍| 30/32 [00:03<00:00,  7.92it/s]Calculating feature importance:  97%|█████████▋| 31/32 [00:04<00:00,  7.98it/s]Calculating feature importance: 100%|██████████| 32/32 [00:04<00:00,  7.97it/s]Calculating feature importance: 100%|██████████| 32/32 [00:04<00:00,  7.73it/s]
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:452: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified upper bound 100000.0. Increasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:452: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified upper bound 100000.0. Increasing the bound and calling fit again may find a better value.
-  warnings.warn(
-[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_4d_result_importance.png[0m
-[1mFeature importance calculation completed: 5.86 seconds[0m
-Saving results...
-[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_4d_result.log[0m
-[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_4d_result.tsv[0m
-Creating parity plot...
-[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_4d_result.png[0m
-[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_4d_result.json[0m
-Analyzing coordination preferences...
-Coordination preference analysis completed
-Execution Summary:
-[1mTotal execution time: 204.71 seconds[0m
-[1mModel training and evaluation time: 204.69 seconds[0m
-Running model: gpr, target: coh, row: 5d
-Script started...
-Importing required libraries...
-Starting bulk prediction analysis...
-Loading data...
-[1mData loading completed: 0.01 seconds[0m
-Preprocessing data...
-Scaling features...
-[1mFeature scaling completed: 0.00 seconds[0m
-Setting up GPR model...
-Performing Bayesian Optimization...
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-[1mBayesian Optimization completed: 191.92 seconds[0m
-[95mBest parameters: OrderedDict([('kernel__k1__k2__alpha', 171.5549068204941), ('kernel__k1__k2__length_scale', 0.15132441342780956), ('kernel__k2__noise_level', 3.652711219105594e-05)])[0m
-Performing cross-validation...
-[1mCross-validation completed: 10.89 seconds[0m
-[95mCross-validation R2 scores: [0.97538115 0.98641514 0.91840735 0.98723422 0.98564926][0m
-[95mMean CV R2 score: 0.9706 (+/- 0.0529)[0m
-[95mCross-validation MAE scores: [0.38834214 0.32515138 0.55209637 0.30595716 0.30079716][0m
-[95mMean CV MAE score: 0.3745 (+/- 0.1883)[0m
-[95mCross-validation MSE scores: [0.20618145 0.18153671 0.51624916 0.13854203 0.18751997][0m
-[95mMean CV MSE score: 0.2460 (+/- 0.2739)[0m
-Making predictions...
-[1mPredictions completed: 0.00 seconds[0m
-Calculating metrics...
-[1mMetrics calculation completed: 0.00 seconds[0m
-Calculating feature importance...
-Calculating feature importance:   0%|          | 0/32 [00:00<?, ?it/s]Calculating feature importance:   3%|▎         | 1/32 [00:00<00:04,  7.42it/s]Calculating feature importance:   6%|▋         | 2/32 [00:00<00:03,  7.90it/s]Calculating feature importance:   9%|▉         | 3/32 [00:00<00:03,  7.98it/s]Calculating feature importance:  12%|█▎        | 4/32 [00:00<00:03,  8.09it/s]Calculating feature importance:  16%|█▌        | 5/32 [00:00<00:03,  7.90it/s]Calculating feature importance:  19%|█▉        | 6/32 [00:00<00:03,  8.01it/s]Calculating feature importance:  22%|██▏       | 7/32 [00:00<00:03,  8.05it/s]Calculating feature importance:  25%|██▌       | 8/32 [00:01<00:03,  7.93it/s]Calculating feature importance:  28%|██▊       | 9/32 [00:01<00:02,  7.97it/s]Calculating feature importance:  31%|███▏      | 10/32 [00:01<00:02,  8.09it/s]Calculating feature importance:  34%|███▍      | 11/32 [00:01<00:02,  8.09it/s]Calculating feature importance:  38%|███▊      | 12/32 [00:01<00:02,  8.10it/s]Calculating feature importance:  41%|████      | 13/32 [00:01<00:02,  7.88it/s]Calculating feature importance:  44%|████▍     | 14/32 [00:01<00:02,  8.02it/s]Calculating feature importance:  47%|████▋     | 15/32 [00:01<00:02,  8.16it/s]Calculating feature importance:  50%|█████     | 16/32 [00:01<00:01,  8.20it/s]Calculating feature importance:  53%|█████▎    | 17/32 [00:02<00:01,  7.86it/s]Calculating feature importance:  56%|█████▋    | 18/32 [00:02<00:01,  7.57it/s]Calculating feature importance:  59%|█████▉    | 19/32 [00:02<00:01,  7.63it/s]Calculating feature importance:  62%|██████▎   | 20/32 [00:02<00:01,  7.57it/s]Calculating feature importance:  66%|██████▌   | 21/32 [00:02<00:01,  7.12it/s]Calculating feature importance:  69%|██████▉   | 22/32 [00:02<00:01,  7.12it/s]Calculating feature importance:  72%|███████▏  | 23/32 [00:02<00:01,  7.23it/s]Calculating feature importance:  75%|███████▌  | 24/32 [00:03<00:01,  7.38it/s]Calculating feature importance:  78%|███████▊  | 25/32 [00:03<00:00,  7.38it/s]Calculating feature importance:  81%|████████▏ | 26/32 [00:03<00:00,  7.38it/s]Calculating feature importance:  84%|████████▍ | 27/32 [00:03<00:00,  7.29it/s]Calculating feature importance:  88%|████████▊ | 28/32 [00:03<00:00,  7.54it/s]Calculating feature importance:  91%|█████████ | 29/32 [00:03<00:00,  7.68it/s]Calculating feature importance:  94%|█████████▍| 30/32 [00:03<00:00,  7.88it/s]Calculating feature importance:  97%|█████████▋| 31/32 [00:04<00:00,  7.67it/s]Calculating feature importance: 100%|██████████| 32/32 [00:04<00:00,  7.29it/s]Calculating feature importance: 100%|██████████| 32/32 [00:04<00:00,  7.68it/s]
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__alpha is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:452: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified upper bound 100000.0. Increasing the bound and calling fit again may find a better value.
-  warnings.warn(
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:452: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified upper bound 100000.0. Increasing the bound and calling fit again may find a better value.
-  warnings.warn(
-[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_5d_result_importance.png[0m
-[1mFeature importance calculation completed: 5.95 seconds[0m
-Saving results...
-[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_5d_result.log[0m
-[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_5d_result.tsv[0m
-Creating parity plot...
-[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_5d_result.png[0m
-[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_5d_result.json[0m
-Analyzing coordination preferences...
-Coordination preference analysis completed
-Execution Summary:
-[1mTotal execution time: 209.16 seconds[0m
-[1mModel training and evaluation time: 209.14 seconds[0m
-Running model: gpr, target: coh, row: 4d 5d
-Script started...
-Importing required libraries...
-Starting bulk prediction analysis...
-Loading data...
-[1mData loading completed: 0.01 seconds[0m
-Preprocessing data...
-Scaling features...
-[1mFeature scaling completed: 0.00 seconds[0m
-Setting up GPR model...
-Performing Bayesian Optimization...
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-Fitting 5 folds for each of 1 candidates, totalling 5 fits
-[1mBayesian Optimization completed: 378.30 seconds[0m
-[95mBest parameters: OrderedDict([('kernel__k1__k2__alpha', 0.12619425629415187), ('kernel__k1__k2__length_scale', 101.15402653101344), ('kernel__k2__noise_level', 21314.737499132883)])[0m
-Performing cross-validation...
-[1mCross-validation completed: 22.62 seconds[0m
-[95mCross-validation R2 scores: [0.98588093 0.9706011  0.95479988 0.98602394 0.9866088 ][0m
-[95mMean CV R2 score: 0.9768 (+/- 0.0251)[0m
-[95mCross-validation MAE scores: [0.28194844 0.38836797 0.39266408 0.33169352 0.26245822][0m
-[95mMean CV MAE score: 0.3314 (+/- 0.1066)[0m
-[95mCross-validation MSE scores: [0.1637791  0.23222321 0.28019098 0.17234867 0.11012818][0m
-[95mMean CV MSE score: 0.1917 (+/- 0.1176)[0m
-Making predictions...
-[1mPredictions completed: 0.00 seconds[0m
-Calculating metrics...
-[1mMetrics calculation completed: 0.00 seconds[0m
-Calculating feature importance...
-Calculating feature importance:   0%|          | 0/32 [00:00<?, ?it/s]Calculating feature importance:   3%|▎         | 1/32 [00:00<00:08,  3.47it/s]Calculating feature importance:   6%|▋         | 2/32 [00:00<00:08,  3.34it/s]Calculating feature importance:   9%|▉         | 3/32 [00:00<00:08,  3.38it/s]Calculating feature importance:  12%|█▎        | 4/32 [00:01<00:08,  3.43it/s]Calculating feature importance:  16%|█▌        | 5/32 [00:01<00:07,  3.42it/s]Calculating feature importance:  19%|█▉        | 6/32 [00:01<00:07,  3.45it/s]Calculating feature importance:  22%|██▏       | 7/32 [00:02<00:07,  3.42it/s]Calculating feature importance:  25%|██▌       | 8/32 [00:02<00:06,  3.43it/s]Calculating feature importance:  28%|██▊       | 9/32 [00:02<00:06,  3.32it/s]Calculating feature importance:  31%|███▏      | 10/32 [00:02<00:06,  3.28it/s]Calculating feature importance:  34%|███▍      | 11/32 [00:03<00:06,  3.20it/s]Calculating feature importance:  38%|███▊      | 12/32 [00:03<00:06,  3.30it/s]Calculating feature importance:  41%|████      | 13/32 [00:03<00:05,  3.24it/s]Calculating feature importance:  44%|████▍     | 14/32 [00:04<00:05,  3.25it/s]Calculating feature importance:  47%|████▋     | 15/32 [00:04<00:05,  3.29it/s]Calculating feature importance:  50%|█████     | 16/32 [00:04<00:04,  3.26it/s]Calculating feature importance:  53%|█████▎    | 17/32 [00:05<00:04,  3.22it/s]Calculating feature importance:  56%|█████▋    | 18/32 [00:05<00:04,  3.32it/s]Calculating feature importance:  59%|█████▉    | 19/32 [00:05<00:04,  3.25it/s]Calculating feature importance:  62%|██████▎   | 20/32 [00:06<00:03,  3.22it/s]Calculating feature importance:  66%|██████▌   | 21/32 [00:06<00:03,  3.29it/s]Calculating feature importance:  69%|██████▉   | 22/32 [00:06<00:03,  3.26it/s]Calculating feature importance:  72%|███████▏  | 23/32 [00:06<00:02,  3.33it/s]Calculating feature importance:  75%|███████▌  | 24/32 [00:07<00:02,  3.31it/s]Calculating feature importance:  78%|███████▊  | 25/32 [00:07<00:02,  3.12it/s]Calculating feature importance:  81%|████████▏ | 26/32 [00:07<00:01,  3.13it/s]Calculating feature importance:  84%|████████▍ | 27/32 [00:08<00:01,  3.11it/s]Calculating feature importance:  88%|████████▊ | 28/32 [00:08<00:01,  3.11it/s]Calculating feature importance:  91%|█████████ | 29/32 [00:08<00:00,  3.19it/s]Calculating feature importance:  94%|█████████▍| 30/32 [00:09<00:00,  3.24it/s]Calculating feature importance:  97%|█████████▋| 31/32 [00:09<00:00,  3.20it/s]Calculating feature importance: 100%|██████████| 32/32 [00:09<00:00,  3.20it/s]Calculating feature importance: 100%|██████████| 32/32 [00:09<00:00,  3.26it/s]
-/Users/jiuy97/miniconda3/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:442: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k2__length_scale is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
-  warnings.warn(
-[94mFeature importance plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_4d5d_result_importance.png[0m
-[1mFeature importance calculation completed: 13.18 seconds[0m
-Saving results...
-[94mLog file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_4d5d_result.log[0m
-[94mTSV file saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_4d5d_result.tsv[0m
-Creating parity plot...
-[94mParity plot saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_4d5d_result.png[0m
-[94mResults saved as /Users/jiuy97/Desktop/7_V_bulk/figures/coh_pred_gpr_4d5d_result.json[0m
-Analyzing coordination preferences...
-Coordination preference analysis completed
-Execution Summary:
-[1mTotal execution time: 414.60 seconds[0m
-[1mModel training and evaluation time: 414.58 seconds[0m
-----------------------------------------
-Finished bulk prediction analysis at Mon Mar 31 15:47:25 PDT 2025
