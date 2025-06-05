@@ -162,7 +162,7 @@ do
         continue
     fi
 
-    if [[ -f submit.sh ]] && [[ ! -f DONE ]]; then
+    if [[ -f POSCAR ]] && [[ ! -f DONE ]]; then
         pwd
     fi
 done
