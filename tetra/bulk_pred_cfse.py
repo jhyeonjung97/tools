@@ -1006,7 +1006,7 @@ def main():
     row_map = {'3d': 'red', '4d': 'green', '5d': 'blue'}
     coord_map = {'WZ': '+', 'ZB': 'x', 'TN': 'o', 'PD': 'o', 'NB': 's', 'RS': 'D', 'LT': 'h', '+3': 'v', '+4': '^', '+5': '<', '+6': '>'}
 
-    plt.figure(figsize=(9, 6))
+    plt.figure(figsize=(10, 6))
     
     # 전체 데이터에 대한 예측을 한 번에 수행
     X_all = df[selected_features].astype(float)
@@ -1063,11 +1063,11 @@ def main():
     plt.plot([y.min(), y.max()], [y.min(), y.max()], '--', lw=1, color='black')
     plt.xlabel(f'DFT-calculated {ylabels[args.Y]}')
     plt.ylabel(f'Predicted {ylabels[args.Y]}')
-    plt.legend(bbox_to_anchor=(-0.10, 1), loc='upper right', labelspacing=0.3, fontsize=9)
+    plt.legend(bbox_to_anchor=(-0.10, 1.01), loc='upper right', labelspacing=0.3, fontsize=9)
     plt.tight_layout()
     
     # Save plot
-    plt.savefig(png_path)
+    plt.savefig(png_path, transparent=True, dpi=300)
     plt.close()
     print(f"{BLUE}Parity plot saved as {png_path}{ENDC}")
 

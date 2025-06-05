@@ -262,7 +262,7 @@ def plot_pourbaix(entries, png_name):
     ax.tick_params(axis='both', labelsize=14)
 
     plt.tight_layout()
-    plt.savefig(png_name, dpi=200, bbox_inches='tight')
+    plt.savefig(png_name, dpi=200, bbox_inches='tight', transparent=True)
     plt.show()
 
 def main():

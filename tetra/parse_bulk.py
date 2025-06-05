@@ -55,7 +55,7 @@ columns_data = [
     {'column': 'CN',       'png_name': 'coordination_number', 'ylabel': 'Coordination Number'},
     {'column': 'OS',       'png_name': 'oxidation_number',    'ylabel': 'Oxidation Number'},
     {'column': 'energy',   'png_name': 'energy',              'ylabel': 'Energy (eV)'},
-    {'column': 'form',     'png_name': 'formation_energy',    'ylabel': 'Formation Energy (eV)'},
+    {'column': 'form',     'png_name': 'formation_energy',    'ylabel': 'Formation Energy per Metal(eV)'},
     {'column': 'coh',      'png_name': 'cohesive_energy',     'ylabel': 'Cohesive Energy (eV)'},
     {'column': 'volume',   'png_name': 'volume',              'ylabel': 'Volume (Å³)'},
     {'column': 'cell',     'png_name': 'cell',                'ylabel': 'Cell'},
@@ -189,8 +189,8 @@ def main():
     df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
     print(df)
-    # plot_by_metal_row(df, save_path)
-    # plot_by_coordination(df, save_path)
+    plot_by_metal_row(df, save_path)
+    plot_by_coordination(df, save_path)
     
 def plot_by_metal_row(df, save_path):
     for row in ['fm', '3d', '4d', '5d']:
@@ -212,13 +212,13 @@ def plot_by_metal_row(df, save_path):
                             plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, 
                                         marker=marker, edgecolors=color, facecolors='white', zorder=zorder)
                             
-            plt.xticks(np.arange(len(metals[row])), metals[row])
+            plt.xticks(np.arange(len(metals[row])), metals[row], fontsize=12)
             plt.xlabel("Metal Index")
-            plt.ylabel(columns.loc[col, 'ylabel'])
+            plt.ylabel(columns.loc[col, 'ylabel'], fontsize=12)
             plt.legend()
             plt.tight_layout()
             png_name = f"bulk_{row}_{columns.loc[col, 'png_name']}.png"
-            plt.savefig(f"{save_path}/{png_name}")
+            plt.savefig(f"{save_path}/{png_name}", transparent=True, dpi=300)
             plt.close()
             print(f"Figure saved as {png_name}")
             
@@ -242,13 +242,13 @@ def plot_by_coordination(df, save_path):
                             plt.scatter(m, metal_df.loc[metal, 'Eform']/23.06, 
                                         marker=marker, edgecolors=color, facecolors='white')
                     
-            plt.xticks(np.arange(len(indice)), indice)
+            plt.xticks(np.arange(len(indice)), indice, fontsize=12)
             plt.xlabel("Metal Index")
-            plt.ylabel(columns.loc[col, 'ylabel'])
+            plt.ylabel(columns.loc[col, 'ylabel'], fontsize=12)
             plt.legend()
             plt.tight_layout()
             png_name = f"bulk_{coord}_{columns.loc[col, 'png_name']}.png"
-            plt.savefig(f"{save_path}/{png_name}")
+            plt.savefig(f"{save_path}/{png_name}", transparent=True, dpi=300)
             plt.close()
             print(f"Figure saved as {png_name}")
 
