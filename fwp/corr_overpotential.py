@@ -174,12 +174,19 @@ with open('Final_dGs_for_MOOHx_system_CORR.csv', 'w') as myfile:
 
         recalculated_over = overpotential_corr_full(calc_systems[i][0], calc_systems[i][1], calc_systems[i][2], calc_systems[i][3])
         calc_systems[i][4] = recalculated_over[0]
-        wr.writerow([calc_systems[i][5], calc_systems[i][0], calc_systems[i][1], calc_systems[i][2], calc_systems[i][3], 
-                    recalculated_over[0], recalculated_over[1], recalculated_over[2]])
+        wr.writerow([calc_systems[i][5], 
+                    calc_systems[i][0], 
+                    calc_systems[i][1], 
+                    calc_systems[i][2], 
+                    calc_systems[i][3], 
+                    calc_systems[i][4], 
+                    recalculated_over[0], 
+                    recalculated_over[1], 
+                    recalculated_over[2]])
 
 # dE 값으로 CSV 파일 생성
 with open('Final_dEs_for_MOOHx_system_CORR.csv', 'w') as myfile:
-    fieldnames = ['Surface name','dECO','dECOH','dEC', 'overpotential', 'onset potential', 'PLS']
+    fieldnames = ['Surface name','dECO','dECOH','dEC', 'dECH', 'overpotential', 'onset potential', 'PLS']
     wr = csv.writer(myfile, quoting=csv.QUOTE_MINIMAL, delimiter=',')
     writer = csv.DictWriter(myfile, fieldnames=fieldnames)
     writer.writeheader()

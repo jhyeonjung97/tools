@@ -4,6 +4,7 @@ NO3RR (Nitrate Reduction Reaction) 오버포텐셜 계산 및 시각화 스크�
 """
 import matplotlib
 import numpy as np
+import pandas as pd
 import matplotlib.cm as cm
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
@@ -20,16 +21,13 @@ from matplotlib import rc
 import seaborn as sns
 from matplotlib.colors import ListedColormap
 
-# 그래프 설정
 fig_width_pt = 1.8*246.0
 inches_per_pt = 1.0/72.27
 golden_mean = (np.sqrt(5)-1.0)/2.0
 fig_width = fig_width_pt*inches_per_pt
 fig_height = fig_width*golden_mean
 fig_size = [fig_width,fig_height]
-fig = plt.figure(figsize=fig_size,dpi=300)
 
-# 폰트 및 스타일 설정
 font_size = 9 
 tick_font_size = 8
 xlabel_pad = 8
@@ -42,277 +40,244 @@ matplotlib.rcParams['xtick.labelsize'] = tick_font_size
 matplotlib.rcParams['ytick.labelsize'] = tick_font_size
 matplotlib.rcParams['lines.linewidth'] = 1.
 
-# 축 설정
+## gibbs free energy correction
+ddgno2 = 0.0
+ddgno2h = 0.0
+dgnh2 = 0.0
+dgnh3 = 0.0
+
+no2_solv = 0.0
+no2h_solv = 0.0
+nh2_solv = 0.0
+nh3_solv = 0.0
+
+ddg_corr = [ddgno2, ddgno2h, dgnh2, dgnh3]
+solv_corr = [no2_solv, no2h_solv, nh2_solv, nh3_solv]
+
+no3rr_onset = 0.87
+
+steps = ['NO2H*->NO2*', 'NH2*->NH3*']
+## steps = ['NO3(g)->NO3*', 'NO3*->NO3H*', 'NO3H*->NO2H*', 'NO2H*->NO2*', 'NO2*->NH2*', 'NH2*->NH3*', 'NH3*->NH3(g)']
+
+def overpotential_no3rr_full(dgno2, dgno2h, dgnh2, dgnh3):
+    dg = [dgno2h-dgno2, dgnh3-dgnh2]
+    m = max(dg)
+    return [round(m+no3rr_onset,2), -round(m,2), no3rr_step(dg.index(m))]
+
+def no3rr_step(i):
+    return str(steps[i])
+
+surfs = ['Ni(111)', 'Cu(100)', 'Cu(111)', 'Ru(0001)', 'Pt(111)', 'Rh(111)', 'Ag(111)']
+comps = ['Ni27', 'Cu36', 'Cu36', 'Ru36', 'Pt27', 'Rh27', 'Ag27']
+facets = ['111', '100', '111', '0001', '111', '111', '111']
+markers = {'111': 'o', '100': 's', '0001': 'd'}
+colors = {'Ni27': 'dodgerblue', 'Cu36': 'gold', 'Ru36': 'darkorange', 'Pt27': 'green', 'Rh27': 'orangered', 'Ag27': 'mediumorchid'}
+
+calc_systems = []
+cathub_nitrate = pd.read_csv('~/bin/tools/fwp/cathub-nitrate.csv')
+for i in range(7):
+    comp = comps[i]
+    facet = facets[i]
+    cathub_nitrate_comp = cathub_nitrate[(cathub_nitrate['chemicalComposition'] == comp) & (cathub_nitrate['facet'] == facet)]
+    NH3_ads = cathub_nitrate_comp[(cathub_nitrate_comp['Equation'] == "2.5H2(g) + NO(g) + * -> NH3* + H2O(g)")]['reactionEnergy'].values[0]
+    NH2_ads = cathub_nitrate_comp[(cathub_nitrate_comp['Equation'] == "2.0H2(g) + NO(g) + * -> NH2* + H2O(g)")]['reactionEnergy'].values[0]
+    OH_ads = -cathub_nitrate_comp[(cathub_nitrate_comp['Equation'] == "OH* + 0.5H2(g) -> H2O(g) + *")]['reactionEnergy'].values[0]
+    O_ads = OH_ads - cathub_nitrate_comp[(cathub_nitrate_comp['Equation'] == "0.5H2(g) + O* -> OH*")]['reactionEnergy'].values[0]
+    NO_ads = cathub_nitrate_comp[(cathub_nitrate_comp['Equation'] == "NO(g) + * -> NO*")]['reactionEnergy'].values[0]
+    NO2_ads = NO_ads + O_ads - cathub_nitrate_comp[(cathub_nitrate_comp['Equation'] == "NO2* + * -> NO* + O*")]['reactionEnergy'].values[0]
+    if comp == 'Ag27':
+        protonation = cathub_nitrate_comp[(cathub_nitrate_comp['Equation'] == "0.5H2(g) + NO(g) + * -> NHO*")]['reactionEnergy'].values[0] - NO_ads
+    else:
+        protonation = cathub_nitrate_comp[(cathub_nitrate_comp['Equation'] == "0.5H2(g) + NO(g) + * -> NOH*")]['reactionEnergy'].values[0] - NO_ads
+    NO2H_ads = NO2_ads + protonation ##
+    calc_systems.append([NO2_ads, NO2H_ads, NH2_ads, NH3_ads, 0.0, surfs[i], colors[comp], markers[facet]])
+
+# CSV file
+with open('Final_dGs_for_M_system_NO3RR.csv', 'w') as myfile:
+    fieldnames = ['Surface name', 'dGNO2', 'dGNO2H', 'dGNH2', 'dGNH3', 'overpotential', 'onset potential', 'PLS']
+    wr = csv.writer(myfile, quoting=csv.QUOTE_MINIMAL, delimiter=',')
+    writer = csv.DictWriter(myfile, fieldnames=fieldnames)
+    writer.writeheader()
+    
+    for i in range(len(calc_systems)):
+        for k in range(len(steps)-1):
+            calc_systems[i][k] += solv_corr[k] + ddg_corr[k]
+
+        recalculated_over = overpotential_no3rr_full(calc_systems[i][0], calc_systems[i][1], calc_systems[i][2], calc_systems[i][3])
+        calc_systems[i][4] = recalculated_over[0]
+        wr.writerow([calc_systems[i][5], 
+                    calc_systems[i][0], 
+                    calc_systems[i][1], 
+                    calc_systems[i][2], 
+                    calc_systems[i][3], 
+                    calc_systems[i][4], 
+                    recalculated_over[0], 
+                    recalculated_over[1], 
+                    recalculated_over[2]])
+
+# Scaling plot
+fig = plt.figure(figsize=fig_size,dpi=300)
+ax = fig.add_axes([0.2, 0.2, 0.6, 0.6])
+x1 = -1.5
+x2 = 0.5
+y1 = -6
+y2 = 1
+ax.axis([x1, x2, y1, y2])
+
+ax.set_xlabel(r'$\Delta$G$_{\sf NO2}$ (eV)')
+ax.set_ylabel(r'$\Delta$G$_{\sf NO2H}$,$\Delta$G$_{\sf NH2}$ (eV)')
+
+xdata = []
+y1data = []
+y2data = []
+y3data = []
+
+for i in range(len(calc_systems)):
+    xdata.append(calc_systems[i][0])
+    y1data.append(calc_systems[i][1])
+    y2data.append(calc_systems[i][2])
+    y3data.append(calc_systems[i][3])
+
+fit1 = polyfit(xdata, y1data, 1)
+fit_fn1 = poly1d(fit1)
+
+fit2 = polyfit(xdata, y2data, 1)
+fit_fn2 = poly1d(fit2)
+
+fit3 = polyfit(xdata, y3data, 1)
+fit_fn3 = poly1d(fit3)
+
+delta = 0.01
+xx = np.arange(x1, x2, delta)
+ax.plot(xx, xx, '--', lw=1, dashes=(3,1), c='grey')
+ax.plot(xx, fit_fn1[1]*xx+fit_fn1[0], '--', lw=1, dashes=(3,1), c='blue', label='NO2H* scaling')
+ax.plot(xx, fit_fn2[1]*xx+fit_fn2[0], '--', lw=1, dashes=(3,1), c='orangered', label='NH2* scaling')
+ax.plot(xx, fit_fn3[1]*xx+fit_fn3[0], '--', lw=1, dashes=(3,1), c='gold', label='NH3* scaling')
+
+for i in range(len(calc_systems)): 
+    ax.plot(calc_systems[i][0], calc_systems[i][0],
+        mec='black', mfc=calc_systems[i][6], mew=0.8, zorder=4,
+        marker=calc_systems[i][7], linestyle='',
+        label=calc_systems[i][5]+' (BEEF-vdW)'+' : %.2f V' %(-(calc_systems[i][4]+no3rr_onset)))
+    ax.plot(calc_systems[i][0], calc_systems[i][1],
+           marker=calc_systems[i][7], ms=3,
+           color='blue')
+    ax.plot(calc_systems[i][0], calc_systems[i][2],
+           marker=calc_systems[i][7], ms=3,
+           color='orangered')
+    ax.plot(calc_systems[i][0], calc_systems[i][3],
+           marker=calc_systems[i][7], ms=3,
+           color='gold')
+
+ax.legend(bbox_to_anchor=(1.0, 1.4), loc='upper right', borderaxespad=0.5, ncol=2, 
+         fancybox=True, shadow=False, fontsize='x-small', handlelength=2)
+eq1 = r'$\Delta$G$_{\sf NO2H}$=%.2f$\Delta$G$_{\sf NO2}$%.2f' %(fit_fn1[1],fit_fn1[0])
+ax.text(-0.6, -1.8, eq1, fontsize='small', color='blue')
+eq2 = r'$\Delta$G$_{\sf NH2}$=%.2f$\Delta$G$_{\sf NO2}$%.2f' %(fit_fn2[1],fit_fn2[0])
+ax.text(-0.6, -2.2, eq2, fontsize='small', color='orangered')
+eq3 = r'$\Delta$G$_{\sf NH3}$=%.2f$\Delta$G$_{\sf NO2}$%.2f' %(fit_fn3[1],fit_fn3[0])
+ax.text(-0.6, -2.6, eq3, fontsize='small', color='gold')
+
+fig.savefig('NO3RR_scaling.pdf', bbox_inches='tight')
+plt.close()
+
+def dgnh2_dgno2_scaling(dgno2):
+    dgnh2 = fit_fn2[1]*dgno2 + fit_fn2[0]
+    return dgnh2
+
+def dgnh3_dgno2_scaling(dgno2):
+    dgno2h = fit_fn3[1]*dgno2 + fit_fn3[0]
+    return dgno2h
+
+def overpotential_from_dgnhx_dgno2_scaling(x, dgno2):
+    dgnh2_from_scaling = dgnh2_dgno2_scaling(dgno2)
+    dgnh3_from_scaling = dgnh3_dgno2_scaling(dgno2)
+    dg = [x, dgnh3_from_scaling-dgnh2_from_scaling, -dgnh3_from_scaling-5] ##
+    m = max(dg)
+    return m+no3rr_onset
+
+# 1D plot
+fig = plt.figure(figsize=fig_size,dpi=300)
+ax = fig.add_axes([0.2, 0.2, 0.6, 0.6])
+
+x1 = -2.0
+x2 = 1.0
+y2 = -1.0
+y1 = 1.0
+
+ax.axis([x1, x2, y1, y2])
+x = np.arange(x1, x2, delta)
+
+ax.set_xlabel(r'$\Delta$G$_{\sf NO2H}-\Delta$G$_{\sf NO2}$ (eV)')
+ax.set_ylabel(r'U$_{\sf NO3RR}$ (V)')
+ax.set_ylim(ax.get_ylim()[::-1])
+
+plot(x, -np.maximum(x, (fit_fn3[1]-fit_fn2[1])*x+(fit_fn3[0]-fit_fn2[0])), '--', color='black', lw=0.67, dashes=(3,1), zorder=2)
+plot(x, no3rr_onset+0.0*x, '--', color='black', lw=0.67, dashes=(3,1), zorder=2)
+
+for i in range(len(calc_systems)):
+    ax.plot(calc_systems[i][1]-calc_systems[i][0], -(calc_systems[i][4]-no3rr_onset),
+            mec='black', mfc=calc_systems[i][6], mew=0.8, zorder=4,
+            marker=calc_systems[i][7], linestyle='',
+            label=calc_systems[i][5]+' (BEEF-vdW)'+' : %.2f V' %(-(calc_systems[i][4]-no3rr_onset)))
+
+ax.legend(bbox_to_anchor=(1.0, 1.4), loc='upper right', borderaxespad=0.5, ncol=2, 
+         fancybox=True, shadow=False, fontsize='x-small', handlelength=2)
+
+fig.savefig('NO3RR_1D.pdf', bbox_inches='tight')
+plt.close()
+
+# 2D plot
+fig = plt.figure(figsize=fig_size,dpi=300)
 ax = fig.add_axes([0.2, 0.2, 0.6, 0.6])
 zoom = 0.3
-d1 = 3*zoom
+d1 = 2*zoom
 d2 = 4*zoom
-xcenter = 0.5
-ycenter = -1.0
+xcenter = 0.3
+ycenter = -0.1
 
 x1 = xcenter-d1
 x2 = xcenter+d1
 y1 = ycenter-d2
 y2 = ycenter+d2
 ax.axis([x1, x2, y1, y2])
-ax.set_xlabel(r'$\Delta$G$_{\sf NO2*}$ - $\Delta$G$_{\sf NO3*}$ (eV)')
-ax.set_ylabel(r'$\Delta$G$_{\sf NO3*}$ (eV)')
+ax.set_xlabel(r'$\Delta$G$_{\sf NO2H*}$ - $\Delta$G$_{\sf NO2*}$ (eV)')
+ax.set_ylabel(r'$\Delta$G$_{\sf NO2*}$ (eV)')
 
-# 메시 그리드 생성
-delta = 0.01
 x = np.arange(x1,x2+delta, delta)
 y = np.arange(y1,y2+delta, delta)
 X, Y = np.meshgrid(x, y)
 
-# 스케일링 함수
-def dgno2_dgno3_scaling(dgno3):
-    dgno2 = 1.2*dgno3 + 0.34 
-    return dgno2
-
-# 상수 정의
-no3rr_onset = 0.26
-nh3 = -2.16
-
-# 오버포텐셜 계산 함수
-def overpotential_from_dgno2_dgno3_scaling(x, dgno3):
-    dgno2_from_scaling = dgno2_dgno3_scaling(dgno3)
-    dg14 = [dgno3, x, dgno2_from_scaling -(x+dgno3), (nh3-dgno2_from_scaling)/4.0]
-    m = max(dg14)
-    return m+no3rr_onset
-
-def overpotential_no3rr_full(dgno3, dgno2, dgno, dgnh):
-    dg23 = [dgno3, dgno2-dgno3, dgno-dgno2, dgnh-dgno, (nh3-dgnh)/3.0]
-    m = max(dg23)
-    return [round(m+no3rr_onset,2), -round(m,2), no3rr_step(dg23.index(m))]
-
-# 단계 정의
-steps = ['NO3(g)+*->NO3*','NO3*->NO2*+O*', 'NO2*->NO*+O*', 'NO*->N*+O*', 'N*->NH3(g)']
-def no3rr_step(i):
-    return str(steps[i])
-
-# Z 값 계산
 Z = []
 for j in y:
     tmp = []
     for i in x:
-        tmp.append((overpotential_from_dgno2_dgno3_scaling(i,j)))
+        tmp.append((overpotential_from_dgnhx_dgno2_scaling(i,j)))
     Z.append(tmp)
 Z = np.array(Z)
 
-# 컨투어 플롯 생성
-levels = np.arange(0.0, 1.5, 0.1)
+levels = np.arange(0.5, 2.0, 0.1)
 CS = plt.contourf(X, Y, Z, levels,
-                 cmap=ListedColormap([
-                    '#a50026', '#d73027', '#f46d43', '#fdae61',
-                    '#fee090', '#ffffbf', '#ffffe5', '#e0f3f8',
-                    '#abd9e9', '#74add1', '#4575b4', '#313695',
-                    '#d0d1e6'
-                 ]),
+                 cmap='RdBu',
                  extend='max',
                  origin='lower')
 
-# 컬러바 설정
-cbar = plt.colorbar(CS, ticks=list(np.arange(0.0, 1.4, step=0.1)))
+cbar = plt.colorbar(CS, ticks=list(np.arange(0.5, 2.0, step=0.1)))
 cbar.ax.set_ylabel(r'$\eta_{\sf NO3RR}$ (V)')
 cbar.ax.tick_params(size=3, labelsize=6, labelcolor='black', width=0.5, color='black')
 
-# 축 설정
 ax.tick_params(axis='both', direction='out')
 ax.get_xaxis().tick_bottom()
 ax.get_yaxis().tick_left()
 
-# 계산 시스템 데이터
-calc_systems = []
-
-# Rh(111) 시스템
-# NO3* + * -> NO2* + O*: -1.2395878427487332
-# NO2* + * -> NO* + O*: -1.0895914773573168
-# NO* + * -> N* + O*: -0.269270736942417
-# H2(g) + NO(g) + * -> H2O(g) + N*: -3.3389313691295683
-calc_systems.append([-1.79, -0.35, -0.27, -0.27, 0.0, r'Rh(111)', 'black', 0.0, 0.08, 1.5, '', 'grey', 'o', 'purple'])
-
-# Cu(111) 시스템
-# NO3* + * -> NO2* + O*: -0.6919226635291125
-# NO2* + * -> NO* + O*: 0.3461081371860928
-# NO* + * -> N* + O*: 0.5986936011322541
-# H2(g) + NO(g) + * -> H2O(g) + N*: -1.7287077950604726
-calc_systems.append([-1.52, -0.69, -0.60, -0.60, 0.0, r'Cu(111)', 'black', 0.0, 0.08, 1.5, '', 'lime', 'D', 'red'])
-
-# Ag(111) 시스템
-# NO3* + * -> NO2* + O*: 0.5252383719998761
-# NO2* + * -> NO* + O*: 1.1825559089920716
-# NO* + * -> N* + O*: 2.584226393941208
-# H2(g) + NO(g) + * -> H2O(g) + N*: -0.3205507281527389
-calc_systems.append([-0.98, 0.53, 0.53, 0.53, 0.0, r'Ag(111)', 'black', 0.0, 0.08, 1.5, '', 'gold', '^', 'gold'])
-
-# Ru(0001) 시스템
-# NO3* + * -> NO2* + O*: -1.9787671580997994
-# NO2* + * -> NO* + O*: -1.7664259040393517
-# NO* + * -> N* + O*: -0.8328600867389468
-# H2(g) + NO(g) + * -> H2O(g) + N*: -3.5951534986561455
-calc_systems.append([-1.77, -0.98, -0.49, -0.49, 0.0, r'Ru(0001)', 'black', 0.0, 0.08, 1.5, '', 'green', 's', 'green'])
-
-# Ni(111) 시스템
-# NO3* + * -> NO2* + O*: -1.6447447535028914
-# NO2* + * -> NO* + O*: -1.8649398255511187
-# NO* + * -> N* + O*: -0.48547410291212145
-# H2(g) + NO(g) + * -> H2O(g) + N*: -3.4728181184036657
-calc_systems.append([-1.64, -0.70, -0.49, -0.49, 0.0, r'Ni(111)', 'black', 0.0, 0.08, 1.5, '', 'brown', 'h', 'brown'])
-
-# Pt(111) 시스템
-# NO3* + * -> NO2* + O*: -0.02006962098676013
-# NO2* + * -> NO* + O*: -0.3463837204835727
-# NO* + * -> N* + O*: 0.522064027874876
-# H2(g) + NO(g) + * -> H2O(g) + N*: -3.012794619844499
-calc_systems.append([-1.04, -0.02, 0.52, 0.52, 0.0, r'Pt(111)', 'black', 0.0, 0.08, 1.5, '', 'blue', 'H', 'darkblue'])
-
-# CSV 파일로 결과 저장
-with open('Final_dGs_for_MOOHx_system_NO3RR.csv', 'w') as myfile:
-    fieldnames = ['Surface name','dGNO3','dGNO2','dGNO','dGNH', 'overpotential', 'onset potential', 'PLS']
-    wr = csv.writer(myfile, quoting=csv.QUOTE_MINIMAL, delimiter=',')
-    writer = csv.DictWriter(myfile, fieldnames=fieldnames)
-    writer.writeheader()
-
-    for i in range(len(calc_systems)):
-        recalculated_over = overpotential_no3rr_full(calc_systems[i][0], calc_systems[i][1], calc_systems[i][2], calc_systems[i][3])
-        calc_systems[i][4] = recalculated_over[0]
-        wr.writerow([calc_systems[i][5], calc_systems[i][0], calc_systems[i][1], calc_systems[i][2], calc_systems[i][3], 
-                    recalculated_over[0], recalculated_over[1], recalculated_over[2]])
-
-# dE 값으로 CSV 파일 생성
-with open('Final_dEs_for_MOOHx_system_NO3RR.csv', 'w') as myfile:
-    fieldnames = ['Surface name','dENO3','dENO2','dENO','dENH', 'overpotential', 'onset potential', 'PLS']
-    wr = csv.writer(myfile, quoting=csv.QUOTE_MINIMAL, delimiter=',')
-    writer = csv.DictWriter(myfile, fieldnames=fieldnames)
-    writer.writeheader()
-
-    for i in range(len(calc_systems)):
-        recalculated_over = overpotential_no3rr_full(calc_systems[i][0], calc_systems[i][1], calc_systems[i][2], calc_systems[i][3])
-        calc_systems[i][4] = recalculated_over[0]
-        wr.writerow([calc_systems[i][5], 
-                    calc_systems[i][0],
-                    calc_systems[i][1],
-                    calc_systems[i][2],
-                    calc_systems[i][3],
-                    recalculated_over[0],
-                    recalculated_over[1],
-                    recalculated_over[2]])
-
-# 플롯 생성
 for i in range(len(calc_systems)):
     ax.plot(calc_systems[i][1]-calc_systems[i][0], calc_systems[i][0],
-            mec=calc_systems[i][6], mfc=calc_systems[i][13], mew=0.8, zorder=4,
-            marker=calc_systems[i][12], linestyle='',
-            label=calc_systems[i][5]+' : %.2f V' % (calc_systems[i][4]))
+            mec='black', mfc=calc_systems[i][6], mew=0.8, zorder=4,
+            marker=calc_systems[i][7], linestyle='',
+            label=calc_systems[i][5]+' (BEEF-vdW)'+' : %.2f V' % (calc_systems[i][4]))
 
-# 범례 추가
-ax.legend(bbox_to_anchor=(-0.15, 1.7), loc=2, borderaxespad=1, ncol=3, 
+ax.legend(bbox_to_anchor=(1.2, 1.5), loc='upper right', borderaxespad=0.5, ncol=2, 
          fancybox=True, shadow=False, fontsize='x-small', handlelength=2)
 
-# 그래프 저장
 fig.savefig('NO3RR_contour.pdf', bbox_inches='tight')
 plt.close()
-
-# 스케일링 플롯 생성
-fig = plt.figure(figsize=fig_size,dpi=300)
-ax = fig.add_axes([0.2, 0.2, 0.6, 0.6])
-x1 = -1.4
-x2 = 0.1
-ax.axis([x1, x2, x1, dgno2_dgno3_scaling(x2)])
-
-ax.set_xlabel(r'$\Delta$G$_{\sf NO3}$ (eV)')
-ax.set_ylabel(r'$\Delta$G$_{\sf NO2}$,$\Delta$G$_{\sf NO}$ (eV)')
-
-xdata = []
-ydata = []
-y2data = []
-
-for i in range(len(calc_systems)):
-    xdata.append(calc_systems[i][0])
-    ydata.append(calc_systems[i][2])
-    y2data.append(calc_systems[i][1])
-
-# 다항식 피팅
-fit = polyfit(xdata, ydata, 1)
-fit_fn = poly1d(fit)
-print(fit_fn)
-aa = fit_fn[1]
-bb = fit_fn[0]
-
-fit1 = polyfit(xdata, y2data, 1)
-fit_fn1 = poly1d(fit1)
-print(fit_fn1)
-
-# 스케일링 오차 계산
-for i in range(len(calc_systems)):
-    error = calc_systems[i][2]-(fit_fn[1]*calc_systems[i][0]+fit_fn[0])
-    # print(error, calc_systems[i])
-
-xx = np.arange(x1, x2, delta)
-ax.plot(xx, fit_fn[1]*xx+fit_fn[0], '--', lw=1, dashes=(3,1), c='black', label='NO* scaling')
-ax.plot(xx, xx, '--', lw=1, dashes=(3,1), c='grey')
-ax.plot(xx, fit_fn1[1]*xx+fit_fn1[0], '--', lw=1, dashes=(3,1), c='orangered', label='NO2* scaling')
-
-# 데이터 포인트 플롯
-for i in range(len(calc_systems)): 
-    ax.plot(calc_systems[i][0], calc_systems[i][2],
-           marker=calc_systems[i][12], ms=3,
-           color='black')
-    ax.plot(calc_systems[i][0], calc_systems[i][1],
-           marker=calc_systems[i][12], ms=3,
-           color='orangered')
-    ax.plot(calc_systems[i][0], calc_systems[i][3],
-           marker=calc_systems[i][12], ms=3,
-           color='gold')
-    ax.plot(calc_systems[i][0], calc_systems[i][0],
-           mec=calc_systems[i][6], mfc=calc_systems[i][13], mew=0.8, zorder=4,
-           marker=calc_systems[i][12], linestyle='',
-           label=calc_systems[i][5]+' : %.2f V' %(-(calc_systems[i][4]+no3rr_onset)))
-
-# 범례 및 방정식 추가
-ax.legend(bbox_to_anchor=(-0.15, 1.55), loc=2, borderaxespad=0.5, ncol=3, 
-         fancybox=True, shadow=True, fontsize='x-small', handlelength=2)
-eq1 = r'$\Delta$G$_{\sf NO}$=%.2f$\Delta$G$_{\sf NO3}$+%.2f' %(fit_fn[1],fit_fn[0])
-ax.text(-1.1, 2.5, eq1, fontsize='small', color='black')
-eq3 = r'$\Delta$G$_{\sf NO2}$=%.2f$\Delta$G$_{\sf NO3}$+%.2f' %(fit_fn1[1],fit_fn1[0])
-ax.text(-1.1, 2.2, eq3, fontsize='small', color='orangered')
-eq2 = r'$\Delta$G$_{\sf NH}$=xx$\Delta$G$_{\sf NO3}$+xx'
-ax.text(-1.1, 1.9, eq2, fontsize='small', color='gold')
-
-fig.savefig('NO3RR_scaling.pdf', bbox_inches='tight')
-plt.close()
-
-# 1D 플롯 생성
-fig = plt.figure(figsize=fig_size,dpi=300)
-ax = fig.add_axes([0.2, 0.2, 0.6, 0.6])
-
-x1 = -1.0
-x2 = 2.0
-y2 = -2.0
-y1 = -0.0
-
-ax.axis([x1, x2, y1, y2])
-delta = 0.01
-x = np.arange(x1, x2, delta)
-
-ax.set_xlabel(r'$\Delta$G$_{\sf NO2}-\Delta$G$_{\sf NO3}$ (eV)')
-ax.set_ylabel(r'U$_{\sf NO3RR}$ (V)')
-ax.set_ylim(ax.get_ylim()[::-1])
-
-no3_fixed = -0.5
-plot(x, -np.maximum(x, -1.5 +0.34 -x), '--', color='black', lw=0.67, dashes=(3,1), zorder=2)
-plot(x, no3rr_onset+0.0*x, '--', color='black', lw=0.67, dashes=(3,1), zorder=2)
-
-# 데이터 포인트 플롯
-for i in range(len(calc_systems)):
-    ax.plot(calc_systems[i][1]-calc_systems[i][0], -(calc_systems[i][4]-no3rr_onset),
-            mec=calc_systems[i][6], mfc=calc_systems[i][13], mew=0.8, zorder=4,
-            marker=calc_systems[i][12], linestyle='',
-            label=calc_systems[i][5]+' : %.2f V' %(-(calc_systems[i][4]-no3rr_onset)))
-
-# 범례 추가
-ax.legend(bbox_to_anchor=(-0.15, 1.7), loc=2, borderaxespad=0.5, ncol=3, 
-         fancybox=True, shadow=False, fontsize='x-small', handlelength=2)
-
-fig.savefig('NO3RR_1D.pdf', bbox_inches='tight')
-plt.close() 
