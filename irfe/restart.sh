@@ -159,10 +159,9 @@ do
     fi
 
     cd $dir
-
-    if [[ -f POSCAR ]] && [[ ! -f DONE ]] && [[ ! -f unmatched ]]; then
+    if [[ -f unmatched ]]; then
         continue
-    elif [[ -f DONE ]] && [[ ! -f vib/OUTCAR ]]; then
+    elif [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
         pwd
     fi
 done
