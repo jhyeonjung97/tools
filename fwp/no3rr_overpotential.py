@@ -202,8 +202,8 @@ ax = fig.add_axes([0.2, 0.2, 0.6, 0.6])
 
 x1 = -2.0
 x2 = 1.0
-y2 = -1.0
-y1 = 1.0
+y2 = -2.0
+y1 = 0.0
 
 ax.axis([x1, x2, y1, y2])
 x = np.arange(x1, x2, delta)
@@ -212,7 +212,7 @@ ax.set_xlabel(r'$\Delta$G$_{\sf NO2H}-\Delta$G$_{\sf NO2}$ (eV)')
 ax.set_ylabel(r'U$_{\sf NO3RR}$ (V)')
 ax.set_ylim(ax.get_ylim()[::-1])
 
-plot(x, -np.maximum(x, (fit_fn3[1]-fit_fn2[1])*x+(fit_fn3[0]-fit_fn2[0])), '--', color='black', lw=0.67, dashes=(3,1), zorder=2)
+plot(x, -np.maximum(x, (fit_fn3[1]-fit_fn2[1])*x-(fit_fn3[0]-fit_fn2[0])), '--', color='black', lw=0.67, dashes=(3,1), zorder=2)
 plot(x, no3rr_onset+0.0*x, '--', color='black', lw=0.67, dashes=(3,1), zorder=2)
 
 for i in range(len(calc_systems)):
