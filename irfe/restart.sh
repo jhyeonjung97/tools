@@ -15,14 +15,14 @@
 # for dir in /home/hyeonjung/scratch/4_IrFe3/seg/*_*/*_*
 # do
 #     cd $dir
-#     cp ~/bin/tools/irfe/INCAR .
-#     cp ~/bin/tools/irfe/KPOINTS .
-#     cp *.vasp POSCAR
-#     vaspkit -task 107
-#     mv POSCAR_REV POSCAR
-#     rm POTCAR
-#     vaspkit -task 103
-#     python3 ~/bin/orange/magmom.py
+    # cp ~/bin/tools/irfe/INCAR .
+    # cp ~/bin/tools/irfe/KPOINTS .
+    # cp *.vasp POSCAR
+    # vaspkit -task 107
+    # mv POSCAR_REV POSCAR
+    # rm POTCAR
+    # vaspkit -task 103
+    # python3 ~/bin/orange/magmom.py
 # done
 
 # for dir in /home/hyeonjung/scratch/4_IrFe3/*_*
@@ -125,9 +125,6 @@ do
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
             if [[ $site == '1_layer_top' ]] || [[ $site == '7_M_top' ]]; then
                 continue
-            elif [[ ! -f $dir/unmatched ]] && [[ -f $dir/DONE ]]; then
-                cd $dir
-                ase convert -f -n -1 OUTCAR final.json
             fi
         fi
         if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
@@ -156,6 +153,9 @@ do
         intermediate=${path[-1]}
         if [[ $intermediate == '4_O_O' ]]; then
             continue
+        elif [[ ! -f $dir/unmatched ]] && [[ -f $dir/DONE ]]; then
+            cd $dir
+            ase convert -f -n -1 OUTCAR final.json
         fi
     else
         continue

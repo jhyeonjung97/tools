@@ -43,7 +43,15 @@ def main():
     base_dir = "/Users/hailey/Desktop/4_IrFe3"
     
     # H2 분자 에너지 설정
-    h2_energy = -6.77108058
+    eh2 = -6.77108058
+    # zpeh2 = -0.273
+    # cph2 = -0.09
+
+    cvh2 = 0.0905
+    tsh2 = 0.408
+    zpeh2 = 0 #.268
+    h2_energy = eh2 + cvh2 - tsh2 + zpeh2
+
     
     # 사용할 표면 리스트
     selected_systems = ['1_Mn', '2_Fe', '3_Co', '4_Ni', '0_Ir']
@@ -227,11 +235,21 @@ def plot_binding_energies(df, base_dir):
     
     # 각 site별로 데이터 플롯
     for i, site in enumerate(sites):
+        if 'll' in site:
+            color = 'red'
+        elif 'vac' in site:
+            color = 'blue'
+        else:
+            continue
+        if 'top' in site:
+            marker = 'o'
+        elif 'hol' in site:
+            marker = 's'
         site_data = df[df['Site'] == site]
         plt.scatter(site_data['Order'], 
                    site_data['Binding_energy'],
-                   color=colors[i],
-                   marker=markers[i % len(markers)],
+                   color=color,
+                   marker=marker,
                    label=site,
                    s=100,  # 마커 크기
                    alpha=0.7)
