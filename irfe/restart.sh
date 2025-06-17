@@ -126,6 +126,7 @@ do
             if [[ $site == '1_layer_top' ]] || [[ $site == '7_M_top' ]]; then
                 continue
             elif [[ ! -f $dir/unmatched ]] && [[ -f $dir/DONE ]]; then
+                cd $dir
                 ase convert -f -n -1 OUTCAR final.json
             fi
         fi
