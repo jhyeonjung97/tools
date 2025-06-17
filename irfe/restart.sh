@@ -154,8 +154,8 @@ do
         if [[ $intermediate == '4_O_O' ]]; then
             continue
         elif [[ ! -f $dir/unmatched ]] && [[ -f $dir/DONE ]]; then
-            cd $dir
-            ase convert -f -n -1 OUTCAR final.json
+            cd $dir/vib/
+            vaspkit -task 501 > $dir/vib.txt
         fi
     else
         continue
