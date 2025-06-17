@@ -161,9 +161,8 @@ do
     cd $dir
     if [[ -f unmatched ]]; then
         continue
-    elif [[ -f DONE ]] && [[ -f vib/OUTCAR ]] && [[ -f vib.txt ]]; then
-        cd vib
-        vaspkit -task 501 > $dir/vib.txt
+    elif [[ -f DONE ]] && [[ ! -f final.json ]]; then
+        ase convert -n -1 OUTCAR final.json
     fi
 done
 
