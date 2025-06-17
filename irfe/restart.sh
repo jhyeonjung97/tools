@@ -162,7 +162,7 @@ do
     if [[ -f unmatched ]]; then
         continue
     elif [[ -f OUTCAR ]] && [[ ! -f DONE ]]; then
-        python ~/bin/restart.py
+        python ~/bin/get_restart.py
         if [[ ! -f DONE ]]; then
             continue
         fi
