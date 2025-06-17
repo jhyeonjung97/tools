@@ -125,6 +125,8 @@ do
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
             if [[ $site == '1_layer_top' ]] || [[ $site == '7_M_top' ]]; then
                 continue
+            elif [[ ! -f $dir/unmatched ]] && [[ -f $dir/DONE ]]; then
+                ase convert -f -n -1 OUTCAR final.json
             fi
         fi
         if [[ $metal == 'IrFe' ]] || [[ $metal == 'IrCo' ]] || [[ $metal == 'IrNi' ]] || [[ $metal == 'IrMn' ]]; then
@@ -158,12 +160,10 @@ do
         continue
     fi
 
-    cd $dir
-    if [[ -f unmatched ]]; then
-        continue
-    elif [[ -f DONE ]] && [[ ! -f final.json ]]; then
-        ase convert -n -1 OUTCAR final.json
-    fi
+    # cd $dir
+    # if [[ ! -f unmatched ]] && [[ -f DONEfinal.json ]]; then
+    #     ase convert -f -n -1 OUTCAR final.json
+    # fi
 done
 
 # for dir in /home/hyeonjung/scratch/4_IrFe3/sgr/*_*_*/*_*

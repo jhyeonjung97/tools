@@ -49,15 +49,6 @@ def main():
     selected_systems = ['1_Mn', '2_Fe', '3_Co', '4_Ni', '0_Ir']
     system_names = ['IrMn', 'IrFe', 'IrCo', 'IrNi', 'Ir']
     
-    # 각 시스템별로 사용할 사이트 정의
-    target_sites = {
-        '1_Mn': '4_atom_top2',
-        '2_Fe': '4_atom_top2',
-        '3_Co': '4_atom_top2',
-        '4_Ni': '4_atom_top2',
-        '0_Ir': ['1_layer_top', '3_atom_top']  # Ir에 대해 두 개의 사이트 사용
-    }
-    
     # 결과 저장을 위한 리스트
     results = []
     
@@ -73,9 +64,9 @@ def main():
         if not is_calculation_done(system_dir):
             print(f"Warning: DONE file not found for {system}, skipping...")
             continue
-        
+
         # final_with_calculator.json 파일 확인
-        json_path = os.path.join(system_dir, "final_with_calculator.json")
+        json_path = os.path.join(system_dir, "final.json")
         if not os.path.exists(json_path):
             print(f"Warning: Clean surface file not found for {system}")
             continue
@@ -106,9 +97,15 @@ def main():
             continue
         
         clean_energy = clean_energies[system]
-        target_site_list = target_sites[system] if isinstance(target_sites[system], list) else [target_sites[system]]
-        
-        for target_site in target_site_list:
+        if system == '0_Ir':
+            selected_sites = ['1_layer_top', '2_layer_hol', '3_vac_top', '4_vac_hol', '5_atom_top', '6_atom_hol']
+            site_names = ['ll_top', 'll_hol', 'vac_top', 'vac_hol', 'Ir_top', 'Ir_hol']
+        else:
+            selected_sites = ['2_layer_hol', '3_vac_hol', '4_vac_hol', '5_Ir_top', '6_Ir_hol', '8_M_hol']
+            site_names = ['ll_hol', 'vac_hol', 'vac_hol', 'Ir_top', 'Ir_hol', 'M_hol']
+                
+        for target_site in selected_sites:
+
             # 지정된 사이트만 처리
             site_path = os.path.join(system_dir, target_site)
             if not os.path.exists(site_path) or not os.path.isdir(site_path):
@@ -119,9 +116,15 @@ def main():
             if not is_calculation_done(site_path):
                 print(f"Warning: DONE file not found for {system}/{target_site}, skipping...")
                 continue
-            
+
+            # vib.txt 파일 확인
+            vib_path = os.path.join(site_path, "vib.txt")
+            if not os.path.exists(vib_path):
+                print(f"Warning: No vib.txt for {system}/{target_site}")
+                continue
+
             # final_with_calculator.json 파일 확인
-            json_path = os.path.join(site_path, "final_with_calculator.json")
+            json_path = os.path.join(site_path, "final.json")
             if not os.path.exists(json_path):
                 print(f"Warning: No final data for {system}/{target_site}")
                 continue
@@ -139,35 +142,55 @@ def main():
                 n_hydrogen = count_adsorbates(atoms)
                 
                 # 레이어 여부에 따른 normalization 처리
-                is_layer = 'layer' in target_site.lower()
+                if 'layer' in target_site.lower():
+                    n_hydrogen = 8
+                elif 'vac' in target_site.lower():
+                    n_hydrogen = 7
+                else:
+                    n_hydrogen = 1
                 
                 # 흡착 에너지 계산
                 binding_energy = calculate_adsorption_energy(
-                    ads_energy, clean_energy, 
-                    n_hydrogen if is_layer else 1, 
+                    ads_energy, 
+                    clean_energy, 
+                    n_hydrogen,
                     h2_energy,
                     vib_correction
                 )
                 
                 # 결과 저장
                 system_name = system_names[selected_systems.index(system)]
+                site_name = site_names[selected_sites.index(target_site)]
                 result = {
-                    'System': system,
-                    'System_name': system_name,
-                    'Site': target_site,
+                    'System': system_name,
+                    'Site': site_name,
                     'Clean_energy': clean_energy,
                     'Ads_energy': ads_energy,
                     'H_count': n_hydrogen,
-                    'Vib_correction': vib_correction,
+                    'G_vib': vib_correction,
                     'Binding_energy': binding_energy
                 }
                 
                 results.append(result)
-                print(f"  {system}/{target_site}: {n_hydrogen} H atoms, {binding_energy:.4f} eV{'(normalized)' if is_layer else ''}, vib: {vib_correction:.4f} eV")
+                print(f"  {system}/{target_site}: {n_hydrogen} H atoms, {binding_energy:.4f} eV, vib: {vib_correction:.4f} eV")
             except Exception as e:
                 print(f"Error processing {json_path}: {e}")
     
-    # 결과를 DataFrame으로 변환
+    for surf in ['IrMn', 'IrFe', 'IrCo', 'IrNi']:
+        for result in results:
+            if result['System'] == surf and 'vac' in result['Site']:
+                hbe_8 = next(r['Binding_energy'] for r in results if r['System'] == surf and r['H_count'] == 8)
+                hbe_7 = result['Binding_energy']
+                result['Binding_energy'] = hbe_8*8 - hbe_7*7
+
+    for site in ['top', 'hol']:
+        hbe_8 = next(r['Binding_energy'] for r in results if r['System'] == 'Ir' and r['Site'] == f'll_{site}')
+        hbe_7 = next(r['Binding_energy'] for r in results if r['System'] == 'Ir' and r['Site'] == f'vac_{site}')
+        for result in results:
+            if result['System'] == 'Ir' and result['Site'] == f'vac_{site}':
+                result['Binding_energy'] = hbe_8*8 - hbe_7*7
+
+    # 결과를 DataFrame으로 변환    
     if results:
         df = pd.DataFrame(results)
         
@@ -185,53 +208,58 @@ def main():
 
 def plot_binding_energies(df, base_dir):
     """
-    수소 흡착 에너지 그래프 생성 (간략화된 버전)
+    수소 흡착 에너지 그래프 생성
     x축: 표면 종류
     y축: 흡착 에너지
+    각 site마다 다른 색상과 마커로 표시
     """
-    plt.figure(figsize=(4, 3))
+    plt.figure(figsize=(10, 6))
     
     # 시스템 순서와 이름 정의
-    system_order = {'5_IrMn': 0, '6_IrFe': 1, '7_IrCo': 2, '8_IrNi': 3, '0_Ir': 4}
+    system_order = {'IrMn': 0, 'IrFe': 1, 'IrCo': 2, 'IrNi': 3, 'Ir': 4}
     df['Order'] = df['System'].map(system_order)
     df = df.sort_values('Order')
     
-    # 데이터 플롯
-    x = df['Order']
-    y = df['Binding_energy']
+    # 각 site별로 다른 색상과 마커 설정
+    sites = df['Site'].unique()
+    colors = plt.cm.Set2(np.linspace(0, 1, len(sites)))  # Set2 컬러맵 사용
+    markers = ['o', 's', '^', 'D', 'v', '<', '>', 'p', '*', 'h']  # 다양한 마커
     
-    # 4_atom_top2 데이터 포인트 플롯 (Ir의 3_atom_top 포함)
-    top2_mask = ((df['System'] != '0_Ir') & (df['Site'] == '4_atom_top2')) | \
-                ((df['System'] == '0_Ir') & (df['Site'] == '3_atom_top'))
-    plt.plot(x[top2_mask], y[top2_mask], color='black', marker='o', linestyle='-', 
-             label='low H coverage', zorder=2)
-    
-    # Ir의 1_layer_top 데이터 포인트 플롯
-    ir_layer_mask = (df['System'] == '0_Ir') & (df['Site'] == '1_layer_top')
-    plt.plot(x[ir_layer_mask], y[ir_layer_mask], color='black', marker='o', markerfacecolor='white', 
-             markeredgecolor='black', linestyle='-', label='high H coverage', zorder=2)
+    # 각 site별로 데이터 플롯
+    for i, site in enumerate(sites):
+        site_data = df[df['Site'] == site]
+        plt.scatter(site_data['Order'], 
+                   site_data['Binding_energy'],
+                   color=colors[i],
+                   marker=markers[i % len(markers)],
+                   label=site,
+                   s=100,  # 마커 크기
+                   alpha=0.7)
     
     # 이상적인 흡착 에너지 값 (약 0 eV)
     plt.axhline(y=0, color='black', linestyle='--', zorder=1, linewidth=1.0)
     
     # x축 레이블 설정
-    x_ticks = range(len(df['System_name'].unique()))
-    x_labels = [name for name in df.sort_values('Order')['System_name'].unique()]
-    plt.xticks(x_ticks, x_labels)
+    x_ticks = range(len(df['System'].unique()))
+    x_labels = sorted(df['System'].unique(), key=lambda x: system_order[x])
+    plt.xticks(x_ticks, x_labels, rotation=45)
     
     # 그래프 꾸미기
     plt.ylabel('ΔG$_{\mathrm{H}}$ (eV)')
+    plt.grid(True, linestyle='--', alpha=0.7)
     
     # 범례 추가
-    plt.legend(loc='upper right', frameon=True, framealpha=1.0)
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', frameon=True, framealpha=1.0)
     
     # x축 범위 설정 (약간의 여백)
     plt.xlim(-0.5, len(x_labels) - 0.5)
-    # plt.ylim(-0.45, 0.25)
+    
+    # 레이아웃 조정
+    plt.tight_layout()
     
     # 저장 및 표시
     plot_output = os.path.join(base_dir, 'H_binding_energies_final.png')
-    plt.savefig(plot_output, bbox_inches='tight')
+    plt.savefig(plot_output, bbox_inches='tight', dpi=300)
     print(f"Plot saved to {plot_output}")
     plt.close()
 

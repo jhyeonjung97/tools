@@ -169,6 +169,7 @@ def main():
     
     # 결과를 DataFrame으로 변환
     if results:
+        print(results)
         df = pd.DataFrame(results)
         
         # CSV 및 TSV로 저장
