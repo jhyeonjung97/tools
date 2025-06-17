@@ -69,7 +69,7 @@ def compare_atomic_positions(base_path):
 
 if __name__ == "__main__":
     # 사용자가 지정한 경로 패턴
-    # path_pattern = "/home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*"
-    path_pattern = "/home/hyeonjung/scratch/4_IrFe3/sgr/*_*_*/*_*"
+    path_pattern = "/home/hyeonjung/scratch/4_IrFe3/*_*/*_*/*_*_*"
+    # path_pattern = "/home/hyeonjung/scratch/4_IrFe3/sgr/*_*_*/*_*"
     compare_atomic_positions(path_pattern)
     print("비교 완료!")
