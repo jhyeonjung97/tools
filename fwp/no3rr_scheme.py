@@ -42,17 +42,19 @@ for i in range(len(systems)):
         plt.scatter(x, -max(-x+0.2, 0.8*x+1.5), facecolor='white', edgecolor='black', marker=systems[i][3], linewidth=0.67, zorder=3, s=12)
         plt.scatter(x, -max(-x+0.2, 0.9*x+1.7), facecolor='white', edgecolor='black', marker=systems[i][3], linewidth=0.67, zorder=3, s=12)
     if systems[i][0] == 'CuN4':
-        plt.annotate(systems[i][0], xy=(x, -max(-x+0.2, 0.7*x+1.3)), xytext=(x+0.01, -max(-x+0.2, 0.7*x+1.3)+0.06), fontsize=6, ha='center')
+        plt.annotate(systems[i][0], xy=(x, -max(-x+0.2, 0.7*x+1.3)), xytext=(x+0.01, -max(-x+0.2, 0.7*x+1.3)+0.06), fontsize=8, ha='center')
     elif systems[i][0] in ['RhN4', 'TiN4']:
-        plt.annotate(systems[i][0], xy=(x, -max(-x+0.2, 0.7*x+1.3)), xytext=(x-0.05, -max(-x+0.2, 0.7*x+1.3)), fontsize=6, ha='right')
+        plt.annotate(systems[i][0], xy=(x, -max(-x+0.2, 0.7*x+1.3)), xytext=(x-0.05, -max(-x+0.2, 0.7*x+1.3)), fontsize=8, ha='right')
+    elif systems[i][0] == 'Cu(100)':
+        plt.annotate(systems[i][0], xy=(x, -max(-x+0.2, 0.7*x+1.3)), xytext=(x+0.05, -max(-x+0.2, 0.7*x+1.3)), fontsize=8)
     else:
-        plt.annotate(systems[i][0], xy=(x, -max(-x+0.2, 0.7*x+1.3)), xytext=(x, -max(-x+0.2, 0.7*x+1.3)+0.05), fontsize=6)
+        plt.annotate(systems[i][0], xy=(x, -max(-x+0.2, 0.7*x+1.3)), xytext=(x, -max(-x+0.2, 0.7*x+1.3)+0.05), fontsize=8)
 
 plt.text(-1.4, -0.1, r'E°$_{N_{2}/NH_{3}}$ = 0.05 V vs RHE', color='black', fontsize=8)
-# plt.xticks([])
-# plt.yticks([])
-plt.xticks(fontsize=8)
-plt.yticks(fontsize=8)
+plt.xticks([])
+plt.yticks([])
+# plt.xticks(fontsize=8)
+# plt.yticks(fontsize=8)
 plt.xlim(x1, x2)
 plt.ylim(y1, y2)
 plt.xlabel(r'$\Delta G_{\sf H}$ (eV)')
