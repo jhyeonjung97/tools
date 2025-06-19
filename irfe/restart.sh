@@ -89,27 +89,27 @@
 # do
     
 #     cd $dir
-#     cp ~/bin/tools/irfe/INCAR .
-#     cp ~/bin/tools/irfe/KPOINTS .
-#     mv *.vasp POSCAR
-#     vaspkit -task 107
-#     mv POSCAR_REV POSCAR
-#     rm POTCAR
-#     vaspkit -task 103
-#     python3 ~/bin/orange/magmom.py
+    cp ~/bin/tools/irfe/INCAR .
+    cp ~/bin/tools/irfe/KPOINTS .
+    mv *.vasp POSCAR
+    vaspkit -task 107
+    mv POSCAR_REV POSCAR
+    rm POTCAR
+    vaspkit -task 103
+    python3 ~/bin/orange/magmom.py
 # done
 
 # for dir in /home/hyeonjung/scratch/4_IrFe3/2_OH/5_IrMn/*_*_*
 # do
 #     cd $dir
 #     cp CONTCAR POSCAR
-#     cp ~/bin/tools/irfe/INCAR .
-#     cp ~/bin/tools/irfe/KPOINTS .
-#     vaspkit -task 107
-#     mv POSCAR_REV POSCAR
-#     rm POTCAR
-#     vaspkit -task 103
-#     python3 ~/bin/orange/magmom.py
+    # cp ~/bin/tools/irfe/INCAR .
+    # cp ~/bin/tools/irfe/KPOINTS .
+    # vaspkit -task 107
+    # mv POSCAR_REV POSCAR
+    # rm POTCAR
+    # vaspkit -task 103
+    # python3 ~/bin/orange/magmom.py
 # done
 # cd ../..
 # ls
