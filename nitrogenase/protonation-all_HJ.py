@@ -15,7 +15,7 @@ from pymatgen.analysis.pourbaix_diagram import IonEntry, PDEntry, ComputedEntry
 
 warnings.filterwarnings('ignore')
 png_name = 'protonation'
-tag = '_VS'
+tag = '_all_LD'
 
 T = 273.15 + 25
 kJmol = 96.485
@@ -43,25 +43,14 @@ tsh2s_gas = 0.636 # RPBE, aq
 
 dgh2s_aq = zpeh2s - tsh2s_aq + cvh2s
 dgh2s_gas = zpeh2s - tsh2s_gas + cvh2s
-gh2s_aq = h2s + dgh2s_aq
-gh2s_gas = h2s + dgh2s_gas
+gh2s_aq = h2s + zpeh2s - tsh2s_aq + cvh2s
+gh2s_gas = h2s + zpeh2s - tsh2s_gas + cvh2s
 
 # solid
 s = -126.00103840/32 # RPBE
 gs = s
 fh2s_aq = gh2s_aq - gh2 - gs
 fh2s_gas = gh2s_gas - gh2 - gs
-
-# print(gs)
-# print(gh2s_aq - gh2)
-# print(gh2s_gas - gh2)
-
-# # -3.93753245
-# # -4.634785230000001
-# # -4.340785230000001
-
-# print(fh2s_aq) # -0.6972527800000012 ## -0.2836013 ### -0.708
-# print(fh2s_gas) # -0.40325278000000075 ## -0.3422296
 
 # ads
 zpeoh = 0.376
@@ -86,8 +75,12 @@ df.loc['E3*H2',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-430.6141
 df.loc['Vac',    ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-414.4369611, 0, 2, 0, 0, 0, 0, -1]
 df.loc['Vac*H1', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-418.5229228, 0, 3, 0, 0, 0, 0, -1]
 df.loc['Vac*H2', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-421.2139338, 0, 4, 0, 0, 0, 0, -1]
-
-# print(-423.8152177 - (-414.4369611) - gh2s_aq + gh2 /2)
+df.loc['E1',     ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-416.1486068, 0, 1, 0, 0, 0, 0,  0]
+df.loc['E1*H1',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-420.5210881, 0, 2, 0, 0, 0, 0,  0]
+df.loc['E1*H2',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-423.4465657, 0, 3, 0, 0, 0, 0,  0]
+df.loc['E2',     ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-420.0688973, 0, 2, 0, 0, 0, 0,  0]
+df.loc['E2*H1',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-424.3006724, 0, 3, 0, 0, 0, 0,  0]
+df.loc['E2*H2',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-427.0052327, 0, 4, 0, 0, 0, 0,  0]
 
 df['comp'] = (
     'X'
@@ -169,7 +162,7 @@ def plot_pourbaix(entries, png_name):
     stable_entries = pourbaix.stable_entries
     
     fig, ax = plt.subplots(figsize=(6, 5))    
-    plotter.get_pourbaix_plot(limits=[[0, 14], [-2, 1]], label_domains=False,
+    plotter.get_pourbaix_plot(limits=[[0, 14], [-2, 1]], label_domains=True,
                               show_water_lines=False, show_neutral_axes=False, ax=ax)
     
     for line in ax.lines:
@@ -181,7 +174,7 @@ def plot_pourbaix(entries, png_name):
     pH2 = np.arange(0, 14.01, 0.01)
     plt.plot(pH2, 0.05 - pH2 * const, color='blue', lw=1.5, dashes=(3, 1))
     plt.plot(pH2, -0.7 - pH2 * const, color='black', lw=1.5, dashes=(3, 1))
-    ax.text(2, -0.42, r'E°$_{N_{2}/NH_{3}}$ = 0.05 V vs RHE', 
+    ax.text(2.5, -0.45, r'E°$_{N_{2}/NH_{3}}$ = 0.05 V vs RHE', 
             color='blue', rotation=-14, fontsize=14)
     
     name_mapping1 = {
@@ -192,19 +185,11 @@ def plot_pourbaix(entries, png_name):
         'H2S(aq) + XH2(s)': 'XH2(s) + H2S(aq)',
         'HS[-1] + XH2(s)': 'XH2(s) + HS[-1]',
         'S[-2] + XH2(s)': 'XH2(s) + S[-2]',
-        'H2SO4(aq) + XH3(s)': 'XH3(s) + H2SO4(aq)',
-        'HSO4[-1] + XH3(s)': 'XH3(s) + HSO4[-1]',
-        'SO4[-1] + XH3(s)': 'XH3(s) + SO4[-1]',
-        'SO4[-2] + XH3(s)': 'XH3(s) + SO4[-2]',
-        'H2S(aq) + XH3(s)': 'XH3(s) + H2S(aq)',
+        'H2S(s) + XH3(s)': 'XH3(s) + H2S(s)',
+        'H2S(s) + XH4(s)': 'XH4(s) + H2S(s)',
         'HS[-1] + XH3(s)': 'XH3(s) + HS[-1]',
-        'S[-2] + XH3(s)': 'XH3(s) + S[-2]',
-        'H2SO4(aq) + XH4(s)': 'XH4(s) + H2SO4(aq)',
-        'HSO4[-1] + XH4(s)': 'XH4(s) + HSO4[-1]',
-        'SO4[-1] + XH4(s)': 'XH4(s) + SO4[-1]',
-        'SO4[-2] + XH4(s)': 'XH4(s) + SO4[-2]',
-        'H2S(aq) + XH4(s)': 'XH4(s) + H2S(aq)',
         'HS[-1] + XH4(s)': 'XH4(s) + HS[-1]',
+        'S[-2] + XH3(s)': 'XH3(s) + S[-2]',
         'S[-2] + XH4(s)': 'XH4(s) + S[-2]',
     }
     
@@ -244,12 +229,15 @@ def plot_pourbaix(entries, png_name):
         text.set_text(new_name)
         
     sulfur_names = [
-        # 'XS(s)',
-        # 'XHS(s)',
-        # 'XH2S(s)',
-        # 'XH3S(s)',
-        # 'XH4S(s)',
-        # 'XH5S(s)',
+        'XS(s)',
+        'XHS(s)',
+        'XH2S(s)',
+        'XH3S(s)',
+        'XH4S(s)',
+        'XH5S(s)',
+        'XH2(s)',
+        'XH3(s)',
+        'XH4(s)',
     ]
     
     vacancy_names2 = [
@@ -257,26 +245,15 @@ def plot_pourbaix(entries, png_name):
         'SO4[-2]',
         'HSO4[-1]',
         'H2SO4(aq)',
-        # 'H2S(s)',
-        # 'HS[-1]',
-        # 'S[-2]',
     ]
 
     vacancy_names3 = [
-        # 'SO4[-1]',
-        'SO4[-2]',
-        'HSO4[-1]',
-        'H2SO4(aq)',
         'H2S(s)',
         'HS[-1]',
         'S[-2]',
     ]
 
     vacancy_names4 = [
-        # 'SO4[-1]',
-        # 'SO4[-2]',
-        # 'HSO4[-1]',
-        # 'H2SO4(aq)',
         'H2S(s)',
         'HS[-1]',
         'S[-2]',
@@ -286,8 +263,8 @@ def plot_pourbaix(entries, png_name):
     vacancy_entries = [entry for entry in stable_entries if 'XH2(s)' in entry.name or 'XH3(s)' in entry.name or 'XH4(s)' in entry.name]
     sulfur_colors = [plt.cm.Greys(i) for i in np.linspace(0.05, 0.35, len(sulfur_names))]
     vacancy_colors2 = [plt.cm.Greens(i) for i in np.linspace(0.15, 0.45, len(vacancy_names2))] # YlOrBr
-    vacancy_colors3 = [plt.cm.Blues(i) for i in np.linspace(0.20, 0.50, len(vacancy_names3))] # YlOrBr
-    vacancy_colors4 = [plt.cm.Oranges(i) for i in np.linspace(0.20, 0.50, len(vacancy_names4))] # YlOrBr
+    vacancy_colors3 = [plt.cm.Blues(i) for i in np.linspace(0.35, 0.45, len(vacancy_names3))] # YlOrBr
+    vacancy_colors4 = [plt.cm.Oranges(i) for i in np.linspace(0.35, 0.45, len(vacancy_names4))] # YlOrBr
 
     for entry in stable_entries:
         print(entry.name)
@@ -309,18 +286,6 @@ def plot_pourbaix(entries, png_name):
         elif 'XH4(s)' in entry.name:
             color = vacancy_colors4[vacancy_names4.index(ion_part)]
         ax.fill(x, y, color=color)
-        
-    if 'bulk' in png_name:
-        ax.text(9, 0.5, r"$\mathbf{E_{v} + SO_{4}^{2-}}$", fontsize=14, ha='center')
-        ax.text(0.3, 0.7, r"$\mathbf{E_{v} + HSO_{4}^{-}}$", fontsize=14)
-
-        ax.text(0.3, 0.2, r"$\mathbf{E_{3}\text{*}H}$", fontsize=14)
-        ax.text(4, -0.6, r"$\mathbf{E_{v}\text{*}H + H_{2}S(aq)}$", fontsize=14, ha='center')
-        ax.text(4, -1.7, r"$\mathbf{E_{v}\text{*}H_{2} + H_{2}S(aq)}$", fontsize=14, ha='center')
-
-        ax.text(11, -0.3, r"$\mathbf{E_{v}\text{*}H + SO_{4}^{2-}}$", fontsize=14, ha='center')
-        ax.text(11, -1.0, r"$\mathbf{E_{v}\text{*}H + HS^{-}}$", fontsize=14, ha='center')
-        ax.text(11, -1.9, r"$\mathbf{E_{v}\text{*}H_{2} + HS^{-}}$", fontsize=14, ha='center')
         
     ax.set_xlabel("pH", fontsize=14)
     ax.set_ylabel("Potential (V vs SHE)", fontsize=14)
