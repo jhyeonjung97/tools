@@ -43,8 +43,8 @@ tsh2s_gas = 0.636 # RPBE, aq
 
 dgh2s_aq = zpeh2s - tsh2s_aq + cvh2s
 dgh2s_gas = zpeh2s - tsh2s_gas + cvh2s
-gh2s_aq = h2s + zpeh2s - tsh2s_aq + cvh2s
-gh2s_gas = h2s + zpeh2s - tsh2s_gas + cvh2s
+gh2s_aq = h2s + dgh2s_aq
+gh2s_gas = h2s + dgh2s_aq
 
 # solid
 s = -126.00103840/32 # RPBE
