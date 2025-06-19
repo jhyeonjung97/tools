@@ -12,7 +12,7 @@
 
 for dir in 0_Ir 6_IrFe
 do
-    cp $dir/3layer/* .
+    cp /home/hyeonjung/scratch/4_IrFe3/slab/$dir/3layer/* .
     mpiexec.hydra -genv I_MPI_DEBUG 5 -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.3.2/vasp.6.3.2.std.x
-    cp * $dir/3layer/
+    cp * /home/hyeonjung/scratch/4_IrFe3/slab/$dir/3layer/
 done
