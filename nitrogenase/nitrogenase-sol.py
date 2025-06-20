@@ -15,7 +15,7 @@ from pymatgen.analysis.pourbaix_diagram import IonEntry, PDEntry, ComputedEntry
 
 warnings.filterwarnings('ignore')
 png_name = 'nitrogenase'
-tag = '_vac'
+tag = '_sol'
 
 T = 273.15 + 25
 kJmol = 96.485
@@ -61,9 +61,17 @@ zpeo = 0.064
 cvo = 0.034
 tso = 0.060
 
+zpehs = 0.687 - 0.438 ## updated
+cvhs = 0.091 - 0.026 ## updated
+tshs = 0.163 - 0.036 ## updated
+
 dgoh = zpeoh + cvoh - tsoh
 dgo = zpeo + cvo - tso
 dgh = 0.217
+dghs = zpehs + cvhs - tshs ## updated
+dgs = dghs - dgh ## updated
+
+print(f"dgh: {dgh:.2f}, dghs: {dghs:.2f}, dgs: {dgs:.2f}")
 
 df = pd.DataFrame()
 df.loc['EO', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-166.3055962, 2, 8, 7, 1, 1, 2, 10]
@@ -71,7 +79,7 @@ df.loc['E1', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-170.0337744,
 df.loc['E2', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-173.8708366, 2, 10, 7, 1, 1, 2, 10]
 df.loc['E3', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-177.5720029, 2, 11, 7, 1, 1, 2, 10]
 # df.loc['E4', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-180.622922, 2, 12, 7, 1, 1, 2, 10]
-df.loc['Vac', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-168.4517031, 2, 10, 7, 1, 1, 2, 9] # C2H8Fe7MoNO2S9 + H2
+df.loc['Vac', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-168.4517031+0.14, 2, 10, 7, 1, 1, 2, 9] # C2H8Fe7MoNO2S9 + H2 ## updated
 
 df['comp'] = (
     'X'
@@ -80,12 +88,28 @@ df['comp'] = (
 )
 df['G'] = df['E'] + (0
     + dgh * (df['#H']-8)
+    + dgs * (df['#S']-9) ## updated
 ) - (0
     + gh * (df['#H']-8)
     + gs * (df['#S']-9)
 )
 df['energy'] = df['G'] - df.loc['Vac', 'G'] # - water * df['#O']
 print(df)
+
+# dg = (
+#     (-168.4517031 + 0.438 + 0.026 - 0.036) # Ev + ZPE + CV - TS
+#     + (-11.25130575 + 0.400 + 0.105 - 0.93) # H2S + ZPE + CV - TS
+#     - (-177.5720029 + 0.687 + 0.091 - 0.163) # E3 + ZPE + CV - TS
+#     - (-6.98952052 + 0.291 + 0.091 - 0.404)/2 # H2 + ZPE + CV - TS
+#     ) 
+# dg_sol = dg + 0.14
+# de = (
+#     (-168.4517031) # Ev
+#     + (-11.25130575) # H2S
+#     - (-177.5720029) # E3
+#     - (-6.98952052)/2 # H2
+#     )
+# print(f"dg_sol: {dg_sol:.2f}, dg: {dg:.2f}, de: {de:.2f}, dg-de: {dg-de:.2f}") # 0.90, 0.76, 1.36, -0.60
 
 def get_ref_entries():
     ref_entries = []
