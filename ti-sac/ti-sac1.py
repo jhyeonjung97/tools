@@ -122,7 +122,7 @@ def dg(k, pH, U, concentration, n_ref):
         surface_term = surfs[k][0] - surfs[n_ref][0]
     U_coeff = 1*surfs[k][4] - 1*surfs[k][5] - 2*surfs[k][6] - 3*surfs[k][7] - surfs[k][3]
     pH_coeff = 1*surfs[k][4] - 1*surfs[k][5] - 2*surfs[k][6] - 3*surfs[k][7]
-    dg = surface_term + U_coeff * U + (pH_coeff) * const * pH +const * log10(concentration)
+    dg = surface_term + U_coeff * U + pH_coeff * const * pH + const * log10(concentration)
     return dg
     
 ions = [
