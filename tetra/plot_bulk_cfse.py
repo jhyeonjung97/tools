@@ -148,7 +148,7 @@ def plot_by_metal_row(df, save_path):
         for col in columns.index:
             if col in str_cols or col in bool_cols:
                 continue
-            plt.figure(figsize=(8, 6))
+            plt.figure(figsize=(6, 4))
             for coord in coords.index:
                 zorder = coords.loc[coord, 'zorder']
                 marker = coords.loc[coord, 'marker']
@@ -218,14 +218,14 @@ def plot_by_metal_row(df, save_path):
                             plt.plot([d5_idx, d10_idx], [d5_min, d10_min],
                                     '--', color='red', zorder=zorder-1, linewidth=0.5, dashes=(12, 5))
                             
-            plt.xticks(np.arange(len(metals[row])), metals[row])
+            plt.xticks(np.arange(len(metals[row])), metals[row], fontsize=12)
             plt.xlabel("Metal Index")
-            plt.ylabel(columns.loc[col, 'ylabel'])
+            plt.ylabel(columns.loc[col, 'ylabel'], fontsize=12)
             plt.xlim(-0.5, 12.5)  # x축 범위를 0부터 13까지로 설정
             plt.legend()
             plt.tight_layout()
             png_name = f"total_bulk_{row}_{columns.loc[col, 'png_name']}.png"
-            plt.savefig(f"{save_path}/{png_name}", dpi=300)
+            plt.savefig(f"{save_path}/{png_name}", transparent=True, dpi=300)
             plt.close()
             print(f"Figure saved as {png_name}")
             
@@ -238,7 +238,7 @@ def plot_by_coordination(df, save_path):
             base_color = coords.loc[coord, 'color']
             cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', [base_color, 'white'])
             colors = cmap(np.linspace(0.0, 0.6, 3))
-            plt.figure(figsize=(8, 6))
+            plt.figure(figsize=(6, 4))
             for r, row in enumerate(['3d', '4d', '5d']):
                 color = colors[r]
                 subset = df[(df['coord'] == coord) & (df['row'] == row)]           
@@ -248,20 +248,20 @@ def plot_by_coordination(df, save_path):
                     for m, metal in enumerate(metals[row]):
                         plt.scatter(m, metal_df.loc[metal, coord]/23.06, marker=marker, edgecolors=color, facecolors='white')
                     
-            plt.xticks(np.arange(len(indice)), indice)
+            plt.xticks(np.arange(len(indice)), indice, fontsize=12)
             plt.xlabel("Metal Index")
-            plt.ylabel(columns.loc[col, 'ylabel'])
+            plt.ylabel(columns.loc[col, 'ylabel'], fontsize=12)
             plt.xlim(-0.5, 12.5)  # x축 범위를 0부터 13까지로 설정
             plt.legend()
             plt.tight_layout()
             png_name = f"total_bulk_{coord}_{columns.loc[col, 'png_name']}.png"
-            plt.savefig(f"{save_path}/{png_name}", dpi=300)
+            plt.savefig(f"{save_path}/{png_name}", transparent=True, dpi=300)
             plt.close()
             print(f"Figure saved as {png_name}")
 
 if __name__ == "__main__":
     plot_by_metal_row(df, save_path)
-    plot_by_coordination(df, save_path) 
+    # plot_by_coordination(df, save_path) 
 
 cfse_ylabels = {
     'd_electrons': 'Number of d-electrons',

@@ -182,7 +182,7 @@ def plot_pourbaix(entries, png_name):
     plotter = PourbaixPlotter(pourbaix)
 
     fig, ax = plt.subplots(figsize=(7, 5))    
-    plotter.get_pourbaix_plot(limits=[[0, 14], [-1, 3]], label_domains=True, label_fontsize=14,
+    plotter.get_pourbaix_plot(limits=[[0, 14], [-1, 3]], label_domains=False, label_fontsize=14,
                               show_water_lines=False, show_neutral_axes=False, ax=ax)
     stable_entries = pourbaix.stable_entries
 
@@ -195,10 +195,12 @@ def plot_pourbaix(entries, png_name):
         
     if 'bulk' in png_name:
         pH2 = np.arange(0, 14.01, 0.01)
-        plt.plot(pH2, 1.23 - pH2 * const, color='black', lw=2.0) #, dashes=(5, 2))
-        plt.plot(pH2, df_oer['onsetP'][0] - pH2 * const, color='red', lw=2.0)
-        plt.plot(pH2, df_oer['onsetP'][1] - pH2 * const, color='red', lw=2.0, dashes=(5, 2))
-        plt.plot(pH2, df_orr['onsetP'][0] - pH2 * const, color='blue', lw=2.0)
+        # plt.plot(pH2, 1.23 - pH2 * const, color='black', lw=1.0) # OER
+        # plt.plot(pH2, 0.88 - pH2 * const, color='black', lw=1.0) # NO3RR
+        # plt.plot(pH2, 0.88 - pH2 * const, color='black', lw=1.0) # NO3RR
+        # plt.plot(pH2, df_oer['onsetP'][0] - pH2 * const, color='red', lw=2.0)
+        # plt.plot(pH2, df_oer['onsetP'][1] - pH2 * const, color='red', lw=2.0, dashes=(5, 2))
+        # plt.plot(pH2, df_orr['onsetP'][0] - pH2 * const, color='blue', lw=2.0)
 
     vac_entries = [entry for entry in stable_entries if 'XFe' not in entry.name]
     sac_entries = [entry for entry in stable_entries if 'XFe' in entry.name]
@@ -209,22 +211,25 @@ def plot_pourbaix(entries, png_name):
         'XH2(s) + Fe(s)': 0,
         'XH2(s) + Fe[+2]': 1,
         'XH2(s) + Fe[+3]': 2,
-        'X(s) + Fe[+3]': 3,
-        'X(s) + FeOH[+2]': 4,
+        'XH2(s) + FeO4[-1]': 3,
+        'X(s) + Fe[+3]': 4,
+        'X(s) + FeO4[-1]': 5,
         'Fe(s) + XH2(s)': 0,
         'Fe[+2] + XH2(s)': 1,
         'Fe[+3] + XH2(s)': 2,
-        'Fe[+3] + X(s)': 3,
-        'FeOH[+2] + X(s)': 4,
+        'FeO4[-1] + XH2(s)': 3,
+        'Fe[+3] + X(s)': 4,
+        'FeO4[-1] + X(s)': 5,
 
         'Fe(s)': 0,
         'Fe[+2]': 1,
         'Fe[+3]': 2, 
-        # 'FeOH[+2]': 3, 
-        'FeHO2[-1]': 3, 
-        'Fe2O3(s)': 4,
-        'Fe3O4(s)': 5,
+        'FeO4[-1]': 3, 
+        'FeHO2[-1]': 4, 
+        'Fe2O3(s)': 5,
+        'Fe3O4(s)': 6,
     }
+
 
     sac_mapping = {
         'XFe(s)': 0,
@@ -240,24 +245,24 @@ def plot_pourbaix(entries, png_name):
     for entry in sac_entries:
         print(entry.name)
         
-    # for i, entry in enumerate(vac_entries):
-    #     vertices = plotter.domain_vertices(entry)
-    #     x, y = zip(*vertices)
-    #     color = vac_colors[vac_mapping[entry.name]]
-    #     ax.fill(x, y, color=color)
+    for i, entry in enumerate(vac_entries):
+        vertices = plotter.domain_vertices(entry)
+        x, y = zip(*vertices)
+        color = vac_colors[vac_mapping[entry.name]]
+        ax.fill(x, y, color=color)
     
-    # for i, entry in enumerate(sac_entries):
-    #     vertices = plotter.domain_vertices(entry)
-    #     x, y = zip(*vertices)
-    #     color = sac_colors[sac_mapping[entry.name]]
-    #     ax.fill(x, y, color=color)
+    for i, entry in enumerate(sac_entries):
+        vertices = plotter.domain_vertices(entry)
+        x, y = zip(*vertices)
+        color = sac_colors[sac_mapping[entry.name]]
+        ax.fill(x, y, color=color)
 
     ax.set_xlabel("pH", fontsize=14)
     ax.set_ylabel("Potential (V vs SHE)", fontsize=14)
     ax.tick_params(axis='both', labelsize=14)
 
     plt.tight_layout()
-    plt.savefig(png_name, dpi=200, bbox_inches='tight')
+    plt.savefig(png_name, dpi=200, bbox_inches='tight', transparent=True)
     plt.show()
 
 def main():

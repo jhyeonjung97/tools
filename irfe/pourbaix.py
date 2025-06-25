@@ -82,7 +82,7 @@ def create_pourbaix_diagram(base_path):
     U_range = [Umin, Umax]
 
     for m, target_metal in enumerate(metal_systems.keys()):
-        clean_path = os.path.join(base_path, 'slab', target_metal, 'final_with_calculator.json')
+        clean_path = os.path.join(base_path, 'slab', target_metal, 'final.json')
         if not os.path.exists(clean_path):
             continue
         clean_done_path = os.path.join(base_path, 'slab', target_metal, 'DONE')
@@ -108,7 +108,7 @@ def create_pourbaix_diagram(base_path):
             if not os.path.exists(site_path):
                 continue
 
-            full_path = os.path.join(site_path, 'final_with_calculator.json')
+            full_path = os.path.join(site_path, 'final.json')
             if not os.path.exists(full_path):
                 continue
 

@@ -73,8 +73,8 @@ metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 gm = metal_df.loc['Co', 'energy']
 
 df = pd.read_csv(f'{filename}_energies.csv', delimiter=',', index_col=0)
-df_oer = pd.read_csv(f'{filename}_oer.tsv', delimiter='\t', index_col=0)
-df_orr = pd.read_csv(f'{filename}_orr.tsv', delimiter='\t', index_col=0)
+df_oer = pd.read_csv(f'{filename}_oer.csv', delimiter=',', index_col=0)
+df_orr = pd.read_csv(f'{filename}_orr.csv', delimiter=',', index_col=0)
 
 df['name'] = 'CoNC(' + df.index.str.upper() + ')'
 df['comp'] = 'CoX' + df.index.str.upper().str.replace("-", "")
@@ -193,8 +193,8 @@ def plot_pourbaix(entries, png_name):
     if 'bulk' in png_name:
         pH2 = np.arange(0, 14.01, 0.01)
         plt.plot(pH2, 1.23 - pH2 * const, color='black', lw=2.0) #, dashes=(5, 2))
-        plt.plot(pH2, df_oer['onsetP'][0] - pH2 * const, color='red', lw=2.0)
-        plt.plot(pH2, df_oer['onsetP'][2] - pH2 * const, color='red', lw=2.0, dashes=(5, 2))
+        # plt.plot(pH2, df_oer['onsetP'][0] - pH2 * const, color='red', lw=2.0)
+        plt.plot(pH2, df_oer['onsetP'][2] - pH2 * const, color='red', lw=2.0)
         plt.plot(pH2, df_orr['onsetP'][0] - pH2 * const, color='blue', lw=2.0)
         
     vac_entries = [entry for entry in stable_entries if 'XCo' not in entry.name]

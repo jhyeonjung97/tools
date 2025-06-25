@@ -15,7 +15,7 @@ user_name = os.getlogin()
 if hostname == 'PC102616':
     root = '/Users/jiuy97/Desktop/8_V_slab'
 elif user_name == 'jiuy97':
-    root = '/pscratch/sd/j/jiuy97/8_V_slab/'
+    root = '/pscratch/sd/j/jiuy97/8_V_slab'
 elif user_name == 'hailey' or user_name == 'root':
     root = '/Users/hailey/Desktop/8_V_slab'
 else:
@@ -71,7 +71,7 @@ def get_energy(atoms_path):
 
 def get_clean_surface_energy(path):
     """깨끗한 표면의 에너지를 계산하고 x축 뷰 이미지를 저장합니다."""
-    clean_path = os.path.join(path, 'final_with_calculator.json')
+    clean_path = os.path.join(path, 'clean', 'final_with_calculator.json')
     if os.path.exists(clean_path):
         atoms = read(clean_path)
         atoms_for_image = atoms.copy()
@@ -136,7 +136,7 @@ def create_progress_file():
             # clean 상태 추가
             clean_status = []
             for i in range(13):
-                path = os.path.join(root, coord_dir, row, f'{i:02d}_{metals[row][i]}')
+                path = os.path.join(root, coord_dir, row, f'{i:02d}_{metals[row][i]}', 'clean')
                 status = get_calculation_status(path)
                 clean_status.append(status)
             df.loc[len(df)] = [coord, row, 'clean'] + clean_status
@@ -178,7 +178,7 @@ def main():
     
     for path in all_paths:
         # DONE 파일이 있는지 확인
-        if not os.path.exists(os.path.join(path, 'DONE')) or os.path.exists(os.path.join(path, 'unmatched')):
+        if not os.path.exists(os.path.join(path, 'clean', 'DONE')) or os.path.exists(os.path.join(path, 'clean', 'unmatched')):
             continue
             
         # 경로에서 정보 추출
@@ -253,7 +253,7 @@ def plot_by_metal_row(df, save_path):
     for row in ['fm', '3d', '4d', '5d']:
         metals_list = metals[row]
         for ads in ['o_energy', 'oh_energy']:
-            plt.figure(figsize=(8, 6))
+            plt.figure(figsize=(4, 3))
             for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']:
                 zorder = coords.loc[coord, 'zorder']
                 marker = coords.loc[coord, 'marker']
@@ -266,10 +266,11 @@ def plot_by_metal_row(df, save_path):
             plt.xticks(np.arange(len(metals_list)), metals_list)
             plt.xlabel("Metal Index")
             plt.ylabel(f"{ads.split('_')[0].upper()} Adsorption Energy (eV)")
+            plt.xlim(-0.5, 12.5)
             plt.legend()
             plt.tight_layout()
             png_name = f"slab_{row}_{ads}.png"
-            plt.savefig(f"{save_path}/{png_name}")
+            plt.savefig(f"{save_path}/{png_name}", transparent=True, dpi=300)
             plt.close()
             print(f"Figure saved as {png_name}")
 
@@ -281,7 +282,7 @@ def plot_by_coordination(df, save_path):
             base_color = coords.loc[coord, 'color']
             cmap = mcolors.LinearSegmentedColormap.from_list(f'cmap_{base_color}', [base_color, 'white'])
             colors = cmap(np.linspace(0.0, 0.6, 3))
-            plt.figure(figsize=(8, 6))
+            plt.figure(figsize=(4, 3))
             for r, row in enumerate(['3d', '4d', '5d']):
                 metals_list = metals[row]
                 color = 'lightgray' if row == 'fm' else colors[r]
@@ -292,10 +293,11 @@ def plot_by_coordination(df, save_path):
             plt.xticks(np.arange(len(metals['3d'])), [f'{a}\n{b}\n{c}' for a, b, c in zip(metals['3d'], metals['4d'], metals['5d'])])
             plt.xlabel("Metal Index")
             plt.ylabel(f"{ads.split('_')[0].upper()} Adsorption Energy (eV)")
+            plt.xlim(-0.5, 12.5)
             plt.legend()
             plt.tight_layout()
             png_name = f"slab_{coord}_{ads}.png"
-            plt.savefig(f"{save_path}/{png_name}")
+            plt.savefig(f"{save_path}/{png_name}", transparent=True, dpi=300)
             plt.close()
             print(f"Figure saved as {png_name}")
 

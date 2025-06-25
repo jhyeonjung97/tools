@@ -14,8 +14,8 @@ from pymatgen.analysis.pourbaix_diagram import PourbaixEntry, PourbaixDiagram, P
 from pymatgen.analysis.pourbaix_diagram import IonEntry, PDEntry, ComputedEntry
 
 warnings.filterwarnings('ignore')
-png_name = 'nitrogenase'
-tag = '_vac'
+png_name = 'protonation'
+tag = '_all_LD'
 
 T = 273.15 + 25
 kJmol = 96.485
@@ -43,8 +43,8 @@ tsh2s_gas = 0.636 # RPBE, aq
 
 dgh2s_aq = zpeh2s - tsh2s_aq + cvh2s
 dgh2s_gas = zpeh2s - tsh2s_gas + cvh2s
-gh2s_aq = h2s + dgh2s_aq
-gh2s_gas = h2s + dgh2s_aq
+gh2s_aq = h2s + zpeh2s - tsh2s_aq + cvh2s
+gh2s_gas = h2s + zpeh2s - tsh2s_gas + cvh2s
 
 # solid
 s = -126.00103840/32 # RPBE
@@ -66,24 +66,28 @@ dgo = zpeo + cvo - tso
 dgh = 0.217
 
 df = pd.DataFrame()
-df.loc['EO', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-166.3055962, 2, 8, 7, 1, 1, 2, 10]
-df.loc['E1', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-170.0337744, 2, 9, 7, 1, 1, 2, 10]
-df.loc['E2', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-173.8708366, 2, 10, 7, 1, 1, 2, 10]
-df.loc['E3', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-177.5720029, 2, 11, 7, 1, 1, 2, 10]
-# df.loc['E4', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-180.622922, 2, 12, 7, 1, 1, 2, 10]
-df.loc['Vac', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-168.4517031, 2, 10, 7, 1, 1, 2, 9] # C2H8Fe7MoNO2S9 + H2
+df.loc['E0',     ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-412.4041388, 0, 0, 0, 0, 0, 0,  0]
+df.loc['E0*H1',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-416.8018053, 0, 1, 0, 0, 0, 0,  0]
+df.loc['E0*H2',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-419.8147836, 0, 2, 0, 0, 0, 0,  0]
+df.loc['E3',     ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-423.8152177, 0, 3, 0, 0, 0, 0,  0]
+df.loc['E3*H1',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-427.9188670, 0, 4, 0, 0, 0, 0,  0]
+df.loc['E3*H2',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-430.6141604, 0, 5, 0, 0, 0, 0,  0]
+df.loc['Vac',    ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-414.4369611, 0, 2, 0, 0, 0, 0, -1]
+df.loc['Vac*H1', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-418.5229228, 0, 3, 0, 0, 0, 0, -1]
+df.loc['Vac*H2', ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-421.2139338, 0, 4, 0, 0, 0, 0, -1]
+df.loc['E1',     ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-416.1486068, 0, 1, 0, 0, 0, 0,  0]
+df.loc['E1*H1',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-420.5210881, 0, 2, 0, 0, 0, 0,  0]
+df.loc['E1*H2',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-423.4465657, 0, 3, 0, 0, 0, 0,  0]
+df.loc['E2',     ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-420.0688973, 0, 2, 0, 0, 0, 0,  0]
+df.loc['E2*H1',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-424.3006724, 0, 3, 0, 0, 0, 0,  0]
+df.loc['E2*H2',  ['E', '#C', '#H', '#Fe', '#Mo', '#N', '#O', '#S']] = [-427.0052327, 0, 4, 0, 0, 0, 0,  0]
 
 df['comp'] = (
     'X'
-    + 'H' + (df['#H']-8).astype(str)
-    + 'S' + (df['#S']-9).astype(str)
+    + 'H' + (df['#H']).astype(str)
+    + 'S' + (df['#S']+1).astype(str)
 )
-df['G'] = df['E'] + (0
-    + dgh * (df['#H']-8)
-) - (0
-    + gh * (df['#H']-8)
-    + gs * (df['#S']-9)
-)
+df['G'] = df['E'] + dgh * df['#H'] - gh * df['#H'] - gs * df['#S']
 df['energy'] = df['G'] - df.loc['Vac', 'G'] # - water * df['#O']
 print(df)
 
@@ -158,7 +162,7 @@ def plot_pourbaix(entries, png_name):
     stable_entries = pourbaix.stable_entries
     
     fig, ax = plt.subplots(figsize=(6, 5))    
-    plotter.get_pourbaix_plot(limits=[[0, 14], [-2, 1]], label_domains=False,
+    plotter.get_pourbaix_plot(limits=[[0, 14], [-2, 1]], label_domains=True,
                               show_water_lines=False, show_neutral_axes=False, ax=ax)
     
     for line in ax.lines:
@@ -181,22 +185,31 @@ def plot_pourbaix(entries, png_name):
         'H2S(aq) + XH2(s)': 'XH2(s) + H2S(aq)',
         'HS[-1] + XH2(s)': 'XH2(s) + HS[-1]',
         'S[-2] + XH2(s)': 'XH2(s) + S[-2]',
+        'H2S(s) + XH3(s)': 'XH3(s) + H2S(s)',
+        'H2S(s) + XH4(s)': 'XH4(s) + H2S(s)',
+        'HS[-1] + XH3(s)': 'XH3(s) + HS[-1]',
+        'HS[-1] + XH4(s)': 'XH4(s) + HS[-1]',
+        'S[-2] + XH3(s)': 'XH3(s) + S[-2]',
+        'S[-2] + XH4(s)': 'XH4(s) + S[-2]',
     }
     
     name_mapping2 = {
         'XS(s)': r'E$_{0}$', 
-        'XHS(s)': r'E$_{1}$',
-        'XH2S(s)': r'E$_{2}$',
+        'XHS(s)': r'E$_{0}$*H', 
+        'XH2S(s)': r'E$_{0}$*H₂', 
         'XH3S(s)': r'E$_{3}$',
-        'XH4S(s)': r'E$_{4}$',
+        'XH4S(s)': r'E$_{3}$*H',
+        'XH5S(s)': r'E$_{3}$*H₂',
         'XH2(s)': r'E$_{v}$',
-        'S[-2]': 'S²⁻',
-        'HS[-1]': 'HS⁻',
-        'H2S(s)': 'H₂S(aq)',
+        'XH3(s)': r'E$_{v}$*H',
+        'XH4(s)': r'E$_{v}$*H₂',
+        ' S[-2]': ' S²⁻',
+        ' HS[-1]': ' HS⁻',
+        ' H2S(s)': ' H₂S(aq)',
         ' SO4[-1]': ' S₂O₈²⁻',
-        'SO4[-2]': 'SO₄²⁻',
-        'HSO4[-1]': 'HSO₄⁻',
-        'H2SO4(aq)': 'H₂SO₄(aq)',
+        ' SO4[-2]': ' SO₄²⁻',
+        ' HSO4[-1]': ' HSO₄⁻',
+        ' H2SO4(aq)': ' H₂SO₄(aq)',
     }
 
     for text in ax.texts:
@@ -221,22 +234,37 @@ def plot_pourbaix(entries, png_name):
         'XH2S(s)',
         'XH3S(s)',
         'XH4S(s)',
+        'XH5S(s)',
+        'XH2(s)',
+        'XH3(s)',
+        'XH4(s)',
     ]
     
-    vacancy_names = [
-        'HSO4[-1]',
+    vacancy_names2 = [
         'SO4[-1]',
-        'HS[-1]',
-        'H2SO4(aq)',
         'SO4[-2]',
-        'S[-2]',
+        'HSO4[-1]',
+        'H2SO4(aq)',
+    ]
+
+    vacancy_names3 = [
         'H2S(s)',
+        'HS[-1]',
+        'S[-2]',
+    ]
+
+    vacancy_names4 = [
+        'H2S(s)',
+        'HS[-1]',
+        'S[-2]',
     ]
         
-    sulfur_entries = [entry for entry in stable_entries if 'XH2(s)' not in entry.name]
-    vacancy_entries = [entry for entry in stable_entries if 'XH2(s)' in entry.name]
+    sulfur_entries = [entry for entry in stable_entries if 'XH2(s)' not in entry.name and 'XH3(s)' not in entry.name and 'XH4(s)' not in entry.name]
+    vacancy_entries = [entry for entry in stable_entries if 'XH2(s)' in entry.name or 'XH3(s)' in entry.name or 'XH4(s)' in entry.name]
     sulfur_colors = [plt.cm.Greys(i) for i in np.linspace(0.05, 0.35, len(sulfur_names))]
-    vacancy_colors = [plt.cm.Blues(i) for i in np.linspace(0.15, 0.45, len(vacancy_names))] # YlOrBr
+    vacancy_colors2 = [plt.cm.Greens(i) for i in np.linspace(0.15, 0.45, len(vacancy_names2))] # YlOrBr
+    vacancy_colors3 = [plt.cm.Blues(i) for i in np.linspace(0.35, 0.45, len(vacancy_names3))] # YlOrBr
+    vacancy_colors4 = [plt.cm.Oranges(i) for i in np.linspace(0.35, 0.45, len(vacancy_names4))] # YlOrBr
 
     for entry in stable_entries:
         print(entry.name)
@@ -250,19 +278,14 @@ def plot_pourbaix(entries, png_name):
     for i, entry in enumerate(vacancy_entries):
         vertices = plotter.domain_vertices(entry)
         x, y = zip(*vertices)
-        ion_part = entry.name.replace(' + ', '').replace('XH2(s)', '')
-        color = vacancy_colors[vacancy_names.index(ion_part)]
+        ion_part = entry.name.replace(' + ', '').replace('XH2(s)', '').replace('XH3(s)', '').replace('XH4(s)', '')
+        if 'XH2(s)' in entry.name:
+            color = vacancy_colors2[vacancy_names2.index(ion_part)]
+        elif 'XH3(s)' in entry.name:
+            color = vacancy_colors3[vacancy_names3.index(ion_part)]
+        elif 'XH4(s)' in entry.name:
+            color = vacancy_colors4[vacancy_names4.index(ion_part)]
         ax.fill(x, y, color=color)
-        
-    if 'bulk' in png_name:
-        ax.text(12, -0.50, r"$\mathbf{E_{0}}$", fontsize=14, ha='center')
-        ax.text(12, -0.75, r"$\mathbf{E_{2}}$", fontsize=14, ha='center')
-        ax.text(12, -1.00, r"$\mathbf{E_{3}}$", fontsize=14, ha='center')
-        ax.text(0.7, 0.8, r"$\mathbf{E_{v} + HSO_{4}^{-}}$", fontsize=14)
-        ax.text(9.0, 0.5, r"$\mathbf{E_{v} + SO_{4}^{2-}}$", fontsize=14)
-        ax.text(3.5, -1.6, r"$\mathbf{E_{v} + H_{2}S(aq)}$", fontsize=14, ha='center')
-        ax.text(9.0, -1.6, r"$\mathbf{E_{v} + HS^{-}}$", fontsize=14)
-        ax.text(13.8, -1.9, r"$\mathbf{E_{v} + S^{2-}}$", fontsize=14, ha='right')
         
     ax.set_xlabel("pH", fontsize=14)
     ax.set_ylabel("Potential (V vs SHE)", fontsize=14)

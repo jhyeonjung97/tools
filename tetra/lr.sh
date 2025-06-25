@@ -17,7 +17,7 @@
 # # essential descriptors
 # python ~/bin/tools/tetra/lr.py --Y form --output form
 
-python ~/bin/tools/tetra/lr-cfse.py --Y form --X 'OS' 'CN' 'group' 'outer_e' 'Hevap' 'base_cfse' 'ICOHPo' 'ionNn' 'mag' 'volume' 'l_bond' 'chg' --output form_chg
+python ~/bin/tools/tetra/lr-cfse.py --Y form --X 'group' 'outer_e' 'OS' 'CN' 'base_cfse' 'ionNn' 'Hevap' 'ICOHPo' 'chg' 'volume' 'l_bond' 'mag' --output nam29
 # python ~/bin/tools/tetra/lr-cfse.py --Y form --X 'OS' 'CN' 'group' 'outer_e' 'Hevap' 'base_cfse' 'ICOHPo' 'ionNn' 'mag' 'volume' 'l_bond' 'chgo' --output form_chgo
 # python ~/bin/tools/tetra/lr-cfse.py --Y form --X 'OS' 'CN' 'group' 'outer_e' 'Hevap' 'base_cfse' 'ICOHPo' 'ionNn' 'mag' 'volume' 'l_bond' 'chgc' --output form_chgc
 # python ~/bin/tools/tetra/lr-cfse.py --Y form --X 'OS' 'CN' 'group' 'outer_e' 'Hevap' 'base_cfse' 'ICOHPo' 'ionNn' 'mag' 'volume' 'l_bond' 'chgn' --output form_chgn

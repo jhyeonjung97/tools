@@ -882,29 +882,35 @@ def main():
             f.write(f"Single-feature Groups: {len(single_feature_groups)}\n")
 
     # Correlation matrix plot 수정
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(cor, annot=True, fmt='.2f', cmap=new_cmap, 
-                # annot_kws={"size": 7},
-                cbar_kws={"shrink": 0.5, "aspect": 20, "pad": 0.02}, vmin=-1, vmax=1)
+    plt.figure(figsize=(6, 5))
+    ax = sns.heatmap(cor, annot=True, fmt='.2f', cmap=new_cmap, 
+                annot_kws={"size": 7},
+                cbar=False, vmin=-1, vmax=1)
     
     # x축 레이블 수정
-    plt.xticks(rotation=45, ha='right')  # rotation 각도 조정, 정렬 방식 변경
-    # y축 레이블 수정
-    plt.yticks(rotation=0)
+    labels = ['Formation energy', 'Group number', 'Outer electron', 'Oxidation state', 'Coordination number', 'Ionization energy', 'Heat of evaporation', 'CFSE', '-ICOHP', 'Bader charge', 'Cell volume', 'M-O bond length', 'Magnetic moment']
+    ax.set_xticklabels(labels, rotation=45, ha='right')
+    ax.set_yticklabels(labels, rotation=0)
+    
+    # 레이블 스타일 조정
+    plt.tick_params(axis='both', which='major', labelsize=8)
     
     plt.tight_layout(pad=2.0)  # padding 증가
     plt.savefig(os.path.join(root, f'cfse_correlation_{args.output}_all.png'), 
-                bbox_inches='tight', dpi=300)
+                bbox_inches='tight', dpi=300, transparent=True)
     plt.close()
 
     # Covariance matrix plot도 동일하게 수정
     plt.figure(figsize=(8, 6))
-    sns.heatmap(cov, annot=True, fmt='.2f', cmap=new_cmap,
-                # annot_kws={"size": 7},
-                cbar_kws={"shrink": 0.5, "aspect": 20, "pad": 0.02}, vmin=-1, vmax=1)
+    ax = sns.heatmap(cov, annot=True, fmt='.2f', cmap=new_cmap,
+                cbar=False, vmin=-1, vmax=1)
     
-    plt.xticks(rotation=45, ha='right')
-    plt.yticks(rotation=0)
+    # x축 레이블 수정
+    ax.set_xticklabels(labels, rotation=45, ha='right', fontsize=12)
+    ax.set_yticklabels(labels, rotation=0, fontsize=12)
+    
+    # 레이블 스타일 조정
+    plt.tick_params(axis='both', which='major', labelsize=8)
     
     plt.tight_layout(pad=2.0)
     plt.savefig(os.path.join(root, f'cfse_covariance_{args.output}_all.png'),

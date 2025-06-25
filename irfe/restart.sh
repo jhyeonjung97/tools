@@ -15,14 +15,14 @@
 # for dir in /home/hyeonjung/scratch/4_IrFe3/seg/*_*/*_*
 # do
 #     cd $dir
-#     cp ~/bin/tools/irfe/INCAR .
-#     cp ~/bin/tools/irfe/KPOINTS .
-#     cp *.vasp POSCAR
-#     vaspkit -task 107
-#     mv POSCAR_REV POSCAR
-#     rm POTCAR
-#     vaspkit -task 103
-#     python3 ~/bin/orange/magmom.py
+    # cp ~/bin/tools/irfe/INCAR .
+    # cp ~/bin/tools/irfe/KPOINTS .
+    # cp *.vasp POSCAR
+    # vaspkit -task 107
+    # mv POSCAR_REV POSCAR
+    # rm POTCAR
+    # vaspkit -task 103
+    # python3 ~/bin/orange/magmom.py
 # done
 
 # for dir in /home/hyeonjung/scratch/4_IrFe3/*_*
@@ -85,10 +85,10 @@
 #     done
 # done
 
-for dir in /home/hyeonjung/scratch/4_IrFe3/*_R_*/*_Fe/*_*_*
-do
+# for dir in /home/hyeonjung/scratch/4_IrFe3/*_R_*/*_Fe/*_*_*
+# do
     
-    cd $dir
+#     cd $dir
     cp ~/bin/tools/irfe/INCAR .
     cp ~/bin/tools/irfe/KPOINTS .
     mv *.vasp POSCAR
@@ -97,19 +97,19 @@ do
     rm POTCAR
     vaspkit -task 103
     python3 ~/bin/orange/magmom.py
-done
+# done
 
 # for dir in /home/hyeonjung/scratch/4_IrFe3/2_OH/5_IrMn/*_*_*
 # do
 #     cd $dir
 #     cp CONTCAR POSCAR
-#     cp ~/bin/tools/irfe/INCAR .
-#     cp ~/bin/tools/irfe/KPOINTS .
-#     vaspkit -task 107
-#     mv POSCAR_REV POSCAR
-#     rm POTCAR
-#     vaspkit -task 103
-#     python3 ~/bin/orange/magmom.py
+    # cp ~/bin/tools/irfe/INCAR .
+    # cp ~/bin/tools/irfe/KPOINTS .
+    # vaspkit -task 107
+    # mv POSCAR_REV POSCAR
+    # rm POTCAR
+    # vaspkit -task 103
+    # python3 ~/bin/orange/magmom.py
 # done
 # cd ../..
 # ls
@@ -121,10 +121,16 @@ do
     metal=$(echo "${path[-2]}" | cut -d'_' -f2)
     ads=$(echo "${path[-3]}" | cut -d'_' -f2)
 
+<<<<<<< HEAD
     cd $dir
     if [[ $ads == 'H' ]]; then
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
             if [[ $site == '1_layer_top' ]] || [[ $site == '5_M_top' ]]; then
+=======
+    if [[ $ads == 'H' ]]; then
+        if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
+            if [[ $site == '1_layer_top' ]] || [[ $site == '7_M_top' ]]; then
+>>>>>>> 577f1d182c246c6158b680370758f117bdb6f7fa
                 continue
             fi
         fi
@@ -135,7 +141,11 @@ do
         fi
     elif [[ $ads == 'OH' ]]; then
         if [[ $metal == 'Fe' ]] || [[ $metal == 'Co' ]] || [[ $metal == 'Ni' ]] || [[ $metal == 'Mn' ]]; then
+<<<<<<< HEAD
             if [[ $site == '1_layer_top' ]] || [[ $site == '3_Ir_top' ]] || [[ $site == '4_Ir_brg' ]] || [[ $site == '5_M_top' ]] || [[ $site == '6_M_brg' ]]; then
+=======
+            if [[ $site == '1_layer_top' ]] || [[ $site == '6_Ir_top' ]] || [[ $site == '7_Ir_brg' ]] || [[ $site == '8_M_top' ]] || [[ $site == '9_M_brg' ]]; then
+>>>>>>> 577f1d182c246c6158b680370758f117bdb6f7fa
                 continue
             fi
         fi
@@ -150,6 +160,7 @@ do
                 continue
             fi
         fi
+<<<<<<< HEAD
     elif [[ $ads == 'R1' ]] || [[ $ads == 'R2' ]]; then
         site=${path[-2]}
         intermediate=${path[-1]}
@@ -157,14 +168,30 @@ do
             continue
         elif [[ $intermediate == '4_O_O' ]]; then
             continue
+=======
+    elif [[ $ads == 'R' ]]; then
+        intermediate=${path[-1]}
+        if [[ $intermediate == '4_O_O' ]]; then
+            continue
+        elif [[ ! -f $dir/unmatched ]] && [[ -f $dir/DONE ]]; then
+            cd $dir/vib/
+            vaspkit -task 501 > $dir/vib.txt
+>>>>>>> 577f1d182c246c6158b680370758f117bdb6f7fa
         fi
     else
         continue
     fi
 
+<<<<<<< HEAD
     if [[ -f submit.sh ]] && [[ ! -f DONE ]]; then
         pwd
     fi
+=======
+    # cd $dir
+    # if [[ ! -f unmatched ]] && [[ -f DONEfinal.json ]]; then
+    #     ase convert -f -n -1 OUTCAR final.json
+    # fi
+>>>>>>> 577f1d182c246c6158b680370758f117bdb6f7fa
 done
 
 # for dir in /home/hyeonjung/scratch/4_IrFe3/sgr/*_*_*/*_*

@@ -328,10 +328,10 @@ def main():
     all_entries = ref_entries + sac_entries
     plot_pourbaix(all_entries, f'{png_name}_sac3.png')
     
-    # plot_pourbaix(solid_entries, f'{png_name}_solid.png')
-    # plot_pourbaix(ion_entries, f'{png_name}_ion.png')
-    # all_entries = solid_entries + ion_entries
-    # plot_pourbaix(all_entries, f'{png_name}_exp.png')
+    plot_pourbaix(solid_entries, f'{png_name}_solid.png')
+    plot_pourbaix(ion_entries, f'{png_name}_ion.png')
+    all_entries = solid_entries + ion_entries
+    plot_pourbaix(all_entries, f'{png_name}_exp.png')
 
     # plot_pourbaix(mpr1_entries, f'{png_name}_mpr1.png')
     # plot_pourbaix(mpr2_entries, f'{png_name}_mpr2.png')
