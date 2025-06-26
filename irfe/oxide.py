@@ -43,6 +43,15 @@ for s in range(len(surfaces)):
     energy = read(atoms_path).get_potential_energy()
     vib_correction = read_vib_correction(vib_path)
     clean_energy = energy + vib_correction
+    
+    ads_path = os.path.join(root, '3_O', f'{s*6}_{surfaces[s]}', '1_layer_top')
+    # if s == 0:
+    #     ads_path = os.path.join(root, '3_O', f'{s*6}_{surfaces[s]}', '2_layer_hol')
+    atoms_path = os.path.join(ads_path, 'final.json')
+    vib_path = os.path.join(ads_path, 'vib-z', 'vib.txt')
+    energy = read(atoms_path).get_potential_energy()
+    vib_correction = read_vib_correction(vib_path)
+    ads_energy = energy + vib_correction
 
     for i in range(1, 9):
         oxide_path = os.path.join(root, 'oxide', f'{s+7}_{surfaces[s]}Ox', f'{i}_')
@@ -51,8 +60,12 @@ for s in range(len(surfaces)):
         energy = read(atoms_path).get_potential_energy()
         vib_correction = read_vib_correction(vib_path)
         oxide_energy = energy + vib_correction
+
         potential = ((oxide_energy - clean_energy)/16 - (G_H2O - G_H2)) / 2
         df.loc[i, surfaces[s]] = potential
+
+        potential = ((oxide_energy - ads_energy)/8 - (G_H2O - G_H2)) / 2
+        df.loc[i, f'{surfaces[s]}O'] = potential
 
 print(df)
 df.to_csv('/Users/hailey/Desktop/4_IrFe3/figures/oxide.csv')
