@@ -43,12 +43,12 @@ elements_data = {
     "Pt": {"electrode_potential": 1.20,  "cation_charge": 2},  # Pt^2+ + 2e- → Pt
 }
 
-vacancy = {}
-for i in range(9):
-    path = f"/Users/jiuy97/Desktop/6_MNC/empty/{i}_/final_with_calculator.json"
-    # path = f"/Users/jiuy97/Desktop/6_MNC/empty/2_/final_with_calculator.json"
-    atoms = read(path)
-    vacancy[i] = atoms.get_total_energy()
+# vacancy = {}
+# for i in range(9):
+#     path = f"/Users/jiuy97/Desktop/6_MNC/empty/{i}_/final_with_calculator.json"
+#     # path = f"/Users/jiuy97/Desktop/6_MNC/empty/2_/final_with_calculator.json"
+#     atoms = read(path)
+#     vacancy[i] = atoms.get_total_energy()
 save_path = '/Users/jiuy97/Desktop/6_MNC/figures/formation_energy'
 
 # spins = {'LS': '#ffe2cc', 'IS': '#cceaff', 'HS': '#e8dff2'}
