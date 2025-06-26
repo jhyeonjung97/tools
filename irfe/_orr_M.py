@@ -13,8 +13,8 @@ mechanism2 = ['2_V_O', '5_O_OH', '4_O_O', '6_O_OOH']    # 두 번째 메커니�
 mechanism3 = ['1_V_V', '3_V_OH', '7_OH_OH', '5_O_OH']  # 세 번째 메커니즘
 
 # 표면 정의
-surfaces = ['1_Ir_top', '2_Ir_hol', '3_IrFe_top1', '4_IrFe_top2', '5_IrFe_top3']
-surface_labels = ['Ir_top', 'Ir_hol', 'IrFe_top1', 'IrFe_top2', 'IrFe_top3']
+surfaces = ['1_Ir', '2_Ir', '3_Fe', '4_Fe', '5_Fe', '6_Fe']
+surface_labels = ['Ir1', 'Ir2', 'IrFe1', 'IrFe2', 'IrFe3', 'IrFe4']
 
 # 결과를 저장할 데이터프레임 생성
 results = pd.DataFrame(index=surfaces, columns=['AEM1', 'AEM2', 'LOMa1', 'LOMa2', 'LOMb1', 'LOMb2'])
@@ -22,6 +22,7 @@ results = pd.DataFrame(index=surfaces, columns=['AEM1', 'AEM2', 'LOMa1', 'LOMa2'
 # 기체 분자의 에너지와 보정값
 E_H2 = -6.77108058  # H2의 에너지 (eV)
 E_H2O = -14.22266334  # H2O의 에너지 (eV)
+E_O2 = -9.86  # O2의 에너지 (eV)
 
 # ZPE, 열용량, 엔트로피 보정
 ZPE_H2O = 0.558
@@ -32,9 +33,14 @@ ZPE_H2 = 0.268
 CV_H2 = 0.0905
 TS_H2 = 0.408
 
+ZPE_O2 = 0.098
+CV_O2 = 0.089
+TS_O2 = 0.669
+
 # 기체 분자의 깁스 자유에너지
 G_H2O = E_H2O + ZPE_H2O - TS_H2O + CV_H2O
 G_H2 = E_H2 + ZPE_H2 - TS_H2 + CV_H2
+G_O2 = E_O2 + ZPE_O2 - TS_O2 + CV_O2
 
 def count_atoms(atoms):
     """원자 개수를 세는 함수"""
@@ -112,7 +118,7 @@ energy_data = []
 # 각 표면과 메커니즘에 대해 과전압 계산
 for surface in surfaces:
     # R1과 R2에 대해 계산
-    for r_folder in ['4_R1', '4_R2']:
+    for r_folder in ['4_R_top', '5_R_hol']:
         # 첫 번째 메커니즘
         energies1 = []
         for step in mechanism1:
@@ -202,11 +208,11 @@ for surface in surfaces:
             })
         
         # 결과 저장
-        if r_folder == '4_R1':
+        if r_folder == '4_R_top':
             results.loc[surface, 'LOMa1'] = overpotential1 if None not in energies1 else None
             results.loc[surface, 'AEM1'] = overpotential2 if None not in energies2 else None
             results.loc[surface, 'LOMb1'] = overpotential3 if None not in energies3 else None
-        elif r_folder == '4_R2':
+        elif r_folder == '5_R_hol':
             results.loc[surface, 'LOMa2'] = overpotential1 if None not in energies1 else None
             results.loc[surface, 'AEM2'] = overpotential2 if None not in energies2 else None
             results.loc[surface, 'LOMb2'] = overpotential3 if None not in energies3 else None
@@ -241,7 +247,7 @@ plt.close()
 # 각 표면과 메커니즘별로 꺾은선 그래프 그리기 (ORR)
 for surface in surfaces:
     for mech, label in zip(['LOMa', 'AEM', 'LOMb'], ['LOMa', 'AEM', 'LOMb']):
-        for rxn, rxn_label in zip(['4_R1', '4_R2'], ['1', '2']):
+        for rxn, rxn_label in zip(['4_R_top', '5_R_hol'], ['1', '2']):
             df = energy_df[(energy_df['Surface'] == surface) & (energy_df['Mechanism'] == mech) & (energy_df['rxn'] == rxn)]
             if df.empty:
                 continue
