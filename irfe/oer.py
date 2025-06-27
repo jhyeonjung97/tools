@@ -8,9 +8,9 @@ import os
 base_path = '/Users/hailey/Desktop/4_IrFe3'
 
 # 반응 경로 정의
-mechanism1 = ['1_V_V', '3_V_OH', '2_V_O', '5_O_OH']  # 첫 번째 메커니즘
-mechanism2 = ['2_V_O', '5_O_OH', '4_O_O', '6_O_OOH']    # 두 번째 메커니즘
-mechanism3 = ['1_V_V', '3_V_OH', '7_OH_OH', '5_O_OH']  # 세 번째 메커니즘 (LOM')
+mechanism1 = ['1_V_V', '3_V_OH', '2_V_O', '5_O_OH']
+mechanism2 = ['1_V_V', '3_V_OH', '7_OH_OH', '5_O_OH']
+mechanism3 = ['2_V_O', '5_O_OH', '4_O_O', '6_O_OOH']
 
 # 표면 정의
 surfaces = ['1_Ir_top', '2_Ir_hol', '3_IrFe_top1', '4_IrFe_top2', '5_IrFe_top3']
@@ -155,7 +155,7 @@ for surface in surfaces:
             energy_data.append({
                 'Surface': surface,
                 'rxn': r_folder,
-                'Mechanism': 'AEM',
+                'Mechanism': 'LOMb',
                 'Step1': mechanism2[0],
                 'Step2': mechanism2[1],
                 'Step3': mechanism2[2],
@@ -177,7 +177,7 @@ for surface in surfaces:
             energy_data.append({
                 'Surface': surface,
                 'rxn': r_folder,
-                'Mechanism': 'LOMb',
+                'Mechanism': 'AEM',
                 'Step1': mechanism3[0],
                 'Step2': mechanism3[1],
                 'Step3': mechanism3[2],
@@ -196,12 +196,12 @@ for surface in surfaces:
         # 결과 저장
         if r_folder == '4_R1':
             results.loc[surface, 'LOMa1'] = overpotential1 if None not in energies1 else None
-            results.loc[surface, 'AEM1'] = overpotential2 if None not in energies2 else None
-            results.loc[surface, 'LOMb1'] = overpotential3 if None not in energies3 else None
+            results.loc[surface, 'LOMb1'] = overpotential2 if None not in energies2 else None
+            results.loc[surface, 'AEM1'] = overpotential3 if None not in energies3 else None
         elif r_folder == '5_R2':
             results.loc[surface, 'LOMa2'] = overpotential1 if None not in energies1 else None
-            results.loc[surface, 'AEM2'] = overpotential2 if None not in energies2 else None
-            results.loc[surface, 'LOMb2'] = overpotential3 if None not in energies3 else None
+            results.loc[surface, 'LOMb2'] = overpotential2 if None not in energies2 else None
+            results.loc[surface, 'AEM2'] = overpotential3 if None not in energies3 else None
 
 # 에너지 데이터를 데이터프레임으로 변환
 energy_df = pd.DataFrame(energy_data)
@@ -225,14 +225,14 @@ ax = results.plot(kind='bar', ax=plt.gca(),
                  )
 plt.ylabel('OER Overpotential (V)')
 plt.xticks(range(len(surface_labels)), surface_labels, rotation=45)
-plt.legend(bbox_to_anchor=(0.5, 1.1), loc='center', ncol=4)
+plt.legend(bbox_to_anchor=(0.5, 1.1), loc='center', ncol=2, labels=['LOM1', 'LOM2'])
 plt.tight_layout()
 plt.savefig(f'{base_path}/figures/OER_overpotential.png', bbox_inches='tight', transparent=True)
 plt.close()
 
 # 각 표면과 메커니즘별로 꺾은선 그래프 그리기
 for surface in surfaces:
-    for mech, label in zip(['LOMa', 'AEM', 'LOMb'], ['LOMa', 'AEM', 'LOMb']):
+    for mech, label in zip(['LOMa', 'LOMb', 'AEM'], ['LOMa', 'LOMb', 'AEM']):
         for rxn, rxn_label in zip(['4_R1', '5_R2'], ['1', '2']):
             df = energy_df[(energy_df['Surface'] == surface) & (energy_df['Mechanism'] == mech) & (energy_df['rxn'] == rxn)]
             if df.empty:
