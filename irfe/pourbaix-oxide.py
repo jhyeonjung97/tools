@@ -155,6 +155,8 @@ def create_pourbaix_diagram(base_path):
                 
             # 1_layer_top 데이터만 처리
             site = '1_layer_top'
+            if metal_code == '0_Ir' and ads == '3_O':
+                site = '2_layer_hol'
             site_path = os.path.join(metal_path, site)
             if not os.path.exists(site_path) or not os.path.isdir(site_path):
                 continue
@@ -227,6 +229,40 @@ def create_pourbaix_diagram(base_path):
                 x_cross = -b / a
                 if Umin <= x_cross <= Umax:
                     zero_crossings.append((system_name, ads_name, x_cross))
+        
+        # IrFe와 Ir에 대해 oxide 구조 추가
+        if system_name in ['IrFe', 'Ir']:
+            oxide_path = None
+            if system_name == 'IrFe':
+                oxide_path = os.path.join(base_path, 'oxide', '8_IrFeOx', '2_', 'final.json')
+            elif system_name == 'Ir':
+                oxide_path = os.path.join(base_path, 'oxide', '7_IrOx', '2_', 'final.json')
+            
+            if oxide_path and os.path.exists(oxide_path):
+                try:
+                    oxide_atoms = read(oxide_path)
+                    oxide_energy = oxide_atoms.get_potential_energy()
+                    oxide_counts = count_elements(oxide_atoms)
+                    
+                    # Oxide의 경우 진동 보정은 0으로 가정 (필요시 수정)
+                    G_vib_oxide = 0.0
+                    
+                    Gmin_oxide = calculate_free_energy(oxide_energy, energy_clean, oxide_counts['H'], oxide_counts['O'], Umin, G_vib_oxide)
+                    Gmax_oxide = calculate_free_energy(oxide_energy, energy_clean, oxide_counts['H'], oxide_counts['O'], Umax, G_vib_oxide)
+                    
+                    # Oxide 선을 점선으로 추가
+                    plt.plot(U_range, [Gmin_oxide, Gmax_oxide], color='orange', linestyle='--', label='oxide')
+                    
+                    # Oxide의 x절편 계산
+                    a_oxide = (Gmax_oxide - Gmin_oxide) / (Umax - Umin)
+                    b_oxide = Gmin_oxide - a_oxide * Umin
+                    if a_oxide != 0:
+                        x_cross_oxide = -b_oxide / a_oxide
+                        if Umin <= x_cross_oxide <= Umax:
+                            zero_crossings.append((system_name, 'oxide', x_cross_oxide))
+                            
+                except Exception as e:
+                    print(f"Warning: Could not read oxide data for {system_name}: {e}")
         
         plt.xlabel('Potential (V vs RHE)')
         plt.ylabel('ΔG (eV)')

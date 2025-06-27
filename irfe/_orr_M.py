@@ -8,13 +8,13 @@ import os
 base_path = '/Users/hailey/Desktop/4_IrFe3'
 
 # 반응 경로 정의
-mechanism1 = ['1_V_V', '3_V_OH', '2_V_O', '5_O_OH']
-mechanism2 = ['1_V_V', '3_V_OH', '7_OH_OH', '5_O_OH']
-mechanism3 = ['2_V_O', '5_O_OH', '4_O_O', '6_O_OOH']
+mechanism1 = ['1_V_V', '3_V_OH', '2_V_O', '5_O_OH']  # 첫 번째 메커니즘
+mechanism2 = ['2_V_O', '5_O_OH', '4_O_O', '6_O_OOH']    # 두 번째 메커니즘
+mechanism3 = ['1_V_V', '3_V_OH', '7_OH_OH', '5_O_OH']  # 세 번째 메커니즘
 
 # 표면 정의
-surfaces = ['1_Ir_top', '2_Ir_hol', '3_IrFe_top1', '4_IrFe_top2', '5_IrFe_top3']
-surface_labels = ['Ir_top', 'Ir_hol', 'IrFe_top1', 'IrFe_top2', 'IrFe_top3']
+surfaces = ['1_Ir', '2_Ir', '3_Fe', '4_Fe', '5_Fe', '6_Fe']
+surface_labels = ['Ir1', 'Ir2', 'IrFe1', 'IrFe2', 'IrFe3', 'IrFe4']
 
 # 결과를 저장할 데이터프레임 생성
 results = pd.DataFrame(index=surfaces, columns=['AEM1', 'AEM2', 'LOMa1', 'LOMa2', 'LOMb1', 'LOMb2'])
@@ -22,6 +22,7 @@ results = pd.DataFrame(index=surfaces, columns=['AEM1', 'AEM2', 'LOMa1', 'LOMa2'
 # 기체 분자의 에너지와 보정값
 E_H2 = -6.77108058  # H2의 에너지 (eV)
 E_H2O = -14.22266334  # H2O의 에너지 (eV)
+E_O2 = -9.86  # O2의 에너지 (eV)
 
 # ZPE, 열용량, 엔트로피 보정
 ZPE_H2O = 0.558
@@ -32,9 +33,14 @@ ZPE_H2 = 0.268
 CV_H2 = 0.0905
 TS_H2 = 0.408
 
+ZPE_O2 = 0.098
+CV_O2 = 0.089
+TS_O2 = 0.669
+
 # 기체 분자의 깁스 자유에너지
 G_H2O = E_H2O + ZPE_H2O - TS_H2O + CV_H2O
 G_H2 = E_H2 + ZPE_H2 - TS_H2 + CV_H2
+G_O2 = E_O2 + ZPE_O2 - TS_O2 + CV_O2
 
 def count_atoms(atoms):
     """원자 개수를 세는 함수"""
@@ -88,16 +94,21 @@ def calculate_overpotential(energies):
         return None
     
     # 각 단계의 깁스 자유에너지 변화 계산
-    dG1 = energies[1] - energies[0]  # *O+* -> *O+*OH or *+* -> *+*OH
-    dG2 = energies[2] - energies[1]  # *O+*OH -> *O+*O or *+*OH -> *+*O
-    dG3 = energies[3] - energies[2]  # *O+*O -> *O+*OOH or *+*O -> *OH+*O
-    dG4 = 4.92 - (dG1 + dG2 + dG3)  # 마지막 단계
+    dG1_oer = energies[1] - energies[0]  # *O+* -> *O+*OH or *+* -> *+*OH
+    dG2_oer = energies[2] - energies[1]  # *O+*OH -> *O+*O or *+*OH -> *+*O
+    dG3_oer = energies[3] - energies[2]  # *O+*O -> *O+*OOH or *+*O -> *OH+*O
+    dG4_oer = 4.92 - (dG1_oer + dG2_oer + dG3_oer)  # 마지막 단계
+
+    dG1 = 1.23 - dG4_oer
+    dG2 = 1.23 - dG3_oer
+    dG3 = 1.23 - dG2_oer
+    dG4 = 1.23 - dG1_oer
     
     # 최대 깁스 자유에너지 변화 찾기
     max_dG = max(dG1, dG2, dG3, dG4)
     
     # 과전압 계산 (1.23V가 이론값)
-    overpotential = max_dG - 1.23
+    overpotential = max_dG
     
     return overpotential, dG1, dG2, dG3, dG4
 
@@ -107,25 +118,28 @@ energy_data = []
 # 각 표면과 메커니즘에 대해 과전압 계산
 for surface in surfaces:
     # R1과 R2에 대해 계산
-    for r_folder in ['4_R1', '5_R2']:
+    for r_folder in ['4_R_top', '5_R_hol']:
         # 첫 번째 메커니즘
         energies1 = []
         for step in mechanism1:
             path = f'{base_path}/{r_folder}/{surface}/{step}'
             energy = get_energy(path)
             energies1.append(energy)
+        
         # 두 번째 메커니즘
         energies2 = []
         for step in mechanism2:
             path = f'{base_path}/{r_folder}/{surface}/{step}'
             energy = get_energy(path)
             energies2.append(energy)
+            
         # 세 번째 메커니즘
         energies3 = []
         for step in mechanism3:
             path = f'{base_path}/{r_folder}/{surface}/{step}'
             energy = get_energy(path)
             energies3.append(energy)
+        
         # 과전압 계산
         if None not in energies1:
             overpotential1, dG1_1, dG2_1, dG3_1, dG4_1 = calculate_overpotential(energies1)
@@ -155,7 +169,7 @@ for surface in surfaces:
             energy_data.append({
                 'Surface': surface,
                 'rxn': r_folder,
-                'Mechanism': 'LOMb',
+                'Mechanism': 'AEM',
                 'Step1': mechanism2[0],
                 'Step2': mechanism2[1],
                 'Step3': mechanism2[2],
@@ -177,7 +191,7 @@ for surface in surfaces:
             energy_data.append({
                 'Surface': surface,
                 'rxn': r_folder,
-                'Mechanism': 'AEM',
+                'Mechanism': 'LOMb',
                 'Step1': mechanism3[0],
                 'Step2': mechanism3[1],
                 'Step3': mechanism3[2],
@@ -194,14 +208,14 @@ for surface in surfaces:
             })
         
         # 결과 저장
-        if r_folder == '4_R1':
+        if r_folder == '4_R_top':
             results.loc[surface, 'LOMa1'] = overpotential1 if None not in energies1 else None
-            results.loc[surface, 'LOMb1'] = overpotential2 if None not in energies2 else None
-            results.loc[surface, 'AEM1'] = overpotential3 if None not in energies3 else None
-        elif r_folder == '5_R2':
+            results.loc[surface, 'AEM1'] = overpotential2 if None not in energies2 else None
+            results.loc[surface, 'LOMb1'] = overpotential3 if None not in energies3 else None
+        elif r_folder == '5_R_hol':
             results.loc[surface, 'LOMa2'] = overpotential1 if None not in energies1 else None
-            results.loc[surface, 'LOMb2'] = overpotential2 if None not in energies2 else None
-            results.loc[surface, 'AEM2'] = overpotential3 if None not in energies3 else None
+            results.loc[surface, 'AEM2'] = overpotential2 if None not in energies2 else None
+            results.loc[surface, 'LOMb2'] = overpotential3 if None not in energies3 else None
 
 # 에너지 데이터를 데이터프레임으로 변환
 energy_df = pd.DataFrame(energy_data)
@@ -211,10 +225,10 @@ float_columns = ['Energy1', 'Energy2', 'Energy3', 'Energy4', 'dG1', 'dG2', 'dG3'
 energy_df[float_columns] = energy_df[float_columns].round(2)
 
 # TSV 파일로 저장
-energy_df.to_csv('oer_energies.tsv', sep='\t', index=False)
+energy_df.to_csv('orr_energies.tsv', sep='\t', index=False)
 
 # 결과 출력
-print("\nOER 과전압 (V):")
+print("\nORR 과전압 (V):")
 print(results)
 
 # 결과 시각화
@@ -223,17 +237,17 @@ ax = results.plot(kind='bar', ax=plt.gca(),
                 #  color=['black', 'red', 'blue', 'green', 'yellow', 'purple'],
                  color=['black', 'white'], edgecolor='black', hatch='////'
                  )
-plt.ylabel('OER Overpotential (V)')
+plt.ylabel('ORR Overpotential (V)')
 plt.xticks(range(len(surface_labels)), surface_labels, rotation=45)
-plt.legend(bbox_to_anchor=(0.5, 1.1), loc='center', ncol=2, labels=['LOM1', 'LOM2'])
+plt.legend(bbox_to_anchor=(0.5, 1.1), loc='center', ncol=4)
 plt.tight_layout()
-plt.savefig(f'{base_path}/figures/OER_overpotential.png', bbox_inches='tight', transparent=True)
+plt.savefig('ORR_overpotential.png', bbox_inches='tight')
 plt.close()
 
-# 각 표면과 메커니즘별로 꺾은선 그래프 그리기
+# 각 표면과 메커니즘별로 꺾은선 그래프 그리기 (ORR)
 for surface in surfaces:
-    for mech, label in zip(['LOMa', 'LOMb', 'AEM'], ['LOMa', 'LOMb', 'AEM']):
-        for rxn, rxn_label in zip(['4_R1', '5_R2'], ['1', '2']):
+    for mech, label in zip(['LOMa', 'AEM', 'LOMb'], ['LOMa', 'AEM', 'LOMb']):
+        for rxn, rxn_label in zip(['4_R_top', '5_R_hol'], ['1', '2']):
             df = energy_df[(energy_df['Surface'] == surface) & (energy_df['Mechanism'] == mech) & (energy_df['rxn'] == rxn)]
             if df.empty:
                 continue
@@ -244,9 +258,8 @@ for surface in surfaces:
             plt.xlabel('Reaction coordinate')
             plt.ylabel('Relative energy (ΔG, eV)')
             plt.xlim(0, 9)
-            plt.ylim(0, 5)
+            plt.ylim(-1, 1)
             plt.tight_layout()
             plt.xticks([])  # x축 눈금 제거
-            plt.savefig(f'{base_path}/figures/OER_{surface_labels[surfaces.index(surface)]}_{label}{rxn_label}_profile.png', 
-                        bbox_inches='tight', transparent=True)
+            plt.savefig(f'ORR_{surface_labels[surfaces.index(surface)]}_{label}{rxn_label}_profile.png', bbox_inches='tight')
             plt.close()
