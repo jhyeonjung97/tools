@@ -74,8 +74,8 @@ metal_df = pd.read_csv(metal_path, delimiter='\t', index_col=0)
 gm = metal_df.loc['Fe', 'energy']
 
 df = pd.read_csv(f'{filename}_energies.csv', delimiter=',', index_col=0)
-df_oer = pd.read_csv(f'{filename}_oer.tsv', delimiter='\t', index_col=0)
-df_orr = pd.read_csv(f'{filename}_orr.tsv', delimiter='\t', index_col=0)
+df_oer = pd.read_csv(f'{filename}_oer.csv', delimiter=',', index_col=0)
+df_orr = pd.read_csv(f'{filename}_orr.csv', delimiter=',', index_col=0)
 
 df['name'] = 'FeNC(' + df.index.str.upper() + ')'
 df['comp'] = 'FeX' + df.index.str.upper().str.replace("-", "")
@@ -195,12 +195,12 @@ def plot_pourbaix(entries, png_name):
         
     if 'bulk' in png_name:
         pH2 = np.arange(0, 14.01, 0.01)
-        # plt.plot(pH2, 1.23 - pH2 * const, color='black', lw=1.0) # OER
+        plt.plot(pH2, 1.23 - pH2 * const, color='black', lw=1.0) # OER
         # plt.plot(pH2, 0.88 - pH2 * const, color='black', lw=1.0) # NO3RR
         # plt.plot(pH2, 0.88 - pH2 * const, color='black', lw=1.0) # NO3RR
         # plt.plot(pH2, df_oer['onsetP'][0] - pH2 * const, color='red', lw=2.0)
         # plt.plot(pH2, df_oer['onsetP'][1] - pH2 * const, color='red', lw=2.0, dashes=(5, 2))
-        # plt.plot(pH2, df_orr['onsetP'][0] - pH2 * const, color='blue', lw=2.0)
+        plt.plot(pH2, df_orr['onsetP'][0] - pH2 * const, color='blue', lw=2.0)
 
     vac_entries = [entry for entry in stable_entries if 'XFe' not in entry.name]
     sac_entries = [entry for entry in stable_entries if 'XFe' in entry.name]
