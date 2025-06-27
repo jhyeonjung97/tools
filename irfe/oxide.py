@@ -52,7 +52,12 @@ for s in range(len(surfaces)):
         vib_correction = read_vib_correction(vib_path)
         oxide_energy = energy + vib_correction
         potential = ((oxide_energy - clean_energy)/16 - (G_H2O - G_H2)) / 2
-        df.loc[i, surfaces[s]] = potential
+        energy_diff = oxide_energy - clean_energy
+        # df.loc[i, surfaces[s]] = potential
+        df.loc[i, surfaces[s]] = oxide_energy
+
+for i in range(1, 9):
+    df.loc[i, 'diff'] = df.loc[i, 'Ir'] - df.loc[i, 'IrFe']
 
 print(df)
 df.to_csv('/Users/hailey/Desktop/4_IrFe3/figures/oxide.csv')
