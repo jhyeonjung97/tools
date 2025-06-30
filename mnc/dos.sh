@@ -13,7 +13,7 @@ do
     if [[ $dz == 'relaxed' ]]; then
         dz='r'
     fi
-    if [[ ! $metal == 'Co']]
+    if [[ ! $metal == 'Co' ]]; then
         continue
     fi
     # if [[ ($metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni') && ($spin == 'IS' || $spin == 'LS') && ($dz == 0 || $dz == 5) ]]; then
@@ -47,7 +47,7 @@ do
     if [[ $dz == 'relaxed' ]]; then
         dz='r'
     fi
-    if [[ ! $metal == 'Co']]
+    if [[ ! $metal == 'Co']]; then
         continue
     fi
     # if [[ $metal == 'Co' && $spin == 'MS' ]]; then
