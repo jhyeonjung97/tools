@@ -18,8 +18,8 @@ args = parser.parse_args()
 #     "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dx2(up)", "dx2(down)"
 # ]
 columns = [
-    "energy", "dx2(up)", "dx2(down)", "dyz(up)", "dyz(down)",
-    "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dxy(up)", "dxy(down)"
+    "energy", "dx2(up)", "dx2(down)", "dxy(up)", "dxy(down)",
+    "dz2(up)", "dz2(down)", "dxz(up)", "dxz(down)", "dyz(up)", "dyz(down)"
 ]
 colors = ['blue', 'orange', 'green', 'red', 'purple']
 
@@ -53,7 +53,7 @@ for orbital in orbitals:
     d_band_centers[orbital] = calculate_d_band_center(energy, dos_up, dos_down)
     y_min = min(y_min, data[f"{orbital}(up)"].min(), data[f"{orbital}(down)"].min())
     y_max = max(y_max, data[f"{orbital}(up)"].max(), data[f"{orbital}(down)"].max())
-   
+
 tsv_file = f"/pscratch/sd/j/jiuy97/6_MNC/figures/dos/{args.output}.png"
 with open(tsv_file, mode='w', newline='') as file:
     writer = csv.writer(file, delimiter='\t')
