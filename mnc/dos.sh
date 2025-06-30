@@ -47,7 +47,7 @@ do
     if [[ $dz == 'relaxed' ]]; then
         dz='r'
     fi
-    if [[ ! $metal == 'Co']]; then
+    if [[ ! $metal == 'Co' ]]; then
         continue
     fi
     # if [[ $metal == 'Co' && $spin == 'MS' ]]; then
