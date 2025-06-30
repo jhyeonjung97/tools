@@ -13,6 +13,9 @@ do
     if [[ $dz == 'relaxed' ]]; then
         dz='r'
     fi
+    if [[ ! $metal == 'Co']]
+        continue
+    fi
     # if [[ ($metal == 'Mn' || $metal == 'Fe' || $metal == 'Co' || $metal == 'Ni') && ($spin == 'IS' || $spin == 'LS') && ($dz == 0 || $dz == 5) ]]; then
     # if [[ $metal == 'Co' && $spin == 'MS' ]]; then
     # if [[ ! -s sumo.sh ]]; then
@@ -43,6 +46,9 @@ do
     fi
     if [[ $dz == 'relaxed' ]]; then
         dz='r'
+    fi
+    if [[ ! $metal == 'Co']]
+        continue
     fi
     # if [[ $metal == 'Co' && $spin == 'MS' ]]; then
     # if [[ ! -s sumo.sh ]]; then
