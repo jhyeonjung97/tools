@@ -63,14 +63,14 @@ for s in range(len(surfaces)):
 
         potential = ((oxide_energy - clean_energy)/16 - (G_H2O - G_H2)) / 2
         energy_diff = oxide_energy - clean_energy
-        # df.loc[i, surfaces[s]] = potential
-        df.loc[i, surfaces[s]] = oxide_energy
+        df.loc[i, surfaces[s]] = potential
+        # df.loc[i, surfaces[s]] = oxide_energy
 
-for i in range(1, 9):
-    df.loc[i, 'diff'] = df.loc[i, 'Ir'] - df.loc[i, 'IrFe']
+# for i in range(1, 9):
+#     df.loc[i, 'diff'] = df.loc[i, 'Ir'] - df.loc[i, 'IrFe']
 
-        potential = ((oxide_energy - ads_energy)/8 - (G_H2O - G_H2)) / 2
-        df.loc[i, f'{surfaces[s]}O'] = potential
+#         potential = ((oxide_energy - ads_energy)/8 - (G_H2O - G_H2)) / 2
+#         df.loc[i, f'{surfaces[s]}O'] = potential
 
 print(df)
 df.to_csv('/Users/hailey/Desktop/4_IrFe3/figures/oxide.csv')
