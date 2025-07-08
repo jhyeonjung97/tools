@@ -16,4 +16,4 @@ constraint = FixAtoms(indices=bottom_48_indices)
 atoms.set_constraint(constraint)
 
 # Write the structure with constraints
-write('vib.vasp', atoms)
+write('vib-o.vasp', atoms)

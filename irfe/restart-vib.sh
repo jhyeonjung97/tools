@@ -37,10 +37,10 @@
 # for dir in /home/hyeonjung/scratch/4_IrFe3/4_R1/*_*_*/7_OH_OH
 # do
 #     cd $dir
-python ~/bin/tools/irfe/vib-z.py
-mkdir -p vib-z
-cp vib.vasp vib-z/POSCAR
-cd vib-z
+python ~/bin/tools/irfe/vib-o.py
+mkdir -p vib-o
+cp vib-o.vasp vib-o/POSCAR
+cd vib-o
 cp ~/bin/tools/irfe/INCAR_vib INCAR
 cp ~/bin/tools/irfe/KPOINTS .
 vaspkit -task 107
@@ -60,7 +60,7 @@ python3 ~/bin/orange/magmom.py
 for dir in /home/hyeonjung/scratch/4_IrFe3/oxide/*_Ir*Ox/*_
 do
     cd $dir
-    python ~/bin/tools/irfe/vib-z.py
+    python ~/bin/tools/irfe/vib-o.py
     mkdir -p vib
     cp vib.vasp vib/POSCAR
     cd vib
