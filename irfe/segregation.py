@@ -21,7 +21,7 @@ TS_H2 = 0.408
 G_H2O = E_H2O + ZPE_H2O - TS_H2O + CV_H2O
 G_H2 = E_H2 + ZPE_H2 - TS_H2 + CV_H2
 
-df = pd.DataFrame(columns=['metal', 'o-covered', 'oxide-l1', 'oxide-l2'], index=['Ir', 'Ir-Fe'])
+df = pd.DataFrame(columns=['metal', 'o-covered', 'oxide-l1', 'oxide-l2'], index=['Ir', 'IrFe'])
 
 def read_vib_correction(vib_file):
     try:
@@ -52,10 +52,10 @@ get_energy(dirs[0], 'Ir', 'metal')
 get_energy(dirs[1], 'Ir', 'o-covered')
 get_energy(dirs[2], 'Ir', 'oxide-l1')
 get_energy(dirs[3], 'Ir', 'oxide-l2')
-get_energy(dirs[4], 'Ir-Fe', 'metal')
-get_energy(dirs[5], 'Ir-Fe', 'o-covered')
-get_energy(dirs[6], 'Ir-Fe', 'oxide-l1')
-get_energy(dirs[7], 'Ir-Fe', 'oxide-l2')
+get_energy(dirs[4], 'IrFe', 'metal')
+get_energy(dirs[5], 'IrFe', 'o-covered')
+get_energy(dirs[6], 'IrFe', 'oxide-l1')
+get_energy(dirs[7], 'IrFe', 'oxide-l2')
 
 df['dg(metal-*O)'] = ((df['o-covered'] - df['metal']) / 8 - (G_H2O - G_H2)) / 2
 df['dg(*O-oxide)'] = ((df['oxide-l1'] - df['o-covered']) / 8 - (G_H2O - G_H2)) / 2

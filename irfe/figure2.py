@@ -13,7 +13,7 @@ from collections import defaultdict
 root = '/Users/hailey/Desktop/4_IrFe3'
 
 surfaces = ['Ir(Ir)', 'Ir(Fe)', 'Ir-Fe(Ir)', 'Ir-Fe(Fe)']
-adsorbates = ['*', '*H', '*OH', '*O']
+adsorbates = ['*', '*OH', '*O']
 
 results = []
 
@@ -68,11 +68,11 @@ def get_charge(ads, surf, path):
         })
 
 get_charge('*',   'Ir',   'slab/0_Ir')
-get_charge('*H',  'Ir',   '1_H/0_Ir/1_layer_top')
+# get_charge('*H',  'Ir',   '1_H/0_Ir/1_layer_top')
 get_charge('*OH', 'Ir',   '2_OH/0_Ir/1_layer_top')
 get_charge('*O',  'Ir',   '3_O/0_Ir/2_layer_hol')
 get_charge('*',   'IrFe', 'slab/6_IrFe')
-get_charge('*H',  'IrFe', '1_H/6_IrFe/1_layer_top')
+# get_charge('*H',  'IrFe', '1_H/6_IrFe/1_layer_top')
 get_charge('*OH', 'IrFe', '2_OH/6_IrFe/1_layer_top')
 get_charge('*O',  'IrFe', '3_O/6_IrFe/1_layer_top')
 
@@ -80,7 +80,7 @@ df = pd.DataFrame(results)
 df.to_csv('bader_compact.csv', index=False)
 print(df)
 
-plt.figure(figsize=(4, 3))
+plt.figure(figsize=(2.5, 3))
 
 grays = plt.cm.Greys(np.linspace(0.6, 0.2, 4))
 # grays = plt.cm.Greys(np.linspace(0.9, 0.4, 4))
@@ -103,54 +103,58 @@ plt.plot(x, charges, marker='o', color='silver',
 
 for i, layer in zip(range(4), range(4, 0, -1)):
     charges = df[(df['layer'] == layer) & (df['surf']=='IrFe')]['Ir']
-    plt.plot(x, charges, marker='o', color=blues[i], label=f'Ir(-Fe) L{layer}', zorder=2)
+    plt.plot(x, charges, marker='o', color=blues[i], label=f'Ir(-Fe) L{4-layer}', zorder=2)
 
 for i, layer in zip(range(3), range(3, 0, -1)):
     charges = df[(df['layer'] == layer) & (df['surf']=='IrFe')]['Fe']
-    plt.plot(x, charges, marker='s', color=reds[i], label=f'(Ir-)Fe L{layer}', zorder=2)
+    plt.plot(x, charges, marker='s', color=reds[i], label=f'(Ir-)Fe L{4-layer}', zorder=2)
 
 plt.ylabel('Bader Charge (e$^{\mathrm{-}}$)')
-plt.xlim(-0.5, 3.5)
+plt.xlim(-0.5, 2.5)
 plt.xticks(x, adsorbates)
 plt.yticks(np.arange(-1.00, 1.26, 0.25))
-plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', handletextpad=0.5, labelspacing=0.2)
+plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', handletextpad=0.5)
 
 plot_output = os.path.join(root, 'figures', f'bader_charges.png')
 plt.savefig(plot_output, bbox_inches='tight')
 plt.close()
 
 # IrFe
-plt.figure(figsize=(4, 3))
+plt.figure(figsize=(2.5, 3))
 
 for i, layer in zip(range(4), range(4, 0, -1)):
     charges = df[(df['layer'] == layer) & (df['surf']=='IrFe')]['Ir']
-    plt.plot(x, charges, marker='o', color=blues[i], label=f'Ir L{layer}')
+    plt.plot(x, charges, marker='o', color=blues[i], label=f'Ir L{4-layer}')
 
 for i, layer in zip(range(3), range(3, 0, -1)):
     charges = df[(df['layer'] == layer) & (df['surf']=='IrFe')]['Fe']
-    plt.plot(x, charges, marker='s', color=reds[i], label=f'TM L{layer}')
+    plt.plot(x, charges, marker='s', color=reds[i], label=f'Fe L{4-layer}')
 
+plt.xlabel('Surface Coverage')
 plt.ylabel('Bader Charge (e$^{\mathrm{-}}$)')
+plt.xlim(-0.5, 2.5)
 plt.xticks(x, adsorbates)
 plt.yticks(np.arange(-1.00, 1.26, 0.25))
-plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', handletextpad=0.5, labelspacing=0.2)
+plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', handletextpad=0.5)
 
-plot_output = os.path.join(root, 'figures', f'bader_charges_IrFe.png')
-plt.savefig(plot_output, bbox_inches='tight')
+plot_output = os.path.join(root, 'figures', 'figure2.png')
+plt.savefig(plot_output, bbox_inches='tight', dpi=300, transparent=True)
 plt.close()
 
 # Ir
-plt.figure(figsize=(4, 3))
+plt.figure(figsize=(2.5, 3))
 
 for i, layer in zip(range(4), range(4, 0, -1)):
     charges = df[(df['layer'] == layer) & (df['surf']=='Ir')]['Ir']
-    plt.plot(x, charges, marker='o', color=blues[i], label=f'Ir L{layer}')
+    plt.plot(x, charges, marker='o', color=blues[i], label=f'Ir L{4-layer}')
 
 plt.ylabel('Bader Charge (e$^{\mathrm{-}}$)')
+plt.xlabel('Surface Coverage')
+plt.xlim(-0.5, 2.5)
 plt.xticks(x, adsorbates)
 plt.yticks(np.arange(-1.00, 1.26, 0.25))
-plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', handletextpad=0.5, labelspacing=0.2)
+plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', handletextpad=0.5)
 
-plot_output = os.path.join(root, 'figures', f'bader_charges_Ir.png')
-plt.savefig(plot_output, bbox_inches='tight')
+plot_output = os.path.join(root, 'figures', 'figure3.png')
+plt.savefig(plot_output, bbox_inches='tight', dpi=300, transparent=True)
 plt.close()
