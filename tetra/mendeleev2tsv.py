@@ -39,7 +39,7 @@ patterns = {
     'vdw_radius': 'Rvdw', 
     'evaporation_heat': 'Hevap', 
     'fusion_heat': 'Hfus',
-    'heat_of_formation': 'Hform', 
+    'heat_of_formation': 'Hform',
     'ionenergies[1]': 'ion1', 
     'ionenergies[2]': 'ion2', 
     'ionenergies[3]': 'ion3',

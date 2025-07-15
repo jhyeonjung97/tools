@@ -14,7 +14,7 @@ user_name = os.getlogin()
 if hostname == 'PC102616':
     root = '/Users/jiuy97/Desktop/7_V_bulk'
 elif user_name == 'jiuy97':
-    root = '/pscratch/sd/j/jiuy97/7_V_bulk/'
+    root = '/pscratch/sd/j/jiuy97/7_V_bulk'
 elif user_name == 'hailey':
     root = '/Users/hailey/Desktop/7_V_bulk'
 else:

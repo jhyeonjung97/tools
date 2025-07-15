@@ -177,7 +177,9 @@ def main():
                 if os.path.exists(madelung_path) and os.path.getsize(madelung_path) != 0:
                     madelung = parse_madelung(madelung_path)
                     df.loc[item, ['madelung']] = madelung/MN
-                
+
+                print(nbond, CN)
+
                 match_path = os.path.join(dir_path, 'unmatched')
                 if os.path.exists(match_path) or df.loc[item, 'n_bond'] != df.loc[item, 'CN']:
                     df.loc[item, 'match'] = False
