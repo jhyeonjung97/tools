@@ -586,7 +586,7 @@ def main():
     df = df[df['row'] != 'fm'] ##
 
     # group 컬럼 추가
-    df['group'] = df['numb'] + 3
+    df['group'] = df['numb'] + 2
     df['Hsub'] = df['Hevap'] + df['Hfus']
 
     if args.row:

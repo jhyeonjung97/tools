@@ -1,23 +1,21 @@
 # #!/bin/bash
 
-# for model in rf lr gpr gbr xgb lgb; do
-#     python ~/bin/tools/tetra/bulk_pred_cfse.py --model $model --X OS CN group outer_e Hsub base_cfse ICOHPmn ionNn mag volume l_bond chg
-#     python ~/bin/tools/tetra/bulk_pred_edge.py --model $model --X OS CN group outer_e Hsub base_cfse ICOHPmn ionNn mag volume l_bond chg
-# done
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg --output wo_OS
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg --output wo_CN
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn volume l_bond chg --output wo_mag
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag l_bond chg --output wo_volume
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume chg --output wo_l_bond
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond --output wo_chg
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg --output wo_group
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group Hsub base_cfse ICOHPn ionNn mag volume l_bond chg --output wo_outer_e
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub ICOHPn ionNn mag volume l_bond chg --output wo_cfse
 
-# python ~/bin/tools/tetra/bulk_pred_cfse.py --model rf --X OS CN group outer_e Hsub base_cfse ICOHPo ionNo mag volume l_bond chg
-# python ~/bin/tools/tetra/bulk_pred_cfse.py --model lr --X OS CN group outer_e Hsub base_cfse ICOHPo ionNo mag volume l_bond chg
-# python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHPo ionNo mag volume l_bond chg
-# python ~/bin/tools/tetra/bulk_pred_cfse.py --model gbr --X OS CN group outer_e Hsub base_cfse ICOHPo ionNo mag volume l_bond chg
-# python ~/bin/tools/tetra/bulk_pred_cfse.py --model xgb --X OS CN group outer_e Hsub base_cfse ICOHPo ionNo mag volume l_bond chg
-# python ~/bin/tools/tetra/bulk_pred_cfse.py --model lgb --X OS CN group outer_e Hsub base_cfse ICOHPo ionNo mag volume l_bond chg
-
-# python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X CN group outer_e Hsub base_cfse ICOHPo ionNo mag volume l_bond chg --output wo_OS
-# python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS group outer_e Hsub base_cfse ICOHPo ionNo mag volume l_bond chg --output wo_CN
-# python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHPo ionNo volume l_bond chg --output wo_mag
-# python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHPo ionNo mag l_bond chg --output wo_volume
-# python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHPo ionNo mag volume chg --output wo_l_bond
-# python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHPo ionNo mag volume l_bond --output wo_chg
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model rf --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model lr --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model gbr --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model xgb --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg
+python ~/bin/tools/tetra/bulk_pred_cfse.py --model lgb --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg
 
 python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHP ionN mag volume l_bond chg --output hsubxx
 python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHP ionNn mag volume l_bond chg --output hsubxn
