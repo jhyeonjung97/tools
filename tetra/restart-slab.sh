@@ -22,6 +22,7 @@ do
         cd ${dir}
         python ~/bin/tools/tetra/surface_oxidation_state.py CONTCAR surfox.json
     fi
+done
     # IFS='/' read -r -a path <<< $dir
     # coord=$(echo "${path[-4]}" | cut -d'_' -f3)
     # row=$(echo "${path[-3]}" | cut -d'_' -f1)
@@ -40,7 +41,7 @@ do
     #     # sed -i -e "s/jobname/${jobname}/g" submit.sh
     #     # pwd; sbatch submit.sh
     # fi
-done
+# done
 
 # for row in 3d 4d 5d
 # do

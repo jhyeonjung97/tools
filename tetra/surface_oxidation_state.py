@@ -50,4 +50,4 @@ if __name__ == "__main__":
     atoms = read(argv[1])
     atoms, ox = set_formal_oxidation_state(atoms)
     print('oxidation states: ', ox)
-    view(atoms)  # oxidation states written to initial charges
+    # view(atoms)  # oxidation states written to initial charges
