@@ -602,7 +602,12 @@ def main():
     print("Preprocessing data...")
     preprocess_start = time.time()
     df = df_bulk.copy()
-
+    # pd.set_option('display.max_rows', None)
+    # pd.set_option('display.max_columns', None)
+    # pd.set_option('display.width', 1000)
+    # pd.set_option('display.max_colwidth', None)
+    # print(df.dtypes)
+    
     if args.row:
         df = df[df['row'].isin(args.row)]
     if args.coord:

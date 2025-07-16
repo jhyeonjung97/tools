@@ -16,9 +16,9 @@
 # #     done
 # # done
 
-for dir in /pscratch/sd/j/jiuy97/8_V_slab/*_*_*/*d/*_*/clean/
+for dir in /pscratch/sd/j/jiuy97/8_V_slab/*_*_*/3d/*_*/o*/
 do
-    if [[ -s $dir/CONTCAR ]]; then
+    if [[ -s $dir/CONTCAR ]] && [[ ! -f $dir/unmatched ]] && [[ ! -f $dir/surfox.json ]]; then
         cd ${dir}
         python ~/bin/tools/tetra/surface_oxidation_state.py CONTCAR surfox.json
     fi

@@ -119,7 +119,7 @@ def main():
                 numb = str(m).zfill(2)
                 item = coord+row+numb
                 df.loc[item, ['coord', 'row', 'numb', 'metal', 'CN', 'OS']] = coord, row, m, metal, CN, ON 
-                df.loc[item, 'group'] = m + 3
+                df.loc[item, 'group'] = m + 2
                 dir_path = os.path.join(root, coord_dir, row, numb+'_'+metal)
                 
                 atoms_path = os.path.join(dir_path, 'isif2/final_with_calculator.json')                

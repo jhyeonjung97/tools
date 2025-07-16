@@ -26,32 +26,28 @@ os.makedirs(save_path, exist_ok=True)
 # 참조 에너지 값들
 h2o = -14.23919983
 h2 = -6.77409008
-o2 = -9.856
 
 zpeh2o = 0.558
 zpeh2 = 0.273
-zpeo2 = 0.098
 
 cph2o = 0.10
 cph2 = 0.09
-cpo2 = 0.09
 
 gh2 = h2 + zpeh2 + cph2
 gh2o = h2o + zpeh2o + cph2o
-go2 = o2 + zpeo2 + cpo2
 go = gh2o - gh2  # O 원자의 Gibbs 자유에너지
-goh = gh2o - 0.5*gh2  # OH의 Gibbs 자유에너지
+goh = gh2o - gh2/2  # OH의 Gibbs 자유에너지
 
 coords_data = [
-    {'coord': 'WZ', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '1_Tetrahedral_WZ',  'zorder': 5, 'marker': '>', 'color': 'darkorange',},
-    {'coord': 'ZB', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '2_Tetrahedral_ZB',  'zorder': 4, 'marker': '<', 'color': 'gold',},
-    {'coord': 'TN', 'CN': 4, 'OS': 2, 'MN': 4, 'coord_dir': '3_SquarePlanar_TN', 'zorder': 3, 'marker': 'o', 'color': 'dodgerblue',},
-    {'coord': 'PD', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '4_SquarePlanar_PD', 'zorder': 2, 'marker': 'o', 'color': 'deepskyblue',},
-    {'coord': 'NB', 'CN': 4, 'OS': 2, 'MN': 6, 'coord_dir': '5_SquarePlanar_NB', 'zorder': 1, 'marker': 's', 'color': 'limegreen',},
-    {'coord': 'RS', 'CN': 6, 'OS': 2, 'MN': 2, 'coord_dir': '6_Octahedral_RS',   'zorder': 6, 'marker': 'd', 'color': 'orchid',},
-    {'coord': 'LT', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '7_Pyramidal_LT',    'zorder': 0, 'marker': 'h', 'color': 'silver',},
-    {'coord': 'WW', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '8_Tetrahedral_WZ',  'zorder': 5, 'marker': '>', 'color': 'darkorange',},
-    {'coord': 'ZZ', 'CN': 4, 'OS': 2, 'MN': 2, 'coord_dir': '9_Tetrahedral_ZB',  'zorder': 4, 'marker': '<', 'color': 'gold',},
+    {'coord': 'WZ', 'CN': 4, 'OS': 2, 'MN': 2, 'surfox': 1.667, 'coord_dir': '1_Tetrahedral_WZ',  'zorder': 5, 'marker': '>', 'color': 'darkorange',},
+    {'coord': 'ZB', 'CN': 4, 'OS': 2, 'MN': 2, 'surfox': 1.833, 'coord_dir': '2_Tetrahedral_ZB',  'zorder': 4, 'marker': '<', 'color': 'gold',},
+    {'coord': 'TN', 'CN': 4, 'OS': 2, 'MN': 4, 'surfox': 1.933, 'coord_dir': '3_SquarePlanar_TN', 'zorder': 3, 'marker': 'o', 'color': 'dodgerblue',},
+    {'coord': 'PD', 'CN': 4, 'OS': 2, 'MN': 2, 'surfox': 1.667, 'coord_dir': '4_SquarePlanar_PD', 'zorder': 2, 'marker': 'o', 'color': 'deepskyblue',},
+    {'coord': 'NB', 'CN': 4, 'OS': 2, 'MN': 6, 'surfox': 2.667, 'coord_dir': '5_SquarePlanar_NB', 'zorder': 1, 'marker': 's', 'color': 'limegreen',},
+    {'coord': 'RS', 'CN': 6, 'OS': 2, 'MN': 2, 'surfox': 1.933, 'coord_dir': '6_Octahedral_RS',   'zorder': 6, 'marker': 'd', 'color': 'orchid',},
+    {'coord': 'LT', 'CN': 4, 'OS': 2, 'MN': 2, 'surfox': 2.000, 'coord_dir': '7_Pyramidal_LT',    'zorder': 0, 'marker': 'h', 'color': 'silver',},
+    {'coord': 'WW', 'CN': 4, 'OS': 2, 'MN': 2, 'surfox': 2.000, 'coord_dir': '8_Tetrahedral_WZ',  'zorder': 5, 'marker': '>', 'color': 'darkorange',},
+    {'coord': 'ZZ', 'CN': 4, 'OS': 2, 'MN': 2, 'surfox': 2.000, 'coord_dir': '9_Tetrahedral_ZB',  'zorder': 4, 'marker': '<', 'color': 'gold',},
 ]
 
 coords = pd.DataFrame(coords_data).set_index('coord')
@@ -109,9 +105,9 @@ def get_lowest_energy_adsorption(adsorption_paths, clean_energy):
         
         # 흡착 에너지 계산
         if base_ads == 'o':
-            ads_energy = energy - clean_energy - go
+            ads_energy = energy - clean_energy - go + 0.28931784
         elif base_ads == 'oh':
-            ads_energy = energy - clean_energy - goh
+            ads_energy = energy - clean_energy - goh + 0.46951875
         else:
             continue
             
@@ -170,7 +166,7 @@ def create_progress_file():
     return df
 
 def main():
-    df = pd.DataFrame(columns=['coord', 'row', 'numb', 'metal', 'o_energy', 'oh_energy'])
+    df = pd.DataFrame(columns=['coord', 'row', 'numb', 'metal', 'surfox', 'o_energy', 'oh_energy'])
     
     # 모든 가능한 경로 패턴을 찾습니다
     pattern = os.path.join(root, '*_*_*', '*', '*_*')
@@ -208,6 +204,7 @@ def main():
         # metal의 index 추출
         numb = str(metals[row].index(metal)).zfill(2)
         item = coord + row + numb
+        surfox = coords.loc[coord, 'surfox']
         
         # 깨끗한 표면 에너지 계산
         clean_energy = get_clean_surface_energy(path)
@@ -223,14 +220,16 @@ def main():
         energies = get_lowest_energy_adsorption(adsorption_paths, clean_energy)
         
         # 데이터프레임에 추가
-        df.loc[item, ['coord', 'row', 'numb', 'metal']] = coord, row, numb, metal
+        df.loc[item, ['coord', 'row', 'numb', 'metal', 'surfox']] = coord, row, numb, metal, surfox
         if 'o' in energies:
-            df.loc[item, 'o_energy'] = energies['o']['energy']
+            df.loc[item, 'o_energy'] = energies['o']['energy'] + 0.2975
         if 'oh' in energies:
-            df.loc[item, 'oh_energy'] = energies['oh']['energy']
+            df.loc[item, 'oh_energy'] = energies['oh']['energy'] - 0.014
     
     # 결과 저장
+    df = df.dropna(subset=['o_energy', 'oh_energy'], how='all')
     df.to_csv(f'{save_path}/slab_data.csv', sep=',')
+    df[['o_energy', 'oh_energy']] = df[['o_energy', 'oh_energy']].astype(float).round(2)
     df.to_csv(f'{save_path}/slab_data.tsv', sep='\t', float_format='%.2f')
     
     # coord, row, numb 순으로 정렬 (numb를 int로 변환)
@@ -245,8 +244,8 @@ def main():
     print(progress_df)
     
     # 그래프 그리기
-    plot_by_metal_row(df, save_path)
-    plot_by_coordination(df, save_path)
+    # plot_by_metal_row(df, save_path)
+    # plot_by_coordination(df, save_path)
 
 def plot_by_metal_row(df, save_path):
     """각 금속 행(row)별로 흡착 에너지를 그래프로 그립니다."""
@@ -254,7 +253,7 @@ def plot_by_metal_row(df, save_path):
         metals_list = metals[row]
         for ads in ['o_energy', 'oh_energy']:
             plt.figure(figsize=(4, 3))
-            for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']:
+            for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT', 'WW', 'ZZ']:
                 zorder = coords.loc[coord, 'zorder']
                 marker = coords.loc[coord, 'marker']
                 color = coords.loc[coord, 'color']
@@ -276,7 +275,7 @@ def plot_by_metal_row(df, save_path):
 
 def plot_by_coordination(df, save_path):
     """각 좌표계(coord)별로 흡착 에너지를 그래프로 그립니다."""
-    for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT']:
+    for coord in ['WZ', 'ZB', 'TN', 'PD', 'NB', 'RS', 'LT', 'WW', 'ZZ']:
         for ads in ['o_energy', 'oh_energy']:
             marker = coords.loc[coord, 'marker']
             base_color = coords.loc[coord, 'color']

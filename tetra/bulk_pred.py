@@ -604,7 +604,7 @@ def main():
     print("Preprocessing data...")
     preprocess_start = time.time()
     df = df_bulk.copy()
-
+    
     if args.row:
         df = df[df['row'].isin(args.row)]
     if args.coord:

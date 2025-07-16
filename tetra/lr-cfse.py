@@ -553,7 +553,7 @@ def main():
     parser = argparse.ArgumentParser(description='Linear regression using bulk_data.csv and mendeleev_data.csv')
     parser.add_argument('--Y', default='form', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=[
-        'OS', 'CN', 'numb', 'group', 'mag', 'volume', 'l_bond', 'madelung',
+        'OS', 'CN', 'numb', 'group', 'period', 'mag', 'volume', 'l_bond', 'madelung',
         'chg', 'chgc', 'chgo', 'chgn',
         'ICOHP', 'ICOHPc', 'ICOHPo', 'ICOHPn',
         'ICOBI', 'ICOBIc', 'ICOBIo', 'ICOBIn',
@@ -589,6 +589,13 @@ def main():
     df['group'] = df['numb'] + 2
     df['Hsub'] = df['Hevap'] + df['Hfus']
 
+    row2period = {
+        '3d': 4,
+        '4d': 5,
+        '5d': 6,
+    }
+    df['period'] = df['row'].map(row2period)
+    
     if args.row:
         df = df[df['row'].isin(args.row)]
     if args.coord:
