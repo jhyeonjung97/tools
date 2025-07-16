@@ -1,5 +1,3 @@
-for i in {1..100}; do
-    python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --random_state ${i} --output mendeleev${i} --X OS CN group outer_e Hevap base_cfse ionNo
+for i in {1..99}; do
+    python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --random_state ${i} --output random${i} --X OS CN group outer_e Hform base_cfse ICOHPo ionNo mag volume l_bond chg
 done
-
-python ~/bin/tools/tetra/bulk_pred_cfse.py --model gpr --output mendeleev --X OS CN group outer_e Hevap base_cfse ionNo

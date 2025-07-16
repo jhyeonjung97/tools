@@ -563,7 +563,7 @@ def main():
         'ion-1o', 'iono', 'ion+1o', 'ionN-1o', 'ionNo', 'ionN+1o', 
         'ion-1n', 'ionn', 'ion+1n', 'ionN-1n', 'ionNn', 'ionN+1n', 
         'pauling', 'Natom', 'mass', 'density', 'Vatom', 'dipole', 'Rcoval', 'Rmetal', 'Rvdw', 
-        'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform',
+        'Tboil', 'Tmelt', 'Hevap', 'Hfus', 'Hform', 'Hsub',
         'n_electrons', 'd_electrons', 'outer_e', 'base_cfse', 'ee_repulsion', 'jt_effect', 'field_strength', 'cfse', 'exchange_stabilization',
     ], help='List of feature columns from bulk_data.csv and/or mendeleev_data.csv')
     parser.add_argument('--row', nargs='+', type=str, default=None, help='Filter by row: 3d, 4d, or 5d')
@@ -587,6 +587,7 @@ def main():
 
     # group 컬럼 추가
     df['group'] = df['numb'] + 3
+    df['Hsub'] = df['Hevap'] + df['Hfus']
 
     if args.row:
         df = df[df['row'].isin(args.row)]
@@ -888,9 +889,9 @@ def main():
                 cbar=False, vmin=-1, vmax=1)
     
     # x축 레이블 수정
-    labels = ['Formation energy', 'Group number', 'Outer electron', 'Oxidation state', 'Coordination number', 'Ionization energy', 'Heat of evaporation', 'CFSE', '-ICOHP', 'Bader charge', 'Cell volume', 'M-O bond length', 'Magnetic moment']
-    ax.set_xticklabels(labels, rotation=45, ha='right')
-    ax.set_yticklabels(labels, rotation=0)
+    # labels = ['Formation energy', 'Group number', 'Outer electron', 'Oxidation state', 'Coordination number', 'Ionization energy', 'Heat of evaporation', 'CFSE', '-ICOHP', 'Bader charge', 'Cell volume', 'M-O bond length', 'Magnetic moment']
+    # ax.set_xticklabels(labels, rotation=45, ha='right')
+    # ax.set_yticklabels(labels, rotation=0)
     
     # 레이블 스타일 조정
     plt.tick_params(axis='both', which='major', labelsize=8)
@@ -906,8 +907,8 @@ def main():
                 cbar=False, vmin=-1, vmax=1)
     
     # x축 레이블 수정
-    ax.set_xticklabels(labels, rotation=45, ha='right', fontsize=12)
-    ax.set_yticklabels(labels, rotation=0, fontsize=12)
+    # ax.set_xticklabels(labels, rotation=45, ha='right', fontsize=12)
+    # ax.set_yticklabels(labels, rotation=0, fontsize=12)
     
     # 레이블 스타일 조정
     plt.tick_params(axis='both', which='major', labelsize=8)

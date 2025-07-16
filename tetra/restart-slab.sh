@@ -16,18 +16,21 @@
 # #     done
 # # done
 
-for dir in /pscratch/sd/j/jiuy97/8_V_slab/*_*_*/*d/*_*/*/
+for dir in /pscratch/sd/j/jiuy97/8_V_slab/*_*_*/*d/*_*/clean/
 do
-    cd ${dir}
-    IFS='/' read -r -a path <<< $dir
-    coord=$(echo "${path[-4]}" | cut -d'_' -f3)
-    row=$(echo "${path[-3]}" | cut -d'_' -f1)
-    numb=$(echo "${path[-2]}" | cut -d'_' -f1)
-    ads=$(echo "${path[-1]}" | cut -d'_' -f1)
-    jobname=${coord}${row}${numb}${ads}
-    if [[ -f 'unmatched' ]] && [[ -n $(squeue --me | grep "$jobname ") ]]; then
-        squeue --me | grep "$jobname "
+    if [[ -s $dir/CONTCAR ]]; then
+        cd ${dir}
+        python ~/bin/tools/tetra/surface_oxidation_state.py CONTCAR surfox.json
     fi
+    # IFS='/' read -r -a path <<< $dir
+    # coord=$(echo "${path[-4]}" | cut -d'_' -f3)
+    # row=$(echo "${path[-3]}" | cut -d'_' -f1)
+    # numb=$(echo "${path[-2]}" | cut -d'_' -f1)
+    # ads=$(echo "${path[-1]}" | cut -d'_' -f1)
+    # jobname=${coord}${row}${numb}${ads}
+    # if [[ -f 'unmatched' ]] && [[ -n $(squeue --me | grep "$jobname ") ]]; then
+    #     squeue --me | grep "$jobname "
+    # fi
     # if [[ $ads == 'old' ]] || [[ -f 'unmatched' ]] || [[ -f 'DONE' ]]; then
     #     continue
     # elif [[ -f 'submit.sh' ]]; then
@@ -76,22 +79,5 @@ done
 #                 fi
 #             done
 #         done
-#     done
-# done
-
-
-# for row in 3d 4d 5d
-# do
-#     for dir in /pscratch/sd/j/jiuy97/8_V_slab/9_Tetrahedral_ZB/${row}/*_*/clean
-#     do
-#         cd ${dir}
-#         IFS='/' read -r -a path <<< $dir
-#         numb=$(echo "${path[-1]}" | cut -d'_' -f1)
-#         jobname=ZZ${row}${numb}
-#         if [[ -f 'unmatched' ]] || [[ -f 'DONE' ]] || [[ -n $(squeue --me | grep $jobname) ]]; then
-#             continue
-#         elif [[ -f 'submit.sh' ]]; then
-#             pwd
-#         fi
 #     done
 # done
