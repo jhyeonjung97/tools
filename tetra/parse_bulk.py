@@ -189,8 +189,8 @@ def main():
     df.to_csv(f'{save_path}/bulk_data.tsv', sep='\t', float_format='%.2f')
 
     print(df)
-    plot_by_metal_row(df, save_path)
-    plot_by_coordination(df, save_path)
+    # plot_by_metal_row(df, save_path)
+    # plot_by_coordination(df, save_path)
     
 def plot_by_metal_row(df, save_path):
     for row in ['fm', '3d', '4d', '5d']:
