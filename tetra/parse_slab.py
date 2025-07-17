@@ -128,7 +128,7 @@ def create_progress_file():
     for coord in coords.index:
         coord_dir = coords.loc[coord, 'coord_dir']
         for row in ['3d', '4d', '5d']:
-            print(f"\nProcessing {coord} {row}...")
+            # print(f"\nProcessing {coord} {row}...")
             # clean 상태 추가
             clean_status = []
             for i in range(13):
@@ -162,7 +162,7 @@ def create_progress_file():
     # TSV 파일로 저장
     output_path = os.path.join(save_path, 'calculation_progress.tsv')
     df.to_csv(output_path, sep='\t', index=False)
-    print(f"\nProgress file saved to: {output_path}")
+    # print(f"\nProgress file saved to: {output_path}")
     return df
 
 def main():
@@ -238,9 +238,9 @@ def main():
     print(df)
     
     # 계산 진행 상황 파일 생성
-    print("\nCreating calculation progress file...")
+    # print("\nCreating calculation progress file...")
     progress_df = create_progress_file()
-    print("\nCalculation Progress:")
+    # print("\nCalculation Progress:")
     print(progress_df)
     
     # 그래프 그리기
