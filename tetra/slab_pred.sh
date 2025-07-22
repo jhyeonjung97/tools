@@ -14,6 +14,9 @@ python ~/bin/tools/tetra/slab_pred.py --Y oh \
 python ~/bin/tools/tetra/slab_pred.py --Y oh --output comer \
 --X bulkox bulk_e bulk_ieo surfox surf_e surf_ieo group ICOHPo
 
+python ~/bin/tools/tetra/slab_pred_nn.py --Y oh --output comer \
+--X bulkox bulk_e bulk_ieo surfox surf_e surf_ieo group ICOHPo
+
 CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg period --output w_period
 python ~/bin/tools/tetra/slab_pred.py --model gpr --X OS group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg --output wo_CN
 python ~/bin/tools/tetra/slab_pred.py --model gpr --X OS CN group outer_e Hsub ICOHPn ionNn mag volume l_bond chg --output wo_cfse
