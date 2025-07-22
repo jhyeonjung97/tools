@@ -162,11 +162,11 @@ for i, (_, row) in enumerate(energy_df.iterrows()):
     
     if i == 0:
         plt.plot(reaction_coord, yy, 
-                color='black', marker=None, dashes=[3, 1],
+                color='black', marker=None, zorder=2,
                 label=f"{row['Surface_Label']} (η = {row['Overpotential']:.2f} V)")
     else:
         plt.plot(reaction_coord, yy, 
-                color='black', marker=None,
+                color='red', marker=None, zorder=1,
                 label=f"{row['Surface_Label']} (η = {row['Overpotential']:.2f} V)")
 
 plt.xlabel('Reaction Coordinate')
