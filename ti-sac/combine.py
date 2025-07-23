@@ -6,7 +6,7 @@ import glob
 db = connect('combined.db')
 
 # Loop over all JSON files
-for filename in sorted(glob.glob('*.json')):
+for filename in sorted(glob.glob('json_files/*.json')):
     atoms = read(filename)
     # Write to database
     db.write(atoms, filename=filename)
