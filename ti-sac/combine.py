@@ -1,6 +1,11 @@
 from ase.db import connect
 from ase.io import read
 import glob
+import os
+
+if os.path.exists('combined.db'):
+    print('combined.db already exists')
+    exit()
 
 # Create or open the database
 db = connect('combined.db')
