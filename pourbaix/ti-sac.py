@@ -220,7 +220,7 @@ for g in range(ngases):
         gases[g][11] = concentration_gas
 
 surfs = [
-    # ['E', '#M(Ti)', '#N', '#e', '#H', '#OH', '#O', '#OOH', 'A', 'B', 'C', 'concentration', 'name']
+    # ['E', 1'#M(Ti)', 2'#N', 3'#e', 4'#H', 5'#OH', 6'#O', 7'#OOH', 8'A', 9'B', 10'C', 11'concentration', 12'name']
     [-269.569746,   0, 0, +0, 0, 0, 0, 0, 0, 0, 0, 1, 'vac'],
     [-279.340765,   0, 0, +0, 2, 0, 0, 0, 0, 0, 0, 1, 'vac(H₂)'],
     [-304.97333512, 1, 1, +0, 0, 0, 3, 0, 0, 0, 0, 1, '*NO₃(mono)'],

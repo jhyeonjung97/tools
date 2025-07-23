@@ -442,7 +442,7 @@ def main():
 
     # pH and potential grid 설정
     tick = args.tick if hasattr(args, 'tick') else 0.01
-    pHmin, pHmax = 0, 14
+    pHmin, pHmax = -2, 16
     pHrange = np.arange(pHmin, pHmax + tick, tick)
     Umin, Umax = -1.0, 3.0
     Urange = np.arange(Umin, Umax + 0.06 * 14, tick)
@@ -452,7 +452,7 @@ def main():
     def dg(k, pH, U, n_ref):
         surface_term = surfs[k]['E_DFT'] - surfs[n_ref]['E_DFT']
         U_coeff = surfs[k]['H'] - 2*surfs[k]['O'] - surfs[k]['e']
-        pH_coeff = surfs[k]['H'] - 2*surfs[k]['O']
+        pH_coeff = surfs[k]['H'] - 2*surfs[k]['O'] - surfs[k]['e']
         dg_value = surface_term + U_coeff*U + const*pH_coeff*pH + const*log10(surfs[k]['conc'])
         return dg_value
 
