@@ -11,7 +11,7 @@ if os.path.exists('combined.db'):
 db = connect('combined.db')
 
 # Loop over all JSON files
-for filename in sorted(glob.glob('json_files/*.json')):
+for filename in sorted(glob.glob('*.json')):
     atoms = read(filename)
     # Write to database
     db.write(atoms, filename=filename)
