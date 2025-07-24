@@ -30,10 +30,10 @@ parser.add_argument('--bulk', action='store_true', help='bulk 모드')
 parser.add_argument('--ads', type=str, nargs='*', default=[], help='adsorbate 원소들 (예: --ads N O)')
 parser.add_argument('--ph', type=int, default=0, help='pH value for the plot (default: 0)')
 parser.add_argument('--tick', type=float, default=0.01, help='Tick size for pH and U ranges (default: 0.01)')
-parser.add_argument('--pHmin', type=float, default=0, help='Minimum pH value (default: 0)')
-parser.add_argument('--pHmax', type=float, default=14, help='Maximum pH value (default: 14)')
-parser.add_argument('--Umin', type=float, default=-2.0, help='Minimum potential value (default: -2.0)')
-parser.add_argument('--Umax', type=float, default=4.0, help='Maximum potential value (default: 4.0)')
+parser.add_argument('--phmin', type=float, default=0, help='Minimum pH value (default: 0)')
+parser.add_argument('--phmax', type=float, default=14, help='Maximum pH value (default: 14)')
+parser.add_argument('--umin', type=float, default=-2.0, help='Minimum potential value (default: -2.0)')
+parser.add_argument('--umax', type=float, default=4.0, help='Maximum potential value (default: 4.0)')
 parser.add_argument('--figx', type=float, default=4, help='Figure width in inches (default: 6)')
 parser.add_argument('--figy', type=float, default=3, help='Figure height in inches (default: 7)')
 parser.add_argument('--show', action='store_true', help='Show the plot')
@@ -100,8 +100,7 @@ def main():
         atoms = read(json_file)
         energy = atoms.get_potential_energy()
         symbols = atoms.get_chemical_symbols()
-        json_basename = os.path.basename(json_file)
-        
+        print(atoms.get_chemical_formula())
         row = {}
         row['E_DFT'] = energy
         row['e'] = 0
@@ -117,6 +116,7 @@ def main():
                 min_counts[el] = min(min_counts[el], count)
         # 파일명 또는 라벨을 name에 저장
         row['conc'] = 1
+        json_basename = os.path.basename(json_file)
         row['name'] = file_labels.get(json_basename, json_file)
         
         # Gibbs correction 추가
@@ -129,17 +129,16 @@ def main():
         if is_gc and json_basename in file_gc_params:
             row['A'] = file_gc_params[json_basename]['A']
             row['B'] = file_gc_params[json_basename]['B']
-            row['C'] = file_gc_params[json_basename]['C']
+            row['E_DFT'] = file_gc_params[json_basename]['C']
         else:
             row['A'] = 0.0
             row['B'] = 0.0
-            row['C'] = 0.0
             
         surfs.append(row)
 
-    # print("\n각 원소별 모든 파일에서의 최소 개수:")
-    # for el in sorted_elements:
-    #     print(f"{el}: {min_counts[el]}")
+    print("\n각 원소별 모든 파일에서의 최소 개수:")
+    for el in sorted_elements:
+        print(f"{el}: {min_counts[el]}")
 
     # 각 row에서 최소 개수만큼 빼기
     for row in surfs:
@@ -197,9 +196,8 @@ def main():
             - oh_count * (goh - dgoh)
         )
         
-        # Gibbs free energy correction 적용 (159번째 라인 근처)
+        # Gibbs free energy correction 적용
         gibbs_correction = surfs[k]['gibbs_corr'] if is_gibbs else 0.0
-        
         surfs[k]['E_DFT'] = surfs[k]['E_DFT'] - reference_surface_energy + formation_energy_correction + gibbs_correction
     
     # thermodynamic_data.json에서 unique_elements에 해당하는 데이터 가져오기
@@ -355,15 +353,13 @@ def main():
             print(f"\n{el}: No thermodynamic data found")
 
     nsurfs, nions, nsolids, ngases = len(surfs), len(ions), len(solids), len(gases)
-    
-    # DataFrame 컬럼 정의
-    base_columns = ['E_DFT', 'e'] + remaining_elements + ['conc', 'name']
-    surf_columns = base_columns + ['gibbs_corr', 'A', 'B', 'C'] if (is_gibbs or is_gc) else base_columns
-    
-    surfs_df = pd.DataFrame(surfs, columns=surf_columns)
-    ions_df = pd.DataFrame(ions, columns=base_columns)
-    solids_df = pd.DataFrame(solids, columns=base_columns)
-    gases_df = pd.DataFrame(gases, columns=base_columns)
+    if is_gc:
+        surfs_df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name', 'A', 'B', 'C'])
+    else:
+        surfs_df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
+    ions_df = pd.DataFrame(ions, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
+    solids_df = pd.DataFrame(solids, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
+    gases_df = pd.DataFrame(gases, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
     
     print()
     print(format_df_for_display(surfs_df))
@@ -510,15 +506,15 @@ def main():
     # unique_elements가 모두 0이 아닌 것들만 남기기
     surfs = [surf for surf in surfs if not all(surf[elem] == 0 for elem in unique_elements)]
     nsurfs = len(surfs)
-    df = pd.DataFrame(surfs, columns=surf_columns)
+    df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
     print(format_df_for_display(df))
     print(f"After adding combinations: {nsurfs} surfs entries")
 
     # pH and potential grid 설정
     tick = args.tick if hasattr(args, 'tick') else 0.01
-    pHmin, pHmax = args.pHmin, args.pHmax
+    pHmin, pHmax = args.phmin, args.phmax
     pHrange = np.arange(pHmin, pHmax + tick, tick)
-    Umin, Umax = args.Umin, args.Umax
+    Umin, Umax = args.umin, args.umax
     Urange = np.arange(Umin, Umax + 0.06 * 14, tick)
     target_pH = args.ph if hasattr(args, 'ph') else 0
 
@@ -564,7 +560,7 @@ def main():
     ax.axis([pHmin, pHmax, Umin, Umax])
     ax.set_xlabel('pH', labelpad=0)
     ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
-    ax.tick_params(right=True, direction="in")
+    # ax.tick_params(right=True, direction="in")
     plt.xticks(np.arange(pHmin, pHmax + 1, 2))
 
     # unique surface IDs
@@ -630,12 +626,7 @@ def main():
 
 # dg 함수 정의 (Gibbs free energy 계산)
 def dg(surf, pH, U, ref_surf):
-    if is_gc:
-        # Grand Canonical DFT: A*U^2 + B*U + C 형태
-        surface_term = (surf['A']*(U**2) + surf['B']*U + surf['C']) - (ref_surf['A']*(U**2) + ref_surf['B']*U + ref_surf['C'])
-    else:
-        surface_term = surf['E_DFT'] - ref_surf['E_DFT']
-    
+    surface_term = (surf['A']*(U**2) + surf['B']*U + surf['E_DFT']) - (ref_surf['A']*(U**2) + ref_surf['B']*U + ref_surf['E_DFT'])
     U_coeff = surf['H'] - 2*surf['O'] - surf['e']
     pH_coeff = surf['H'] - 2*surf['O']
     dg_value = surface_term + U_coeff*U + const*pH_coeff*pH + const*log10(surf['conc'])
