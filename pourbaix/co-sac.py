@@ -17,23 +17,34 @@ import pandas as pd
 from pymatgen.core.ion import Ion
 import json
 
+# 전역 상수 정의
+SUBSCRIPT_NUMS = {'0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'}
+SUPERSCRIPT_NUMS = {'2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'}
+
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Generate Pourbaix diagram')
 parser.add_argument('--json-dir', type=str, default='.', help='json 파일이 있는 폴더 경로 (기본값: 현재 폴더)')
 parser.add_argument('--csv-dir', type=str, default='.', help='label.csv가 있는 폴더 경로 (기본값: 현재 폴더)')
 parser.add_argument('--conc', type=float, default=10**-6, help='concentration (기본값: 10^-6)')
-parser.add_argument('--oh', action='store_true', help='label.csv의 세 번째 컬럼을 OH 개수로 사용')
 parser.add_argument('--bulk', action='store_true', help='bulk 모드')
 parser.add_argument('--ads', type=str, nargs='*', default=[], help='adsorbate 원소들 (예: --ads N O)')
 parser.add_argument('--ph', type=int, default=0, help='pH value for the plot (default: 0)')
 parser.add_argument('--tick', type=float, default=0.01, help='Tick size for pH and U ranges (default: 0.01)')
+parser.add_argument('--pHmin', type=float, default=0, help='Minimum pH value (default: 0)')
+parser.add_argument('--pHmax', type=float, default=14, help='Maximum pH value (default: 14)')
+parser.add_argument('--Umin', type=float, default=-2.0, help='Minimum potential value (default: -2.0)')
+parser.add_argument('--Umax', type=float, default=4.0, help='Maximum potential value (default: 4.0)')
 parser.add_argument('--figx', type=float, default=4, help='Figure width in inches (default: 6)')
 parser.add_argument('--figy', type=float, default=3, help='Figure height in inches (default: 7)')
 parser.add_argument('--show', action='store_true', help='Show the plot')
+parser.add_argument('--gibbs', action='store_true', help='Apply Gibbs free energy correction from G_corr column')
+parser.add_argument('--gc', action='store_true', help='Apply Grand Canonical DFT using A, B, C columns')
 args = parser.parse_args()
 
 is_bulk = args.bulk
 ads_elements = args.ads
+is_gibbs = args.gibbs
+is_gc = args.gc
 
 def main():
     elements = set()
@@ -44,10 +55,26 @@ def main():
     label_csv_path = os.path.join(csv_dir, 'label.csv')
     
     file_labels = {}
+    file_oh_counts = {}
+    file_gibbs_corrections = {}
+    file_gc_params = {}  # A, B, C 파라미터 저장
+    
     if os.path.exists(label_csv_path):
-        label_df = pd.read_csv(label_csv_path, header=None)
+        # 헤더가 있는 CSV 파일 읽기
+        label_df = pd.read_csv(label_csv_path, header=0)
         for idx, row in label_df.iterrows():
-            file_labels[row[0]] = row[1]
+            json_name = row['json_name']
+            file_labels[json_name] = row['label']
+            if '#OH' in row:
+                file_oh_counts[json_name] = float(row['#OH'])
+            if is_gibbs and 'G_corr' in row:
+                file_gibbs_corrections[json_name] = float(row['G_corr'])
+            if is_gc and all(col in row for col in ['A', 'B', 'C']):
+                file_gc_params[json_name] = {
+                    'A': float(row['A']),
+                    'B': float(row['B']),
+                    'C': float(row['C'])
+                }
     else:
         for json_file in json_files:
             atoms = read(json_file)
@@ -73,6 +100,8 @@ def main():
         atoms = read(json_file)
         energy = atoms.get_potential_energy()
         symbols = atoms.get_chemical_symbols()
+        json_basename = os.path.basename(json_file)
+        
         row = {}
         row['E_DFT'] = energy
         row['e'] = 0
@@ -88,7 +117,24 @@ def main():
                 min_counts[el] = min(min_counts[el], count)
         # 파일명 또는 라벨을 name에 저장
         row['conc'] = 1
-        row['name'] = file_labels.get(os.path.basename(json_file), json_file)
+        row['name'] = file_labels.get(json_basename, json_file)
+        
+        # Gibbs correction 추가
+        if is_gibbs and json_basename in file_gibbs_corrections:
+            row['gibbs_corr'] = file_gibbs_corrections[json_basename]
+        else:
+            row['gibbs_corr'] = 0.0
+            
+        # GC 파라미터 추가
+        if is_gc and json_basename in file_gc_params:
+            row['A'] = file_gc_params[json_basename]['A']
+            row['B'] = file_gc_params[json_basename]['B']
+            row['C'] = file_gc_params[json_basename]['C']
+        else:
+            row['A'] = 0.0
+            row['B'] = 0.0
+            row['C'] = 0.0
+            
         surfs.append(row)
 
     # print("\n각 원소별 모든 파일에서의 최소 개수:")
@@ -134,22 +180,27 @@ def main():
     # formation energy correction 적용
     reference_surface_energy = ref_surf['E_DFT']
     for k in range(len(surfs)):
+        # OH count 가져오기
         oh_count = 0
-        if args.oh and os.path.exists(label_csv_path):
-            surf_name = surfs[k]['name']
-            label_df = pd.read_csv(label_csv_path, header=None)
-            matching_row = label_df[label_df[1] == surf_name]  # 두 번째 컬럼(인덱스 1)과 매칭
-            if not matching_row.empty and len(matching_row.iloc[0]) > 2:
-                oh_count = float(matching_row.iloc[0][2])  # 세 번째 컬럼(인덱스 2)에서 가져오기
-                # print(f"Found OH count: {oh_count}")
-            else:
-                print(f"No match found for '{surf_name}' or insufficient columns")        
+        json_basename = None
+        for fname, label in file_labels.items():
+            if label == surfs[k]['name']:
+                json_basename = fname
+                break
+        
+        if json_basename and json_basename in file_oh_counts:
+            oh_count = file_oh_counts[json_basename]
+        
         formation_energy_correction = (
             - (surfs[k]['H'] - oh_count) * (gh - dgh)
             - (surfs[k]['O'] - oh_count) * (go - dgo)
             - oh_count * (goh - dgoh)
         )
-        surfs[k]['E_DFT'] = surfs[k]['E_DFT'] - reference_surface_energy + formation_energy_correction
+        
+        # Gibbs free energy correction 적용 (159번째 라인 근처)
+        gibbs_correction = surfs[k]['gibbs_corr'] if is_gibbs else 0.0
+        
+        surfs[k]['E_DFT'] = surfs[k]['E_DFT'] - reference_surface_energy + formation_energy_correction + gibbs_correction
     
     # thermodynamic_data.json에서 unique_elements에 해당하는 데이터 가져오기
     thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data.json')
@@ -199,8 +250,8 @@ def main():
                             row[elem] = int(reduced_dict.get(elem, 0))
                         if 'charge' in reduced_dict:
                             row['e'] = int(reduced_dict['charge'])
-                        row['conc'] = args.conc
-                        row['name'] = ion_formula
+                        row['conc'] = args.conc                        
+                        row['name'] = format_name(ion_formula) + '(aq)'
                         
                         # el 개수로 normalization
                         el_count = reduced_dict.get(el, 1)  # el이 없으면 1로 설정
@@ -209,7 +260,9 @@ def main():
                             row['e'] = row['e'] / el_count
                             for elem in remaining_elements:
                                 row[elem] = row[elem] / el_count
-                            row['name'] = f'1/{int(el_count)} ' + row['name']
+                            # 분수를 윗첨자/아랫첨자로 표시
+                            subscript_count = SUBSCRIPT_NUMS.get(str(int(el_count)), str(int(el_count)))
+                            row['name'] = f'¹⁄{subscript_count}' + row['name']
                         
                         ions.append(row)
                     except:
@@ -240,7 +293,7 @@ def main():
                         if 'charge' in reduced_dict:
                             row['e'] = int(reduced_dict['charge'])
                         row['conc'] = 1
-                        row['name'] = solid_formula
+                        row['name'] = format_name(solid_formula) + '(s)'
                         
                         # el 개수로 normalization
                         el_count = reduced_dict.get(el, 1)  # el이 없으면 1로 설정
@@ -249,7 +302,9 @@ def main():
                             row['e'] = row['e'] / el_count
                             for elem in remaining_elements:
                                 row[elem] = row[elem] / el_count
-                            row['name'] = f'1/{int(el_count)} ' + row['name']
+                            # 분수를 윗첨자/아랫첨자로 표시
+                            subscript_count = SUBSCRIPT_NUMS.get(str(int(el_count)), str(int(el_count)))
+                            row['name'] = f'¹⁄{subscript_count}' + row['name']
                         
                         solids.append(row)
                     except:
@@ -280,7 +335,7 @@ def main():
                         if 'charge' in reduced_dict:
                             row['e'] = int(reduced_dict['charge'])
                         row['conc'] = args.conc
-                        row['name'] = gas_formula
+                        row['name'] = format_name(gas_formula) + '(g)'
                         
                         # el 개수로 normalization
                         el_count = reduced_dict.get(el, 1)  # el이 없으면 1로 설정
@@ -289,7 +344,9 @@ def main():
                             row['e'] = row['e'] / el_count
                             for elem in remaining_elements:
                                 row[elem] = row[elem] / el_count
-                            row['name'] = f'1/{int(el_count)} ' + row['name']
+                            # 분수를 윗첨자/아랫첨자로 표시
+                            subscript_count = SUBSCRIPT_NUMS.get(str(int(el_count)), str(int(el_count)))
+                            row['name'] = f'¹⁄{subscript_count}' + row['name']
                         
                         gases.append(row)
                     except:
@@ -298,10 +355,15 @@ def main():
             print(f"\n{el}: No thermodynamic data found")
 
     nsurfs, nions, nsolids, ngases = len(surfs), len(ions), len(solids), len(gases)
-    surfs_df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
-    ions_df = pd.DataFrame(ions, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
-    solids_df = pd.DataFrame(solids, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
-    gases_df = pd.DataFrame(gases, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
+    
+    # DataFrame 컬럼 정의
+    base_columns = ['E_DFT', 'e'] + remaining_elements + ['conc', 'name']
+    surf_columns = base_columns + ['gibbs_corr', 'A', 'B', 'C'] if (is_gibbs or is_gc) else base_columns
+    
+    surfs_df = pd.DataFrame(surfs, columns=surf_columns)
+    ions_df = pd.DataFrame(ions, columns=base_columns)
+    solids_df = pd.DataFrame(solids, columns=base_columns)
+    gases_df = pd.DataFrame(gases, columns=base_columns)
     
     print()
     print(format_df_for_display(surfs_df))
@@ -330,6 +392,8 @@ def main():
                                     new_surf[key] = surfs[k][key] + '+' + ion[key]
                                 elif key == 'conc':
                                     new_surf[key] = surfs[k][key] * ion[key]
+                                elif key in ['gibbs_corr', 'A', 'B', 'C']:
+                                    new_surf[key] = surfs[k][key]  # 원래 surface 값 유지
                                 else:
                                     new_surf[key] = surfs[k][key] + ion[key]
                             new_surfs.append(new_surf)
@@ -343,6 +407,8 @@ def main():
                                     new_surf[key] = surfs[k][key] + '+' + solid[key]
                                 elif key == 'conc':
                                     new_surf[key] = surfs[k][key] * solid[key]
+                                elif key in ['gibbs_corr', 'A', 'B', 'C']:
+                                    new_surf[key] = surfs[k][key]  # 원래 surface 값 유지
                                 else:
                                     new_surf[key] = surfs[k][key] + solid[key]
                             new_surfs.append(new_surf)
@@ -356,6 +422,8 @@ def main():
                                     new_surf[key] = surfs[k][key] + '+' + gas[key]
                                 elif key == 'conc':
                                     new_surf[key] = surfs[k][key] * gas[key]
+                                elif key in ['gibbs_corr', 'A', 'B', 'C']:
+                                    new_surf[key] = surfs[k][key]  # 원래 surface 값 유지
                                 else:
                                     new_surf[key] = surfs[k][key] + gas[key]
                             new_surfs.append(new_surf)
@@ -401,6 +469,8 @@ def main():
                                     new_surf[key] = surfs[k][key] + '+' + ion[key]
                                 elif key == 'conc':
                                     new_surf[key] = surfs[k][key] * ion[key]
+                                elif key in ['gibbs_corr', 'A', 'B', 'C']:
+                                    new_surf[key] = surfs[k][key]  # 원래 surface 값 유지
                                 else:
                                     new_surf[key] = surfs[k][key] + ion[key]
                             new_surfs.append(new_surf)
@@ -414,6 +484,8 @@ def main():
                                     new_surf[key] = surfs[k][key] + '+' + solid[key]
                                 elif key == 'conc':
                                     new_surf[key] = surfs[k][key] * solid[key]
+                                elif key in ['gibbs_corr', 'A', 'B', 'C']:
+                                    new_surf[key] = surfs[k][key]  # 원래 surface 값 유지
                                 else:
                                     new_surf[key] = surfs[k][key] + solid[key]
                             new_surfs.append(new_surf)
@@ -427,6 +499,8 @@ def main():
                                     new_surf[key] = surfs[k][key] + '+' + gas[key]
                                 elif key == 'conc':
                                     new_surf[key] = surfs[k][key] * gas[key]
+                                elif key in ['gibbs_corr', 'A', 'B', 'C']:
+                                    new_surf[key] = surfs[k][key]  # 원래 surface 값 유지
                                 else:
                                     new_surf[key] = surfs[k][key] + gas[key]
                             new_surfs.append(new_surf)
@@ -436,28 +510,17 @@ def main():
     # unique_elements가 모두 0이 아닌 것들만 남기기
     surfs = [surf for surf in surfs if not all(surf[elem] == 0 for elem in unique_elements)]
     nsurfs = len(surfs)
-    df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
+    df = pd.DataFrame(surfs, columns=surf_columns)
     print(format_df_for_display(df))
     print(f"After adding combinations: {nsurfs} surfs entries")
 
     # pH and potential grid 설정
     tick = args.tick if hasattr(args, 'tick') else 0.01
-    pHmin, pHmax = 0, 14
+    pHmin, pHmax = args.pHmin, args.pHmax
     pHrange = np.arange(pHmin, pHmax + tick, tick)
-    Umin, Umax = -1.0, 3.0
+    Umin, Umax = args.Umin, args.Umax
     Urange = np.arange(Umin, Umax + 0.06 * 14, tick)
     target_pH = args.ph if hasattr(args, 'ph') else 0
-
-    # dg 함수 정의 (Gibbs free energy 계산)
-    def dg(k, pH, U, n_ref):
-        surface_term = surfs[k]['E_DFT'] - surfs[n_ref]['E_DFT']
-        U_coeff = surfs[k]['H'] - 2*surfs[k]['O'] - surfs[k]['e']
-        pH_coeff = surfs[k]['H'] - 2*surfs[k]['O']
-        dg_value = surface_term + U_coeff*U + const*pH_coeff*pH + const*log10(surfs[k]['conc'])
-        return dg_value
-
-    # reference surface index 찾기
-    n_ref = ref_surf_idx
 
     # lowest surfaces 계산
     lowest_surfaces = np.full((len(Urange), len(pHrange)), np.nan)
@@ -468,7 +531,7 @@ def main():
         for U in Urange:
             values = []
             for k in range(nsurfs):
-                value = dg(k, pH, U, n_ref=n_ref)
+                value = dg(surfs[k], pH, U, surfs[ref_surf_idx])
                 values.append(value)
             sorted_values = sorted(range(len(values)), key=lambda k: values[k])
             lowest_surfaces[Uindex][pHindex] = sorted_values[0]
@@ -513,7 +576,7 @@ def main():
     for Uindex, U in enumerate(Urange):
         values = []
         for k in range(nsurfs):
-            value = dg(k, pH=target_pH, U=U, n_ref=n_ref)
+            value = dg(surfs[k], pH=target_pH, U=U, ref_surf=surfs[ref_surf_idx])
             values.append(value)
         sorted_values = sorted(range(len(values)), key=lambda k: values[k])
         lowest_surfaces_pH[Uindex] = sorted_values[0]
@@ -564,6 +627,54 @@ def main():
 
     if args.show:
         plt.show()
+
+# dg 함수 정의 (Gibbs free energy 계산)
+def dg(surf, pH, U, ref_surf):
+    if is_gc:
+        # Grand Canonical DFT: A*U^2 + B*U + C 형태
+        surface_term = (surf['A']*(U**2) + surf['B']*U + surf['C']) - (ref_surf['A']*(U**2) + ref_surf['B']*U + ref_surf['C'])
+    else:
+        surface_term = surf['E_DFT'] - ref_surf['E_DFT']
+    
+    U_coeff = surf['H'] - 2*surf['O'] - surf['e']
+    pH_coeff = surf['H'] - 2*surf['O']
+    dg_value = surface_term + U_coeff*U + const*pH_coeff*pH + const*log10(surf['conc'])
+    return dg_value
+
+# 이온 이름에서 + 또는 - 개수를 세어서 윗첨자로 변환하고, 숫자는 아랫첨자로 변환
+def format_name(formula):
+    # + 또는 - 개수 세기
+    plus_count = formula.count('+')
+    minus_count = formula.count('-')
+    
+    # + 또는 -를 제거한 base formula
+    base_formula = formula.replace('+', '').replace('-', '')
+    
+    # 숫자를 아랫첨자로 변환
+    formatted_formula = ''
+    for char in base_formula:
+        if char.isdigit():
+            formatted_formula += SUBSCRIPT_NUMS[char]
+        else:
+            formatted_formula += char
+    
+    # 전하 표시 추가
+    if plus_count > 0:
+        if plus_count == 1:
+            return formatted_formula + '⁺'
+        else:
+            # 전하 숫자를 윗첨자로 변환
+            superscript_num = SUPERSCRIPT_NUMS.get(str(plus_count), str(plus_count))
+            return formatted_formula + superscript_num + '⁺'
+    elif minus_count > 0:
+        if minus_count == 1:
+            return formatted_formula + '⁻'
+        else:
+            # 전하 숫자를 윗첨자로 변환
+            superscript_num = SUPERSCRIPT_NUMS.get(str(minus_count), str(minus_count))
+            return formatted_formula + superscript_num + '⁻'
+    else:
+        return formatted_formula
 
 # conc 컬럼만 과학적 표기법으로 formatting하는 함수
 def format_df_for_display(df):
