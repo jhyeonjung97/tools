@@ -26,25 +26,44 @@ parser = argparse.ArgumentParser(description='Generate Pourbaix diagram')
 parser.add_argument('--json-dir', type=str, default='.', help='json 파일이 있는 폴더 경로 (기본값: 현재 폴더)')
 parser.add_argument('--csv-dir', type=str, default='.', help='label.csv가 있는 폴더 경로 (기본값: 현재 폴더)')
 parser.add_argument('--conc', type=float, default=10**-6, help='concentration (기본값: 10^-6)')
-parser.add_argument('--bulk', action='store_true', help='bulk 모드')
+parser.add_argument('--hybrid', action='store_true', help='bulk 모드')
 parser.add_argument('--ads', type=str, nargs='*', default=[], help='adsorbate 원소들 (예: --ads N O)')
-parser.add_argument('--ph', type=int, default=0, help='pH value for the plot (default: 0)')
+parser.add_argument('--pH', type=int, default=0, help='pH value for the plot (default: 0)')
 parser.add_argument('--tick', type=float, default=0.01, help='Tick size for pH and U ranges (default: 0.01)')
-parser.add_argument('--phmin', type=float, default=0, help='Minimum pH value (default: 0)')
-parser.add_argument('--phmax', type=float, default=14, help='Maximum pH value (default: 14)')
-parser.add_argument('--umin', type=float, default=-2.0, help='Minimum potential value (default: -2.0)')
-parser.add_argument('--umax', type=float, default=4.0, help='Maximum potential value (default: 4.0)')
+parser.add_argument('--pHmin', type=float, default=0, help='Minimum pH value (default: 0)')
+parser.add_argument('--pHmax', type=float, default=14, help='Maximum pH value (default: 14)')
+parser.add_argument('--Umin', type=float, default=-1, help='Minimum potential value (default: -1)')
+parser.add_argument('--Umax', type=float, default=3, help='Maximum potential value (default: 3)')
+parser.add_argument('--Gmin', type=float, help='Minimum Gibbs free energy value for 1D plot')
+parser.add_argument('--Gmax', type=float, help='Maximum Gibbs free energy value for 1D plot')
 parser.add_argument('--figx', type=float, default=4, help='Figure width in inches (default: 6)')
 parser.add_argument('--figy', type=float, default=3, help='Figure height in inches (default: 7)')
 parser.add_argument('--show', action='store_true', help='Show the plot')
 parser.add_argument('--gibbs', action='store_true', help='Apply Gibbs free energy correction from G_corr column')
 parser.add_argument('--gc', action='store_true', help='Apply Grand Canonical DFT using A, B, C columns')
+parser.add_argument('--suffix', type=str, default='', help='Suffix for the output filename (e.g., --suffix "Co")')
+parser.add_argument('--no-legend', action='store_true', help='Disable legend box in plots')
+parser.add_argument('--HER', action='store_true', help='Show HER line (0-pH*const)')
+parser.add_argument('--OER', action='store_true', help='Show OER line (1.23-pH*const)')
 args = parser.parse_args()
 
-is_bulk = args.bulk
+is_hybrid = args.hybrid
 ads_elements = args.ads
 is_gibbs = args.gibbs
 is_gc = args.gc
+
+if hasattr(args, 'suffix') and args.suffix:
+    suffix = '_' + args.suffix
+else:
+    suffix = ''
+
+png_name = 'pourbaix'
+if hasattr(args, 'hybrid') and is_hybrid:
+    png_name += '_hybrid'
+else:
+    png_name += '_surface'
+if hasattr(args, 'gc') and is_gc:
+    png_name += '_gc'
 
 def main():
     elements = set()
@@ -100,7 +119,6 @@ def main():
         atoms = read(json_file)
         energy = atoms.get_potential_energy()
         symbols = atoms.get_chemical_symbols()
-        print(atoms.get_chemical_formula())
         row = {}
         row['E_DFT'] = energy
         row['e'] = 0
@@ -373,7 +391,7 @@ def main():
 
     new_surfs = []
     
-    if is_bulk:
+    if is_hybrid:
         # 각 unique_element에 대해 처리
         for unique_elem in unique_elements:
             # surfs 중에서 해당 unique_element가 0인 것들 찾기
@@ -424,7 +442,7 @@ def main():
                                     new_surf[key] = surfs[k][key] + gas[key]
                             new_surfs.append(new_surf)
     else:
-        # is_bulk이 False인 경우: 각 원소의 순수한 형태만 사용 + ads 원소들은 모든 화합물 사용
+        # is_hybrid이 False인 경우: 각 원소의 순수한 형태만 사용 + ads 원소들은 모든 화합물 사용
         # 각 원소의 순수한 형태 화합물들 찾기 (해당 원소만 1개, 나머지는 0개)
         ref_ions = []
         ref_solids = []
@@ -512,11 +530,11 @@ def main():
 
     # pH and potential grid 설정
     tick = args.tick if hasattr(args, 'tick') else 0.01
-    pHmin, pHmax = args.phmin, args.phmax
+    pHmin, pHmax = args.pHmin, args.pHmax
     pHrange = np.arange(pHmin, pHmax + tick, tick)
-    Umin, Umax = args.umin, args.umax
+    Umin, Umax = args.Umin, args.Umax
     Urange = np.arange(Umin, Umax + 0.06 * 14, tick)
-    target_pH = args.ph if hasattr(args, 'ph') else 0
+    target_pH = args.pH if hasattr(args, 'pH') else 0
 
     # lowest surfaces 계산
     lowest_surfaces = np.full((len(Urange), len(pHrange)), np.nan)
@@ -558,13 +576,10 @@ def main():
     # Pourbaix diagram 그리기
     fig, ax = plt.subplots(figsize=(args.figx, args.figy), dpi=100)
     ax.axis([pHmin, pHmax, Umin, Umax])
-    ax.set_xlabel('pH', labelpad=0)
-    ax.set_ylabel('E (V vs. SHE)', labelpad=-6)
+    ax.set_xlabel('pH')
+    ax.set_ylabel('E (V vs. SHE)')
     # ax.tick_params(right=True, direction="in")
     plt.xticks(np.arange(pHmin, pHmax + 1, 2))
-
-    # unique surface IDs
-    unique_ids = np.unique(lowest_surfaces)
 
     # target_pH에서의 lowest surfaces 계산
     lowest_surfaces_pH = np.zeros(len(Urange))
@@ -579,30 +594,21 @@ def main():
         if len(sorted_values) > 1:
             second_lowest_surfaces_pH[Uindex] = sorted_values[1]
 
-    unique_ids_pH = np.unique(lowest_surfaces_pH.astype(int))
-    unique_second_ids_pH = np.unique(second_lowest_surfaces_pH.astype(int))
+    # pH=0에서 Urange를 따라 가장 먼저 등장한 표면 인덱스 순서대로 unique_ids 생성 (불안정한 순서: 뒤에서부터)
+    order = []
+    for sid in reversed(lowest_surfaces_pH.astype(int)):
+        if sid not in order:
+            order.append(sid)
+    unique_ids = order  # 이 순서로 색상, legend, index 부여
 
-    print(f"\nMost stable surfaces at pH={target_pH}:")
-    for sid in unique_ids_pH:
-        name = surfs[int(sid)]['name']
-        print(f"Surface {sid}: {name}")
-
-    print(f"\nSecond most stable surfaces at pH={target_pH}:")
-    for sid in unique_second_ids_pH:
-        name = surfs[int(sid)]['name']
-        print(f"Surface {sid}: {name}")
-
-    # 색상 매핑 및 플롯
     colors = plt.cm.tab20(np.linspace(0, 1, len(unique_ids)))
     cmap = mcolors.ListedColormap(colors)
     bounds = np.arange(len(unique_ids) + 1) - 0.5
     norm = mcolors.BoundaryNorm(bounds, cmap.N)
-
-    # ID 매핑
     id_map = {val: idx for idx, val in enumerate(unique_ids)}
     mapped_surfaces = np.vectorize(id_map.get)(lowest_surfaces)
 
-    # 범례 생성
+    # 범례 생성 (2D, pH=0 기준)
     for idx, surf_id in enumerate(unique_ids):
         label = surfs[int(surf_id)]['name']
         plt.plot([], [], color=colors[idx], linewidth=5, label=label)
@@ -611,16 +617,72 @@ def main():
     pH_grid, U = np.meshgrid(pHrange, Urange)
     plt.pcolormesh(pH_grid, U, mapped_surfaces, cmap=cmap, norm=norm)
 
-    plt.legend(bbox_to_anchor=(1.02, 1), loc=2, borderaxespad=0., 
-               fontsize='small', ncol=1, handlelength=3, edgecolor='black')
-
     # 물의 안정성 영역 표시
-    plt.plot(pHrange, 1.23-pHrange*const, '--', lw=1, color='mediumblue')
-    plt.plot(pHrange, 0-pHrange*const, '--', lw=1, color='mediumblue')
+    if args.OER:
+        plt.plot(pHrange, 1.23-pHrange*const, '--', lw=1, color='mediumblue')
+    if args.HER:
+        plt.plot(pHrange, 0-pHrange*const, '--', lw=1, color='mediumblue')
 
-    plt.savefig(f'pourbaix_diagram.png', dpi=300, bbox_inches='tight')
-    print("Pourbaix diagram saved as pourbaix_diagram.png")
+    if not args.no_legend:
+        plt.legend(bbox_to_anchor=(1.02, 1), loc=2, borderaxespad=0., 
+                  fontsize='small', ncol=1, handlelength=3, edgecolor='black')
 
+    plt.savefig(f'{png_name}.png', dpi=300, bbox_inches='tight')
+    print(f"Pourbaix diagram saved as {png_name}.png")
+    if args.show:
+        plt.show()
+
+    # === 1D Pourbaix diagram at specific pH ===
+    # Calculate energy at specific pH
+    all_energies = []
+    unique_second_ids_pH = np.unique(second_lowest_surfaces_pH.astype(int))
+    unique_ids_set = set(unique_ids)
+    unique_second_ids_set = set(unique_second_ids_pH)
+
+    # 1D plot: U=0에서의 에너지로 unique_ids_set, unique_second_ids_set 정렬
+    energies_at_U0 = [(k, dg(surfs[k], pH=target_pH, U=0, ref_surf=surfs[ref_surf_idx])) for k in unique_ids_set]
+    sorted_unique_ids = [k for k, _ in sorted(energies_at_U0, key=lambda x: x[1])]
+    energies2_at_U0 = [(k, dg(surfs[k], pH=target_pH, U=0, ref_surf=surfs[ref_surf_idx])) for k in unique_second_ids_set]
+    sorted_unique_second_ids = [k for k, _ in sorted(energies2_at_U0, key=lambda x: x[1])]
+
+    fig2, ax2 = plt.subplots(figsize=(args.figx, args.figy), dpi=100)
+    ax2.axis([Umin, Umax, None, None])
+    ax2.set_xlabel('Potential (V vs. SHE)')
+    ax2.set_ylabel('Relative Energy (ΔG, eV)')
+    ax2.tick_params()
+
+    Urange = np.arange(Umin, Umax, tick)
+    for k in range(nsurfs):
+        energies = np.zeros(len(Urange))
+        for i, U in enumerate(Urange):
+            value = dg(surfs[k], pH=target_pH, U=U, ref_surf=surfs[ref_surf_idx])
+            energies[i] = value
+        all_energies.extend(energies)
+        if k in sorted_unique_ids:
+            ax2.plot(Urange, energies, label=surfs[k]['name'], lw=1)
+        elif k in sorted_unique_second_ids:
+            ax2.plot(Urange, energies, '--', label=surfs[k]['name'], lw=1)
+        else:
+            ax2.plot(Urange, energies, color='lightgray', alpha=0.3, lw=0.5)
+
+    # Adjust y-axis range
+    if args.Gmin:
+        Gmin = args.Gmin
+    else:
+        Gmin = min(all_energies)
+    if args.Gmax:
+        Gmax = args.Gmax
+    else:
+        Gmax = max(all_energies)
+
+    ax2.set_ylim(Gmin, Gmax)
+    ax2.set_xlim(Umin, Umax)
+    # 범례 생성 (1D)
+    if not args.no_legend:
+        ax2.legend(bbox_to_anchor=(1.02, 1), loc=2, borderaxespad=0., 
+                  fontsize='small', ncol=1, handlelength=3, edgecolor='black')
+    plt.savefig(f'{png_name}_pH{target_pH}{suffix}.png', dpi=300, bbox_inches='tight')
+    print(f"Saved plots to {png_name}{suffix}.png and {png_name}_pH{target_pH}{suffix}.png")
     if args.show:
         plt.show()
 
