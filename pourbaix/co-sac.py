@@ -90,6 +90,7 @@ def main():
     elements = set()
     json_dir = args.json_dir
     json_files = glob.glob(os.path.join(json_dir, "*.json"))
+    json_files = sorted(json_files, key=lambda x: os.path.basename(x))
 
     csv_dir = args.csv_dir
     label_csv_path = os.path.join(csv_dir, 'label.csv')
@@ -101,7 +102,7 @@ def main():
     
     if os.path.exists(label_csv_path):
         # Read CSV file with header
-        label_df = pd.read_csv(label_csv_path, header=0)
+        label_df = pd.read_csv(label_csv_path, header=None, names=['json_name', 'label', '#OH', 'G_corr', 'A', 'B', 'C'])
         for idx, row in label_df.iterrows():
             json_name = row['json_name']
             file_labels[json_name] = row['label']
