@@ -43,7 +43,12 @@ parser.add_argument('--figx', type=float, default=4, help='Figure width in inche
 parser.add_argument('--figy', type=float, default=3, help='Figure height in inches (default: 3)')
 parser.add_argument('--HER', action='store_true', help='Show HER line (0-pH*const)')
 parser.add_argument('--OER', action='store_true', help='Show OER line (1.23-pH*const)')
-parser.add_argument('--no-legend', action='store_true', help='Disable legend box in plots')
+parser.add_argument('--legend-in', action='store_true', help='Show legend inside the plot')
+parser.add_argument('--legend-out', action='store_true', help='Show legend outside the plot')
+parser.add_argument('--cmap', type=str, default='Greys', help='Color map for bulk plot (default: Greys)')
+parser.add_argument('--cmin', type=float, default=0.0, help='Minimum value for color range for bulk plot (default: 0.2)')
+parser.add_argument('--cmax', type=float, default=1.0, help='Maximum value for color range for bulk plot (default: 0.6)')
+parser.add_argument('--cgap', type=float, default=0.0, help='Fraction of colormap to skip in the center for bulk plot (e.g., 0.2 means skip 0.4~0.6)')
 parser.add_argument('--cmap-2d', type=str, default='RdBu', help='Color map for 2D plot (default: RdBu)')
 parser.add_argument('--cmin-2d', type=float, default=0.0, help='Minimum value for color range for 2D plot (default: 0.0)')
 parser.add_argument('--cmax-2d', type=float, default=1.0, help='Maximum value for color range for 2D plot (default: 1.0)')
@@ -77,6 +82,11 @@ else:
     png_name += '_surface'
 if hasattr(args, 'gc') and is_gc:
     png_name += '_gc'
+
+if hasattr(args, 'legend_in') and args.legend_in:
+    png_name += '_legend_in'
+elif hasattr(args, 'legend_out') and args.legend_out:
+    png_name += '_legend_out'
 
 def main():
     # Set pH and potential grid
@@ -200,14 +210,6 @@ def main():
         print("\nsorted_elements:", sorted_elements)
         print("remaining_elements:", remaining_elements)
         print("unique_elements:", unique_elements)
-
-    for el in unique_elements:
-        fig = plt.figure(figsize=(args.figx, args.figy))
-
-        if args.show_fig:
-            plt.show()
-        plt.savefig(f'pourbaix_{el}{suffix}.png')
-        plt.close()
 
     # Set ref_surf as the one with lowest energy among those with all unique_elements = 0
     ref_candidates = []
@@ -419,9 +421,6 @@ def main():
             
             if is_hybrid:
                 bulks = ions + solids + gases
-                bulks_df = pd.DataFrame(bulks, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name', 'A', 'B'])
-                print(format_df_for_display(bulks_df))
-                print(f"Bulks: {len(bulks)} entries\n")
                 nbulks = len(bulks)
 
                 fig, ax = plt.subplots(figsize=(args.figx, args.figy))
@@ -452,30 +451,30 @@ def main():
                         if bulk_id not in unique_ids:
                             unique_ids.append(bulk_id)
 
-                colormap_2d = getattr(plt.cm, args.cmap_2d, plt.cm.RdBu)
-                n_colors_2d = len(unique_ids)
-                if args.cgap_2d > 0 and not args.cmap_2d in Quanlitative_colors:
-                    gap = args.cgap_2d
+                colormap = getattr(plt.cm, args.cmap, plt.cm.RdBu)
+                n_colors = len(unique_ids)
+                if args.cgap > 0 and not args.cmap in Quanlitative_colors:
+                    gap = args.cgap
                     left_end = 0.5 - gap/2
                     right_start = 0.5 + gap/2
-                    n1 = int(np.ceil(n_colors_2d * left_end))
-                    n2 = n_colors_2d - n1
-                    left = np.linspace(args.cmin_2d, left_end, n1, endpoint=False)
-                    right = np.linspace(right_start, args.cmax_2d, n2, endpoint=True)
-                    color_values_2d = np.concatenate([left, right])
+                    n1 = int(np.ceil(n_colors * left_end))
+                    n2 = n_colors - n1
+                    left = np.linspace(args.cmin, left_end, n1, endpoint=False)
+                    right = np.linspace(right_start, args.cmax, n2, endpoint=True)
+                    color_values = np.concatenate([left, right])
                 else:
-                    color_values_2d = np.linspace(args.cmin_2d, args.cmax_2d, n_colors_2d)
-                colors_2d = colormap_2d(color_values_2d)
-                cmap = mcolors.ListedColormap(colors_2d)
-                bounds = np.arange(n_colors_2d + 1) - 0.5
+                    color_values = np.linspace(args.cmin, args.cmax, n_colors)
+                colors = colormap(color_values)
+                cmap = mcolors.ListedColormap(colors)
+                bounds = np.arange(n_colors + 1) - 0.5
                 norm = mcolors.BoundaryNorm(bounds, cmap.N)
                 id_map = {val: idx for idx, val in enumerate(unique_ids)}
                 mapped_bulks = np.vectorize(id_map.get)(lowest_bulks)
 
-                # Generate legend (2D, based on pH=0)
-                for idx, bulk_id in enumerate(unique_ids):
+                # Generate legend (bulk, based on pH=0)
+                for idx, bulk_id in enumerate(reversed(unique_ids)):
                     label = bulks[int(bulk_id)]['name']
-                    plt.plot([], [], color=colors_2d[idx], linewidth=5, label=label)
+                    plt.plot([], [], color=colors[len(unique_ids)-1-idx], linewidth=5, label=label)
 
                 # pcolormesh
                 pH_grid, U = np.meshgrid(pHrange, Urange)
@@ -487,19 +486,23 @@ def main():
                 if args.HER:
                     plt.plot(pHrange, 0-pHrange*const, '--', lw=1, color='mediumblue')
 
-                if not args.no_legend:
+                if args.legend_in:
+                    plt.legend(fontsize='small', ncol=1, handlelength=3, edgecolor='black', loc='upper right')
+                elif args.legend_out:
                     plt.legend(bbox_to_anchor=(1.02, 1), loc=2, borderaxespad=0., 
                             fontsize='small', ncol=1, handlelength=3, edgecolor='black')
 
                 plt.savefig(f'pourbaix_bulk_{el}{suffix}.png', dpi=300, bbox_inches='tight')
                 print(f"Bulk Pourbaix diagram saved as pourbaix_bulk_{el}{suffix}.png")
                 if args.show_fig:
+                    plt.tight_layout()
                     plt.show()
                 plt.close(fig)
         else:
             if args.show_thermo:
                 print(f"\n{el}: No thermodynamic data found")
                 
+    save_surfs = surfs.copy()
     nsurfs, nions, nsolids, ngases = len(surfs), len(ions), len(solids), len(gases)
     if is_gc:
         surfs_df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name', 'A', 'B'])
@@ -509,6 +512,7 @@ def main():
     print()
     print(format_df_for_display(surfs_df))
     print(f"Surfs: {nsurfs} entries\n")
+
     if is_hybrid:
         ions_df = pd.DataFrame(ions, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
         solids_df = pd.DataFrame(solids, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
@@ -629,8 +633,11 @@ def main():
 
     # Add new_surfs to surfs
     surfs.extend(new_surfs)
-    # Keep only those where not all unique_elements are 0
-    surfs = [surf for surf in surfs if not all(surf[elem] == 0 for elem in unique_elements)]
+    # # Keep only those where not all unique_elements are 0
+    unique_surfs = [surf for surf in surfs if not all(surf[elem] == 0 for elem in unique_elements)]
+    if len(unique_surfs) > 0:
+        print(f"Unique surfs: {len(unique_surfs)}")
+        surfs = unique_surfs
     nsurfs = len(surfs)
     if is_gc:
         df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name', 'A', 'B'])
@@ -695,40 +702,87 @@ def main():
             if surf_id not in unique_ids:
                 unique_ids.append(surf_id)
 
-    # # Diagonal traversal: (0,0) -> (0,1),(1,0) -> (0,2),(1,1),(2,0) -> ...
-    # for d in range(len(Urange) + len(pHrange) - 1):
-    #     for i in range(len(Urange)):
-    #         j = d - i
-    #         if 0 <= j < len(pHrange):
-    #             surf_id = int(lowest_surfaces[i, j])  # [U_index, pH_index]
-    #             if surf_id not in unique_ids:
-    #                 unique_ids.append(surf_id)
+    # Separate unique_ids into two groups: save_surfs vs new combinations
+    save_surfs_ids = []
+    new_surfs_ids = []
+    
+    for surf_id in unique_ids:
+        # Check if this surface is in save_surfs
+        is_in_save_surfs = any(save_surf['name'] == surfs[surf_id]['name'] for save_surf in save_surfs)
+        
+        if is_in_save_surfs:
+            save_surfs_ids.append(surf_id)
+        else:
+            new_surfs_ids.append(surf_id)
 
-    # 2D plot colormap/color range
+    # Create colormaps for each group
+    # Group 1: save_surfs (original surfaces) - use cmap_2d
     colormap_2d = getattr(plt.cm, args.cmap_2d, plt.cm.RdBu)
-    n_colors_2d = len(unique_ids)
-    if args.cgap_2d > 0 and not args.cmap_2d in Quanlitative_colors:
-        gap = args.cgap_2d
-        left_end = 0.5 - gap/2
-        right_start = 0.5 + gap/2
-        n1 = int(np.ceil(n_colors_2d * left_end))
-        n2 = n_colors_2d - n1
-        left = np.linspace(args.cmin_2d, left_end, n1, endpoint=False)
-        right = np.linspace(right_start, args.cmax_2d, n2, endpoint=True)
-        color_values_2d = np.concatenate([left, right])
+    n_save = len(save_surfs_ids)
+    if n_save > 0:
+        if args.cgap_2d > 0 and not args.cmap_2d in Quanlitative_colors:
+            gap = args.cgap_2d
+            left_end = 0.5 - gap/2
+            right_start = 0.5 + gap/2
+            n1 = int(np.ceil(n_save * left_end))
+            n2 = n_save - n1
+            left = np.linspace(args.cmin_2d, left_end, n1, endpoint=False)
+            right = np.linspace(right_start, args.cmax_2d, n2, endpoint=True)
+            color_values_save = np.concatenate([left, right])
+        else:
+            color_values_save = np.linspace(args.cmin_2d, args.cmax_2d, n_save)
+        colors_save = colormap_2d(color_values_save)
     else:
-        color_values_2d = np.linspace(args.cmin_2d, args.cmax_2d, n_colors_2d)
-    colors_2d = colormap_2d(color_values_2d)
-    cmap = mcolors.ListedColormap(colors_2d)
-    bounds = np.arange(n_colors_2d + 1) - 0.5
+        colors_save = []
+
+    # Group 2: new combinations - use cmap
+    colormap_new = getattr(plt.cm, args.cmap, plt.cm.Greys)
+    n_new = len(new_surfs_ids)
+    if n_new > 0:
+        if args.cgap > 0 and not args.cmap in Quanlitative_colors:
+            gap = args.cgap
+            left_end = 0.5 - gap/2
+            right_start = 0.5 + gap/2
+            n1 = int(np.ceil(n_new * left_end))
+            n2 = n_new - n1
+            left = np.linspace(args.cmin, left_end, n1, endpoint=False)
+            right = np.linspace(right_start, args.cmax, n2, endpoint=True)
+            color_values_new = np.concatenate([left, right])
+        else:
+            color_values_new = np.linspace(args.cmin, args.cmax, n_new)
+        colors_new = colormap_new(color_values_new)
+    else:
+        colors_new = []
+
+    # Combine colors and create colormap
+    all_colors = []
+    id_map = {}
+    
+    # Add save_surfs colors
+    for i, surf_id in enumerate(save_surfs_ids):
+        all_colors.append(colors_save[i])
+        id_map[surf_id] = len(all_colors) - 1
+    
+    # Add new_surfs colors
+    for i, surf_id in enumerate(new_surfs_ids):
+        all_colors.append(colors_new[i])
+        id_map[surf_id] = len(all_colors) - 1
+
+    cmap = mcolors.ListedColormap(all_colors)
+    bounds = np.arange(len(all_colors) + 1) - 0.5
     norm = mcolors.BoundaryNorm(bounds, cmap.N)
-    id_map = {val: idx for idx, val in enumerate(unique_ids)}
     mapped_surfaces = np.vectorize(id_map.get)(lowest_surfaces)
 
     # Generate legend (2D, based on pH=0)
-    for idx, surf_id in enumerate(unique_ids):
+    # First show save_surfs (reversed)
+    for i, surf_id in enumerate(reversed(save_surfs_ids)):
         label = surfs[int(surf_id)]['name']
-        plt.plot([], [], color=colors_2d[idx], linewidth=5, label=label)
+        plt.plot([], [], color=colors_save[len(save_surfs_ids)-1-i], linewidth=5, label=label)
+    
+    # Then show new combinations (reversed)
+    for i, surf_id in enumerate(reversed(new_surfs_ids)):
+        label = surfs[int(surf_id)]['name']
+        plt.plot([], [], color=colors_new[len(new_surfs_ids)-1-i], linewidth=5, label=label)
 
     # pcolormesh
     pH_grid, U = np.meshgrid(pHrange, Urange)
@@ -740,13 +794,16 @@ def main():
     if args.HER:
         plt.plot(pHrange, 0-pHrange*const, '--', lw=1, color='mediumblue')
 
-    if not args.no_legend:
+    if args.legend_in:
+        plt.legend(fontsize='small', ncol=1, handlelength=3, edgecolor='black', loc='upper right')
+    elif args.legend_out:
         plt.legend(bbox_to_anchor=(1.02, 1), loc=2, borderaxespad=0., 
-                  fontsize='small', ncol=1, handlelength=3, edgecolor='black')
+                fontsize='small', ncol=1, handlelength=3, edgecolor='black')
 
     plt.savefig(f'{png_name}{suffix}.png', dpi=300, bbox_inches='tight')
     print(f"Pourbaix diagram saved as {png_name}{suffix}.png")
     if args.show_fig:
+        plt.tight_layout()
         plt.show()
 
     # === 1D Pourbaix diagram at specific pH ===
@@ -831,12 +888,15 @@ def main():
     ax2.set_ylim(Gmin, Gmax)
     ax2.set_xlim(Umin, Umax)
     # Generate legend (1D)
-    if not args.no_legend:
+    if args.legend_in:
+        ax2.legend(fontsize='small', ncol=1, handlelength=3, edgecolor='black', loc='upper right')
+    elif args.legend_out:
         ax2.legend(bbox_to_anchor=(1.02, 1), loc=2, borderaxespad=0., 
-                  fontsize='small', ncol=1, handlelength=3, edgecolor='black')
+                fontsize='small', ncol=1, handlelength=3, edgecolor='black')
     plt.savefig(f'{png_name}_pH{target_pH}{suffix}.png', dpi=300, bbox_inches='tight')
     print(f"Saved plots to {png_name}{suffix}.png and {png_name}_pH{target_pH}{suffix}.png")
     if args.show_fig:
+        plt.tight_layout()
         plt.show()
 
 # Define dg function (Gibbs free energy calculation)
