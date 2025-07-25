@@ -20,7 +20,7 @@ import json
 # Global constants definition
 SUBSCRIPT_NUMS = {'0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'}
 SUPERSCRIPT_NUMS = {'0': '₀', '1': '₁', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'}
-Quanlitative_colors = ['Pastel1', 'Pastel2', 'Paired', 'Accent', 'Dark2', 'Set1', 'Set2', 'Set3', 'tab10', 'tab20', 'tab20b', 'tab20c']
+Diverging_colors = ['RdBu', 'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic']
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Generate Pourbaix diagram')
@@ -45,18 +45,20 @@ parser.add_argument('--HER', action='store_true', help='Show HER line (0-pH*cons
 parser.add_argument('--OER', action='store_true', help='Show OER line (1.23-pH*const)')
 parser.add_argument('--legend-in', action='store_true', help='Show legend inside the plot')
 parser.add_argument('--legend-out', action='store_true', help='Show legend outside the plot')
+parser.add_argument('--legend-up', action='store_true', help='Show legend above the plot')
 parser.add_argument('--cmap', type=str, default='Greys', help='Color map for bulk plot (default: Greys)')
-parser.add_argument('--cmin', type=float, default=0.0, help='Minimum value for color range for bulk plot (default: 0.2)')
-parser.add_argument('--cmax', type=float, default=1.0, help='Maximum value for color range for bulk plot (default: 0.6)')
+parser.add_argument('--cmin', type=float, default=0.1, help='Minimum value for color range for bulk plot (default: 0.1)')
+parser.add_argument('--cmax', type=float, default=0.7, help='Maximum value for color range for bulk plot (default: 0.7)')
 parser.add_argument('--cgap', type=float, default=0.0, help='Fraction of colormap to skip in the center for bulk plot (e.g., 0.2 means skip 0.4~0.6)')
 parser.add_argument('--cmap-2d', type=str, default='RdBu', help='Color map for 2D plot (default: RdBu)')
 parser.add_argument('--cmin-2d', type=float, default=0.0, help='Minimum value for color range for 2D plot (default: 0.0)')
 parser.add_argument('--cmax-2d', type=float, default=1.0, help='Maximum value for color range for 2D plot (default: 1.0)')
-parser.add_argument('--cgap-2d', type=float, default=0.0, help='Fraction of colormap to skip in the center for 2D plot (e.g., 0.2 means skip 0.4~0.6)')
+parser.add_argument('--cgap-2d', type=float, default=0.2, help='Fraction of colormap to skip in the center for 2D plot (e.g., 0.2 means skip 0.4~0.6)')
 parser.add_argument('--cmap-1d', type=str, default='Spectral', help='Color map for 1D plot (default: Spectral)')
 parser.add_argument('--cmin-1d', type=float, default=0.0, help='Minimum value for color range for 1D plot (default: 0.0)')
 parser.add_argument('--cmax-1d', type=float, default=1.0, help='Maximum value for color range for 1D plot (default: 1.0)')
 parser.add_argument('--cgap-1d', type=float, default=0.0, help='Fraction of colormap to skip in the center for 1D plot (e.g., 0.2 means skip 0.4~0.6)')
+parser.add_argument('--no-bulk', action='store_true', help='Do not show bulk plot')
 parser.add_argument('--show-fig', action='store_true', help='Show the plot')
 parser.add_argument('--show-thermo', action='store_true', help='Show thermodynamic data details')
 parser.add_argument('--show-ref', action='store_true', help='Show reference surface information')
@@ -70,23 +72,26 @@ is_hybrid = args.hybrid
 is_gibbs = args.gibbs
 is_gc = args.gc
 
-if hasattr(args, 'suffix') and args.suffix:
-    suffix = '_' + args.suffix
-else:
-    suffix = ''
-
 png_name = 'pourbaix'
+suffix = ''
+
 if hasattr(args, 'hybrid') and is_hybrid:
     png_name += '_hybrid'
 else:
     png_name += '_surface'
+
 if hasattr(args, 'gc') and is_gc:
-    png_name += '_gc'
+    suffix += '_gc'
 
 if hasattr(args, 'legend_in') and args.legend_in:
-    png_name += '_legend_in'
+    suffix += '_legend_in'
 elif hasattr(args, 'legend_out') and args.legend_out:
-    png_name += '_legend_out'
+    suffix += '_legend_out'
+elif hasattr(args, 'legend_up') and args.legend_up:
+    suffix += '_legend_up'
+
+if hasattr(args, 'suffix') and args.suffix:
+    suffix += '_' + args.suffix
 
 def main():
     # Set pH and potential grid
@@ -233,7 +238,6 @@ def main():
     reference_surface_energy = ref_surf['E_DFT']
     for k in range(len(surfs)):
         # Get OH count
-        oh_count = 0
         json_basename = None
         for fname, label in file_labels.items():
             if label == surfs[k]['name']:
@@ -241,7 +245,10 @@ def main():
                 break
         
         if json_basename and json_basename in file_oh_counts:
-            oh_count = file_oh_counts[json_basename]
+            if not np.isnan(file_oh_counts[json_basename]):
+                oh_count = file_oh_counts[json_basename]
+            else:
+                oh_count = 0
         
         formation_energy_correction = (
             - (surfs[k]['H'] - oh_count) * (gh - dgh)
@@ -267,13 +274,22 @@ def main():
         with open(ref_energies_path, 'r') as f:
             ref_energies = json.load(f)
     
-    # Create solids, ions, gases lists
+    # Create solids, ions, gases, liquids lists
     ions = []
     solids = []
     gases = []
+    liquids = []
     
     # Process thermodynamic data for unique_elements
     for el in unique_elements:
+        ions_el = []
+        solids_el = []
+        gases_el = []
+        liquids_el = []
+        # Check if element exists in reference energies
+        if el not in ref_energies:
+            print(f"WARNING: Element '{el}' not found in reference_energies.json! Energy corrections may be inaccurate.")
+            
         if el in thermo_data:
             if args.show_thermo:
                 print(f"\n{el} thermodynamic data:")
@@ -321,6 +337,7 @@ def main():
                             row['name'] = f'¹⁄{subscript_count}' + row['name']
 
                         ions.append(row)
+                        ions_el.append(row)
                     except:
                         if args.show_thermo:
                             print(f"    {ion_formula}: parsing failed, energy: {energy}")
@@ -368,6 +385,7 @@ def main():
                             row['name'] = f'¹⁄{subscript_count}' + row['name']
                         
                         solids.append(row)
+                        solids_el.append(row)
                     except:
                         if args.show_thermo:
                             print(f"    {solid_formula}: parsing failed, energy: {energy}")
@@ -415,12 +433,61 @@ def main():
                             row['name'] = f'¹⁄{subscript_count}' + row['name']
 
                         gases.append(row)
+                        gases_el.append(row)
                     except:
                         if args.show_thermo:
                             print(f"    {gas_formula}: parsing failed, energy: {energy}")
+
+            # Process liquids
+            if 'liquids' in thermo_data[el] and thermo_data[el]['liquids'] != {}:
+                if args.show_thermo:
+                    print(f"  Liquids reduced dict:")
+                for liquid_formula, energy in thermo_data[el]['liquids'].items():
+                    try:
+                        reduced_dict = Ion.from_formula(liquid_formula).to_reduced_dict
+                        if args.show_thermo:
+                            print(f"    {liquid_formula}: {reduced_dict}, energy: {energy}")
+                        
+                        # Calculate energy correction
+                        energy_correction = 0
+                        # Add water energy for each O
+                        if 'O' in reduced_dict:
+                            energy_correction += water * reduced_dict['O']
+                        # Add energy for elements in reference_energies
+                        for elem in remaining_elements:
+                            if elem in ref_energies and elem in reduced_dict:
+                                energy_correction += ref_energies[elem] * reduced_dict[elem]
+                        
+                        # Create row (using corrected energy)
+                        row = {'E_DFT': energy/calmol + energy_correction, 'e': 0}
+                        for elem in remaining_elements:
+                            row[elem] = int(reduced_dict.get(elem, 0))
+                        if 'charge' in reduced_dict:
+                            row['e'] = int(reduced_dict['charge'])
+                        row['conc'] = 1
+                        row['name'] = format_name(liquid_formula) + '(l)'
+                        row['A'] = 0.0
+                        row['B'] = 0.0
+
+                        # Normalize by el count
+                        el_count = reduced_dict.get(el, 1)  # Set to 1 if el is not present
+                        if el_count > 1:
+                            row['E_DFT'] = row['E_DFT'] / el_count
+                            row['e'] = row['e'] / el_count
+                            for elem in remaining_elements:
+                                row[elem] = row[elem] / el_count
+                            # Display fractions as superscript/subscript
+                            subscript_count = SUBSCRIPT_NUMS.get(str(int(el_count)), str(int(el_count)))
+                            row['name'] = f'¹⁄{subscript_count}' + row['name']
+
+                        liquids.append(row)
+                        liquids_el.append(row)
+                    except:
+                        if args.show_thermo:
+                            print(f"    {liquid_formula}: parsing failed, energy: {energy}")
             
-            if is_hybrid:
-                bulks = ions + solids + gases
+            if is_hybrid and not args.no_bulk:
+                bulks = ions_el + solids_el + gases_el + liquids_el
                 nbulks = len(bulks)
 
                 fig, ax = plt.subplots(figsize=(args.figx, args.figy))
@@ -453,7 +520,7 @@ def main():
 
                 colormap = getattr(plt.cm, args.cmap, plt.cm.RdBu)
                 n_colors = len(unique_ids)
-                if args.cgap > 0 and not args.cmap in Quanlitative_colors:
+                if args.cgap > 0 and args.cmap in Diverging_colors:
                     gap = args.cgap
                     left_end = 0.5 - gap/2
                     right_start = 0.5 + gap/2
@@ -491,6 +558,9 @@ def main():
                 elif args.legend_out:
                     plt.legend(bbox_to_anchor=(1.02, 1), loc=2, borderaxespad=0., 
                             fontsize='small', ncol=1, handlelength=3, edgecolor='black')
+                elif args.legend_up:
+                    plt.legend(bbox_to_anchor=(0.5, 1.02), loc='lower center', borderaxespad=0., 
+                            fontsize='small', ncol=3, handlelength=3, edgecolor='black')
 
                 plt.savefig(f'pourbaix_bulk_{el}{suffix}.png', dpi=300, bbox_inches='tight')
                 print(f"Bulk Pourbaix diagram saved as pourbaix_bulk_{el}{suffix}.png")
@@ -499,11 +569,12 @@ def main():
                     plt.show()
                 plt.close(fig)
         else:
+            print(f"WARNING: Element '{el}' not found in thermodynamic data! This element will be ignored in Pourbaix diagram calculations.")
             if args.show_thermo:
                 print(f"\n{el}: No thermodynamic data found")
                 
     save_surfs = surfs.copy()
-    nsurfs, nions, nsolids, ngases = len(surfs), len(ions), len(solids), len(gases)
+    nsurfs, nions, nsolids, ngases, nliquids = len(surfs), len(ions), len(solids), len(gases), len(liquids)
     if is_gc:
         surfs_df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name', 'A', 'B'])
     else:
@@ -517,12 +588,15 @@ def main():
         ions_df = pd.DataFrame(ions, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
         solids_df = pd.DataFrame(solids, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
         gases_df = pd.DataFrame(gases, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
+        liquids_df = pd.DataFrame(liquids, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
         print(format_df_for_display(ions_df))
         print(f"Ions: {nions} entries\n")
         print(format_df_for_display(solids_df))
         print(f"Solids: {nsolids} entries\n")
         print(format_df_for_display(gases_df))
         print(f"Gases: {ngases} entries\n")
+        print(format_df_for_display(liquids_df))
+        print(f"Liquids: {nliquids} entries\n")
 
     new_surfs = []
     
@@ -581,6 +655,7 @@ def main():
         # Find pure form compounds of each element (1 of the element, 0 of others)
         ref_solids = []
         ref_gases = []
+        ref_liquids = []
         
         for elem in unique_elements:
             # Find solids with only 1 of this element and 0 of others
@@ -594,6 +669,12 @@ def main():
                 if gas[elem] == 1 and all(gas[other_elem] == 0 for other_elem in remaining_elements if other_elem != elem):
                     if gas not in ref_gases:
                         ref_gases.append(gas)
+            
+            # Find liquids with only 1 of this element and 0 of others
+            for liquid in liquids:
+                if liquid[elem] == 1 and all(liquid[other_elem] == 0 for other_elem in remaining_elements if other_elem != elem):
+                    if liquid not in ref_liquids:
+                        ref_liquids.append(liquid)
         
         # Process each unique_element
         for unique_elem in unique_elements:
@@ -630,13 +711,27 @@ def main():
                                 else:
                                     new_surf[key] = surfs[k][key] + gas[key]
                             new_surfs.append(new_surf)
+                    
+                    # Combine with compounds having 1 unique_element from ref_liquids
+                    for liquid in ref_liquids:
+                        if liquid[unique_elem] == 1:
+                            new_surf = {}
+                            for key in surfs[k]:
+                                if key == 'name':
+                                    new_surf[key] = surfs[k][key] + '+' + liquid[key]
+                                elif key == 'conc':
+                                    new_surf[key] = surfs[k][key] * liquid[key]
+                                elif key in ['gibbs_corr', 'A', 'B']:
+                                    new_surf[key] = surfs[k][key]  # Keep original surface values
+                                else:
+                                    new_surf[key] = surfs[k][key] + liquid[key]
+                            new_surfs.append(new_surf)
 
     # Add new_surfs to surfs
     surfs.extend(new_surfs)
     # # Keep only those where not all unique_elements are 0
     unique_surfs = [surf for surf in surfs if not all(surf[elem] == 0 for elem in unique_elements)]
     if len(unique_surfs) > 0:
-        print(f"Unique surfs: {len(unique_surfs)}")
         surfs = unique_surfs
     nsurfs = len(surfs)
     if is_gc:
@@ -720,7 +815,7 @@ def main():
     colormap_2d = getattr(plt.cm, args.cmap_2d, plt.cm.RdBu)
     n_save = len(save_surfs_ids)
     if n_save > 0:
-        if args.cgap_2d > 0 and not args.cmap_2d in Quanlitative_colors:
+        if args.cgap_2d > 0 and args.cmap_2d in Diverging_colors:
             gap = args.cgap_2d
             left_end = 0.5 - gap/2
             right_start = 0.5 + gap/2
@@ -739,7 +834,7 @@ def main():
     colormap_new = getattr(plt.cm, args.cmap, plt.cm.Greys)
     n_new = len(new_surfs_ids)
     if n_new > 0:
-        if args.cgap > 0 and not args.cmap in Quanlitative_colors:
+        if args.cgap > 0 and args.cmap in Diverging_colors:
             gap = args.cgap
             left_end = 0.5 - gap/2
             right_start = 0.5 + gap/2
@@ -799,6 +894,9 @@ def main():
     elif args.legend_out:
         plt.legend(bbox_to_anchor=(1.02, 1), loc=2, borderaxespad=0., 
                 fontsize='small', ncol=1, handlelength=3, edgecolor='black')
+    elif args.legend_up:
+        plt.legend(bbox_to_anchor=(0.5, 1.02), loc='lower center', borderaxespad=0., 
+                fontsize='small', ncol=3, handlelength=3, edgecolor='black')
 
     plt.savefig(f'{png_name}{suffix}.png', dpi=300, bbox_inches='tight')
     print(f"Pourbaix diagram saved as {png_name}{suffix}.png")
@@ -841,7 +939,7 @@ def main():
     # 1D plot colormap/color range
     colormap_1d = getattr(plt.cm, args.cmap_1d, plt.cm.RdBu)
     n_colors_1d = len(sorted_unique_ids)
-    if args.cgap_1d > 0 and not args.cmap_1d in Quanlitative_colors:
+    if args.cgap_1d > 0 and args.cmap_1d in Diverging_colors:
         gap = args.cgap_1d
         left_end = 0.5 - gap/2
         right_start = 0.5 + gap/2
@@ -893,8 +991,11 @@ def main():
     elif args.legend_out:
         ax2.legend(bbox_to_anchor=(1.02, 1), loc=2, borderaxespad=0., 
                 fontsize='small', ncol=1, handlelength=3, edgecolor='black')
+    elif args.legend_up:
+        ax2.legend(bbox_to_anchor=(0.5, 1.02), loc='lower center', borderaxespad=0., 
+                fontsize='small', ncol=3, handlelength=3, edgecolor='black')
     plt.savefig(f'{png_name}_pH{target_pH}{suffix}.png', dpi=300, bbox_inches='tight')
-    print(f"Saved plots to {png_name}{suffix}.png and {png_name}_pH{target_pH}{suffix}.png")
+    print(f"Pourbaix diagram saved as {png_name}_pH{target_pH}{suffix}.png")
     if args.show_fig:
         plt.tight_layout()
         plt.show()
