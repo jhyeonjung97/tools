@@ -17,6 +17,17 @@ import pandas as pd
 from pymatgen.core.ion import Ion
 import json
 
+def load_jsonc(file_path):
+    """Load JSON file with comments (JSONC format)"""
+    with open(file_path, 'r') as f:
+        content = f.read()
+    
+    # Remove single-line comments (// ...)
+    content = re.sub(r'//.*', '', content)
+    
+    # Parse the cleaned JSON
+    return json.loads(content)
+
 # Global constants definition
 SUBSCRIPT_NUMS = {'0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'}
 SUPERSCRIPT_NUMS = {'0': '₀', '1': '₁', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'}
@@ -30,7 +41,8 @@ parser.add_argument('--suffix', type=str, default='', help='Suffix for the outpu
 parser.add_argument('--hybrid', action='store_true', help='hybrid mode')
 parser.add_argument('--gc', action='store_true', help='Apply Grand Canonical DFT using A, B, C columns')
 parser.add_argument('--pH', type=int, default=0, help='pH value for the plot (default: 0)')
-parser.add_argument('--conc', type=float, default=10**-6, help='concentration (default: 10^-6)')
+parser.add_argument('--concentration', type=float, default=1e-6, help='concentration for ions (default: 10^-6 M)')
+parser.add_argument('--pressure', type=float, default=1e-6, help='pressure for gases (default: 10^-6 atm)')
 parser.add_argument('--gibbs', action='store_true', help='Apply Gibbs free energy correction from G_corr column')
 parser.add_argument('--tick', type=float, default=0.01, help='Tick size for pH and U ranges (default: 0.01)')
 parser.add_argument('--pHmin', type=float, default=0, help='Minimum pH value (default: 0)')
@@ -66,6 +78,11 @@ parser.add_argument('--show-element', action='store_true', help='Show elements i
 parser.add_argument('--show-count', action='store_true', help='Show minimum count of each element')
 parser.add_argument('--show-label', action='store_true', help='Show file labels')
 parser.add_argument('--show-min-coord', action='store_true', help='Show minimum coordinate for each surface')
+parser.add_argument('--png', action='store_true', help='Save PNG images of all JSON structures')
+parser.add_argument('--png-rotation', type=str, default='-90x, -90y, 0z', help='Rotation for PNG images (default: "-90x, -90y, 0z")')
+parser.add_argument('--label-csv', type=str, help='Path to label.csv file (default: ./label.csv)')
+parser.add_argument('--thermo-data', type=str, help='Path to thermodynamic data file (default: same directory as script/thermodynamic_data.jsonc)')
+parser.add_argument('--ref-energies', type=str, help='Path to reference energies file (default: same directory as script/reference_energies.json)')
 args = parser.parse_args()
 
 is_hybrid = args.hybrid
@@ -108,7 +125,10 @@ def main():
     json_files = sorted(json_files, key=lambda x: os.path.basename(x))
 
     csv_dir = args.csv_dir
-    label_csv_path = os.path.join(csv_dir, 'label.csv')
+    if hasattr(args, 'label_csv') and args.label_csv:
+        label_csv_path = args.label_csv
+    else:
+        label_csv_path = os.path.join(csv_dir, 'label.csv')
     
     file_labels = {}
     file_oh_counts = {}
@@ -145,6 +165,20 @@ def main():
         print("\nFile labels:")
         for fname, label in file_labels.items():
             print(f"{fname}: {label}")
+
+    # Save PNG images if --png option is enabled
+    if args.png:
+        print("\nSaving PNG images of structures...")
+        for json_file in json_files:
+            atoms = read(json_file)
+            json_basename = os.path.basename(json_file)
+            png_filename = json_basename.replace('.json', '.png')
+            try:
+                from ase.io import write
+                write(png_filename, atoms, rotation=args.png_rotation, show_unit_cell=0)
+            except Exception as e:
+                print(f"Failed to save {png_filename}: {e}")
+        print("PNG image generation completed.\n")
 
     # Generate surfs DataFrame
     # List of all elements sorted by atomic number
@@ -238,6 +272,7 @@ def main():
     reference_surface_energy = ref_surf['E_DFT']
     for k in range(len(surfs)):
         # Get OH count
+        oh_count = 0  # Initialize with default value
         json_basename = None
         for fname, label in file_labels.items():
             if label == surfs[k]['name']:
@@ -260,15 +295,14 @@ def main():
         gibbs_correction = surfs[k]['gibbs_corr'] if is_gibbs else 0.0
         surfs[k]['E_DFT'] = surfs[k]['E_DFT'] - reference_surface_energy + formation_energy_correction + gibbs_correction
 
-    # Get data corresponding to unique_elements from thermodynamic_data.json
-    thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data.json')
+    # Get data corresponding to unique_elements from thermodynamic_data.jsonc
+    thermo_data_path = args.thermo_data if hasattr(args, 'thermo_data') and args.thermo_data else os.path.join(os.path.dirname(__file__), 'thermodynamic_data.jsonc')
     thermo_data = {}
     if os.path.exists(thermo_data_path):
-        with open(thermo_data_path, 'r') as f:
-            thermo_data = json.load(f)
+        thermo_data = load_jsonc(thermo_data_path)
     
     # Read reference_energies.json
-    ref_energies_path = os.path.join(os.path.dirname(__file__), 'reference_energies.json')
+    ref_energies_path = args.ref_energies if hasattr(args, 'ref_energies') and args.ref_energies else os.path.join(os.path.dirname(__file__), 'reference_energies.json')
     ref_energies = {}
     if os.path.exists(ref_energies_path):
         with open(ref_energies_path, 'r') as f:
@@ -320,7 +354,7 @@ def main():
                             row[elem] = int(reduced_dict.get(elem, 0))
                         if 'charge' in reduced_dict:
                             row['e'] = int(reduced_dict['charge'])
-                        row['conc'] = args.conc                        
+                        row['conc'] = args.concentration                        
                         row['name'] = format_name(ion_formula) + '(aq)'
                         row['A'] = 0.0
                         row['B'] = 0.0
@@ -416,7 +450,7 @@ def main():
                             row[elem] = int(reduced_dict.get(elem, 0))
                         if 'charge' in reduced_dict:
                             row['e'] = int(reduced_dict['charge'])
-                        row['conc'] = args.conc
+                        row['conc'] = args.pressure
                         row['name'] = format_name(gas_formula) + '(g)'
                         row['A'] = 0.0
                         row['B'] = 0.0
@@ -518,17 +552,29 @@ def main():
                         if bulk_id not in unique_ids:
                             unique_ids.append(bulk_id)
 
-                colormap = getattr(plt.cm, args.cmap, plt.cm.RdBu)
+                colormap = getattr(plt.cm, args.cmap, plt.cm.Greys)
                 n_colors = len(unique_ids)
                 if args.cgap > 0 and args.cmap in Diverging_colors:
                     gap = args.cgap
                     left_end = 0.5 - gap/2
                     right_start = 0.5 + gap/2
-                    n1 = int(np.ceil(n_colors * left_end))
-                    n2 = n_colors - n1
-                    left = np.linspace(args.cmin, left_end, n1, endpoint=False)
-                    right = np.linspace(right_start, args.cmax, n2, endpoint=True)
-                    color_values = np.concatenate([left, right])
+                    
+                    # Calculate how many colors go to left and right
+                    n_left = int(np.ceil(n_colors / 2))
+                    n_right = n_colors - n_left
+                    
+                    # Create color values avoiding the gap
+                    if n_left > 0:
+                        left = np.linspace(args.cmin, left_end, n_left, endpoint=True)
+                    else:
+                        left = []
+                    
+                    if n_right > 0:
+                        right = np.linspace(right_start, args.cmax, n_right, endpoint=True)
+                    else:
+                        right = []
+                    
+                    color_values = np.concatenate([left, right]) if len(left) > 0 and len(right) > 0 else (left if len(left) > 0 else right)
                 else:
                     color_values = np.linspace(args.cmin, args.cmax, n_colors)
                 colors = colormap(color_values)
@@ -574,6 +620,7 @@ def main():
                 print(f"\n{el}: No thermodynamic data found")
                 
     save_surfs = surfs.copy()
+    n_original_surfs = len(surfs)  # Store the number of original surfaces
     nsurfs, nions, nsolids, ngases, nliquids = len(surfs), len(ions), len(solids), len(gases), len(liquids)
     if is_gc:
         surfs_df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name', 'A', 'B'])
@@ -803,7 +850,8 @@ def main():
     
     for surf_id in unique_ids:
         # Check if this surface is in save_surfs
-        is_in_save_surfs = any(save_surf['name'] == surfs[surf_id]['name'] for save_surf in save_surfs)
+        surf_name = surfs[surf_id]['name']
+        is_in_save_surfs = any(save_surf['name'] == surf_name for save_surf in save_surfs)
         
         if is_in_save_surfs:
             save_surfs_ids.append(surf_id)
@@ -819,11 +867,23 @@ def main():
             gap = args.cgap_2d
             left_end = 0.5 - gap/2
             right_start = 0.5 + gap/2
-            n1 = int(np.ceil(n_save * left_end))
-            n2 = n_save - n1
-            left = np.linspace(args.cmin_2d, left_end, n1, endpoint=False)
-            right = np.linspace(right_start, args.cmax_2d, n2, endpoint=True)
-            color_values_save = np.concatenate([left, right])
+            
+            # Calculate how many colors go to left and right
+            n_left = int(np.ceil(n_save / 2))
+            n_right = n_save - n_left
+            
+            # Create color values avoiding the gap
+            if n_left > 0:
+                left = np.linspace(args.cmin_2d, left_end, n_left, endpoint=True)
+            else:
+                left = []
+            
+            if n_right > 0:
+                right = np.linspace(right_start, args.cmax_2d, n_right, endpoint=True)
+            else:
+                right = []
+            
+            color_values_save = np.concatenate([left, right]) if len(left) > 0 and len(right) > 0 else (left if len(left) > 0 else right)
         else:
             color_values_save = np.linspace(args.cmin_2d, args.cmax_2d, n_save)
         colors_save = colormap_2d(color_values_save)
@@ -838,11 +898,23 @@ def main():
             gap = args.cgap
             left_end = 0.5 - gap/2
             right_start = 0.5 + gap/2
-            n1 = int(np.ceil(n_new * left_end))
-            n2 = n_new - n1
-            left = np.linspace(args.cmin, left_end, n1, endpoint=False)
-            right = np.linspace(right_start, args.cmax, n2, endpoint=True)
-            color_values_new = np.concatenate([left, right])
+            
+            # Calculate how many colors go to left and right
+            n_left = int(np.ceil(n_new / 2))
+            n_right = n_new - n_left
+            
+            # Create color values avoiding the gap
+            if n_left > 0:
+                left = np.linspace(args.cmin, left_end, n_left, endpoint=True)
+            else:
+                left = []
+            
+            if n_right > 0:
+                right = np.linspace(right_start, args.cmax, n_right, endpoint=True)
+            else:
+                right = []
+            
+            color_values_new = np.concatenate([left, right]) if len(left) > 0 and len(right) > 0 else (left if len(left) > 0 else right)
         else:
             color_values_new = np.linspace(args.cmin, args.cmax, n_new)
         colors_new = colormap_new(color_values_new)
@@ -943,11 +1015,23 @@ def main():
         gap = args.cgap_1d
         left_end = 0.5 - gap/2
         right_start = 0.5 + gap/2
-        n1 = int(np.ceil(n_colors_1d * left_end))
-        n2 = n_colors_1d - n1
-        left = np.linspace(args.cmin_1d, left_end, n1, endpoint=False)
-        right = np.linspace(right_start, args.cmax_1d, n2, endpoint=True)
-        color_values_1d = np.concatenate([left, right])
+        
+        # Calculate how many colors go to left and right
+        n_left = int(np.ceil(n_colors_1d / 2))
+        n_right = n_colors_1d - n_left
+        
+        # Create color values avoiding the gap
+        if n_left > 0:
+            left = np.linspace(args.cmin_1d, left_end, n_left, endpoint=True)
+        else:
+            left = []
+        
+        if n_right > 0:
+            right = np.linspace(right_start, args.cmax_1d, n_right, endpoint=True)
+        else:
+            right = []
+        
+        color_values_1d = np.concatenate([left, right]) if len(left) > 0 and len(right) > 0 else (left if len(left) > 0 else right)
     else:
         color_values_1d = np.linspace(args.cmin_1d, args.cmax_1d, n_colors_1d)
     colors_1d = colormap_1d(color_values_1d)
