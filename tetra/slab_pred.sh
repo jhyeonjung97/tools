@@ -5,8 +5,8 @@
 # ICOHP ICOHPo ICOHPn Hform Hsub Hevap Hfus
 # CN group period chg mag volume l_bond cfse
 
-python ~/bin/tools/tetra/lr-slab.py --Y o_energy --output compact \
---X bulkox bulk_e bulk_ieo surfox surf_e surf_ieo CN group period ICOHPo chg mag cfse volume l_bond
+python ~/bin/tools/tetra/lr-slab.py --Y o \
+--X bulkox bulk_e bulk_ieo bulk_cfse surfox surf_e surf_ieo surf_cfse CN group period ICOHPo chg mag cfse volume l_bond
 
 python ~/bin/tools/tetra/slab_pred.py --Y oh \
 --X bulkox bulk_e bulk_ieo bulk_cfse surfox surf_e surf_ieo surf_cfse CN group period ICOHPo chg mag cfse volume l_bond
@@ -43,9 +43,16 @@ python ~/bin/tools/tetra/slab_pred.py --model gpr --X OS CN group outer_e Hsub b
 # python ~/bin/tools/tetra/slab_pred.py --model gpr --X OS CN group period outer_e Hsub base_cfse ICOHPc ionNc mag volume l_bond chg --output cc50
 # python ~/bin/tools/tetra/plot_mae_matrix.py
 
-python ~/bin/tools/tetra/slab_pred.py --model rf --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg
-python ~/bin/tools/tetra/slab_pred.py --model lr --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg
-python ~/bin/tools/tetra/slab_pred.py --model gpr --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg
-python ~/bin/tools/tetra/slab_pred.py --model gbr --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg
-python ~/bin/tools/tetra/slab_pred.py --model xgb --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg
-python ~/bin/tools/tetra/slab_pred.py --model lgb --X OS CN group outer_e Hsub base_cfse ICOHPn ionNn mag volume l_bond chg
+python ~/bin/tools/tetra/slab_pred.py --model rf --X bulkox bulk_e bulk_ieo bulk_cfse surfox surf_e surf_ieo surf_cfse CN group period ICOHPo chg mag cfse volume l_bond
+python ~/bin/tools/tetra/slab_pred.py --model lr --X bulkox bulk_e bulk_ieo bulk_cfse surfox surf_e surf_ieo surf_cfse CN group period ICOHPo chg mag cfse volume l_bond
+python ~/bin/tools/tetra/slab_pred.py --model gpr --X bulkox bulk_e bulk_ieo bulk_cfse surfox surf_e surf_ieo surf_cfse CN group period ICOHPo chg mag cfse volume l_bond
+python ~/bin/tools/tetra/slab_pred.py --model gbr --X bulkox bulk_e bulk_ieo bulk_cfse surfox surf_e surf_ieo surf_cfse CN group period ICOHPo chg mag cfse volume l_bond
+python ~/bin/tools/tetra/slab_pred.py --model xgb --X bulkox bulk_e bulk_ieo bulk_cfse surfox surf_e surf_ieo surf_cfse CN group period ICOHPo chg mag cfse volume l_bond
+python ~/bin/tools/tetra/slab_pred.py --model lgb --X bulkox bulk_e bulk_ieo bulk_cfse surfox surf_e surf_ieo surf_cfse CN group period ICOHPo chg mag cfse volume l_bond
+
+    X_default = [
+        'bulkox', 'bulk_e', 'bulk_ie', 'bulk_ieo', 'bulk_ien', 'bulk_cfse',
+        'surfox', 'surf_e', 'surf_ie', 'surf_ieo', 'surf_ien', 'surf_cfse',
+        'ICOHP', 'ICOHPo', 'ICOHPn', 'Hform', 'Hsub', 'Hevap', 'Hfus',
+        'CN', 'group', 'period', 'chg', 'mag', 'volume', 'l_bond', 'cfse',
+    ]
