@@ -11,9 +11,8 @@ parser.add_argument("--output", type=str, default='all_d_band_centers', help="Ou
 args = parser.parse_args()
 
 # Define the directory structure
-metal_types = ["2_Co", "3_Ni", "4_Cu"]
-alloying_elements = ["01_Sc", "02_Ti", "03_V", "04_Cr", "05_Mn", "06_Fe", 
-                     "07_Y", "08_Zr", "09_Nb", "10_Mo", "11_Ru", "12_W"]
+metal_types = ["2_Co"]
+alloying_elements = ["01_Sc", "02_Ti"]
 
 # Define column names
 columns = ["energy", "d(up)", "d(down)"]
@@ -23,18 +22,23 @@ def create_sumo_script(directory, metal_name, alloy_element_name):
     sumo_script = f"""#!/bin/bash
 
 sumo-dosplot \\
-    --elements {metal_name}.d \\
-    --atoms {metal_name}.19 \\
-    --prefix host19 \\
-
-sumo-dosplot \\
-    --elements {metal_name}.d \\
-    --atoms {metal_name}.20 \\
-    --prefix host20 \\
+    --elements {alloy_element_name}.d \\
+    --prefix dopant27-shift \\
 
 sumo-dosplot \\
     --elements {alloy_element_name}.d \\
-    --prefix dopant27 \\
+    --prefix dopant27-no-shift \\
+    --no-shift
+
+sumo-dosplot \\
+    --elements {alloy_element_name}.d \\
+    --prefix dopant27-zero-energy-0.1 \\
+    --zero-energy 0.1
+
+sumo-dosplot \\
+    --elements {alloy_element_name}.d \\
+    --prefix dopant27-zero-energy-0.2 \\
+    --zero-energy 0.2
 """
     
     script_path = os.path.join(directory, "sumo.sh")
@@ -79,32 +83,22 @@ for metal_type in metal_types:
         directory = os.path.join(metal_type, alloy_element)
         alloy_element_name = alloy_element.split('_')[1]
 
-        # Define the DOS file combinations
+        # Define the DOS file combinations with different shift options
         dos_combinations = {
-            "brg": [f"host19_{metal_name}_dos.dat", f"dopant27_{alloy_element_name}_dos.dat"],
-            "hol": [f"host19_{metal_name}_dos.dat", f"host20_{metal_name}_dos.dat", f"dopant27_{alloy_element_name}_dos.dat"],
-            "surround": [f"host19_{metal_name}_dos.dat", f"host20_{metal_name}_dos.dat", f"host22_{metal_name}_dos.dat", 
-                       f"host23_{metal_name}_dos.dat", f"host25_{metal_name}_dos.dat", f"host26_{metal_name}_dos.dat", 
-                       f"dopant27_{alloy_element_name}_dos.dat"],
-            "layer": [f"host{i}_{metal_name}_dos.dat" for i in range(19, 27)] + [f"dopant27_{alloy_element_name}_dos.dat"]
+            "brg_shift": [f"host19_{metal_name}_dos.dat", f"dopant27-shift_{alloy_element_name}_dos.dat"],
+            "brg_no_shift": [f"host19_{metal_name}_dos.dat", f"dopant27-no-shift_{alloy_element_name}_dos.dat"],
+            "brg_zero_01": [f"host19_{metal_name}_dos.dat", f"dopant27-zero-energy-0.1_{alloy_element_name}_dos.dat"],
+            "brg_zero_02": [f"host19_{metal_name}_dos.dat", f"dopant27-zero-energy-0.2_{alloy_element_name}_dos.dat"],
         }
 
         # Initialize result entry for this combination
         key = (metal_type, alloy_element)
         
         # Create column names for all combinations and energy ranges
-        all_combinations = ["brg", "hol", "surround", "layer"]
+        all_combinations = ["brg_shift", "brg_no_shift", "brg_zero_01", "brg_zero_02"]
         energy_ranges = [
             ("full", None, None),           # -무한~+무한
             ("below0", None, 0.0),          # -무한~0
-            ("m1to0", -1.0, 0.0),           # -1~0
-            ("m2to0", -2.0, 0.0),           # -2~0
-            ("m3to0", -3.0, 0.0),           # -3~0
-            ("m4to0", -4.0, 0.0),           # -4~0
-            ("m5to0", -5.0, 0.0),           # -5~0
-            ("m6to0", -6.0, 0.0),           # -6~0
-            ("m7to0", -7.0, 0.0),           # -7~0
-            ("m8to0", -8.0, 0.0)            # -8~0
         ]
         
         results[key] = {}
@@ -117,6 +111,25 @@ for metal_type in metal_types:
         
         if os.path.exists(directory):
             print(f"Processing {directory}...")
+            
+            # Create and execute sumo script
+            try:
+                script_path = create_sumo_script(directory, metal_name, alloy_element_name)
+                print(f"  Running sumo.sh...")
+                
+                # Change to the directory and run the script
+                result = subprocess.run(['bash', 'sumo.sh'], cwd=directory, 
+                                      capture_output=True, text=True, timeout=300)
+                
+                if result.returncode != 0:
+                    print(f"  Warning: sumo.sh execution had issues: {result.stderr}")
+                else:
+                    print(f"  sumo.sh completed successfully")
+                    
+            except subprocess.TimeoutExpired:
+                print(f"  Error: sumo.sh execution timed out")
+            except Exception as e:
+                print(f"  Error running sumo.sh: {e}")
             
             # Process each DOS combination
             for combination_name, dos_files in dos_combinations.items():
@@ -205,18 +218,10 @@ with open(tsv_file, mode='w', newline='') as file:
     writer = csv.writer(file, delimiter='\t')
     
     # Create header with all combinations and energy ranges
-    all_combinations = ["brg", "hol", "surround", "layer"]
+    all_combinations = ["brg_shift", "brg_no_shift", "brg_zero_01", "brg_zero_02"]
     energy_ranges = [
         ("full", None, None),           # -무한~+무한
         ("below0", None, 0.0),          # -무한~0
-        ("m1to0", -1.0, 0.0),           # -1~0
-        ("m2to0", -2.0, 0.0),           # -2~0
-        ("m3to0", -3.0, 0.0),           # -3~0
-        ("m4to0", -4.0, 0.0),           # -4~0
-        ("m5to0", -5.0, 0.0),           # -5~0
-        ("m6to0", -6.0, 0.0),           # -6~0
-        ("m7to0", -7.0, 0.0),           # -7~0
-        ("m8to0", -8.0, 0.0)            # -8~0
     ]
     
     header = ["Host", "Dopant"]

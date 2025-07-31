@@ -1,15 +1,13 @@
 #!/bin/bash
 
-sumo-dosplot \
-    --elements Co.d \
-    --atoms Co.19.20.22.23.25.26 \
-    --prefix surround
+for i in {19..26}; do
+    sumo-dosplot \
+        --elements Co.d \
+        --atoms Co.${i} \
+        --prefix host${i}
+done
 
 sumo-dosplot \
-    --elements Co.d \
-    --atoms Co.19.20.21.22.23.24.25.26 \
-    --prefix top
-
-sumo-dosplot \
-    --elements Co.d \
-    --prefix host
+    --elements Sc.d \
+    --prefix fermi \
+    --no
