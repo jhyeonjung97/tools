@@ -1,34 +1,12 @@
-import sys
-import json
 import subprocess
-import numpy as np
 from os import path
-from mendeleev import element
-from ase.io import read, write
-from ase.visualize import view
-from ase.constraints import FixAtoms
-from ase.calculators.vasp import Vasp
+from ase.io import read
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'mnc-u'
-
-ldau_luj = {'Ti': {'L':2, 'U':2.58, 'J':0.0},
-            'V': {'L':2, 'U':2.72, 'J':0.0},
-            'Cr': {'L':2, 'U':2.79, 'J':0.0}, #2.93
-            'Mn': {'L':2, 'U':3.06, 'J':0.0},
-            'Fe': {'L':2, 'U':3.29, 'J':0.0},
-            'Co': {'L':2, 'U':3.42, 'J':0.0},
-            'Ni': {'L':2, 'U':3.40, 'J':0.0},
-            'Cu': {'L':2, 'U':3.87, 'J':0.0}, #4.18
-            'C': {'L':-1, 'U':0.0, 'J':0.0},
-            'N': {'L':-1, 'U':0.0, 'J':0.0},
-            'O': {'L':-1, 'U':0.0, 'J':0.0},
-            'H': {'L':-1, 'U':0.0, 'J':0.0}
-            }
-
+name = 'mnc-pbe0'
 atoms = read('restart.json')
-    
+
 atoms.calc = vasp_calculator.Vasp(
                     encut=500,
                     xc='PBE',
@@ -52,11 +30,9 @@ atoms.calc = vasp_calculator.Vasp(
                     lvtot=False,
                     ispin=2,
                     setups={'base': 'recommended', 'W': '_sv'},
-                    ldau=True,
-                    ldautype=2,
-                    ldau_luj=ldau_luj,
-                    ldauprint=2,
-                    lmaxmix=4,
+                    precfock='Normal',
+                    lhfcac=True,
+                    hfscreen=0.0,
                     lasph=True,
                     laechg=True,
                     lreal='Auto',
