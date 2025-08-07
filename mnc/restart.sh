@@ -25,3 +25,23 @@ elif [[ ${here} == 'kisti' ]]; then
     sed -i -e "/#PBS -N/c\#PBS -N ${metal}${spin}${dz}" submit.sh
     qsub submit.sh
 fi
+
+# for dir in /pscratch/sd/j/jiuy97/6_MNC/revision/*_O2_*/*_*/*_/;
+# do
+#     cd $dir
+#     IFS='/' read -r -a path <<< $PWD
+#     spin=$(echo "${path[-1]}" | cut -d'_' -f1)
+#     sed -i -e "s/nupdown0/nupdown${spin}/" submit.sh
+# done
+
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/most_stable/oh/
+do
+    cd $dir
+    IFS='/' read -r -a path <<< $PWD
+    subdir=${path[-3]}
+    new_dir=/pscratch/sd/j/jiuy97/6_MNC/revision/4_DFT+U_OH/$subdir
+    if [[ ! -d $new_dir ]]; then
+        mkdir -p $new_dir
+    fi
+    cp restart.json $new_dir
+done
