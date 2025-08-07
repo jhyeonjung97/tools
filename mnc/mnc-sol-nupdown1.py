@@ -3,7 +3,7 @@ from ase.io import read
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'mnc0'
+name = 'mnc1'
 
 ldau_luj = {'Ti': {'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
@@ -54,7 +54,7 @@ atoms.calc = vasp_calculator.Vasp(
                     nedos=3000,
                     lorbit=11,
                     lsol=True,
-                    nupdown=0
+                    nupdown=1
                     )
 
 energy = atoms.get_potential_energy()
