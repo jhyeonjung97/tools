@@ -34,14 +34,13 @@ fi
 #     sed -i -e "s/nupdown0/nupdown${spin}/" submit.sh
 # done
 
-for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/most_stable/o/
+/pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/2_Ti/most_stable/relaxed
+
+for dir in /pscratch/sd/j/jiuy97/6_MNC/0_clean/3d/*_*/most_stable/relaxed/
 do
     cd $dir
     IFS='/' read -r -a path <<< $PWD
     subdir=${path[-3]}
-    new_dir=/pscratch/sd/j/jiuy97/6_MNC/revision/5_DFT+U_O/$subdir
-    if [[ ! -d $new_dir ]]; then
-        mkdir -p $new_dir
-    fi
-    cp restart.json $new_dir
+    new_dir=/pscratch/sd/j/jiuy97/6_MNC/revision/3_DFT+U_/$subdir
+    cp * $new_dir
 done
