@@ -65,8 +65,7 @@ for row in data:
     dg4 = g_ + gh2o - g_oh - gh2/2 + 1.23
 
     dg14 = [dg1, dg2, dg3, dg4]
-    # dg04 = [dg0, dg1-dg0, dg2, dg3, dg4]
-    # dg04 = [dg0, dg1-dg0, dg2, dg3, dg4]
+    dg04 = [dg0, dg1-dg0, dg2, dg3, dg4]
     overpotential14 = max(dg14)
     overpotential04 = max(dg04)
     
