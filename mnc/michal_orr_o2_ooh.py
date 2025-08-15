@@ -162,12 +162,14 @@ for row_num, row in enumerate(df.itertuples(), 1):
                edgecolors='black',
                zorder=10)
     
-ax.annotate(f'Mn', (0.23, 3.33), textcoords="offset points", xytext=(0, 10), ha='center', color='black', fontsize=8, zorder=11)
-ax.annotate(f'Fe', (0.42, 3.58), textcoords="offset points", xytext=(0, 10), ha='center', color='black', fontsize=8, zorder=11)
-ax.annotate(f'Co', (1.11, 4.08), textcoords="offset points", xytext=(0, 10), ha='center', color='black', fontsize=8, zorder=11)
-ax.annotate(f'Ni', (1.13, 3.60), textcoords="offset points", xytext=(0, 10), ha='center', color='black', fontsize=8, zorder=11)
+ax.annotate('Mn', (0.23, 3.33), textcoords="offset points", xytext=(0, 10), ha='center', color='black', fontsize=8, zorder=11)
+ax.annotate('Fe', (0.42, 3.58), textcoords="offset points", xytext=(0, 10), ha='center', color='black', fontsize=8, zorder=11)
+ax.annotate('Co', (1.11, 4.08), textcoords="offset points", xytext=(0, 10), ha='center', color='black', fontsize=8, zorder=11)
+ax.annotate('Ni', (1.13, 3.60), textcoords="offset points", xytext=(0, 10), ha='center', color='black', fontsize=8, zorder=11)
 
 ax.plot(x, a * x + b, '--', lw=1, dashes=(3, 1), c='black')
+ax.text(0.45, 4.75, 'PLS: *OO → *OOH', color='black', weight='bold', fontsize=10)
+# ax.text(0.0, 3.0, r'$\mathbf{PLS: *OH \rightarrow H_2O}$', color='black', fontsize=9, rotation=90)
 ax.text(1.4, 2.7, r'$\Delta$G$_{\sf OOH}$=', color=(0.8,0.8,0.8), fontsize=10)
 ax.text(1.4, 2.5, rf'{a}*$\Delta$G$_{{\sf OH}}$', color=(0.8,0.8,0.8), fontsize=10)
 ax.text(1.4, 2.3, rf'+{b} eV', color=(0.8,0.8,0.8), fontsize=10)

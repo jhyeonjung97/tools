@@ -179,7 +179,7 @@ def plot_g3_dg0_scaling():
     plt.figure(figsize=(4, 3), dpi=300)
     
     # 산점도
-    plt.scatter(g3_values, dg0_values, c='red', s=20, zorder=4)
+    plt.scatter(g3_values, dg0_values, c='blue', s=20, zorder=4)
     
     # 촉매 이름 라벨
     for xi, yi, metal in zip(g3_values, dg0_values, catalysts):
