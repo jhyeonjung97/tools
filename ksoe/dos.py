@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import argparse
 import os
-import subprocess
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description="Calculate d-band centers for multiple metal-alloy combinations.")
@@ -12,7 +11,7 @@ args = parser.parse_args()
 
 # Define the directory structure
 metal_types = ["2_Co", "3_Ni", "4_Cu"]
-alloying_elements = ["01_Sc", "02_Ti", "03_V", "04_Cr", "05_Mn", "06_Fe", 
+alloying_elements = ["00_host", "01_Sc", "02_Ti", "03_V", "04_Cr", "05_Mn", "06_Fe", 
                      "07_Y", "08_Zr", "09_Nb", "10_Mo", "11_Ru", "12_W"]
 
 # Define column names
@@ -77,7 +76,10 @@ for metal_type in metal_types:
     
     for alloy_element in alloying_elements:
         directory = os.path.join(metal_type, alloy_element)
-        alloy_element_name = alloy_element.split('_')[1]
+        if alloy_element == "00_host":
+            alloy_element_name = metal_name
+        else:
+            alloy_element_name = alloy_element.split('_')[1]
 
         # Define the DOS file combinations
         dos_combinations = {
