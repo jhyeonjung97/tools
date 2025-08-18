@@ -44,3 +44,10 @@ do
     new_dir=/pscratch/sd/j/jiuy97/6_MNC/revision/3_DFT+U_/$subdir
     cp * $new_dir
 done
+
+for i in 0 1 2 3 4 5; do
+    cd ${i}_
+    sed -i -e "s/mmm/${i}/" restart.json
+    sed -i -e "s/mmm/${i}/" mnc-sol-nupdown.py
+    cd ..
+done
