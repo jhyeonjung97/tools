@@ -35,7 +35,6 @@ atoms.calc = vasp_calculator.Vasp(
      lasph=true, 
      lvtot=false, 
      lreal=Auto, 
-     txt=-, 
      kpts=[3, 2, 1], 
      gamma=true, 
      reciprocal=false, 
