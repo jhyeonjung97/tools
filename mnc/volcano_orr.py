@@ -29,20 +29,22 @@ dgooh = zpeooh + cvooh - tsooh
 def main():
     """Initialize energy data and plot the ORR volcano diagram."""
     df = pd.DataFrame(columns=["E_", "E_OH", "ΔE_OH", "ΔG_OH", "lp"])
-    df.loc["PBE+U4.3+sol+vdw_clean", ["E_", "E_OH"]] = [-280.17697237, -290.94763409999996]
-    df.loc["PBE+U4.3+sol+vdw_OH(antipodal)", ["E_", "E_OH"]] = [-290.94763409999996, -300.6264046]
-    df.loc["PBE+U4.3+sol+vdw_OH(adjacent)", ["E_", "E_OH"]] = [-290.94763409999996, -300.7382192]
-    df.loc["PBE+U4.3+sol+vdw_H2O(antipodal)", ["E_", "E_OH"]] = [-294.9692702, -305.06675363]
+    # df.loc["PBE+U4.3+sol+vdw_clean", ["E_", "E_OH"]] = [-280.17697237, -290.94763409999996]
+    # df.loc["PBE+U4.3+sol+vdw_OH(antipodal)", ["E_", "E_OH"]] = [-290.94763409999996, -300.6264046]
+    # df.loc["PBE+U4.3+sol+vdw_OH(adjacent)", ["E_", "E_OH"]] = [-290.94763409999996, -300.7382192]
+    df.loc["PBE+U4.3+sol+vdw_H2O(antipodal, HS)", ["E_", "E_OH"]] = [-294.9692702, -305.632900]
+    df.loc["PBE+U4.3+sol+vdw_H2O(antipodal, IS)", ["E_", "E_OH"]] = [-294.9692702, -305.337678]
+    df.loc["PBE+U4.3+sol+vdw_H2O(antipodal, LS)", ["E_", "E_OH"]] = [-294.9692702, -305.066754]
     # df.loc["PBE+U4.3+sol+vdw_O2(antipodal)", ["E_", "E_OH"]] = [-290.615657, -300.425750]
-    df.loc["PBE+U4.3+sol+vdw_O(antipodal)", ["E_", "E_OH"]] = [-285.94477754, -295.52658608]
-    df.loc["PBE+U4.3+sol+vdw_O(adjacent)", ["E_", "E_OH"]] = [-285.94477754, -295.22826514]
+    # df.loc["PBE+U4.3+sol+vdw_O(antipodal)", ["E_", "E_OH"]] = [-285.94477754, -295.52658608]
+    # df.loc["PBE+U4.3+sol+vdw_O(adjacent)", ["E_", "E_OH"]] = [-285.94477754, -295.22826514]
     # df.loc["haily_antipodalOOH", ["E_", "E_OH"]] = [-295.18886945, -304.81150537999997]
     # df.loc["haily_adjacentOOH", ["E_", "E_OH"]] = [-295.18886945, -305.39491661]
     # df.loc["haily_adjacent(HS→HS)", ["E_", "E_OH"]] = [-290.91601036, -300.7382192]
     # df.loc["roman_SCAN(HS→LS)", ["ΔE_OH"]] = 0.51
-    df.loc["PBE+U4.3", ["ΔE_OH"]] = 0.35
+    # df.loc["PBE+U4.3", ["ΔE_OH"]] = 0.35
     # df.loc["PBE+U4.3(IS)", ["ΔE_OH"]] = 0.64
-    df.loc["PBE+U4.3+sol", ["ΔE_OH"]] = 0.16
+    # df.loc["PBE+U4.3+sol", ["ΔE_OH"]] = 0.16
     # df.loc["PBE+U4.3+sol(IS)", ["ΔE_OH"]] = 0.39
     # df.loc["PBE+U3.3", ["ΔE_OH"]] = 0.65
     # df.loc["B3LYP", ["ΔE_OH"]] = 0.60
@@ -51,13 +53,15 @@ def main():
     # df.loc["DMC(IS)", ["ΔE_OH"]] = 0.69
     # df.loc["DMC+sol(IS)", ["ΔE_OH"]] = 0.69 - 0.19
     # df.loc["DMC+sol+vdw(IS)", ["ΔE_OH"]] = 0.69 - 0.19 - 0.08
-    df.loc["DMC", ["ΔE_OH"]] = -0.11
-    df.loc["DMC+sol+vdw+antipodal(guess)", ["ΔE_OH"]] = -0.11 - 0.19 - 0.08 + 1.091891
-    df.loc["PBE+U4.3_OH(antipodal)", ["ΔE_OH"]] = 1.7
+    # df.loc["DMC", ["ΔE_OH"]] = -0.11
+    # df.loc["DMC+sol+vdw+antipodal(guess)", ["ΔE_OH"]] = -0.11 - 0.19 - 0.08 + 1.091891
+    # df.loc["PBE+U4.3_OH(antipodal)", ["ΔE_OH"]] = 1.7
     # df.loc["GCDFT_PBE+U4.3+sol_0.0V(IS)", ["ΔG_OH"]] = 0.8
-    df.loc["GC+PBE+U4.3+sol_1.0V(IS)", ["ΔG_OH"]] = 0.9
+    # df.loc["GC+PBE+U4.3+sol_1.0V(IS)", ["ΔG_OH"]] = 0.9
     # df.loc["GCDFT_PBE+U4.3+sol_0.0V(HS)", ["ΔG_OH"]] = 0.4
-    df.loc["GC+PBE+U4.3+sol_1.0V(HS)", ["ΔG_OH"]] = 1.0
+    # df.loc["GC+PBE+U4.3+sol_1.0V(HS)", ["ΔG_OH"]] = 1.0
+    df.loc["DMC_H2O(HS)", ["ΔE_OH"]] = 0.1
+    df.loc["DMC_H2O(IS)", ["ΔE_OH"]] = 1.8
 
     # Iterate over rows to apply conditions
     for index, row in df.iterrows():
