@@ -22,7 +22,6 @@ atoms.calc = vasp_calculator.Vasp(
      ismear=0, 
      ispin=2, 
      istart=1, 
-     kpar=10, 
      ldauprint=2, 
      ldautype=2, 
      lmaxmix=6, 
