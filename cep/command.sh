@@ -20,5 +20,12 @@ python ~/bin/HybridPB/pourbaix.py --legend-out --gc \
 --suffix K --Umax 2 --cmin-2d 0.55 --cmax-2d 0.9 --cgap-2d 0.0
 
 mv */*.json .
-python ~/bin/HybridPB/pourbaix.py --hybrid --concentration 1e-15 --legend-out \
---suffix K --Umax 2 --cmin-2d 0.55 --cmax-2d 0.9 --cgap-2d 0.0
+python ~/bin/HybridPB/pourbaix.py --hybrid --legend-out \
+--suffix K --Umax 2 --cmin-2d 0.2 --cmax-2d 0.8 --cgap-2d 0.0
+python ~/bin/HybridPB/pourbaix.py --hybrid --legend-out --gc \
+--suffix K --Umax 2 --cmin-2d 0.2 --cmax-2d 0.8 --cgap-2d 0.0
+
+python ~/bin/HybridPB/pourbaix.py --hybrid --concentration 1e-99 --legend-out \
+--suffix K50 --Umax 2 --cmin-2d 0.2 --cmax-2d 0.8 --cgap-2d 0.2
+python ~/bin/HybridPB/pourbaix.py --hybrid --concentration 1e-99 --legend-out --gc \
+--suffix K50 --Umax 2 --cmin-2d 0.2 --cmax-2d 0.8 --cgap-2d 0.2

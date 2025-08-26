@@ -5,6 +5,12 @@ import ase.calculators.vasp as vasp_calculator
 
 atoms = read('restart.json')
 
+ldau_luj = {
+    'Mn': {'L': 2, 'U': 2.75, 'J': 0.0},
+    'O': {'L': -1, 'U': 0.0, 'J': 0.0},
+    'H': {'L': -1, 'U': 0.0, 'J': 0.0}
+    }
+
 atoms.calc = vasp_calculator.Vasp(
      amix=0.1, 
      amix_mag=0.1, 
@@ -22,9 +28,11 @@ atoms.calc = vasp_calculator.Vasp(
      ismear=0, 
      ispin=2, 
      istart=1, 
-     ldauprint=2, 
+     ldau=True,
+     lmaxmix=4,
+     ldau_luj=ldau_luj,
      ldautype=2, 
-     lmaxmix=6, 
+     ldauprint=2, 
      lorbit=11, 
      nelm=250, 
      npar=6, 
