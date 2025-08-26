@@ -3,7 +3,7 @@ from ase.io import read
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-atoms = read('k.json')
+atoms = read('restart.json')
 
 atoms.calc = vasp_calculator.Vasp(
      amix=0.1, 
@@ -22,7 +22,6 @@ atoms.calc = vasp_calculator.Vasp(
      ismear=0, 
      ispin=2, 
      istart=1, 
-     kpar=10, 
      ldauprint=2, 
      ldautype=2, 
      lmaxmix=6, 
@@ -35,7 +34,7 @@ atoms.calc = vasp_calculator.Vasp(
      lasph=True, 
      lvtot=False, 
      lreal='Auto', 
-     kpts=[3, 2, 1], 
+     kpts=[3, 1, 1], #
      gamma=True, 
      reciprocal=False, 
      ignore_constraints=False    
