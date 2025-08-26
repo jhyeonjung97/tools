@@ -51,3 +51,13 @@ for i in 0 1 2 3 4 5; do
     sed -i -e "s/mmm/${i}/" mnc-sol-nupdown.py
     cd ..
 done
+
+for dir in *
+do
+    cp $dir/Vacuum/final_with_calculator.json /Users/hailey/Desktop/9_pourbaixGC/5_MoO2_100/K-$dir.json
+done
+
+for dir in *
+do
+    cp $dir/Vacuum/final_with_calculator.json /Users/hailey/Desktop/9_pourbaixGC/5_MoO2_100/$dir.json
+done
