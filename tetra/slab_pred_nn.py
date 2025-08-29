@@ -36,7 +36,12 @@ CYAN = '\033[96m'
 ENDC = '\033[0m'
 BOLD = '\033[1m'
 
-os.environ['JOBLIB_START_METHOD'] = 'fork'
+# macOS에서 fork 대신 spawn 사용
+import platform
+if platform.system() == 'Darwin':
+    os.environ['JOBLIB_START_METHOD'] = 'spawn'
+else:
+    os.environ['JOBLIB_START_METHOD'] = 'fork'
 
 class NeuralNetwork(nn.Module):
     def __init__(self, input_size, hidden_sizes=[128, 64, 32], dropout_rate=0.2):
@@ -62,65 +67,81 @@ class NeuralNetwork(nn.Module):
 
 def train_neural_network(model, train_loader, val_loader, epochs=100, lr=0.001, patience=20, weight_decay=1e-5):
     """Train neural network with early stopping"""
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = model.to(device)
-    
-    criterion = nn.MSELoss()
-    optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10)
-    
-    best_val_loss = float('inf')
-    patience_counter = 0
-    train_losses = []
-    val_losses = []
-    
-    for epoch in range(epochs):
-        # Training
-        model.train()
-        train_loss = 0.0
-        for batch_X, batch_y in train_loader:
-            batch_X, batch_y = batch_X.to(device), batch_y.to(device)
-            
-            optimizer.zero_grad()
-            outputs = model(batch_X).squeeze()
-            loss = criterion(outputs, batch_y)
-            loss.backward()
-            optimizer.step()
-            
-            train_loss += loss.item()
+    try:
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        model = model.to(device)
         
-        # Validation
-        model.eval()
-        val_loss = 0.0
-        with torch.no_grad():
-            for batch_X, batch_y in val_loader:
+        criterion = nn.MSELoss()
+        optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10)
+        
+        best_val_loss = float('inf')
+        patience_counter = 0
+        train_losses = []
+        val_losses = []
+        
+        for epoch in range(epochs):
+            # Training
+            model.train()
+            train_loss = 0.0
+            for batch_X, batch_y in train_loader:
                 batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+                
+                optimizer.zero_grad()
                 outputs = model(batch_X).squeeze()
                 loss = criterion(outputs, batch_y)
-                val_loss += loss.item()
-        
-        train_loss /= len(train_loader)
-        val_loss /= len(val_loader)
-        train_losses.append(train_loss)
-        val_losses.append(val_loss)
-        
-        scheduler.step(val_loss)
-        
-        # Early stopping
-        if val_loss < best_val_loss:
-            best_val_loss = val_loss
-            patience_counter = 0
-            best_model_state = model.state_dict().copy()
-        else:
-            patience_counter += 1
+                loss.backward()
+                optimizer.step()
+                
+                train_loss += loss.item()
+                
+                # 메모리 정리
+                del outputs, loss
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
             
-        if patience_counter >= patience:
-            print(f"Early stopping at epoch {epoch}")
-            break
-    
-    # Load best model
-    model.load_state_dict(best_model_state)
-    return model, train_losses, val_losses
+            # Validation
+            model.eval()
+            val_loss = 0.0
+            with torch.no_grad():
+                for batch_X, batch_y in val_loader:
+                    batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+                    outputs = model(batch_X).squeeze()
+                    loss = criterion(outputs, batch_y)
+                    val_loss += loss.item()
+                    
+                    # 메모리 정리
+                    del outputs, loss
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+            
+            train_loss /= len(train_loader)
+            val_loss /= len(val_loader)
+            train_losses.append(train_loss)
+            val_losses.append(val_loss)
+            
+            scheduler.step(val_loss)
+            
+            # Early stopping
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
+                patience_counter = 0
+                best_model_state = model.state_dict().copy()
+            else:
+                patience_counter += 1
+                
+            if patience_counter >= patience:
+                print(f"Early stopping at epoch {epoch}")
+                break
+        
+        # Load best model
+        model.load_state_dict(best_model_state)
+        return model, train_losses, val_losses
+        
+    except Exception as e:
+        print(f"Training failed: {e}")
+        # 기본 모델 반환
+        return model, [], []
 
 def predict_with_uncertainty(model, X, n_iterations=100):
     """Predict with uncertainty using dropout"""
@@ -312,119 +333,146 @@ def print_time(message, time_value):
 
 def objective(trial, X_train, y_train, X_val, y_val, input_size):
     """Objective function for Optuna optimization"""
-    # Suggest hyperparameters
-    n_layers = trial.suggest_int('n_layers', 2, 4)
-    hidden_sizes = []
-    for i in range(n_layers):
-        if i == 0:
-            hidden_sizes.append(trial.suggest_int(f'hidden_size_{i}', 32, 256))
-        else:
-            hidden_sizes.append(trial.suggest_int(f'hidden_size_{i}', 16, hidden_sizes[i-1]))
-    
-    dropout_rate = trial.suggest_float('dropout_rate', 0.1, 0.5)
-    learning_rate = trial.suggest_float('learning_rate', 1e-4, 1e-2, log=True)
-    batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128])
-    weight_decay = trial.suggest_float('weight_decay', 1e-6, 1e-3, log=True)
-    
-    # Create model
-    model = NeuralNetwork(
-        input_size=input_size,
-        hidden_sizes=hidden_sizes,
-        dropout_rate=dropout_rate
-    )
-    
-    # Create data loaders
-    train_dataset = TensorDataset(
-        torch.FloatTensor(X_train.values),
-        torch.FloatTensor(y_train.values)
-    )
-    val_dataset = TensorDataset(
-        torch.FloatTensor(X_val.values),
-        torch.FloatTensor(y_val.values)
-    )
-    
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
-    
-    # Train model with early stopping
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = model.to(device)
-    
-    criterion = nn.MSELoss()
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10)
-    
-    best_val_loss = float('inf')
-    patience_counter = 0
-    patience = 15  # Shorter patience for optimization
-    
-    for epoch in range(50):  # Fewer epochs for optimization
-        # Training
-        model.train()
-        train_loss = 0.0
-        for batch_X, batch_y in train_loader:
-            batch_X, batch_y = batch_X.to(device), batch_y.to(device)
-            
-            optimizer.zero_grad()
-            outputs = model(batch_X).squeeze()
-            loss = criterion(outputs, batch_y)
-            loss.backward()
-            optimizer.step()
-            
-            train_loss += loss.item()
+    try:
+        # Suggest hyperparameters
+        n_layers = trial.suggest_int('n_layers', 2, 4)
+        hidden_sizes = []
+        for i in range(n_layers):
+            if i == 0:
+                hidden_sizes.append(trial.suggest_int(f'hidden_size_{i}', 32, 256))
+            else:
+                hidden_sizes.append(trial.suggest_int(f'hidden_size_{i}', 16, hidden_sizes[i-1]))
         
-        # Validation
-        model.eval()
-        val_loss = 0.0
-        with torch.no_grad():
-            for batch_X, batch_y in val_loader:
+        dropout_rate = trial.suggest_float('dropout_rate', 0.1, 0.5)
+        learning_rate = trial.suggest_float('learning_rate', 1e-4, 1e-2, log=True)
+        batch_size = trial.suggest_categorical('batch_size', [16, 32, 64, 128])
+        weight_decay = trial.suggest_float('weight_decay', 1e-6, 1e-3, log=True)
+        
+        # Create model
+        model = NeuralNetwork(
+            input_size=input_size,
+            hidden_sizes=hidden_sizes,
+            dropout_rate=dropout_rate
+        )
+        
+        # Create data loaders
+        train_dataset = TensorDataset(
+            torch.FloatTensor(X_train.values),
+            torch.FloatTensor(y_train.values)
+        )
+        val_dataset = TensorDataset(
+            torch.FloatTensor(X_val.values),
+            torch.FloatTensor(y_val.values)
+        )
+        
+        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+        
+        # Train model with early stopping
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        model = model.to(device)
+        
+        criterion = nn.MSELoss()
+        optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10)
+        
+        best_val_loss = float('inf')
+        patience_counter = 0
+        patience = 15  # Shorter patience for optimization
+        
+        for epoch in range(50):  # Fewer epochs for optimization
+            # Training
+            model.train()
+            train_loss = 0.0
+            for batch_X, batch_y in train_loader:
                 batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+                
+                optimizer.zero_grad()
                 outputs = model(batch_X).squeeze()
                 loss = criterion(outputs, batch_y)
-                val_loss += loss.item()
-        
-        val_loss /= len(val_loader)
-        scheduler.step(val_loss)
-        
-        # Early stopping
-        if val_loss < best_val_loss:
-            best_val_loss = val_loss
-            patience_counter = 0
-        else:
-            patience_counter += 1
+                loss.backward()
+                optimizer.step()
+                
+                train_loss += loss.item()
             
-        if patience_counter >= patience:
-            break
-    
-    return best_val_loss
+            # Validation
+            model.eval()
+            val_loss = 0.0
+            with torch.no_grad():
+                for batch_X, batch_y in val_loader:
+                    batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+                    outputs = model(batch_X).squeeze()
+                    loss = criterion(outputs, batch_y)
+                    val_loss += loss.item()
+            
+            val_loss /= len(val_loader)
+            scheduler.step(val_loss)
+            
+            # Early stopping
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
+                patience_counter = 0
+            else:
+                patience_counter += 1
+                
+            if patience_counter >= patience:
+                break
+        
+        # Clean up memory
+        del model, train_loader, val_loader, train_dataset, val_dataset
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        
+        return best_val_loss
+        
+    except Exception as e:
+        print(f"Trial failed: {e}")
+        return float('inf')  # Return high loss for failed trials
 
 def optimize_hyperparameters(X_train, y_train, input_size, n_trials=50):
     """Optimize hyperparameters using Optuna"""
     print("Starting hyperparameter optimization...")
     opt_start = time.time()
     
-    # Split training data for optimization
-    X_opt_train, X_opt_val, y_opt_train, y_opt_val = train_test_split(
-        X_train, y_train, test_size=0.2, random_state=42
-    )
-    
-    # Create study
-    study = optuna.create_study(
-        direction='minimize',
-        sampler=TPESampler(seed=42)
-    )
-    
-    # Optimize
-    study.optimize(
-        lambda trial: objective(trial, X_opt_train, y_opt_train, X_opt_val, y_opt_val, input_size),
-        n_trials=n_trials
-    )
-    
-    print_time("Hyperparameter optimization completed", time.time() - opt_start)
-    print(f"{GREEN}Best trial: {study.best_trial.value:.6f}{ENDC}")
-    print(f"{GREEN}Best parameters: {study.best_trial.params}{ENDC}")
-    
-    return study.best_trial.params
+    try:
+        # Split training data for optimization
+        X_opt_train, X_opt_val, y_opt_train, y_opt_val = train_test_split(
+            X_train, y_train, test_size=0.2, random_state=42
+        )
+        
+        # Create study with storage to avoid memory issues
+        study = optuna.create_study(
+            direction='minimize',
+            sampler=TPESampler(seed=42),
+            storage=None  # Use in-memory storage
+        )
+        
+        # Optimize with error handling
+        study.optimize(
+            lambda trial: objective(trial, X_opt_train, y_opt_train, X_opt_val, y_opt_val, input_size),
+            n_trials=n_trials,
+            show_progress_bar=False  # Disable progress bar to reduce memory usage
+        )
+        
+        print_time("Hyperparameter optimization completed", time.time() - opt_start)
+        print(f"{GREEN}Best trial: {study.best_trial.value:.6f}{ENDC}")
+        print(f"{GREEN}Best parameters: {study.best_trial.params}{ENDC}")
+        
+        return study.best_trial.params
+        
+    except Exception as e:
+        print(f"{YELLOW}Hyperparameter optimization failed: {e}{ENDC}")
+        print(f"{YELLOW}Using default parameters instead{ENDC}")
+        return {
+            'n_layers': 3,
+            'hidden_size_0': 128,
+            'hidden_size_1': 64,
+            'hidden_size_2': 32,
+            'dropout_rate': 0.2,
+            'learning_rate': 0.001,
+            'batch_size': 32,
+            'weight_decay': 1e-5
+        }
 
 def main():
     start_time = time.time()
@@ -465,7 +513,7 @@ def main():
     parser.add_argument('--dropout_rate', type=float, default=0.2, help='Dropout rate (default: 0.2)')
     parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs (default: 100)')
     parser.add_argument('--lr', type=float, default=0.001, help='Learning rate (default: 0.001)')
-    parser.add_argument('--batch_size', type=int, default=32, help='Batch size (default: 32)')
+    parser.add_argument('--batch_size', type=int, default=16, help='Batch size (default: 16)')
     parser.add_argument('--patience', type=int, default=20, help='Early stopping patience (default: 20)')
     parser.add_argument('--edge', action='store_true', help='n_electrons가 0~10인 데이터만 사용 (기본값: off)')
     parser.add_argument('--save', action='store_true', help='Save results to file')
@@ -473,7 +521,13 @@ def main():
     parser.add_argument('--n_trials', type=int, default=50, help='Number of optimization trials (default: 50)')
     args = parser.parse_args()
     
+    # 디버깅을 위해 입력된 인수들 출력
+    print(f"Debug: Input X arguments: {args.X}")
+    print(f"Debug: Number of X arguments: {len(args.X)}")
+    
     args.X = [('-' + x if x.startswith('ICOHP') or x.startswith('ICOOP') else x) for x in args.X]
+    print(f"Debug: Processed X arguments: {args.X}")
+    
     YY = args.Y + '_energy'
     output_suffix = args.output
 

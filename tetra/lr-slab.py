@@ -68,7 +68,7 @@ def main():
     }
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--Y', default='o_energy', help='Target column from bulk_data.csv (default: form)')
+    parser.add_argument('--Y', default='o', help='Target column from bulk_data.csv (default: form)')
     parser.add_argument('--X', nargs='+', default=X_default, help='List of feature columns from bulk_data.csv and/or mendeleev_data.csv')
     parser.add_argument('--row', nargs='+', type=str, default=None, help='Filter by row: 3d, 4d, or 5d')
     parser.add_argument('--coord', nargs='+', type=str, default=None, help='Filter by coordination, e.g., ZB, RS')
@@ -76,6 +76,7 @@ def main():
     args = parser.parse_args()
 
     args.X = [('-' + x if x.startswith('ICOHP') or x.startswith('ICOOP') else x) for x in args.X]
+    args.Y = args.Y + '_energy'
 
     df_csv = os.path.join(slab_dir, 'lr_slab_data.csv')
     df_tsv = os.path.join(slab_dir, 'lr_slab_data.tsv')
