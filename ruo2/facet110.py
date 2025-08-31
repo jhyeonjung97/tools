@@ -3,7 +3,7 @@ from ase.io import read, write
 from ase.build import surface
 from ase.constraints import FixAtoms
 
-atoms = read('final_with_calculator.json')
+atoms = read('restart.json')
 
 atoms = surface(atoms, indices=(0,1,0), layers=3, vacuum=1.0)
 
