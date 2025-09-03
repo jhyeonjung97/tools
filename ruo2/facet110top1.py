@@ -5,14 +5,14 @@ from ase.constraints import FixAtoms
 
 atoms = read('restart.json')
 
-atoms = surface(atoms, indices=(-1,0,0), layers=3, vacuum=1.0)
+atoms = surface(atoms, indices=(1,0,0), layers=3, vacuum=1.0)
 
 
 # Delete lowest 10 and highest 14 atoms by z-coordinate
 z_positions = atoms.get_positions()[:, 2]
 order = np.argsort(z_positions)
-lowest_indices = order[:10]
-highest_indices = order[-14:]
+lowest_indices = order[:22]
+highest_indices = order[-2:]
 indices_to_delete = np.concatenate((lowest_indices, highest_indices))
 for idx in sorted(set(indices_to_delete.tolist()), reverse=True):
     del atoms[idx]
