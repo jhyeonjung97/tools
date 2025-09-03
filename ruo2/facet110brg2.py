@@ -5,7 +5,7 @@ from ase.constraints import FixAtoms
 
 atoms = read('restart.json')
 
-atoms = surface(atoms, indices=(-1,0,0), layers=3, vacuum=1.0)
+atoms = surface(atoms, indices=(1,0,0), layers=3, vacuum=1.0)
 
 
 # Delete lowest 10 and highest 14 atoms by z-coordinate
