@@ -49,3 +49,20 @@ if __name__ == "__main__":
     ru_band_center = process_dos_file("sumo_Ru_dos.dat", "Ru")  
     # Process O DOS file
     o_band_center = process_dos_file("sumo_O_dos.dat", "O")
+    
+    # Save results to band-center.txt
+    with open("band-center.txt", "w") as f:
+        f.write("Band Center Results\n")
+        f.write("==================\n\n")
+        
+        if ru_band_center is not None:
+            f.write(f"Ru band center: {ru_band_center:.4f} eV\n")
+        else:
+            f.write("Ru band center: Error or file not found\n")
+            
+        if o_band_center is not None:
+            f.write(f"O band center: {o_band_center:.4f} eV\n")
+        else:
+            f.write("O band center: Error or file not found\n")
+    
+    print(f"\nResults saved to band-center.txt")
