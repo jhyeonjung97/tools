@@ -46,20 +46,6 @@ def process_dos_file(filename, element_name):
 # Main execution
 if __name__ == "__main__":
     # Process Ru DOS file
-    print("Processing Ru DOS file...")
-    ru_band_center = process_dos_file("sumo_Ru_dos.dat", "Ru")
-    
-    print()
-    
+    ru_band_center = process_dos_file("sumo_Ru_dos.dat", "Ru")  
     # Process O DOS file
-    print("Processing O DOS file...")
     o_band_center = process_dos_file("sumo_O_dos.dat", "O")
-    
-    print()
-    
-    if ru_band_center is not None and o_band_center is not None:
-        print(f"Summary:")
-        print(f"Ru band center: {ru_band_center:.4f} eV")
-        print(f"O band center: {o_band_center:.4f} eV")
-    else:
-        print("Could not calculate all band centers due to errors.")
