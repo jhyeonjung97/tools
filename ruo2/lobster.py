@@ -40,6 +40,7 @@ atoms.calc = vasp_calculator.Vasp(
     nelm=250,
     npar=6,
     nsw=0,
+    nbands=120,
     laechg=True,
     lasph=True,
     lvtot=False,
