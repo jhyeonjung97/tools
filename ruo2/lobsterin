@@ -1,0 +1,6 @@
+COHPstartEnergy -25.0
+COHPendEnergy 15.0
+userecommendedbasisfunctions
+
+cohpGenerator from 1.0 to 3.0 type Ru type O orbitalWise
+cobiGenerator from 1.0 to 3.0 type Ru type O orbitalWise
