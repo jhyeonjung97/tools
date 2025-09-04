@@ -12,31 +12,6 @@ ldau_luj = {
     'H': {'L': -1, 'U': 0.0, 'J': 0.0}
     }
 
-def get_bands(atoms):
-    nbands = 0
-    nbands_per_orbital = {'s': 1, 'p': 3, 'd': 5, 'f': 7}
-    for symbol in atoms.get_chemical_symbols():
-        if symbol == 'H':  # H is bugged
-            nbands += 1
-            continue
-        orbitals = element(symbol).ec.get_valence().to_str().split()
-        nbands += sum(nbands_per_orbital[orbital[1]] * int(orbital[2:]) for orbital in orbitals)
-    return nbands
-
-nbands = get_bands(atoms)
-
-def get_nelectrons(atoms):
-    nelectrons = 0
-    for atom in atoms:
-        nelectrons += atom.number
-    return nelectrons
-
-nelectrons = get_nelectrons(atoms)
-
-# add a few extra bands
-# nbands = max(nbands, nelectrons)
-# nbands += 4 - nbands % 4
-
 atoms.calc = vasp_calculator.Vasp(
      inimix=0,
      amix=0.1,
@@ -50,8 +25,9 @@ atoms.calc = vasp_calculator.Vasp(
      algo='Fast',
      gga='PE',
      prec='Normal',
-     ibrion=2,
+     ibrion=-1,
      isif=2,
+     isym=0,
      ismear=0,
      ispin=2,
      istart=1,
@@ -63,8 +39,8 @@ atoms.calc = vasp_calculator.Vasp(
      lorbit=11,
      nelm=250,
      npar=6,
-     nsw=199,
-     nbands=nbands,
+     nsw=0,
+     nbands=10,
      laechg=True,
      lasph=True,
      lvtot=False,
