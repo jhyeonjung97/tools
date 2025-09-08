@@ -53,12 +53,16 @@ def calculate_adsorption_energies():
     v_oh_path = root_path / "2_V_OH"
     v_o_path = root_path / "3_V_O"
     o_ohcus_path = root_path / "5_O_OHcus"
+    vo_o_path = root_path / "7_VO_O"
+    ho_o_path = root_path / "8_HO_O"
     
     ueff_values = [0, 1, 2, 3, 4]
     energies_v_v = []
     energies_v_oh = []
     energies_v_o = []
     energies_o_ohcus = []
+    energies_vo_o = []
+    energies_ho_o = []
         
     # V_V 에너지 추출
     for ueff in ueff_values:
@@ -88,9 +92,24 @@ def calculate_adsorption_energies():
         if energy is not None:
             energies_o_ohcus.append(energy)
     
-    if len(energies_v_v) == len(energies_v_oh) == len(energies_v_o) == len(energies_o_ohcus) == len(ueff_values):
+    # VO_O 에너지 추출
+    for ueff in ueff_values:
+        json_path = vo_o_path / f"{ueff}_" / "final_with_calculator.json"
+        energy = get_energy_from_json(json_path)
+        if energy is not None:
+            energies_vo_o.append(energy)
+    
+    # HO_O 에너지 추출
+    for ueff in ueff_values:
+        json_path = ho_o_path / f"{ueff}_" / "final_with_calculator.json"
+        energy = get_energy_from_json(json_path)
+        if energy is not None:
+            energies_ho_o.append(energy)
+    
+    if len(energies_v_v) == len(energies_v_oh) == len(energies_v_o) == len(energies_o_ohcus) == len(energies_vo_o) == len(energies_ho_o) == len(ueff_values):
         oh_adsorption_energies_1 = []  # V_OH - V_V
         oh_adsorption_energies_2 = []  # O_OHcus - V_O
+        oh_adsorption_energies_3 = []  # HO_O - VO_O
         
         for i, ueff in enumerate(ueff_values):
             # 첫 번째 OH 흡착 에너지: clean surface에서 OH 흡착
@@ -103,19 +122,27 @@ def calculate_adsorption_energies():
             oh_ads_energy_2 = energies_o_ohcus[i] + dgoh - energies_v_o[i] - oh_gas_energy
             oh_adsorption_energies_2.append(oh_ads_energy_2)
             print(f"Ueff={ueff}: dG_OH (O-covered) = {oh_ads_energy_2:.6f} eV")
+            
+            # 세 번째 OH 흡착 에너지: VO_O에서 HO_O로의 OH 흡착
+            oh_ads_energy_3 = energies_ho_o[i] + dgoh - energies_vo_o[i] - oh_gas_energy
+            oh_adsorption_energies_3.append(oh_ads_energy_3)
+            print(f"Ueff={ueff}: dG_OH (VO_O) = {oh_ads_energy_3:.6f} eV")
         
-        return ueff_values, oh_adsorption_energies_1, oh_adsorption_energies_2
+        return ueff_values, oh_adsorption_energies_1, oh_adsorption_energies_2, oh_adsorption_energies_3
     else:
-        return None, None, None
+        return None, None, None, None
 
-def plot_oh_adsorption_energies_vs_ueff(ueff_values, oh_energies_1, oh_energies_2):    
+def plot_oh_adsorption_energies_vs_ueff(ueff_values, oh_energies_1, oh_energies_2, oh_energies_3):    
     plt.figure(figsize=(6, 5))
     
     # 첫 번째 OH 흡착 에너지: clean surface에서 OH 흡착
-    plt.plot(ueff_values, oh_energies_1, 'bo-', linewidth=2, markersize=8, label=r'$\Delta G_{OH}$ (clean)')
+    plt.plot(ueff_values, oh_energies_1, 'bo-', linewidth=2, markersize=8, label=r'$\Delta G_{OH}$ (top)')
     
     # 두 번째 OH 흡착 에너지: O-covered surface에서 OH 흡착
-    plt.plot(ueff_values, oh_energies_2, 'rs-', linewidth=2, markersize=8, label=r'$\Delta G_{OH}$ (O-covered)')
+    plt.plot(ueff_values, oh_energies_2, 'rs-', linewidth=2, markersize=8, label=r'$\Delta G_{OH}$ (top, O-covered)')
+    
+    # 세 번째 OH 흡착 에너지: VO_O에서 HO_O로의 OH 흡착
+    plt.plot(ueff_values, oh_energies_3, 'g^-', linewidth=2, markersize=8, label=r'$\Delta G_{OH}$ (brg, O-covered)')
     
     plt.xlabel(r'$U_{\mathrm{eff}}$ (eV)', fontsize=14)
     plt.ylabel(r'$\Delta G_{OH}$ (eV)', fontsize=14)
@@ -125,12 +152,26 @@ def plot_oh_adsorption_energies_vs_ueff(ueff_values, oh_energies_1, oh_energies_
     
     # 데이터 포인트에 값 표시
     for i, (x, y) in enumerate(zip(ueff_values, oh_energies_1)):
+        if i != 4:
+            plt.annotate(f'{y:.3f}', (x, y), textcoords="offset points", 
+                        xytext=(0,-15), ha='center', fontsize=9)
+        else:
+            plt.annotate(f'{y:.3f}', (x, y), textcoords="offset points", 
+                        xytext=(0,10), ha='center', fontsize=9)
+
+    for i, (x, y) in enumerate(zip(ueff_values, oh_energies_2)):
+        if i != 4:
+            plt.annotate(f'{y:.3f}', (x, y), textcoords="offset points", 
+                        xytext=(0,10), ha='center', fontsize=9)
+        else:
+            plt.annotate(f'{y:.3f}', (x, y), textcoords="offset points", 
+                        xytext=(0,-15), ha='center', fontsize=9)
+    
+    for i, (x, y) in enumerate(zip(ueff_values, oh_energies_3)):
         plt.annotate(f'{y:.3f}', (x, y), textcoords="offset points", 
                     xytext=(0,10), ha='center', fontsize=9)
     
-    for i, (x, y) in enumerate(zip(ueff_values, oh_energies_2)):
-        plt.annotate(f'{y:.3f}', (x, y), textcoords="offset points", 
-                    xytext=(0,-15), ha='center', fontsize=9)
+    plt.ylim(-1.5, 1.0)
     
     plt.tight_layout()
     plt.savefig('OH_adsorption_energies_vs_Ueff.png', dpi=300, bbox_inches='tight')
@@ -138,13 +179,13 @@ def plot_oh_adsorption_energies_vs_ueff(ueff_values, oh_energies_1, oh_energies_
     
     # 결과를 텍스트 파일로 저장
     with open('OH_adsorption_energies_results.txt', 'w') as f:
-        f.write("Ueff (eV)\t$\Delta G_{OH}$ (clean) (eV)\t$\Delta G_{OH}$ (O-covered) (eV)\n")
-        f.write("-" * 70 + "\n")
-        for ueff, oh_energy_1, oh_energy_2 in zip(ueff_values, oh_energies_1, oh_energies_2):
-            f.write(f"{ueff}\t\t{oh_energy_1:.6f}\t\t\t{oh_energy_2:.6f}\n")
+        f.write("Ueff (eV)\t$\Delta G_{OH}$ (clean) (eV)\t$\Delta G_{OH}$ (O-covered) (eV)\t$\Delta G_{OH}$ (VO_O) (eV)\n")
+        f.write("-" * 90 + "\n")
+        for ueff, oh_energy_1, oh_energy_2, oh_energy_3 in zip(ueff_values, oh_energies_1, oh_energies_2, oh_energies_3):
+            f.write(f"{ueff}\t\t{oh_energy_1:.6f}\t\t\t{oh_energy_2:.6f}\t\t\t{oh_energy_3:.6f}\n")
 
 if __name__ == "__main__":
-    ueff_values, oh_energies_1, oh_energies_2 = calculate_adsorption_energies()
+    ueff_values, oh_energies_1, oh_energies_2, oh_energies_3 = calculate_adsorption_energies()
     
-    if ueff_values is not None and oh_energies_1 is not None and oh_energies_2 is not None:
-        plot_oh_adsorption_energies_vs_ueff(ueff_values, oh_energies_1, oh_energies_2)
+    if ueff_values is not None and oh_energies_1 is not None and oh_energies_2 is not None and oh_energies_3 is not None:
+        plot_oh_adsorption_energies_vs_ueff(ueff_values, oh_energies_1, oh_energies_2, oh_energies_3)

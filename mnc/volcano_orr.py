@@ -109,7 +109,7 @@ def get_orr_activity3(doh):
 def volcano_orr(df):
     """Plots the ORR volcano plot."""
     xmin, xmax, xtick = -1.0, 3.0, 0.5
-    ymin, ymax, ytick = 0.0, 1.1, 0.2
+    ymin, ymax, ytick = 0.0, 1.3, 0.2
     
     xx = np.linspace(xmin, xmax, 100)
 
