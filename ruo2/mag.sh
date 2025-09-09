@@ -1,0 +1,10 @@
+cd 0_/
+python ~/bin/tools/ruo2/mag1.py
+cd ../1_/
+python ~/bin/tools/ruo2/mag1.py
+cd ../2_/
+python ~/bin/tools/ruo2/mag2.py
+cd ../3_/
+python ~/bin/tools/ruo2/mag2.py
+cd ../4_/
+python ~/bin/tools/ruo2/mag2.py
