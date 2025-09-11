@@ -52,9 +52,9 @@ def calculate_adsorption_energies():
     v_v_path = root_path / "1_V_V"
     v_oh_path = root_path / "2_V_OH"
     v_o_path = root_path / "3_V_O"
-    o_ohcus_path = root_path / "5_O_OHcus"
-    vo_o_path = root_path / "7_VO_O"
-    ho_o_path = root_path / "8_HO_O"
+    o_ohcus_path = root_path / "4_O_OH"
+    vo_o_path = root_path / "6_VO_O"
+    ho_o_path = root_path / "7_HO_O"
     
     ueff_values = [0, 1, 2, 3, 4]
     energies_v_v = []

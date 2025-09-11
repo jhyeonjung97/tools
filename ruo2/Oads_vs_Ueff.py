@@ -51,8 +51,8 @@ def calculate_adsorption_energies():
     root_path = Path(root).expanduser()
     v_v_path = root_path / "1_V_V"
     v_o_path = root_path / "3_V_O"
-    o_o_path = root_path / "6_O_O"
-    vo_o_path = root_path / "7_VO_O"
+    o_o_path = root_path / "5_O_O"
+    vo_o_path = root_path / "6_VO_O"
     
     ueff_values = [0, 1, 2, 3, 4]
     energies_v_v = []
@@ -145,7 +145,7 @@ def plot_o_adsorption_energies_vs_ueff(ueff_values, o_energies_1, o_energies_2, 
         plt.annotate(f'{y:.3f}', (x, y), textcoords="offset points", 
                     xytext=(0,10), ha='center', fontsize=9)
     
-    # plt.ylim(-1.5, 1.0)
+    plt.ylim(-0.2, 2.8)
     
     plt.tight_layout()
     plt.savefig('O_adsorption_energies_vs_Ueff.png', dpi=300, bbox_inches='tight')
