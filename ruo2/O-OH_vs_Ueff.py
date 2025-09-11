@@ -141,23 +141,51 @@ def plot_o_minus_oh_vs_ueff(ueff_values, O_series, OH_series):
     D_Ocovered = [o - oh for o, oh in zip(O_Ocovered, OH_Ocovered)]
     D_from_VO = [o - oh for o, oh in zip(O_from_VO, OH_from_VO)]
 
-    plt.figure(figsize=(7, 5))
+    plt.figure(figsize=(5.5, 5))
 
-    colors = {
-        "clean": "#1f77b4",
-        "ocov": "#d62728",
-        "vo": "#2ca02c",
-    }
+    # # 수평선 추가
+    # plt.axhline(y=1.22, color='black', linestyle='-', alpha=0.7, linewidth=1)
+    # plt.axhline(y=1.31, color='black', linestyle='--', alpha=0.7, linewidth=1)
 
-    plt.plot(ueff_values, D_clean, 'o-', color=colors["clean"], linewidth=2, markersize=7, label=r'$\Delta G_{O} - \Delta G_{OH}$ (top, clean)')
-    plt.plot(ueff_values, D_Ocovered, 's-', color=colors["ocov"], linewidth=2, markersize=7, label=r'$\Delta G_{O} - \Delta G_{OH}$ (top, O-covered)')
-    plt.plot(ueff_values, D_from_VO, '^-', color=colors["vo"], linewidth=2, markersize=7, label=r'$\Delta G_{O} - \Delta G_{OH}$ (brg, O-covered)')
+    # plt.text(0.3, 1.22+0.01, r'sRuO$_2$', fontsize=10, color='black')
+    # plt.text(0.3, 1.31+0.01, r'cRuO$_2$', fontsize=10, color='black')
 
-    plt.xlabel(r'$U_{\mathrm{eff}}$ (eV)', fontsize=13)
-    plt.ylabel(r'$\Delta G_{O} - \Delta G_{OH}$ (eV)', fontsize=13)
+    plt.plot(ueff_values, D_clean, 'bo-', linewidth=2, markersize=8, label=r'$\Delta G_{O} - \Delta G_{OH}$ (top, clean)')
+    plt.plot(ueff_values, D_Ocovered, 'rs-', linewidth=2, markersize=8, label=r'$\Delta G_{O} - \Delta G_{OH}$ (top, O-covered)')
+    plt.plot(ueff_values, D_from_VO, 'g^-', linewidth=2, markersize=8, label=r'$\Delta G_{O} - \Delta G_{OH}$ (brg, O-covered)')
+
+    plt.xlabel(r'$U_{\mathrm{eff}}$ (eV)', fontsize=14)
+    plt.ylabel(r'$\Delta G_{O} - \Delta G_{OH}$ (eV)', fontsize=14)
     plt.xlim(-0.5, 4.5)
+    plt.ylim(0.8, 1.7)
     plt.grid(True, alpha=0.3)
-    plt.legend(fontsize=10)
+    plt.legend(fontsize=12)
+    
+    # 데이터 포인트에 값 표시
+    for i, (x, y) in enumerate(zip(ueff_values, D_clean)):
+        if i != 2 and i != 3:
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
+                        xytext=(0,-15), ha='center', fontsize=9)
+        else:
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
+                        xytext=(0,10), ha='center', fontsize=9)
+    
+    for i, (x, y) in enumerate(zip(ueff_values, D_Ocovered)):
+        if i != 1:
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
+                        xytext=(0,10), ha='center', fontsize=9)
+        else:
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
+                        xytext=(0,-15), ha='center', fontsize=9)
+
+    for i, (x, y) in enumerate(zip(ueff_values, D_from_VO)):
+        if i != 2 and i != 3:
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
+                        xytext=(0,10), ha='center', fontsize=9)
+        else:
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
+                        xytext=(0,-15), ha='center', fontsize=9)
+
     plt.tight_layout()
     plt.savefig('OminusOH_adsorption_energies_vs_Ueff.png', dpi=300, bbox_inches='tight')
     plt.show()

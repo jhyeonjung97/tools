@@ -133,7 +133,7 @@ def calculate_adsorption_energies():
         return None, None, None, None
 
 def plot_oh_adsorption_energies_vs_ueff(ueff_values, oh_energies_1, oh_energies_2, oh_energies_3):    
-    plt.figure(figsize=(6, 5))
+    plt.figure(figsize=(5.5, 5))
     
     # 첫 번째 OH 흡착 에너지: clean surface에서 OH 흡착
     plt.plot(ueff_values, oh_energies_1, 'bo-', linewidth=2, markersize=8, label=r'$\Delta G_{OH}$ (top)')
@@ -153,22 +153,22 @@ def plot_oh_adsorption_energies_vs_ueff(ueff_values, oh_energies_1, oh_energies_
     # 데이터 포인트에 값 표시
     for i, (x, y) in enumerate(zip(ueff_values, oh_energies_1)):
         if i != 4:
-            plt.annotate(f'{y:.3f}', (x, y), textcoords="offset points", 
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
                         xytext=(0,-15), ha='center', fontsize=9)
         else:
-            plt.annotate(f'{y:.3f}', (x, y), textcoords="offset points", 
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
                         xytext=(0,10), ha='center', fontsize=9)
 
     for i, (x, y) in enumerate(zip(ueff_values, oh_energies_2)):
         if i != 4:
-            plt.annotate(f'{y:.3f}', (x, y), textcoords="offset points", 
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
                         xytext=(0,10), ha='center', fontsize=9)
         else:
-            plt.annotate(f'{y:.3f}', (x, y), textcoords="offset points", 
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
                         xytext=(0,-15), ha='center', fontsize=9)
     
     for i, (x, y) in enumerate(zip(ueff_values, oh_energies_3)):
-        plt.annotate(f'{y:.3f}', (x, y), textcoords="offset points", 
+        plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
                     xytext=(0,10), ha='center', fontsize=9)
     
     plt.ylim(-1.5, 1.0)
