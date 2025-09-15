@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 # 사용자 환경에 맞춰 경로를 변경하세요
-root = "~/Desktop/3_RuO2/1_RuO2_110"
+root = "~/Desktop/3_RuO2/1_RuO2"
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190
@@ -54,7 +54,7 @@ def calculate_o_and_oh_adsorption_energies():
     """O와 OH 흡착 자유에너지를 Ueff에 대해 계산.
 
     반환:
-        ueff_values, (O_clean, O_Ocovered, O_from_VO), (OH_clean, OH_Ocovered, OH_from_VO)
+        ueff_values, (O_clean, O_Ocovered, O_from_VO, O_from_zero), (OH_clean, OH_Ocovered, OH_from_VO, OH_from_zero)
     """
     root_path = Path(root).expanduser()
 
@@ -66,6 +66,12 @@ def calculate_o_and_oh_adsorption_energies():
     o_o_path = root_path / "5_O_O"
     vo_o_path = root_path / "6_VO_O"
     ho_o_path = root_path / "7_HO_O"
+    
+    # 새로운 경로 추가
+    from_zero_root = Path("/Users/jiuy97/Desktop/3_RuO2/1_RuO2/from_zero")
+    v_o_from_zero_path = from_zero_root / "1_V_O"
+    o_o_from_zero_path = from_zero_root / "3_O_O"
+    o_oh_from_zero_path = from_zero_root / "2_O_OH"
 
     ueff_values = [0, 1, 2, 3, 4]
 
@@ -76,6 +82,9 @@ def calculate_o_and_oh_adsorption_energies():
     energies_o_o = []
     energies_vo_o = []
     energies_ho_o = []
+    energies_v_o_from_zero = []
+    energies_o_o_from_zero = []
+    energies_o_oh_from_zero = []
 
     # 에너지 로드 유틸
     def load_series(base_path, label):
@@ -96,19 +105,25 @@ def calculate_o_and_oh_adsorption_energies():
     energies_o_o = load_series(o_o_path, "O_O")
     energies_vo_o = load_series(vo_o_path, "VO_O")
     energies_ho_o = load_series(ho_o_path, "HO_O")
+    energies_v_o_from_zero = load_series(v_o_from_zero_path, "V_O_from_zero")
+    energies_o_o_from_zero = load_series(o_o_from_zero_path, "O_O_from_zero")
+    energies_o_oh_from_zero = load_series(o_oh_from_zero_path, "O_OH_from_zero")
 
-    if any(x is None for x in [energies_v_v, energies_v_oh, energies_v_o, energies_o_ohcus, energies_o_o, energies_vo_o, energies_ho_o]):
+    if any(x is None for x in [energies_v_v, energies_v_oh, energies_v_o, energies_o_ohcus, energies_o_o, energies_vo_o, energies_ho_o, 
+                               energies_v_o_from_zero, energies_o_o_from_zero, energies_o_oh_from_zero]):
         return None
 
     # O 흡착 에너지
     O_clean = []       # V_O - V_V
     O_Ocovered = []    # O_O - V_O
     O_from_VO = []     # O_O - VO_O
+    O_from_zero = []   # O_O from_zero - V_O from_zero
 
     # OH 흡착 에너지
     OH_clean = []      # V_OH - V_V
     OH_Ocovered = []   # O_OHcus - V_O
     OH_from_VO = []    # HO_O - VO_O
+    OH_from_zero = []  # O_OH from_zero - V_O from_zero
 
     for i, ueff in enumerate(ueff_values):
         # 기준 가스 상
@@ -119,29 +134,32 @@ def calculate_o_and_oh_adsorption_energies():
         O_clean.append(energies_v_o[i] + dgo - energies_v_v[i] - o_gas_energy)
         O_Ocovered.append(energies_o_o[i] + dgo - energies_v_o[i] - o_gas_energy)
         O_from_VO.append(energies_o_o[i] + dgo - energies_vo_o[i] - o_gas_energy)
+        O_from_zero.append(energies_o_o_from_zero[i] + dgo - energies_v_o_from_zero[i] - o_gas_energy)
 
         # OH
         OH_clean.append(energies_v_oh[i] + dgoh - energies_v_v[i] - oh_gas_energy)
         OH_Ocovered.append(energies_o_ohcus[i] + dgoh - energies_v_o[i] - oh_gas_energy)
         OH_from_VO.append(energies_ho_o[i] + dgoh - energies_vo_o[i] - oh_gas_energy)
+        OH_from_zero.append(energies_o_oh_from_zero[i] + dgoh - energies_v_o_from_zero[i] - oh_gas_energy)
 
     return (
         ueff_values,
-        (O_clean, O_Ocovered, O_from_VO),
-        (OH_clean, OH_Ocovered, OH_from_VO),
+        (O_clean, O_Ocovered, O_from_VO, O_from_zero),
+        (OH_clean, OH_Ocovered, OH_from_VO, OH_from_zero),
     )
 
 
 def plot_o_minus_oh_vs_ueff(ueff_values, O_series, OH_series):
-    O_clean, O_Ocovered, O_from_VO = O_series
-    OH_clean, OH_Ocovered, OH_from_VO = OH_series
+    O_clean, O_Ocovered, O_from_VO, O_from_zero = O_series
+    OH_clean, OH_Ocovered, OH_from_VO, OH_from_zero = OH_series
 
     # 차이값 계산: Oads - OHads
     D_clean = [o - oh for o, oh in zip(O_clean, OH_clean)]
     D_Ocovered = [o - oh for o, oh in zip(O_Ocovered, OH_Ocovered)]
     D_from_VO = [o - oh for o, oh in zip(O_from_VO, OH_from_VO)]
+    D_from_zero = [o - oh for o, oh in zip(O_from_zero, OH_from_zero)]
 
-    plt.figure(figsize=(5.5, 5))
+    plt.figure(figsize=(5, 5))
 
     # # 수평선 추가
     # plt.axhline(y=1.22, color='black', linestyle='-', alpha=0.7, linewidth=1)
@@ -153,11 +171,12 @@ def plot_o_minus_oh_vs_ueff(ueff_values, O_series, OH_series):
     plt.plot(ueff_values, D_clean, 'bo-', linewidth=2, markersize=8, label=r'$\Delta G_{O} - \Delta G_{OH}$ (top, clean)')
     plt.plot(ueff_values, D_Ocovered, 'rs-', linewidth=2, markersize=8, label=r'$\Delta G_{O} - \Delta G_{OH}$ (top, O-covered)')
     plt.plot(ueff_values, D_from_VO, 'g^-', linewidth=2, markersize=8, label=r'$\Delta G_{O} - \Delta G_{OH}$ (brg, O-covered)')
+    plt.plot(ueff_values, D_from_zero, 'mo--', linewidth=2, markersize=8, label=r'$\Delta G_{O} - \Delta G_{OH}$ (from_zero, O-covered)')
 
     plt.xlabel(r'$U_{\mathrm{eff}}$ (eV)', fontsize=14)
     plt.ylabel(r'$\Delta G_{O} - \Delta G_{OH}$ (eV)', fontsize=14)
     plt.xlim(-0.5, 4.5)
-    plt.ylim(0.8, 1.7)
+    plt.ylim(0.8, 2.0)
     plt.grid(True, alpha=0.3)
     plt.legend(fontsize=12)
     
@@ -185,6 +204,14 @@ def plot_o_minus_oh_vs_ueff(ueff_values, O_series, OH_series):
         else:
             plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
                         xytext=(0,-15), ha='center', fontsize=9)
+    
+    for i, (x, y) in enumerate(zip(ueff_values, D_from_zero)):
+        if i != 4:
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
+                        xytext=(0,-15), ha='center', fontsize=9)
+        else:
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
+                        xytext=(0,10), ha='center', fontsize=9)
 
     plt.tight_layout()
     plt.savefig('OminusOH_adsorption_energies_vs_Ueff.png', dpi=300, bbox_inches='tight')
@@ -192,10 +219,10 @@ def plot_o_minus_oh_vs_ueff(ueff_values, O_series, OH_series):
 
     # 결과 저장 (차이값)
     with open('OminusOH_adsorption_energies_results.txt', 'w') as f:
-        f.write("Ueff (eV)\t(D_O-D_OH)_clean\t(D_O-D_OH)_Ocov\t(D_O-D_OH)_fromVO\n")
-        f.write("-" * 80 + "\n")
+        f.write("Ueff (eV)\t(D_O-D_OH)_clean\t(D_O-D_OH)_Ocov\t(D_O-D_OH)_fromVO\t(D_O-D_OH)_from_zero\n")
+        f.write("-" * 100 + "\n")
         for i, u in enumerate(ueff_values):
-            f.write(f"{u}\t{D_clean[i]:.6f}\t{D_Ocovered[i]:.6f}\t{D_from_VO[i]:.6f}\n")
+            f.write(f"{u}\t{D_clean[i]:.6f}\t{D_Ocovered[i]:.6f}\t{D_from_VO[i]:.6f}\t{D_from_zero[i]:.6f}\n")
 
 
 if __name__ == "__main__":

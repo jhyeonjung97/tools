@@ -2,7 +2,7 @@ from ase.io import read
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-root = "~/Desktop/3_RuO2/1_RuO2_110"
+root = "~/Desktop/3_RuO2/1_RuO2"
 
 # gas
 h2 = -6.77149190
@@ -54,11 +54,18 @@ def calculate_adsorption_energies():
     o_o_path = root_path / "5_O_O"
     vo_o_path = root_path / "6_VO_O"
     
+    # 새로운 경로 추가
+    from_zero_root = Path("/Users/jiuy97/Desktop/3_RuO2/1_RuO2/from_zero")
+    v_o_from_zero_path = from_zero_root / "1_V_O"
+    o_o_from_zero_path = from_zero_root / "3_O_O"
+    
     ueff_values = [0, 1, 2, 3, 4]
     energies_v_v = []
     energies_v_o = []
     energies_o_o = []
     energies_vo_o = []
+    energies_v_o_from_zero = []
+    energies_o_o_from_zero = []
         
     # V_V 에너지 추출
     for ueff in ueff_values:
@@ -88,10 +95,26 @@ def calculate_adsorption_energies():
         if energy is not None:
             energies_vo_o.append(energy)
     
-    if len(energies_v_v) == len(energies_v_o) == len(energies_o_o) == len(energies_vo_o) == len(ueff_values):
+    # V_O from_zero 에너지 추출
+    for ueff in ueff_values:
+        json_path = v_o_from_zero_path / f"{ueff}_" / "final_with_calculator.json"
+        energy = get_energy_from_json(json_path)
+        if energy is not None:
+            energies_v_o_from_zero.append(energy)
+    
+    # O_O from_zero 에너지 추출
+    for ueff in ueff_values:
+        json_path = o_o_from_zero_path / f"{ueff}_" / "final_with_calculator.json"
+        energy = get_energy_from_json(json_path)
+        if energy is not None:
+            energies_o_o_from_zero.append(energy)
+    
+    if (len(energies_v_v) == len(energies_v_o) == len(energies_o_o) == len(energies_vo_o) == 
+        len(energies_v_o_from_zero) == len(energies_o_o_from_zero) == len(ueff_values)):
         o_adsorption_energies_1 = []  # V_O - V_V
         o_adsorption_energies_2 = []  # O_O - V_O
         o_adsorption_energies_3 = []  # VO_O - O_O
+        o_adsorption_energies_4 = []  # O_O from_zero - V_O from_zero
         
         for i, ueff in enumerate(ueff_values):
             # 첫 번째 O 흡착 에너지: clean surface에서 O 흡착
@@ -109,13 +132,18 @@ def calculate_adsorption_energies():
             o_ads_energy_3 = energies_o_o[i] + dgo - energies_vo_o[i] - o_gas_energy
             o_adsorption_energies_3.append(o_ads_energy_3)
             print(f"Ueff={ueff}: dG_O (VO_O) = {o_ads_energy_3:.6f} eV")
+            
+            # 네 번째 O 흡착 에너지: O-covered surface에서 O 흡착 (from_zero)
+            o_ads_energy_4 = energies_o_o_from_zero[i] + dgo - energies_v_o_from_zero[i] - o_gas_energy
+            o_adsorption_energies_4.append(o_ads_energy_4)
+            print(f"Ueff={ueff}: dG_O (top, O-covered) = {o_ads_energy_4:.6f} eV")
         
-        return ueff_values, o_adsorption_energies_1, o_adsorption_energies_2, o_adsorption_energies_3
+        return ueff_values, o_adsorption_energies_1, o_adsorption_energies_2, o_adsorption_energies_3, o_adsorption_energies_4
     else:
-        return None, None, None, None
+        return None, None, None, None, None
 
-def plot_o_adsorption_energies_vs_ueff(ueff_values, o_energies_1, o_energies_2, o_energies_3):    
-    plt.figure(figsize=(5.5, 5))
+def plot_o_adsorption_energies_vs_ueff(ueff_values, o_energies_1, o_energies_2, o_energies_3, o_energies_4):    
+    plt.figure(figsize=(5, 5))
     
     # 첫 번째 O 흡착 에너지: clean surface에서 O 흡착
     plt.plot(ueff_values, o_energies_1, 'bo-', linewidth=2, markersize=8, label=r'$\Delta G_{O}$ (top)')
@@ -126,10 +154,13 @@ def plot_o_adsorption_energies_vs_ueff(ueff_values, o_energies_1, o_energies_2, 
     # 세 번째 O 흡착 에너지: VO_O에서 O_O로의 O 흡착
     plt.plot(ueff_values, o_energies_3, 'g^-', linewidth=2, markersize=8, label=r'$\Delta G_{O}$ (brg, O-covered)')
     
+    # 네 번째 O 흡착 에너지: O-covered surface에서 O 흡착 (from_zero)
+    plt.plot(ueff_values, o_energies_4, 'mo--', linewidth=2, markersize=8, label=r'$\Delta G_{O}$ (from_zero, O-covered)')
+    
     plt.xlabel(r'$U_{\mathrm{eff}}$ (eV)', fontsize=14)
     plt.ylabel(r'$\Delta G_{O}$ (eV)', fontsize=14)
     plt.xlim(-0.5, 4.5)
-    plt.ylim(0.0, 3.0)
+    plt.ylim(0.0, 3.5)
     plt.legend(fontsize=12)
     plt.grid(True, alpha=0.3)
     
@@ -145,6 +176,10 @@ def plot_o_adsorption_energies_vs_ueff(ueff_values, o_energies_1, o_energies_2, 
     for i, (x, y) in enumerate(zip(ueff_values, o_energies_3)):
         plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
                     xytext=(0,10), ha='center', fontsize=9)
+    
+    for i, (x, y) in enumerate(zip(ueff_values, o_energies_4)):
+        plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", 
+                    xytext=(0,-15), ha='center', fontsize=9)
         
     plt.tight_layout()
     plt.savefig('O_adsorption_energies_vs_Ueff.png', dpi=300, bbox_inches='tight')
@@ -152,13 +187,13 @@ def plot_o_adsorption_energies_vs_ueff(ueff_values, o_energies_1, o_energies_2, 
     
     # 결과를 텍스트 파일로 저장
     with open('O_adsorption_energies_results.txt', 'w') as f:
-        f.write("Ueff (eV)\t$\Delta G_{O}$ (top) (eV)\t$\Delta G_{O}$ (top, O-covered) (eV)\t$\Delta G_{O}$ (brg, O-covered) (eV)\n")
-        f.write("-" * 100 + "\n")
-        for ueff, o_energy_1, o_energy_2, o_energy_3 in zip(ueff_values, o_energies_1, o_energies_2, o_energies_3):
-            f.write(f"{ueff}\t\t{o_energy_1:.6f}\t\t\t{o_energy_2:.6f}\t\t\t{o_energy_3:.6f}\n")
+        f.write("Ueff (eV)\t$\Delta G_{O}$ (top) (eV)\t$\Delta G_{O}$ (top, O-covered) (eV)\t$\Delta G_{O}$ (brg, O-covered) (eV)\t$\Delta G_{O}$ (from_zero, O-covered) (eV)\n")
+        f.write("-" * 120 + "\n")
+        for ueff, o_energy_1, o_energy_2, o_energy_3, o_energy_4 in zip(ueff_values, o_energies_1, o_energies_2, o_energies_3, o_energies_4):
+            f.write(f"{ueff}\t\t{o_energy_1:.6f}\t\t\t{o_energy_2:.6f}\t\t\t{o_energy_3:.6f}\t\t\t{o_energy_4:.6f}\n")
 
 if __name__ == "__main__":
-    ueff_values, o_energies_1, o_energies_2, o_energies_3 = calculate_adsorption_energies()
+    ueff_values, o_energies_1, o_energies_2, o_energies_3, o_energies_4 = calculate_adsorption_energies()
     
-    if ueff_values is not None and o_energies_1 is not None and o_energies_2 is not None and o_energies_3 is not None:
-        plot_o_adsorption_energies_vs_ueff(ueff_values, o_energies_1, o_energies_2, o_energies_3)
+    if ueff_values is not None and o_energies_1 is not None and o_energies_2 is not None and o_energies_3 is not None and o_energies_4 is not None:
+        plot_o_adsorption_energies_vs_ueff(ueff_values, o_energies_1, o_energies_2, o_energies_3, o_energies_4)
