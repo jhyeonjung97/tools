@@ -281,7 +281,7 @@ def calculate_oer_energies():
         
         if all(e is not None for e in [energy_v_v, energy_v_oh, energy_oh_oh, energy_oh_o]):
             step1 = (energy_v_oh + dgoh - goh) - (energy_v_v)
-            step2 = (energy_oh_oh + dgoh - goh) - (energy_v_oh)
+            step2 = (energy_oh_oh + dgooh - gooh + dgh - gh) - (energy_v_oh + dgoh - goh)
             step3 = (energy_oh_o + dgooh - gooh) - (energy_oh_oh + 2*dgoh - 2*goh)
             step4 = 4.92 - step1 - step2 - step3
             
@@ -372,10 +372,10 @@ def calculate_oer_energies():
     except Exception as e:
         print(f"Path 9: Error - {e}")
     
-    # Path 10: 4_OOH-Obrg에서 1_V_V → 2_V_OH → 3_V_O → 5_OH_O
-    print("\n=== Path 10: OOH-Obrg (V_V → V_OH → V_O → OH_O) ===")
+    # Path 10: 4_OOH-Mbrg0에서 1_V_V → 2_V_OH → 3_V_O → 5_OH_O
+    print("\n=== Path 10: OOH-Mbrg0 (V_V → V_OH → V_O → OH_O) ===")
     try:
-        oer_path = root_path / "4_OOH-Obrg"
+        oer_path = root_path / "4_OOH-Mbrg0"
         energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.json")
         energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.json")
         energy_v_o = get_energy_from_json(oer_path / "3_V_O" / "final_with_calculator.json")
@@ -389,7 +389,7 @@ def calculate_oer_energies():
             
             # 표 형태로 데이터 추가
             oer_data.append({
-                'surface': 'OOH-Obrg',
+                'surface': 'OOH-Mbrg0',
                 'int1': 'V_V',
                 'int2': 'V_OH', 
                 'int3': 'V_O',
@@ -406,10 +406,10 @@ def calculate_oer_energies():
     except Exception as e:
         print(f"Path 10: Error - {e}")
     
-    # Path 11: 4_OOH-Obrg에서 1_V_V → 2_V_OH → 3_V_O → 7_OH-O
-    print("\n=== Path 11: OOH-Obrg (V_V → V_OH → V_O → OH-O) ===")
+    # Path 11: 4_OOH-Mbrg0에서 1_V_V → 2_V_OH → 3_V_O → 7_OH-O
+    print("\n=== Path 11: OOH-Mbrg0 (V_V → V_OH → V_O → OH-O) ===")
     try:
-        oer_path = root_path / "4_OOH-Obrg"
+        oer_path = root_path / "4_OOH-Mbrg0"
         energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.json")
         energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.json")
         energy_v_o = get_energy_from_json(oer_path / "3_V_O" / "final_with_calculator.json")
@@ -423,7 +423,7 @@ def calculate_oer_energies():
             
             # 표 형태로 데이터 추가
             oer_data.append({
-                'surface': 'OOH-Obrg',
+                'surface': 'OOH-Mbrg0',
                 'int1': 'V_V',
                 'int2': 'V_OH', 
                 'int3': 'V_O',
@@ -440,10 +440,10 @@ def calculate_oer_energies():
     except Exception as e:
         print(f"Path 11: Error - {e}")
     
-    # Path 12: 4_OOH-Obrg에서 1_V_V → 2_V_OH → 4_OH_OH → 5_OH_O
-    print("\n=== Path 12: OOH-Obrg (V_V → V_OH → OH_OH → OH_O) ===")
+    # Path 12: 4_OOH-Mbrg0에서 1_V_V → 2_V_OH → 4_OH_OH → 5_OH_O
+    print("\n=== Path 12: OOH-Mbrg0 (V_V → V_OH → OH_OH → OH_O) ===")
     try:
-        oer_path = root_path / "4_OOH-Obrg"
+        oer_path = root_path / "4_OOH-Mbrg0"
         energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.json")
         energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.json")
         energy_oh_oh = get_energy_from_json(oer_path / "4_OH_OH" / "final_with_calculator.json")
@@ -457,7 +457,7 @@ def calculate_oer_energies():
             
             # 표 형태로 데이터 추가
             oer_data.append({
-                'surface': 'OOH-Obrg',
+                'surface': 'OOH-Mbrg0',
                 'int1': 'V_V',
                 'int2': 'V_OH', 
                 'int3': 'OH_OH',
@@ -474,10 +474,10 @@ def calculate_oer_energies():
     except Exception as e:
         print(f"Path 12: Error - {e}")
     
-    # Path 13: 4_OOH-Obrg에서 1_V_V → 2_V_OH → 4_OH_OH → 7_OH-O
-    print("\n=== Path 13: OOH-Obrg (V_V → V_OH → OH_OH → OH-O) ===")
+    # Path 13: 4_OOH-Mbrg0에서 1_V_V → 2_V_OH → 4_OH_OH → 7_OH-O
+    print("\n=== Path 13: OOH-Mbrg0 (V_V → V_OH → OH_OH → OH-O) ===")
     try:
-        oer_path = root_path / "4_OOH-Obrg"
+        oer_path = root_path / "4_OOH-Mbrg0"
         energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.json")
         energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.json")
         energy_oh_oh = get_energy_from_json(oer_path / "4_OH_OH" / "final_with_calculator.json")
@@ -491,7 +491,7 @@ def calculate_oer_energies():
             
             # 표 형태로 데이터 추가
             oer_data.append({
-                'surface': 'OOH-Obrg',
+                'surface': 'OOH-Mbrg0',
                 'int1': 'V_V',
                 'int2': 'V_OH', 
                 'int3': 'OH_OH',
@@ -508,10 +508,10 @@ def calculate_oer_energies():
     except Exception as e:
         print(f"Path 13: Error - {e}")
     
-    # Path 14: 4_OOH-Obrg에서 1_V_V → 2_V_OH → 6_OH-OH → 7_OH-O
-    print("\n=== Path 14: OOH-Obrg (V_V → V_OH → OH-OH → OH-O) ===")
+    # Path 14: 4_OOH-Mbrg0에서 1_V_V → 2_V_OH → 6_OH-OH → 7_OH-O
+    print("\n=== Path 14: OOH-Mbrg0 (V_V → V_OH → OH-OH → OH-O) ===")
     try:
-        oer_path = root_path / "4_OOH-Obrg"
+        oer_path = root_path / "4_OOH-Mbrg0"
         energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.json")
         energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.json")
         energy_oh_oh = get_energy_from_json(oer_path / "6_OH-OH" / "final_with_calculator.json")
@@ -525,7 +525,7 @@ def calculate_oer_energies():
             
             # 표 형태로 데이터 추가
             oer_data.append({
-                'surface': 'OOH-Obrg',
+                'surface': 'OOH-Mbrg0',
                 'int1': 'V_V',
                 'int2': 'V_OH', 
                 'int3': 'OH-OH',
@@ -559,7 +559,7 @@ def calculate_oer_energies():
             
             # 표 형태로 데이터 추가
             oer_data.append({
-                'surface': 'OOH-Mtop3',
+                'surface': 'OOH-Otop3',
                 'int1': 'O_V',
                 'int2': 'O_OH', 
                 'int3': 'O_O',
@@ -593,7 +593,7 @@ def calculate_oer_energies():
             
             # 표 형태로 데이터 추가
             oer_data.append({
-                'surface': 'OOH-Mtop3',
+                'surface': 'OOH-Otop3',
                 'int1': 'O_V',
                 'int2': 'O_OH', 
                 'int3': 'O_O',
@@ -757,7 +757,7 @@ def calculate_oer_energies():
         
         if all(e is not None for e in [energy_v_v, energy_v_oh, energy_oh_oh, energy_oh_o]):
             step1 = (energy_v_oh + dgoh - goh) - (energy_v_v)
-            step2 = (energy_oh_oh + dgoh - goh) - (energy_v_oh)
+            step2 = (energy_oh_oh + dgooh - gooh + dgh - gh) - (energy_v_oh + dgoh - goh)
             step3 = (energy_oh_o + dgooh - gooh) - (energy_oh_oh + 2*dgoh - 2*goh)
             step4 = 4.92 - step1 - step2 - step3
             
@@ -898,13 +898,15 @@ def plot_individual_energetics_diagrams(all_paths, oer_data):
             continue
             
         # x축: 반응 단계 (1, 2, 3, 4)
-        steps = [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5]
+        steps = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5]
 
         energy0 = 0.0
         energy1 = path_data['step1']
         energy2 = path_data['step2'] + energy1
         energy3 = path_data['step3'] + energy2
         energy4 = path_data['step4'] + energy3
+
+        ueff = path_data['surface'][-1]
         
         # y축: step energies
         step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4]
@@ -913,22 +915,21 @@ def plot_individual_energetics_diagrams(all_paths, oer_data):
         ax.plot(steps, step_energies, '-', color='black', linewidth=2)
 
         # 그래프 설정
-        ax.set_xlabel('Reaction Steps', fontsize=12)
-        ax.set_ylabel('Reaction Energy (eV)', fontsize=12)
+        ax.set_xticks([])
+        ax.set_xlabel('Reaction Coordinate', fontsize=12)
+        ax.set_ylabel('Relative Energy (ΔG, eV)', fontsize=12)
         
         # y축 범위 설정 (최소값과 최대값에 여유 공간 추가)
         y_min = min(step_energies) - 0.2
         y_max = max(step_energies) + 0.3
         ax.set_ylim(y_min, y_max)
-        
-        # 격자 표시
-        ax.grid(True, alpha=0.3, axis='y')
+        ax.set_xlim(0, 5)
                 
         # 최대 에너지와 과전위 정보 추가
-        max_energy = max(step_energies)
+        max_energy = max(path_data['step1'], path_data['step2'], path_data['step3'], path_data['step4'])
         overpotential = max_energy - 1.23
-        ax.text(0.02, 0.98, f'{path_name}: {path_data["surface"]} - {path_data["int1"]} → {path_data["int2"]} → {path_data["int3"]} → {path_data["int4"]}\nMax Energy: {max_energy:.3f} eV\nOverpotential: {overpotential:.3f} eV', 
-                transform=ax.transAxes, fontsize=10, verticalalignment='top',
+        ax.text(0.02, 0.97, f'Ueff(Ru): {ueff} eV\nΔG1: {path_data["step1"]:.2f} eV\nΔG2: {path_data["step2"]:.2f} eV\nΔG3: {path_data["step3"]:.2f} eV\nΔG4: {path_data["step4"]:.2f} eV\nOverpotential: {overpotential:.2f} eV', 
+                transform=ax.transAxes, fontsize=11, verticalalignment='top',
                 bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
         
         plt.tight_layout()
@@ -982,9 +983,6 @@ def plot_all_energetics_diagrams_combined(all_paths, oer_data):
     # x축 설정
     ax.set_xticks(steps)
     ax.set_xticklabels([f'Step {i}' for i in steps])
-    
-    # 격자 표시
-    ax.grid(True, alpha=0.3, axis='y')
     
     # 범례 (2열로 배치)
     ax.legend(fontsize=8, ncol=2, loc='upper right', bbox_to_anchor=(1.0, 1.0))
