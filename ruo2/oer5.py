@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 
 # 사용자 환경에 맞춰 경로를 변경하세요
-root = "~/Desktop/3_RuO2/5_OER_110"
+root = "~/Desktop/3_RuO2/3_OER"
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190

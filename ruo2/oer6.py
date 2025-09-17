@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 
 # 사용자 환경에 맞춰 경로를 변경하세요
-root = "~/Desktop/3_RuO2/5_OER_110"
+root = "~/Desktop/3_RuO2/3_OER"
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190
@@ -166,22 +166,22 @@ def print_oer_table(oer_data):
     
     # 데이터 출력
     for i, data in enumerate(oer_data, 1):
-        max_energy = max(data['step1'], data['step2'], data['step3'], data['step4'], data['step5'])
+        max_energy = max(data['step1'], data['step2'], data['step3'], data['step4'], data['step5'], data['step6'])
         overpotential = max_energy - 1.23
         
-        row = f"{data['surface']:<12} {data['int1']:<8} {data['int2']:<8} {data['int3']:<8} {data['int4']:<8} {data['int5']:<8} " \
-              f"{data['step1']:<10.3f} {data['step2']:<10.3f} {data['step3']:<10.3f} {data['step4']:<10.3f} {data['step5']:<10.3f} " \
+        row = f"{data['surface']:<12} {data['int1']:<8} {data['int2']:<8} {data['int3']:<8} {data['int4']:<8} {data['int5']:<8} {data['int6']:<8} " \
+              f"{data['step1']:<10.3f} {data['step2']:<10.3f} {data['step3']:<10.3f} {data['step4']:<10.3f} {data['step5']:<10.3f} {data['step6']:<10.3f} " \
               f"{max_energy:<10.3f} {overpotential:<12.3f}"
         print(row)
     
     print("-"*140)
     
     # 최적 경로 찾기
-    best_path = min(oer_data, key=lambda x: max(x['step1'], x['step2'], x['step3'], x['step4'], x['step5']))
-    best_max = max(best_path['step1'], best_path['step2'], best_path['step3'], best_path['step4'], best_path['step5'])
+    best_path = min(oer_data, key=lambda x: max(x['step1'], x['step2'], x['step3'], x['step4'], x['step5'], x['step6']))
+    best_max = max(best_path['step1'], best_path['step2'], best_path['step3'], best_path['step4'], best_path['step5'], best_path['step6'])
     best_overpotential = best_max - 1.23
     
-    print(f"\nBest Path: {best_path['surface']} - {best_path['int1']} → {best_path['int2']} → {best_path['int3']} → {best_path['int4']} → {best_path['int5']}")
+    print(f"\nBest Path: {best_path['surface']} - {best_path['int1']} → {best_path['int2']} → {best_path['int3']} → {best_path['int4']} → {best_path['int5']} → {best_path['int6']}")
     print(f"Maximum Step Energy: {best_max:.3f} eV")
     print(f"Overpotential: {best_overpotential:.3f} eV")
     print("="*140)
