@@ -27,3 +27,5 @@ for file in */; do
     cp ./${file}final_with_calculator.json ./${name}.json
 
 done
+
+rm Ru_top.json
