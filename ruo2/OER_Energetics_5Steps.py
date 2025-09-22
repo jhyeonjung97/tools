@@ -59,8 +59,11 @@ def calculate_oer_energies():
     """14가지 OER 경로의 반응 에너지를 계산하고 표 형태로 정리하는 함수"""
     root_path = Path(root).expanduser()
 
+    gibbs_correction_o_v = 0.058092 - 0.033706
+    gibbs_correction_o_oh = 0.439910 - 0.128005
     gibbs_correction_o_o = 0.156862 - 0.100681
     gibbs_correction_oh_oo = 0.502349 - 0.144209
+    gibbs_correction_v_oh = 0.364538 - 0.074708
 
     # 표 형태로 데이터를 저장할 리스트
     oer_data = []
@@ -70,17 +73,19 @@ def calculate_oer_energies():
     print("\n=== Path 1: RuO2 (O_V → O_OH → O_O → OH_OO) ===")
     try:
         oer_path = root_path / "2_RuO2_OER" / "7_RuO2"
-        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json")
-        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json")
-        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json")
-        energy_oh_oo = get_energy_from_json(oer_path / "4_OH_OO" / "final_with_calculator.json")
+        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json") + gibbs_correction_o_v
+        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json") + gibbs_correction_o_oh
+        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json") + gibbs_correction_o_o
+        energy_oh_oo = get_energy_from_json(oer_path / "4_OH_OO" / "final_with_calculator.json") + gibbs_correction_oh_oo
+        energy_v_oh = get_energy_from_json(oer_path / "5_V_OH" / "final_with_calculator.json") + gibbs_correction_v_oh
         
-        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_oh_oo]):
-            step1 = (energy_o_oh + dgoh - goh) - (energy_o_v)
-            step2 = (energy_o_o + dgo - go) - (energy_o_oh + dgoh - goh)
-            step3 = (energy_oh_oo + gibbs_correction_oh_oo - goh - goo) - (energy_o_o + gibbs_correction_o_o - 2*go)
-            step4 = 4.92 - step1 - step2 - step3
-            
+        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_oh_oo, energy_v_oh]):
+            step1 = (energy_o_oh - goh) - (energy_o_v)
+            step2 = (energy_o_o - go) - (energy_o_oh - goh)
+            step3 = (energy_oh_oo - goh) - (energy_o_o)
+            step5 = (energy_o_v - go) - (energy_v_oh - goh)
+            step4 = 4.92 - step1 - step2 - step3 - step5
+
             # 표 형태로 데이터 추가
             oer_data.append({
                 'surface': 'RuO2',
@@ -88,13 +93,15 @@ def calculate_oer_energies():
                 'int2': 'O_OH', 
                 'int3': 'O_O',
                 'int4': 'OH_OO',
+                'int5': 'V_OH',
                 'step1': step1,
                 'step2': step2,
                 'step3': step3,
-                'step4': step4
+                'step4': step4,
+                'step5': step5
             })
-            all_paths['Path1'] = [step1, step2, step3, step4]
-            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV")
+            all_paths['Path1'] = [step1, step2, step3, step4, step5]
+            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
         else:
             print("Path 1: Failed to load some energies")
     except Exception as e:
@@ -104,16 +111,18 @@ def calculate_oer_energies():
     print("\n=== Path 2: ReRuO2 (O_V → O_OH → O_O → OH_OO) ===")
     try:
         oer_path = root_path / "3_ReRuO2_OER" / "1_ReRuO2"
-        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json")
-        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json")
-        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json")
-        energy_oh_oo = get_energy_from_json(oer_path / "4_OH_OO" / "final_with_calculator.json")
-        
-        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_oh_oo]):
-            step1 = (energy_o_oh + dgoh - goh) - (energy_o_v)
-            step2 = (energy_o_o + dgo - go) - (energy_o_oh + dgoh - goh)
-            step3 = (energy_oh_oo + gibbs_correction_oh_oo - goh - goo) - (energy_o_o + gibbs_correction_o_o - 2*go)
-            step4 = 4.92 - step1 - step2 - step3
+        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json") + gibbs_correction_o_v
+        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json") + gibbs_correction_o_oh
+        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json") + gibbs_correction_o_o
+        energy_oh_oo = get_energy_from_json(oer_path / "4_OH_OO" / "final_with_calculator.json") + gibbs_correction_oh_oo
+        energy_v_oh = get_energy_from_json(oer_path / "5_V_OH" / "final_with_calculator.json") + gibbs_correction_v_oh
+
+        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_oh_oo, energy_v_oh]):
+            step1 = (energy_o_oh - goh) - (energy_o_v)
+            step2 = (energy_o_o - go) - (energy_o_oh - goh)
+            step3 = (energy_oh_oo - goh) - (energy_o_o)
+            step5 = (energy_o_v - go) - (energy_v_oh - goh)
+            step4 = 4.92 - step1 - step2 - step3 - step5
             
             # 표 형태로 데이터 추가
             oer_data.append({
@@ -122,13 +131,15 @@ def calculate_oer_energies():
                 'int2': 'O_OH', 
                 'int3': 'O_O',
                 'int4': 'OH_OO',
+                'int5': 'V_OH',
                 'step1': step1,
                 'step2': step2,
                 'step3': step3,
-                'step4': step4
+                'step4': step4,
+                'step5': step5
             })
-            all_paths['Path2'] = [step1, step2, step3, step4]
-            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV")
+            all_paths['Path2'] = [step1, step2, step3, step4, step5]
+            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
         else:
             print("Path 2: Failed to load some energies")
     except Exception as e:
@@ -138,16 +149,18 @@ def calculate_oer_energies():
     print("\n=== Path 3: RuO2_strain_XRD (O_V → O_OH → O_O → OH_OO) ===")
     try:
         oer_path = root_path / "3_ReRuO2_OER" / "2_RuO2_strain_XRD"
-        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json")
-        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json")
-        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json")
-        energy_oh_oo = get_energy_from_json(oer_path / "4_OH_OO" / "final_with_calculator.json")
-        
-        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_oh_oo]):
-            step1 = (energy_o_oh + dgoh - goh) - (energy_o_v)
-            step2 = (energy_o_o + dgo - go) - (energy_o_oh + dgoh - goh)
-            step3 = (energy_oh_oo + gibbs_correction_oh_oo - goh - goo) - (energy_o_o + gibbs_correction_o_o - 2*go)
-            step4 = 4.92 - step1 - step2 - step3
+        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json") + gibbs_correction_o_v
+        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json") + gibbs_correction_o_oh
+        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json") + gibbs_correction_o_o
+        energy_oh_oo = get_energy_from_json(oer_path / "4_OH_OO" / "final_with_calculator.json") + gibbs_correction_oh_oo
+        energy_v_oh = get_energy_from_json(oer_path / "5_V_OH" / "final_with_calculator.json") + gibbs_correction_v_oh
+
+        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_oh_oo, energy_v_oh]):
+            step1 = (energy_o_oh - goh) - (energy_o_v)
+            step2 = (energy_o_o - go) - (energy_o_oh - goh)
+            step3 = (energy_oh_oo - goh) - (energy_o_o)
+            step5 = (energy_o_v - go) - (energy_v_oh - goh)
+            step4 = 4.92 - step1 - step2 - step3 - step5
             
             # 표 형태로 데이터 추가
             oer_data.append({
@@ -156,13 +169,15 @@ def calculate_oer_energies():
                 'int2': 'O_OH', 
                 'int3': 'O_O',
                 'int4': 'OH_OO',
+                'int5': 'V_OH',
                 'step1': step1,
                 'step2': step2,
                 'step3': step3,
-                'step4': step4
+                'step4': step4,
+                'step5': step5
             })
-            all_paths['Path3'] = [step1, step2, step3, step4]
-            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV")
+            all_paths['Path3'] = [step1, step2, step3, step4, step5]
+            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
         else:
             print("Path 3: Failed to load some energies")
     except Exception as e:
@@ -172,16 +187,17 @@ def calculate_oer_energies():
     print("\n=== Path 4: RuO2_strain_ReO2 (O_V → O_OH → O_O → OH_OO) ===")
     try:
         oer_path = root_path / "3_ReRuO2_OER" / "3_RuO2_strain_ReO2"
-        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json")
-        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json")
-        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json")
-        energy_oh_oo = get_energy_from_json(oer_path / "4_OH_OO" / "final_with_calculator.json")
-        
+        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json") + gibbs_correction_o_v
+        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json") + gibbs_correction_o_oh
+        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json") + gibbs_correction_o_o
+        energy_oh_oo = get_energy_from_json(oer_path / "4_OH_OO" / "final_with_calculator.json") + gibbs_correction_oh_oo
+        energy_v_oh = get_energy_from_json(oer_path / "5_V_OH" / "final_with_calculator.json") + gibbs_correction_v_oh
         if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_oh_oo]):
-            step1 = (energy_o_oh + dgoh - goh) - (energy_o_v)
-            step2 = (energy_o_o + dgo - go) - (energy_o_oh + dgoh - goh)
-            step3 = (energy_oh_oo + gibbs_correction_oh_oo - goh - goo) - (energy_o_o + gibbs_correction_o_o - 2*go)
-            step4 = 4.92 - step1 - step2 - step3
+            step1 = (energy_o_oh - goh) - (energy_o_v)
+            step2 = (energy_o_o - go) - (energy_o_oh - goh)
+            step3 = (energy_oh_oo - goh) - (energy_o_o)
+            step5 = (energy_o_v - go) - (energy_v_oh - goh)
+            step4 = 4.92 - step1 - step2 - step3 - step5
             
             # 표 형태로 데이터 추가
             oer_data.append({
@@ -190,13 +206,15 @@ def calculate_oer_energies():
                 'int2': 'O_OH', 
                 'int3': 'O_O',
                 'int4': 'OH_OO',
+                'int5': 'V_OH',
                 'step1': step1,
                 'step2': step2,
                 'step3': step3,
-                'step4': step4
+                'step4': step4,
+                'step5': step5
             })
-            all_paths['Path4'] = [step1, step2, step3, step4]
-            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV")
+            all_paths['Path4'] = [step1, step2, step3, step4, step5]
+            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
         else:
             print("Path 4: Failed to load some energies")
     except Exception as e:
@@ -215,28 +233,28 @@ def print_oer_table(oer_data):
     print("="*120)
     
     # 헤더 출력
-    header = f"{'Surface':<12} {'Int1':<8} {'Int2':<8} {'Int3':<8} {'Int4':<8} {'Step1':<10} {'Step2':<10} {'Step3':<10} {'Step4':<10} {'Max':<10} {'Overpotential':<12}"
+    header = f"{'Surface':<12} {'Int1':<8} {'Int2':<8} {'Int3':<8} {'Int4':<8} {'Int5':<8} {'Step1':<10} {'Step2':<10} {'Step3':<10} {'Step4':<10} {'Step5':<10} {'Max':<10} {'Overpotential':<12}"
     print(header)
     print("-"*120)
     
     # 데이터 출력
     for i, data in enumerate(oer_data, 1):
-        max_energy = max(data['step1'], data['step2'], data['step3'], data['step4'])
+        max_energy = max(data['step1'], data['step2'], data['step3'], data['step4'], data['step5'])
         overpotential = max_energy - 1.23
         
-        row = f"{data['surface']:<12} {data['int1']:<8} {data['int2']:<8} {data['int3']:<8} {data['int4']:<8} " \
-              f"{data['step1']:<10.3f} {data['step2']:<10.3f} {data['step3']:<10.3f} {data['step4']:<10.3f} " \
+        row = f"{data['surface']:<12} {data['int1']:<8} {data['int2']:<8} {data['int3']:<8} {data['int4']:<8} {data['int5']:<8} " \
+              f"{data['step1']:<10.3f} {data['step2']:<10.3f} {data['step3']:<10.3f} {data['step4']:<10.3f} {data['step5']:<10.3f} " \
               f"{max_energy:<10.3f} {overpotential:<12.3f}"
         print(row)
     
     print("-"*120)
     
     # 최적 경로 찾기
-    best_path = min(oer_data, key=lambda x: max(x['step1'], x['step2'], x['step3'], x['step4']))
-    best_max = max(best_path['step1'], best_path['step2'], best_path['step3'], best_path['step4'])
+    best_path = min(oer_data, key=lambda x: max(x['step1'], x['step2'], x['step3'], x['step4'], x['step5']))
+    best_max = max(best_path['step1'], best_path['step2'], best_path['step3'], best_path['step4'], best_path['step5'])
     best_overpotential = best_max - 1.23
     
-    print(f"\nBest Path: {best_path['surface']} - {best_path['int1']} → {best_path['int2']} → {best_path['int3']} → {best_path['int4']}")
+    print(f"\nBest Path: {best_path['surface']} - {best_path['int1']} → {best_path['int2']} → {best_path['int3']} → {best_path['int4']} → {best_path['int5']}")
     print(f"Maximum Step Energy: {best_max:.3f} eV")
     print(f"Overpotential: {best_overpotential:.3f} eV")
     print("="*120)
@@ -250,7 +268,7 @@ def plot_oer_energies(all_paths):
     # 첫 번째 그래프: 각 경로별 막대 그래프
     fig1, ax1 = plt.subplots(1, 1, figsize=(20, 8))
     
-    steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4']
+    steps = ['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5']
     colors = ['blue', 'red', 'green', 'magenta', 'orange', 'purple', 'brown', 'pink', 'gray', 
               'cyan', 'yellow', 'lime', 'navy', 'olive', 'teal', 'coral', 'gold', 'indigo', 
               'maroon', 'silver', 'tan']
@@ -277,7 +295,7 @@ def plot_oer_energies(all_paths):
     ax1.legend(fontsize=10, ncol=6)
     
     plt.tight_layout()
-    plt.savefig('OER_energies_comparison.png', dpi=300, bbox_inches='tight')
+    plt.savefig('OER_energies_comparison_5steps.png', dpi=300, bbox_inches='tight')
     # plt.show()
     
     # 두 번째 그래프: 각 경로의 최대 에너지 비교
@@ -301,7 +319,7 @@ def plot_oer_energies(all_paths):
     ax2.tick_params(axis='x', rotation=90)
     
     plt.tight_layout()
-    plt.savefig('OER_overpotential_comparison.png', dpi=300, bbox_inches='tight')
+    plt.savefig('OER_overpotential_comparison_5steps.png', dpi=300, bbox_inches='tight')
     # plt.show()
 
 def plot_individual_energetics_diagrams(all_paths, oer_data):
@@ -319,19 +337,19 @@ def plot_individual_energetics_diagrams(all_paths, oer_data):
         if not path_data:
             continue
             
-        # x축: 반응 단계 (1, 2, 3, 4)
-        steps = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5]
+        # x축: 반응 단계 (1, 2, 3, 4, 5)
+        steps = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6]
 
         energy0 = 0.0
         energy1 = path_data['step1']
         energy2 = path_data['step2'] + energy1
         energy3 = path_data['step3'] + energy2
         energy4 = path_data['step4'] + energy3
-
-        ueff = path_data['surface'][-1]
+        energy5 = path_data['step5'] + energy4
+        surface = path_data['surface']
         
         # y축: step energies
-        step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4]
+        step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4, energy5, energy5]
         
         # 선 그래프로 그리기
         ax.plot(steps, step_energies, '-', color='black', linewidth=2)
@@ -345,19 +363,19 @@ def plot_individual_energetics_diagrams(all_paths, oer_data):
         y_min = min(step_energies) - 0.2
         y_max = max(step_energies) + 0.3
         ax.set_ylim(y_min, y_max)
-        ax.set_xlim(0, 5)
+        ax.set_xlim(0, 6)
                 
         # 최대 에너지와 과전위 정보 추가
-        max_energy = max(path_data['step1'], path_data['step2'], path_data['step3'], path_data['step4'])
+        max_energy = max(path_data['step1'], path_data['step2'], path_data['step3'], path_data['step4'], path_data['step5'])
         overpotential = max_energy - 1.23
-        ax.text(0.02, 0.97, f'Ueff(Ru): {ueff} eV\nΔG1: {path_data["step1"]:.2f} eV\nΔG2: {path_data["step2"]:.2f} eV\nΔG3: {path_data["step3"]:.2f} eV\nΔG4: {path_data["step4"]:.2f} eV\nOverpotential: {overpotential:.2f} eV', 
+        ax.text(0.02, 0.97, f'Surface: {surface}\nΔG1: {path_data["step1"]:.2f} eV\nΔG2: {path_data["step2"]:.2f} eV\nΔG3: {path_data["step3"]:.2f} eV\nΔG4: {path_data["step4"]:.2f} eV\nΔG5: {path_data["step5"]:.2f} eV\nOverpotential: {overpotential:.2f} V', 
                 transform=ax.transAxes, fontsize=11, verticalalignment='top',
                 bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
         
         plt.tight_layout()
         
         # 파일명에 path 정보 포함하여 저장
-        filename = f'energetics_diagram_{path_name.lower()}_{path_data["surface"].lower()}.png'
+        filename = f'energetics_diagram_5steps_{path_name.lower()}_{path_data["surface"].lower()}.png'
         plt.savefig(filename, dpi=300, bbox_inches='tight')
         # plt.show()
         plt.close()
@@ -377,7 +395,7 @@ def plot_all_energetics_diagrams_combined(all_paths, oer_data):
               'cyan', 'yellow', 'lime', 'navy', 'olive', 'teal', 'coral', 'gold', 'indigo', 
               'maroon', 'silver', 'tan']
     
-    steps = [1, 2, 3, 4]
+    steps = [1, 2, 3, 4, 5]
     
     for i, (path_name, energies) in enumerate(all_paths.items()):
         # 데이터에서 해당 path 정보 찾기 (인덱스로 찾기)
@@ -386,7 +404,7 @@ def plot_all_energetics_diagrams_combined(all_paths, oer_data):
             continue
             
         # step energies
-        step_energies = [path_data['step1'], path_data['step2'], path_data['step3'], path_data['step4']]
+        step_energies = [path_data['step1'], path_data['step2'], path_data['step3'], path_data['step4'], path_data['step5']]
         
         # 선 그래프로 그리기
         ax.plot(steps, step_energies, 'o-', linewidth=1.5, markersize=4, 
@@ -410,13 +428,13 @@ def plot_all_energetics_diagrams_combined(all_paths, oer_data):
     ax.legend(fontsize=8, ncol=2, loc='upper right', bbox_to_anchor=(1.0, 1.0))
     
     plt.tight_layout()
-    plt.savefig('all_energetics_diagrams_combined.png', dpi=300, bbox_inches='tight')
+    plt.savefig('all_energetics_diagrams_combined_5steps.png', dpi=300, bbox_inches='tight')
     # plt.show()
     
-    print("Saved: all_energetics_diagrams_combined.png")
+    print("Saved: all_energetics_diagrams_combined_5steps.png")
     
     # 결과를 텍스트 파일로 저장
-    with open('OER_energies_comparison.txt', 'w') as f:
+    with open('OER_energies_comparison_5steps.txt', 'w') as f:
         f.write("OER Energetics Comparison - All Paths\n")
         f.write("=" * 60 + "\n\n")
         
@@ -426,6 +444,7 @@ def plot_all_energetics_diagrams_combined(all_paths, oer_data):
             f.write(f"  Step 2: {energies[1]:.6f} eV\n")
             f.write(f"  Step 3: {energies[2]:.6f} eV\n")
             f.write(f"  Step 4: {energies[3]:.6f} eV\n")
+            f.write(f"  Step 5: {energies[4]:.6f} eV\n")
             f.write(f"  Maximum: {max(energies):.6f} eV\n")
             f.write(f"  Overpotential: {max(energies) - 1.23:.6f} eV\n\n")
         

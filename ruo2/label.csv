@@ -1,0 +1,8 @@
+﻿O_V.json,*O,0
+O_OH.json,*O+*OH,1
+O_O.json,*O+*O,0
+V_OH.json,*OH,1
+OH_OH.json,*OH+*OH,2
+O_Brg.json,Ov(brg),0
+O2_Brg.json,2Ov(brg),0
+RuO2_Brg.json,Mv+2Ov(brg),0
