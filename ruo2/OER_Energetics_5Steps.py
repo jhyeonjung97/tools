@@ -110,7 +110,7 @@ def calculate_oer_energies():
     # Path 2: ReRuO2에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO
     print("\n=== Path 2: ReRuO2 (O_V → O_OH → O_O → OH_OO) ===")
     try:
-        oer_path = root_path / "3_ReRuO2_OER" / "1_ReRuO2"
+        oer_path = root_path / "3_ReRuO2_OER" / "3_ReRuO2"
         energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json") + gibbs_correction_o_v
         energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json") + gibbs_correction_o_oh
         energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json") + gibbs_correction_o_o
@@ -148,7 +148,7 @@ def calculate_oer_energies():
     # Path 3: RuO2_strain_XRD에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO
     print("\n=== Path 3: RuO2_strain_XRD (O_V → O_OH → O_O → OH_OO) ===")
     try:
-        oer_path = root_path / "3_ReRuO2_OER" / "2_RuO2_strain_XRD"
+        oer_path = root_path / "3_ReRuO2_OER" / "4_RuO2_strain_XRD"
         energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json") + gibbs_correction_o_v
         energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json") + gibbs_correction_o_oh
         energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json") + gibbs_correction_o_o
@@ -186,7 +186,7 @@ def calculate_oer_energies():
     # Path 4: RuO2_strain_ReO2에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO
     print("\n=== Path 4: RuO2_strain_ReO2 (O_V → O_OH → O_O → OH_OO) ===")
     try:
-        oer_path = root_path / "3_ReRuO2_OER" / "3_RuO2_strain_ReO2"
+        oer_path = root_path / "3_ReRuO2_OER" / "5_RuO2_strain_ReO2"
         energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json") + gibbs_correction_o_v
         energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json") + gibbs_correction_o_oh
         energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json") + gibbs_correction_o_o
