@@ -97,16 +97,36 @@ def collect_energy_data(base_path):
                 print(f"JSON 파일이 존재하지 않습니다: {json_path}")
                 energy_data[folder][subfolder] = None
 
+        if folder == "5_O_O" or folder == "7_OH_OO":
+            for ueff in range(1, 10):
+                subfolder_path = os.path.join(folder_path, "between_2_and_3", f"{ueff}_")
+                json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+                energy = extract_energy_from_json(json_path)
+                energy_data[folder][f"2.{ueff}_"] = energy
+
         semi_folder = semi_folders[i]
 
         subfolder_path = os.path.join(base_path, "2_RuO2_OER", "7_RuO2", semi_folder)
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
         energy_data[folder]["2.5_"] = energy
-    
-    for ueff in range(1, 10):
-        energy_data[folder][f"{ueff}_"] = None
-    
+        energy_data[folder]["RuO2"] = energy
+
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "3_ReRuO2", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["ReRuO2"] = energy
+
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "4_RuO2_strain_XRD", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["ReRuO2_1%"] = energy
+
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "5_RuO2_strain_ReO2", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["ReRuO2_2%"] = energy
+
     return energy_data
 
 def create_dataframe(energy_data):
@@ -135,7 +155,7 @@ def create_dataframe(energy_data):
     df = pd.DataFrame(data_dict).T
     
     # 인덱스 순서 정렬
-    df = df.reindex(index=['0', '1', '2', '3', '4', '2.5'])
+    df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'ReRuO2', 'ReRuO2_1%', 'ReRuO2_2%'])
     
     return df
 
@@ -174,12 +194,15 @@ def main():
 
     # 'ΔG'가 포함되지 않은 컬럼 제거
     dg_columns = [c for c in df.columns if "ΔG" in c]
-    df = df[dg_columns]
+    # Ueff 관련 행만 선택 (RuO2, ReRuO2 등 제외)
+    ueff_rows = [c for c in df.index if not any(x in c for x in ["RuO2", "ReRuO2"])]
+    df_dg = df[dg_columns]
+    df_scaling = df_dg.loc[ueff_rows]
 
     # Scaling relationship plot: x=(ΔG_O_O - ΔG_O_OH), y in [ΔG1..ΔG5]
-    if "ΔG_O_O" in df.columns and "ΔG_O_OH" in df.columns:
+    if "ΔG_O_O" in df_dg.columns and "ΔG_O_OH" in df_dg.columns:
         # x_series = (df["ΔG_O"] - df["ΔG_OH"]).rename("ΔG_O - ΔG_OH")
-        x_series = (df["ΔG_O_O"] - df["ΔG_O_OH"]).rename("ΔG_O_O - ΔG_O_OH")
+        x_series = (df_dg["ΔG_O_O"] - df_dg["ΔG_O_OH"]).rename("ΔG_O_O - ΔG_O_OH")
         y_columns = [c for c in ["ΔG1: *O→*O+*OH", "ΔG2: *O+*OH→*O+*O", "ΔG3a: *O+*O→*O+*OOH", "ΔG3d: *O+*O→*OO+*OH", "ΔG4a: *O+*OOH→*O+O2", "ΔG4d: *OO+*OH→*OH+O2", "ΔG5d: *OH→*O"] if c in df.columns]
         if len(y_columns) > 0:
             plt.figure(figsize=(8, 6))
@@ -189,12 +212,22 @@ def main():
             # ymin, ymax = 0.0, 2.0
             colors = ["C3", "C1", "C2", "C0", "C4", "C5", "C6"]
             for idx, ycol in enumerate(y_columns):
-                xy = pd.concat([x_series, df[ycol]], axis=1).dropna()
+                xy = pd.concat([x_series, df_dg[ycol]], axis=1).dropna()
                 if xy.empty:
                     continue
                 xvals = xy[x_series.name].to_numpy()
                 yvals = xy[ycol].to_numpy()
-                plt.scatter(xvals, yvals, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=10)
+                # Ueff 관련 데이터는 흰색, RuO2/ReRuO2 관련 데이터는 색칠
+                for i, (x, y) in enumerate(zip(xvals, yvals)):
+                    row_name = xy.index[i]
+                    if any(x in row_name for x in ["ReRuO2_"]) and idx == 3:
+                        plt.scatter(x, y, color='blue', zorder=10)
+                    elif any(x in row_name for x in ["ReRuO2"]) and idx == 3:
+                        plt.scatter(x, y, color='red', zorder=10)
+                    elif any(x in row_name for x in ["RuO2"]) and idx == 3:
+                        plt.scatter(x, y, color='black', zorder=10)
+                    else:
+                        plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
                 # print(idx,xvals, yvals)
                 # if idx == 2 or idx == 4:
                 #     plt.scatter(xvals[3], yvals[3], color=colors[idx % len(colors)], zorder=10)
@@ -224,6 +257,9 @@ def main():
                     m, b = np.polyfit(xvals, yvals, 1)
                     xs = np.linspace(xmin, xmax, 100)
                     plt.plot(xs, m*xs + b, color=colors[idx % len(colors)], label=f"{ycol}")
+
+            # plt.scatter(df_dg["ΔG2: *O+*OH→*O+*O"]['RuO2'], df_dg["ΔG2: *O+*OH→*O+*O"]['RuO2'], facecolor='white', edgecolor=colors[idx % len(colors)], zorder=10)
+
             plt.axhline(y=1.23+0.196, color='silver', linestyle='-', linewidth=1, zorder=0)
             plt.axhline(y=1.23+0.343, color='silver', linestyle='--', linewidth=1, zorder=0)
             plt.text(1.01, 1.23+0.196-0.01, r'Re-RuO$_2$', fontsize=10, color='silver')
@@ -244,7 +280,7 @@ def main():
             plt.close()
             print(f"스케일링 플롯 저장됨: {out_png}")
 
-    print(df)
+    print(df_dg)
 
     return df, energy_data
 
