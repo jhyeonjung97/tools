@@ -66,17 +66,20 @@ def collect_energy_data(base_path):
     모든 폴더와 서브폴더에서 에너지 데이터를 수집하는 함수
     
     Args:
-        base_path (str): 기본 경로 (/Users/hailey/Desktop/3_RuO2/1_RuO2_Ueff)
+        base_path (str): 기본 경로 (~/Desktop/3_RuO2/)
         
     Returns:
         dict: 정리된 에너지 데이터
     """
+    # ~를 홈 디렉토리로 확장
+    base_path = os.path.expanduser(base_path)
     folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OH_OO"]
+    semi_folders = ["0_V_V", "5_V_OH", "1_O_V", "2_O_OH", "3_O_O", "4_OH_OO/associative", "4_OH_OO"]
     subfolders = ["0_", "1_", "2_", "3_", "4_"]
     energy_data = {}
     
-    for folder in folders:
-        folder_path = os.path.join(base_path, folder)
+    for i, folder in enumerate(folders):
+        folder_path = os.path.join(base_path, "1_RuO2_Ueff", folder)
         if not os.path.exists(folder_path):
             print(f"폴더가 존재하지 않습니다: {folder_path}")
             continue
@@ -93,6 +96,16 @@ def collect_energy_data(base_path):
             else:
                 print(f"JSON 파일이 존재하지 않습니다: {json_path}")
                 energy_data[folder][subfolder] = None
+
+        semi_folder = semi_folders[i]
+
+        subfolder_path = os.path.join(base_path, "2_RuO2_OER", "7_RuO2", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["2.5_"] = energy
+    
+    for ueff in range(1, 10):
+        energy_data[folder][f"{ueff}_"] = None
     
     return energy_data
 
@@ -122,7 +135,7 @@ def create_dataframe(energy_data):
     df = pd.DataFrame(data_dict).T
     
     # 인덱스 순서 정렬
-    df = df.reindex(index=['0', '1', '2', '3', '4'])
+    df = df.reindex(index=['0', '1', '2', '3', '4', '2.5'])
     
     return df
 
@@ -131,9 +144,11 @@ def main():
     메인 실행 함수
     """
     # 기본 경로 설정
-    base_path = "/Users/hailey/Desktop/3_RuO2/1_RuO2_Ueff"
+    base_path = "~/Desktop/3_RuO2"
     energy_data = collect_energy_data(base_path)
     df = create_dataframe(energy_data)
+
+    print(df)
 
     # folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OH_OO"]
     gibbs_correction_o_v = 0.058092 - 0.033706
@@ -148,13 +163,13 @@ def main():
     df["ΔG_O_O"] = df["5_O_O"] + gibbs_correction_o_o - df["3_O_V"] - gibbs_correction_o_v - go
     df["ΔG_O_OH"] = df["4_O_OH"] + gibbs_correction_o_oh - df["3_O_V"] - gibbs_correction_o_v - goh
     
-    df["ΔG1"] = df["4_O_OH"] + gibbs_correction_o_oh - goh - df["3_O_V"] - gibbs_correction_o_v
-    df["ΔG2"] = df["5_O_O"] + gibbs_correction_o_o - go - df["4_O_OH"] - gibbs_correction_o_oh + goh
-    df["ΔG3a"] = df["6_O_OOH"] + gibbs_correction_o_ooh - goh - df["5_O_O"] - gibbs_correction_o_o
-    df["ΔG3b"] = df["7_OH_OO"] + gibbs_correction_oh_oo - goh - df["5_O_O"] - gibbs_correction_o_o
-    df["ΔG4a"] = df["3_O_V"] + gibbs_correction_o_v - df["6_O_OOH"] - gibbs_correction_o_ooh + gooh + 4.92
-    df["ΔG4b"] = df["2_V_OH"] + gibbs_correction_v_oh - df["7_OH_OO"] - gibbs_correction_oh_oo + goo + 4.92
-    df["ΔG5"] = df["3_O_V"] + gibbs_correction_o_v - go - df["2_V_OH"] - gibbs_correction_v_oh + goh
+    df["ΔG1: *O→*O+*OH"] = df["4_O_OH"] + gibbs_correction_o_oh - goh - df["3_O_V"] - gibbs_correction_o_v
+    df["ΔG2: *O+*OH→*O+*O"] = df["5_O_O"] + gibbs_correction_o_o - go - df["4_O_OH"] - gibbs_correction_o_oh + goh
+    df["ΔG3a: *O+*O→*O+*OOH"] = df["6_O_OOH"] + gibbs_correction_o_ooh - goh - df["5_O_O"] - gibbs_correction_o_o
+    df["ΔG3d: *O+*O→*OO+*OH"] = df["7_OH_OO"] + gibbs_correction_oh_oo - goh - df["5_O_O"] - gibbs_correction_o_o
+    df["ΔG4a: *O+*OOH→*O+O2"] = df["3_O_V"] + gibbs_correction_o_v - df["6_O_OOH"] - gibbs_correction_o_ooh + gooh + 4.92
+    df["ΔG4d: *OO+*OH→*OH+O2"] = df["2_V_OH"] + gibbs_correction_v_oh - df["7_OH_OO"] - gibbs_correction_oh_oo + goo + 4.92
+    df["ΔG5d: *OH→*O"] = df["3_O_V"] + gibbs_correction_o_v - go - df["2_V_OH"] - gibbs_correction_v_oh + goh
     # df["ΔG4"] = 4.92 - df["ΔG1"] - df["ΔG2"] - df["ΔG3"] - df["ΔG4"] - df["ΔG5"]
 
     # 'ΔG'가 포함되지 않은 컬럼 제거
@@ -165,33 +180,67 @@ def main():
     if "ΔG_O_O" in df.columns and "ΔG_O_OH" in df.columns:
         # x_series = (df["ΔG_O"] - df["ΔG_OH"]).rename("ΔG_O - ΔG_OH")
         x_series = (df["ΔG_O_O"] - df["ΔG_O_OH"]).rename("ΔG_O_O - ΔG_O_OH")
-        y_columns = [c for c in ["ΔG1", "ΔG2", "ΔG3a", "ΔG3b", "ΔG4a", "ΔG4b", "ΔG5"] if c in df.columns]
+        y_columns = [c for c in ["ΔG1: *O→*O+*OH", "ΔG2: *O+*OH→*O+*O", "ΔG3a: *O+*O→*O+*OOH", "ΔG3d: *O+*O→*OO+*OH", "ΔG4a: *O+*OOH→*O+O2", "ΔG4d: *OO+*OH→*OH+O2", "ΔG5d: *OH→*O"] if c in df.columns]
         if len(y_columns) > 0:
-            plt.figure(figsize=(7, 5))
+            plt.figure(figsize=(8, 6))
             xmin, xmax = 1.0, 2.0
-            ymin, ymax = 1.3, 2.3
-            colors = ["C0", "C1", "C2", "C3", "C4", "C5", "C6"]
+            ymin, ymax = 1.2, 2.2
+            # xmin, xmax = 1.0, 2.0
+            # ymin, ymax = 0.0, 2.0
+            colors = ["C3", "C1", "C2", "C0", "C4", "C5", "C6"]
             for idx, ycol in enumerate(y_columns):
                 xy = pd.concat([x_series, df[ycol]], axis=1).dropna()
                 if xy.empty:
                     continue
                 xvals = xy[x_series.name].to_numpy()
                 yvals = xy[ycol].to_numpy()
-                plt.scatter(xvals, yvals, s=30, alpha=0.75, color=colors[idx % len(colors)])
+                plt.scatter(xvals, yvals, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=10)
+                # print(idx,xvals, yvals)
+                # if idx == 2 or idx == 4:
+                #     plt.scatter(xvals[3], yvals[3], color=colors[idx % len(colors)], zorder=10)
+                # else:
+                #     plt.scatter(xvals[5], yvals[5], color=colors[idx % len(colors)], zorder=10)
+
+                # # ΔG1에만 annotation 추가
+                # if ycol == "ΔG1: *O→*O+*OH":
+                #     for i, (x, y) in enumerate(zip(xvals, yvals)):
+                #         plt.annotate(f'Ueff =\n{i} eV', (x, y), xytext=(0, -7), 
+                #                 textcoords='offset points', fontsize=8, ha='center', va='top')
+
+                # # ΔG3d에만 annotation 추가
+                # if ycol == "ΔG3d: *O+*O→*OO+*OH":
+                #     for i, (x, y) in enumerate(zip(xvals, yvals)):
+                #         if i == 0 or i == 2 or i == 4:
+                #             plt.annotate(f'{i} eV', (x, y), xytext=(0, 7), 
+                #                     textcoords='offset points', fontsize=8, ha='center')
+                #         elif i == 1:
+                #             plt.annotate(f'Ueff = {i} eV', (x, y), xytext=(7, 0), 
+                #                     textcoords='offset points', fontsize=8, ha='left', va='center')
+                #         elif i == 3:
+                #             plt.annotate(f'{i} eV', (x, y), xytext=(7, 0), 
+                #                     textcoords='offset points', fontsize=8, ha='left', va='center')
+
                 if xvals.size >= 2:
                     m, b = np.polyfit(xvals, yvals, 1)
                     xs = np.linspace(xmin, xmax, 100)
-                    plt.plot(xs, m*xs + b, color=colors[idx % len(colors)], linewidth=2, label=f"{ycol} fit")
+                    plt.plot(xs, m*xs + b, color=colors[idx % len(colors)], label=f"{ycol}")
+            plt.axhline(y=1.23+0.196, color='silver', linestyle='-', linewidth=1, zorder=0)
+            plt.axhline(y=1.23+0.343, color='silver', linestyle='--', linewidth=1, zorder=0)
+            plt.text(1.01, 1.23+0.196-0.01, r'Re-RuO$_2$', fontsize=10, color='silver')
+            plt.text(1.01, 1.23+0.343-0.01, r'cRuO$_2$', fontsize=10, color='silver')
             plt.xlabel(r'$\Delta G_{O} - \Delta G_{OH}$ (eV)')
             plt.ylabel("ΔG (eV)")
             plt.xlim(xmin, xmax)
             plt.ylim(ymin, ymax)
-            plt.grid(True, alpha=0.3)
+            plt.grid(True, alpha=0.1)
             plt.gca().invert_yaxis()
-            plt.legend()
-            plt.tight_layout()
+            plt.legend(loc='lower right', bbox_to_anchor=(0.99, 0.01), fontsize=9, ncol=1)
+            # plt.legend(loc='upper right', bbox_to_anchor=(0.99, 0.99), fontsize=9, ncol=1)
+            # tight_layout 대신 수동으로 여백 조정
+            plt.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.12)
             out_png = "OER_scaling.png"
-            plt.savefig(out_png, dpi=200)
+            plt.savefig(out_png, dpi=300, bbox_inches='tight')
+            plt.show()
             plt.close()
             print(f"스케일링 플롯 저장됨: {out_png}")
 
