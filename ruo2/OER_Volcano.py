@@ -232,8 +232,8 @@ def main():
                         plt.scatter(x, y, color='green', zorder=10)
                     elif row_name == "ReRuO2_2%" and idx == 3:
                         plt.scatter(x, y, color='orange', zorder=10)
-                    else:
-                        plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
+                    # else:
+                    #     plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
                 # print(idx,xvals, yvals)
                 # if idx == 2 or idx == 4:
                 #     plt.scatter(xvals[3], yvals[3], color=colors[idx % len(colors)], zorder=10)
