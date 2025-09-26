@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 
 # 사용자 환경에 맞춰 경로를 변경하세요
-root = "~/Desktop/3_RuO2/3_OER"
+root = "~/Desktop/3_RuO2/2_RuO2_OER"
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190
@@ -942,6 +942,150 @@ def plot_individual_energetics_diagrams(all_paths, oer_data):
         
         print(f"Saved: {filename}")
 
+def plot_ooh_otop2_pathways(all_paths, oer_data):
+    """OOH-Otop2 표면의 Path 1과 Path 2를 하나의 그래프에 그리는 함수"""
+    if not all_paths or not oer_data:
+        print("No data found for plotting OOH-Otop2 pathways")
+        return
+    
+    # Path 1과 Path 2 데이터 찾기
+    path1_data = None
+    path2_data = None
+    
+    for i, data in enumerate(oer_data):
+        if data['surface'] == 'OOH-Otop2' and data['int4'] == 'O_OOH':
+            path1_data = data
+        elif data['surface'] == 'OOH-Otop2' and data['int4'] == 'OH_OO':
+            path2_data = data
+    
+    if not path1_data or not path2_data:
+        print("OOH-Otop2 pathways not found in data")
+        return
+    
+    fig, ax = plt.subplots(1, 1, figsize=(6, 4))
+    
+    # x축: 반응 단계 (plot_individual_energetics_diagrams와 동일한 스타일)
+    steps = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5]
+
+    # 최대 에너지와 과전위 정보 추가
+    max1 = max(path1_data['step1'], path1_data['step2'], path1_data['step3'], path1_data['step4'])
+    max2 = max(path2_data['step1'], path2_data['step2'], path2_data['step3'], path2_data['step4'])
+    over1 = max1 - 1.23
+    over2 = max2 - 1.23
+
+    # Path 1: O_V → O_OH → O_O → O_OOH
+    energy0 = 0.0
+    energy1 = path1_data['step1']
+    energy2 = path1_data['step2'] + energy1
+    energy3 = path1_data['step3'] + energy2
+    energy4 = path1_data['step4'] + energy3
+    
+    path1_step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4]
+    ax.plot(steps, path1_step_energies, '-', color='black', linewidth=2, label=f'Associative Mechanism, η = {over1:.2f} V', zorder=2)
+    
+    # Path 2: O_V → O_OH → O_O → OH_OO
+    energy0 = 0.0
+    energy1 = path2_data['step1']
+    energy2 = path2_data['step2'] + energy1
+    energy3 = path2_data['step3'] + energy2
+    energy4 = path2_data['step4'] + energy3
+    
+    path2_step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4]
+    ax.plot(steps, path2_step_energies, '-', color='red', linewidth=2, label=f'Dissociative Mechanism, η = {over2:.2f} V', zorder=1)
+    
+    # 그래프 설정 (plot_individual_energetics_diagrams와 동일한 스타일)
+    ax.set_xticks([])
+    ax.set_xlabel('Reaction Coordinate', fontsize=12)
+    ax.set_ylabel('Relative Energy (ΔG, eV)', fontsize=12)
+    
+    # y축 범위 설정
+    all_energies = path1_step_energies + path2_step_energies
+    y_min = min(all_energies) - 0.2
+    y_max = max(all_energies) + 0.3
+    ax.set_ylim(y_min, y_max)
+    ax.set_xlim(0, 5)
+    
+    ax.text(0.02, 0.97, f'Ueff: {path1_data["surface"][-1]}.00 eV\nΔG1: {path1_data["step1"]:.2f} eV\nΔG2: {path1_data["step2"]:.2f} eV\nΔG3a: {path1_data["step3"]:.2f} eV\nΔG3d: {path2_data["step3"]:.2f} eV\nΔG4a: {path1_data["step4"]:.2f} eV\nΔG4d: {path2_data["step4"]:.2f} eV', 
+            transform=ax.transAxes, fontsize=10, verticalalignment='top', horizontalalignment='left',
+            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+    plt.legend(loc='lower right', bbox_to_anchor=(1.0, 0.0), fontsize=10)
+    plt.tight_layout()
+    plt.savefig('OOH_Otop2_pathways_comparison.png', dpi=300, bbox_inches='tight')
+    print("Saved: OOH_Otop2_pathways_comparison.png")
+
+def plot_ooh_otop3_pathways(all_paths, oer_data):
+    """OOH-Otop3 표면의 Path 15와 Path 16을 하나의 그래프에 그리는 함수"""
+    if not all_paths or not oer_data:
+        print("No data found for plotting OOH-Otop3 pathways")
+        return
+    
+    # Path 15와 Path 16 데이터 찾기
+    path15_data = None
+    path16_data = None
+    
+    for i, data in enumerate(oer_data):
+        if data['surface'] == 'OOH-Otop3' and data['int4'] == 'O_OOH':
+            path15_data = data
+        elif data['surface'] == 'OOH-Otop3' and data['int4'] == 'OH_OO':
+            path16_data = data
+    
+    if not path15_data or not path16_data:
+        print("OOH-Otop3 pathways not found in data")
+        return
+    
+    fig, ax = plt.subplots(1, 1, figsize=(6, 4))
+    
+    # x축: 반응 단계 (plot_individual_energetics_diagrams와 동일한 스타일)
+    steps = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5]
+
+    # 최대 에너지와 과전위 정보 추가
+    max1 = max(path15_data['step1'], path15_data['step2'], path15_data['step3'], path15_data['step4'])
+    max2 = max(path16_data['step1'], path16_data['step2'], path16_data['step3'], path16_data['step4'])
+    over1 = max1 - 1.23
+    over2 = max2 - 1.23
+
+    # Path 15: O_V → O_OH → O_O → O_OOH
+    energy0 = 0.0
+    energy1 = path15_data['step1']
+    energy2 = path15_data['step2'] + energy1
+    energy3 = path15_data['step3'] + energy2
+    energy4 = path15_data['step4'] + energy3
+    
+    path15_step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4]
+    ax.plot(steps, path15_step_energies, '-', color='black', linewidth=2, label=f'Associative Mechanism, η = {over1:.2f} V', zorder=2)
+    
+    # Path 16: O_V → O_OH → O_O → OH_OO
+    energy0 = 0.0
+    energy1 = path16_data['step1']
+    energy2 = path16_data['step2'] + energy1
+    energy3 = path16_data['step3'] + energy2
+    energy4 = path16_data['step4'] + energy3
+    
+    path16_step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4]
+    ax.plot(steps, path16_step_energies, '-', color='red', linewidth=2, label=f'Dissociative Mechanism, η = {over2:.2f} V', zorder=1)
+    
+    # 그래프 설정 (plot_individual_energetics_diagrams와 동일한 스타일)
+    ax.set_xticks([])
+    ax.set_xlabel('Reaction Coordinate', fontsize=12)
+    ax.set_ylabel('Relative Energy (ΔG, eV)', fontsize=12)
+    
+    # y축 범위 설정
+    all_energies = path15_step_energies + path16_step_energies
+    y_min = min(all_energies) - 0.2
+    y_max = max(all_energies) + 0.3
+    ax.set_ylim(y_min, y_max)
+    ax.set_xlim(0, 5)
+    
+    ax.text(0.02, 0.97, f'Ueff: {path15_data["surface"][-1]}.00 eV\nΔG1: {path15_data["step1"]:.2f} eV\nΔG2: {path15_data["step2"]:.2f} eV\nΔG3a: {path15_data["step3"]:.2f} eV\nΔG3d: {path16_data["step3"]:.2f} eV\nΔG4a: {path15_data["step4"]:.2f} eV\nΔG4d: {path16_data["step4"]:.2f} eV', 
+            transform=ax.transAxes, fontsize=10, verticalalignment='top', horizontalalignment='left',
+            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+    plt.legend(loc='lower right', bbox_to_anchor=(1.0, 0.0), fontsize=10)
+    plt.tight_layout()
+    plt.savefig('OOH_Otop3_pathways_comparison.png', dpi=300, bbox_inches='tight')
+    print("Saved: OOH_Otop3_pathways_comparison.png")
+
 def plot_all_energetics_diagrams_combined(all_paths, oer_data):
     """모든 path의 energetics diagram을 하나의 그래프에 그리는 함수"""
     if not all_paths or not oer_data:
@@ -1027,6 +1171,14 @@ if __name__ == "__main__":
         
         # 막대 그래프 출력
         plot_oer_energies(all_paths)
+        
+        # OOH-Otop2 표면의 두 pathway 비교 그래프
+        print("\nGenerating OOH-Otop2 pathways comparison...")
+        plot_ooh_otop2_pathways(all_paths, oer_data)
+        
+        # OOH-Otop3 표면의 두 pathway 비교 그래프
+        print("\nGenerating OOH-Otop3 pathways comparison...")
+        plot_ooh_otop3_pathways(all_paths, oer_data)
         
         # 개별 energetics diagram 출력
         print("\nGenerating individual energetics diagrams...")

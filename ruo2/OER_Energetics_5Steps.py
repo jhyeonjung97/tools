@@ -382,6 +382,87 @@ def plot_individual_energetics_diagrams(all_paths, oer_data):
         
         print(f"Saved: {filename}")
 
+def plot_all_pathways_combined(all_paths, oer_data):
+    """모든 pathway를 하나의 그래프에 그리는 함수"""
+    if not all_paths or not oer_data:
+        print("No data found for plotting combined pathways")
+        return
+    
+    fig, ax = plt.subplots(1, 1, figsize=(6, 4))
+    
+    # x축: 반응 단계 (plot_individual_energetics_diagrams와 동일한 스타일)
+    steps = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6]
+    
+    # 색상 설정
+    colors = ['black', 'red', 'green', 'orange']
+    zorders = [4, 1, 2, 3]
+    
+    for i, (path_name, energies) in enumerate(all_paths.items()):
+        # 데이터에서 해당 path 정보 찾기 (인덱스로 찾기)
+        path_data = oer_data[i] if i < len(oer_data) else None
+        if not path_data:
+            continue
+            
+        # 에너지 계산
+        energy0 = 0.0
+        energy1 = path_data['step1']
+        energy2 = path_data['step2'] + energy1
+        energy3 = path_data['step3'] + energy2
+        energy4 = path_data['step4'] + energy3
+        energy5 = path_data['step5'] + energy4
+        
+        # y축: step energies
+        step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4, energy5, energy5]
+        surface = path_data["surface"]
+        max_energy = max(path_data['step1'], path_data['step2'], path_data['step3'], path_data['step4'], path_data['step5'])
+        overpotential = max_energy - 1.23
+        # 선 그래프로 그리기 (plot_individual_energetics_diagrams와 동일한 스타일)
+        ax.plot(steps, step_energies, '-', color=colors[i % len(colors)], linewidth=2, 
+                label=f'{surface} (η = {overpotential:.2f} V)', zorder=zorders[i])
+    
+    # 그래프 설정 (plot_individual_energetics_diagrams와 동일한 스타일)
+    ax.set_xticks([])
+    ax.set_xlabel('Reaction Coordinate', fontsize=12)
+    ax.set_ylabel('Relative Energy (ΔG, eV)', fontsize=12)
+    
+    # y축 범위 설정
+    all_energies = []
+    for path_data in oer_data:
+        energy0 = 0.0
+        energy1 = path_data['step1']
+        energy2 = path_data['step2'] + energy1
+        energy3 = path_data['step3'] + energy2
+        energy4 = path_data['step4'] + energy3
+        energy5 = path_data['step5'] + energy4
+        step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4, energy5, energy5]
+        all_energies.extend(step_energies)
+    
+    y_min = min(all_energies) - 0.2
+    y_max = max(all_energies) + 0.3
+    ax.set_ylim(y_min, y_max)
+    ax.set_xlim(0, 6)
+    
+    # 최대 에너지와 과전위 정보 추가 (plot_individual_energetics_diagrams와 동일한 스타일)
+    info_text = ""
+    for i, path_data in enumerate(oer_data):
+        max_energy = max(path_data['step1'], path_data['step2'], path_data['step3'], path_data['step4'], path_data['step5'])
+        overpotential = max_energy - 1.23
+        info_text += f'{path_data["surface"]}:\n'
+        info_text += f'ΔG1: {path_data["step1"]:.2f} eV\n'
+        info_text += f'ΔG2: {path_data["step2"]:.2f} eV\n'
+        info_text += f'ΔG3: {path_data["step3"]:.2f} eV\n'
+        info_text += f'ΔG4: {path_data["step4"]:.2f} eV\n'
+        info_text += f'ΔG5: {path_data["step5"]:.2f} eV\n'
+        info_text += f'Overpotential: {overpotential:.2f} V\n\n'
+    
+    # ax.text(0.02, 0.97, info_text, transform=ax.transAxes, fontsize=10, verticalalignment='top',
+    #         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+    
+    plt.legend(fontsize=10)
+    plt.tight_layout()
+    plt.savefig('all_pathways_combined_5steps.png', dpi=300, bbox_inches='tight')
+    print("Saved: all_pathways_combined_5steps.png")
+
 def plot_all_energetics_diagrams_combined(all_paths, oer_data):
     """모든 path의 energetics diagram을 하나의 그래프에 그리는 함수"""
     if not all_paths or not oer_data:
@@ -468,6 +549,10 @@ if __name__ == "__main__":
         
         # 막대 그래프 출력
         plot_oer_energies(all_paths)
+        
+        # 모든 pathway를 하나의 그래프에 출력
+        print("\nGenerating combined pathways diagram...")
+        plot_all_pathways_combined(all_paths, oer_data)
         
         # 개별 energetics diagram 출력
         print("\nGenerating individual energetics diagrams...")

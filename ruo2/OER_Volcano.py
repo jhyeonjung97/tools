@@ -3,6 +3,10 @@ import pandas as pd
 from ase.io import read
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+
+mpl.rcParams["axes.prop_cycle"] = plt.cycler(color=plt.get_cmap("tab20").colors)
+
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190
@@ -205,12 +209,12 @@ def main():
         x_series = (df_dg["ΔG_O_O"] - df_dg["ΔG_O_OH"]).rename("ΔG_O_O - ΔG_O_OH")
         y_columns = [c for c in ["ΔG1: *O→*O+*OH", "ΔG2: *O+*OH→*O+*O", "ΔG3a: *O+*O→*O+*OOH", "ΔG3d: *O+*O→*OO+*OH", "ΔG4a: *O+*OOH→*O+O2", "ΔG4d: *OO+*OH→*OH+O2", "ΔG5d: *OH→*O"] if c in df.columns]
         if len(y_columns) > 0:
-            plt.figure(figsize=(8, 6))
+            plt.figure(figsize=(6, 4))
             xmin, xmax = 1.0, 2.0
             ymin, ymax = 1.2, 2.2
             # xmin, xmax = 1.0, 2.0
             # ymin, ymax = 0.0, 2.0
-            colors = ["C3", "C1", "C2", "C0", "C4", "C5", "C6"]
+            colors = ["C7", "C3", "C5", "C1", "C9", "C11", "C13"]
             for idx, ycol in enumerate(y_columns):
                 xy = pd.concat([x_series, df_dg[ycol]], axis=1).dropna()
                 if xy.empty:
@@ -220,12 +224,14 @@ def main():
                 # Ueff 관련 데이터는 흰색, RuO2/ReRuO2 관련 데이터는 색칠
                 for i, (x, y) in enumerate(zip(xvals, yvals)):
                     row_name = xy.index[i]
-                    if any(x in row_name for x in ["ReRuO2_"]) and idx == 3:
-                        plt.scatter(x, y, color='blue', zorder=10)
-                    elif any(x in row_name for x in ["ReRuO2"]) and idx == 3:
-                        plt.scatter(x, y, color='red', zorder=10)
-                    elif any(x in row_name for x in ["RuO2"]) and idx == 3:
+                    if row_name == "RuO2" and idx == 3:
                         plt.scatter(x, y, color='black', zorder=10)
+                    elif row_name == "ReRuO2" and idx == 3:
+                        plt.scatter(x, y, color='red', zorder=10)
+                    elif row_name == "ReRuO2_1%" and idx == 3:
+                        plt.scatter(x, y, color='green', zorder=10)
+                    elif row_name == "ReRuO2_2%" and idx == 3:
+                        plt.scatter(x, y, color='orange', zorder=10)
                     else:
                         plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
                 # print(idx,xvals, yvals)
@@ -265,7 +271,7 @@ def main():
             plt.text(1.01, 1.23+0.196-0.01, r'Re-RuO$_2$', fontsize=10, color='silver')
             plt.text(1.01, 1.23+0.343-0.01, r'cRuO$_2$', fontsize=10, color='silver')
             plt.xlabel(r'$\Delta G_{O} - \Delta G_{OH}$ (eV)')
-            plt.ylabel("ΔG (eV)")
+            plt.ylabel(r'$\Delta G_{max}$ (eV)')
             plt.xlim(xmin, xmax)
             plt.ylim(ymin, ymax)
             plt.grid(True, alpha=0.1)
