@@ -204,6 +204,74 @@ def calculate_oer_energies():
     except Exception as e:
         print(f"Path 4: Error - {e}")
 
+    # Path 5: ReRuO2_strain_1%에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO
+    print("\n=== Path 5: ReRuO2_strain_1% (O_V → O_OH → O_O → OH_OO) ===")
+    try:
+        oer_path = root_path / "3_ReRuO2_OER" / "6_ReRuO2_strain_1%"
+        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json") + gibbs_correction_o_v
+        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json") + gibbs_correction_o_oh
+        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json") + gibbs_correction_o_o
+        energy_oh_oo = get_energy_from_json(oer_path / "4_OH_OO" / "final_with_calculator.json") + gibbs_correction_oh_oo
+        
+        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_oh_oo]):
+            step1 = (energy_o_oh - goh) - (energy_o_v)
+            step2 = (energy_o_o - go) - (energy_o_oh - goh)
+            step3 = (energy_oh_oo - goh) - (energy_o_o)
+            step4 = 4.92 - step1 - step2 - step3
+            
+            # 표 형태로 데이터 추가
+            oer_data.append({
+                'surface': 'ReRuO2_1%',
+                'int1': 'O_V',
+                'int2': 'O_OH', 
+                'int3': 'O_O',
+                'int4': 'OH_OO',
+                'step1': step1,
+                'step2': step2,
+                'step3': step3,
+                'step4': step4
+            })
+            all_paths['Path5'] = [step1, step2, step3, step4]
+            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV")
+        else:
+            print("Path 5: Failed to load some energies")
+    except Exception as e:
+        print(f"Path 5: Error - {e}")
+
+    # Path 6: ReRuO2_strain_2%에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO
+    print("\n=== Path 6: ReRuO2_strain_2% (O_V → O_OH → O_O → OH_OO) ===")
+    try:
+        oer_path = root_path / "3_ReRuO2_OER" / "7_ReRuO2_strain_2%"
+        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json") + gibbs_correction_o_v
+        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json") + gibbs_correction_o_oh
+        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json") + gibbs_correction_o_o
+        energy_oh_oo = get_energy_from_json(oer_path / "4_OH_OO" / "final_with_calculator.json") + gibbs_correction_oh_oo
+        
+        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_oh_oo]):
+            step1 = (energy_o_oh - goh) - (energy_o_v)
+            step2 = (energy_o_o - go) - (energy_o_oh - goh)
+            step3 = (energy_oh_oo - goh) - (energy_o_o)
+            step4 = 4.92 - step1 - step2 - step3
+            
+            # 표 형태로 데이터 추가
+            oer_data.append({
+                'surface': 'ReRuO2_2%',
+                'int1': 'O_V',
+                'int2': 'O_OH', 
+                'int3': 'O_O',
+                'int4': 'OH_OO',
+                'step1': step1,
+                'step2': step2,
+                'step3': step3,
+                'step4': step4
+            })
+            all_paths['Path6'] = [step1, step2, step3, step4]
+            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV")
+        else:
+            print("Path 6: Failed to load some energies")
+    except Exception as e:
+        print(f"Path 6: Error - {e}")
+
     return all_paths, oer_data
 
 def print_oer_table(oer_data):

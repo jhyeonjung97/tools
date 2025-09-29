@@ -124,13 +124,23 @@ def collect_energy_data(base_path):
         subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "4_RuO2_strain_XRD", semi_folder)
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
-        energy_data[folder]["ReRuO2_1%"] = energy
+        energy_data[folder]["RuO2_1%"] = energy
 
         subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "5_RuO2_strain_ReO2", semi_folder)
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
-        energy_data[folder]["ReRuO2_2%"] = energy
+        energy_data[folder]["RuO2_2%"] = energy
 
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "6_ReRuO2_strain_1%", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["ReRuO2_1%"] = energy
+
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "7_ReRuO2_strain_2%", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["ReRuO2_2%"] = energy
+        
     return energy_data
 
 def create_dataframe(energy_data):
@@ -159,7 +169,8 @@ def create_dataframe(energy_data):
     df = pd.DataFrame(data_dict).T
     
     # 인덱스 순서 정렬
-    df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'ReRuO2', 'ReRuO2_1%', 'ReRuO2_2%'])
+    df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'ReRuO2', 'RuO2_1%', 'RuO2_2%', 'ReRuO2_1%', 'ReRuO2_2%'])
+    # df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'ReRuO2', 'RuO2_1%', 'RuO2_2%'])
     
     return df
 
@@ -211,7 +222,7 @@ def main():
         if len(y_columns) > 0:
             plt.figure(figsize=(6, 4))
             xmin, xmax = 1.0, 2.0
-            ymin, ymax = 1.2, 2.2
+            ymin, ymax = 1.3, 1.9
             # xmin, xmax = 1.0, 2.0
             # ymin, ymax = 0.0, 2.0
             colors = ["C7", "C3", "C5", "C1", "C9", "C11", "C13"]
@@ -228,10 +239,14 @@ def main():
                         plt.scatter(x, y, color='black', zorder=10)
                     elif row_name == "ReRuO2" and idx == 3:
                         plt.scatter(x, y, color='red', zorder=10)
-                    elif row_name == "ReRuO2_1%" and idx == 3:
+                    elif row_name == "RuO2_1%" and idx == 3:
                         plt.scatter(x, y, color='green', zorder=10)
-                    elif row_name == "ReRuO2_2%" and idx == 3:
+                    elif row_name == "RuO2_2%" and idx == 3:
                         plt.scatter(x, y, color='orange', zorder=10)
+                    elif row_name == "ReRuO2_1%" and idx == 3:
+                        plt.scatter(x, y, color='magenta', zorder=10)
+                    elif row_name == "ReRuO2_2%" and idx == 3:
+                        plt.scatter(x, y, color='blue', zorder=10)
                     # else:
                     #     plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
                 # print(idx,xvals, yvals)
@@ -268,15 +283,15 @@ def main():
 
             plt.axhline(y=1.23+0.196, color='silver', linestyle='-', linewidth=1, zorder=0)
             plt.axhline(y=1.23+0.343, color='silver', linestyle='--', linewidth=1, zorder=0)
-            plt.text(1.01, 1.23+0.196-0.01, r'Re-RuO$_2$', fontsize=10, color='silver')
-            plt.text(1.01, 1.23+0.343-0.01, r'cRuO$_2$', fontsize=10, color='silver')
+            plt.text(1.81, 1.23+0.196-0.012, r'Re-RuO$_2$', fontsize=10, color='silver')
+            plt.text(1.81, 1.23+0.343-0.012, r'cRuO$_2$', fontsize=10, color='silver')
             plt.xlabel(r'$\Delta G_{O} - \Delta G_{OH}$ (eV)')
             plt.ylabel(r'$\Delta G_{max}$ (eV)')
             plt.xlim(xmin, xmax)
             plt.ylim(ymin, ymax)
             plt.grid(True, alpha=0.1)
             plt.gca().invert_yaxis()
-            plt.legend(loc='lower right', bbox_to_anchor=(0.99, 0.01), fontsize=9, ncol=1)
+            # plt.legend(loc='lower right', bbox_to_anchor=(0.99, 0.01), fontsize=9, ncol=1)
             # plt.legend(loc='upper right', bbox_to_anchor=(0.99, 0.99), fontsize=9, ncol=1)
             # tight_layout 대신 수동으로 여백 조정
             plt.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.12)
