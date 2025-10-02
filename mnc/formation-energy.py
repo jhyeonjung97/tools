@@ -1546,30 +1546,45 @@ def plotting(df, df_relaxed, dzs, spins, ylabel, png_filename, ymin=None, ymax=N
             print(f"An error occurred: {e}")
     
 if __name__ == '__main__':
+    # custom_legend = [
+    #     Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#ff7f0e', 
+    #            label='LS (constrained Δz, enforced spin)', markersize=8, linestyle='None'),
+    #     Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#279ff2', 
+    #            label='IS (constrained Δz, enforced spin)', markersize=8, linestyle='None'),
+    #     Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#9467bd', 
+    #            label='HS (constrained Δz, enforced spin)', markersize=8, linestyle='None'),
+    
+    #     Line2D([0], [0], marker='s', color='#ff7f0e', 
+    #            label='LS (relaxed Δz, enforced spin)', markersize=8, linestyle='None'),
+    #     Line2D([0], [0], marker='s', color='#279ff2', 
+    #            label='IS (relaxed Δz, enforced spin)', markersize=8, linestyle='None'),
+    #     Line2D([0], [0], marker='s', color='#9467bd', 
+    #            label='HS (relaxed Δz, enforced spin)', markersize=8, linestyle='None'),
+    
+    #     Line2D([0], [0], marker='x', color='#ff7f0e', 
+    #            label='LS (constrained Δz, free spin)', markersize=8, linestyle='None'),
+    #     Line2D([0], [0], marker='x', color='#279ff2', 
+    #            label='IS (constrained Δz, free spin)', markersize=8, linestyle='None'),
+    #     Line2D([0], [0], marker='x', color='#9467bd', 
+    #            label='HS (constrained Δz, free spin)', markersize=8, linestyle='None'),
+    # ]
     custom_legend = [
-        Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#ff7f0e', 
-               label='LS (constrained Δz, enforced spin)', markersize=8, linestyle='None'),
-        Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#279ff2', 
-               label='IS (constrained Δz, enforced spin)', markersize=8, linestyle='None'),
-        Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='#9467bd', 
-               label='HS (constrained Δz, enforced spin)', markersize=8, linestyle='None'),
-    
-        Line2D([0], [0], marker='s', color='#ff7f0e', 
-               label='LS (relaxed Δz, enforced spin)', markersize=8, linestyle='None'),
-        Line2D([0], [0], marker='s', color='#279ff2', 
-               label='IS (relaxed Δz, enforced spin)', markersize=8, linestyle='None'),
-        Line2D([0], [0], marker='s', color='#9467bd', 
-               label='HS (relaxed Δz, enforced spin)', markersize=8, linestyle='None'),
-    
-        Line2D([0], [0], marker='x', color='#ff7f0e', 
-               label='LS (constrained Δz, free spin)', markersize=8, linestyle='None'),
-        Line2D([0], [0], marker='x', color='#279ff2', 
-               label='IS (constrained Δz, free spin)', markersize=8, linestyle='None'),
-        Line2D([0], [0], marker='x', color='#9467bd', 
-               label='HS (constrained Δz, free spin)', markersize=8, linestyle='None'),
+        Line2D([0], [1], marker='o', color='#ff7f0e', 
+               label='Low Spin (LS)', markersize=8, linestyle='None'),
+        Line2D([0], [1], marker='o', color='#279ff2', 
+               label='Intermediate Spin (IS)', markersize=8, linestyle='None'),
+        Line2D([0], [1], marker='o', color='#9467bd', 
+               label='High Spin (HS)', markersize=8, linestyle='None'),
+               
+        Line2D([0], [1], marker='s', markerfacecolor='white', markeredgecolor='black', 
+               label='Constrained Δz, Enforced spin', markersize=8, linestyle='None'),
+        Line2D([0], [0], marker='s', color='black', 
+               label='Relaxed Δz, Enforced spin', markersize=8, linestyle='None'),
+        Line2D([0], [0], marker='x', color='black', 
+               label='Constrained Δz, Free spin', markersize=8, linestyle='None'),
     ]
     fig, ax = plt.subplots()
-    ax.legend(handles=custom_legend, ncol=3)
+    ax.legend(handles=custom_legend, ncol=2, columnspacing=0.5)
     ax.axis('off')
     png_filename = "custom_legend_markers_only.png"  # Update with your file path
     plt.savefig(os.path.join(save_path, png_filename), bbox_inches="tight", dpi=300)
