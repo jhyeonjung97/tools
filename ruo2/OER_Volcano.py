@@ -179,18 +179,18 @@ def main():
     df["ΔG_OH"] = df["2_V_OH"] + gibbs_correction_v_oh - df["1_V_V"] - goh
     df["ΔG_O_O"] = df["5_O_O"] + gibbs_correction_o_o - df["3_O_V"] - gibbs_correction_o_v - go
     df["ΔG_O_OH"] = df["4_O_OH"] + gibbs_correction_o_oh - df["3_O_V"] - gibbs_correction_o_v - goh
-    df["ΔG_O_OOH"] = df["ΔG_O_OH"] + 3.2
-    # df["ΔG_O_OOH"] = df["6_O_OOH"] + gibbs_correction_o_ooh - df["3_O_V"] - gibbs_correction_o_v - goh
-    # df["ΔG_OO_OH"] = df["7_OO_OH"] + gibbs_correction_oh_oo - df["3_O_V"] - gibbs_correction_o_v - goh
+    # df["ΔG_O_OOH"] = df["ΔG_O_OH"] + 3.2
+    df["ΔG_O_OOH"] = df["6_O_OOH"] + gibbs_correction_o_ooh - df["3_O_V"] - gibbs_correction_o_v - gooh
+    df["ΔG_OO_OH"] = df["7_OO_OH"] + gibbs_correction_oh_oo - df["3_O_V"] - gibbs_correction_o_v - gooh
     
-    df["ΔG1: *O→*O+*OH"] = df["4_O_OH"] + gibbs_correction_o_oh - goh - df["3_O_V"] - gibbs_correction_o_v
-    df["ΔG2: *O+*OH→*O+*O"] = df["5_O_O"] + gibbs_correction_o_o - go - df["4_O_OH"] - gibbs_correction_o_oh + goh
-    # df["ΔG3a: *O+*O→*O+*OOH"] = df["6_O_OOH"] + gibbs_correction_o_ooh - goh - df["5_O_O"] - gibbs_correction_o_o
-    df["ΔG3a: *O+*O→*O+*OOH"] = df["ΔG_O_OOH"] - df["ΔG_O_O"]
-    df["ΔG3d: *O+*O→*OO+*OH"] = df["7_OO_OH"] + gibbs_correction_oh_oo - goh - df["5_O_O"] - gibbs_correction_o_o
-    df["ΔG4a: *O+*OOH→*O+O2"] = df["3_O_V"] + gibbs_correction_o_v - df["6_O_OOH"] - gibbs_correction_o_ooh + gooh + 4.92
-    df["ΔG4d: *OO+*OH→*OH+O2"] = df["2_V_OH"] + gibbs_correction_v_oh - df["7_OO_OH"] - gibbs_correction_oh_oo + goo + 4.92
-    df["ΔG5d: *OH→*O"] = df["3_O_V"] + gibbs_correction_o_v - go - df["2_V_OH"] - gibbs_correction_v_oh + goh
+    df["ΔG1"] = df["4_O_OH"] + gibbs_correction_o_oh - goh - df["3_O_V"] - gibbs_correction_o_v
+    df["ΔG2"] = df["5_O_O"] + gibbs_correction_o_o - go - df["4_O_OH"] - gibbs_correction_o_oh + goh
+    df["ΔG3a"] = df["6_O_OOH"] + gibbs_correction_o_ooh - goh - df["5_O_O"] - gibbs_correction_o_o
+    # df["ΔG3a"] = df["ΔG_O_OOH"] - df["ΔG_O_O"]
+    df["ΔG3d"] = df["7_OO_OH"] + gibbs_correction_oh_oo - goh - df["5_O_O"] - gibbs_correction_o_o
+    df["ΔG4a"] = df["3_O_V"] + gibbs_correction_o_v - df["6_O_OOH"] - gibbs_correction_o_ooh + gooh + 4.92
+    df["ΔG4d"] = df["2_V_OH"] + gibbs_correction_v_oh - df["7_OO_OH"] - gibbs_correction_oh_oo + goo + 4.92
+    df["ΔG5d"] = df["3_O_V"] + gibbs_correction_o_v - go - df["2_V_OH"] - gibbs_correction_v_oh + goh
     # df["ΔG4"] = 4.92 - df["ΔG1"] - df["ΔG2"] - df["ΔG3"] - df["ΔG4"] - df["ΔG5"]
 
     print(df)
@@ -206,7 +206,7 @@ def main():
     if "ΔG_O_O" in df_dg.columns and "ΔG_O_OH" in df_dg.columns:
         # x_series = (df["ΔG_O"] - df["ΔG_OH"]).rename("ΔG_O - ΔG_OH")
         x_series = (df_dg["ΔG_O_O"] - df_dg["ΔG_O_OH"]).rename("ΔG_O_O - ΔG_O_OH")
-        y_columns = [c for c in ["ΔG1: *O→*O+*OH", "ΔG2: *O+*OH→*O+*O", "ΔG3a: *O+*O→*O+*OOH", "ΔG3d: *O+*O→*OO+*OH", "ΔG4a: *O+*OOH→*O+O2", "ΔG4d: *OO+*OH→*OH+O2", "ΔG5d: *OH→*O"] if c in df.columns]
+        y_columns = [c for c in ["ΔG1", "ΔG2", "ΔG3a", "ΔG3d", "ΔG4a", "ΔG4d", "ΔG5d"] if c in df.columns]
         if len(y_columns) > 0:
             plt.figure(figsize=(6, 4))
             xmin, xmax = 1.0, 2.0
@@ -231,12 +231,12 @@ def main():
                         plt.scatter(x, y, color='green', zorder=10)
                     elif row_name == "RuO2_2%" and idx == 3:
                         plt.scatter(x, y, color='orange', zorder=10)
-                    # elif row_name == "ReRuO2_1%" and idx == 3:
-                    #     plt.scatter(x, y, color='magenta', zorder=10)
-                    # elif row_name == "ReRuO2_2%" and idx == 3:
-                    #     plt.scatter(x, y, color='blue', zorder=10)
-                    # else:
-                    #     plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
+                    elif row_name == "ReRuO2_1%" and idx == 3:
+                        plt.scatter(x, y, color='magenta', zorder=10)
+                    elif row_name == "ReRuO2_2%" and idx == 3:
+                        plt.scatter(x, y, color='blue', zorder=10)
+                    else:
+                        plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
                 # print(idx,xvals, yvals)
                 # if idx == 2 or idx == 4:
                 #     plt.scatter(xvals[3], yvals[3], color=colors[idx % len(colors)], zorder=10)
@@ -244,13 +244,13 @@ def main():
                 #     plt.scatter(xvals[5], yvals[5], color=colors[idx % len(colors)], zorder=10)
 
                 # # ΔG1에만 annotation 추가
-                # if ycol == "ΔG1: *O→*O+*OH":
+                # if ycol == "ΔG1":
                 #     for i, (x, y) in enumerate(zip(xvals, yvals)):
                 #         plt.annotate(f'Ueff =\n{i} eV', (x, y), xytext=(0, -7), 
                 #                 textcoords='offset points', fontsize=8, ha='center', va='top')
 
                 # # ΔG3d에만 annotation 추가
-                # if ycol == "ΔG3d: *O+*O→*OO+*OH":
+                # if ycol == "ΔG3d":
                 #     for i, (x, y) in enumerate(zip(xvals, yvals)):
                 #         if i == 0 or i == 2 or i == 4:
                 #             plt.annotate(f'{i} eV', (x, y), xytext=(0, 7), 
@@ -267,7 +267,7 @@ def main():
                     xs = np.linspace(xmin, xmax, 100)
                     plt.plot(xs, m*xs + b, color=colors[idx % len(colors)], label=f"{ycol}")
 
-            # plt.scatter(df_dg["ΔG2: *O+*OH→*O+*O"]['RuO2'], df_dg["ΔG2: *O+*OH→*O+*O"]['RuO2'], facecolor='white', edgecolor=colors[idx % len(colors)], zorder=10)
+            # plt.scatter(df_dg["ΔG2"]['RuO2'], df_dg["ΔG2"]['RuO2'], facecolor='white', edgecolor=colors[idx % len(colors)], zorder=10)
 
             plt.axhline(y=1.23+0.196, color='silver', linestyle='-', linewidth=1, zorder=0)
             plt.axhline(y=1.23+0.343, color='silver', linestyle='--', linewidth=1, zorder=0)
