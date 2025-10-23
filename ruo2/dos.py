@@ -22,16 +22,19 @@ def create_sumo_script(directory, metal_name, alloy_element_name):
     sumo_script = f"""#!/bin/bash
 
 sumo-dosplot \\
+    --orbitals {metal_name}.d \\
     --elements {metal_name}.d \\
     --atoms {metal_name}.19 \\
     --prefix host19 \\
 
 sumo-dosplot \\
+    --orbitals {metal_name}.d \\
     --elements {metal_name}.d \\
     --atoms {metal_name}.20 \\
     --prefix host20 \\
 
 sumo-dosplot \\
+    --orbitals {alloy_element_name}.d \\
     --elements {alloy_element_name}.d \\
     --prefix dopant27 \\
 """
