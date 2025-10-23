@@ -31,7 +31,7 @@ sumo-dosplot --format png --prefix sumo --orbitals Ru.d --elements Ru.d
 --spd "dxy" --spd "dyz" --spd "dz2" --spd "dxz" --spd "dx2" \
 -o atom15_d_orbitals.png
 
-for i in 12 13 14 15; do
+for i in 12 14; do
     for d in dxy dyz dz2 dxz dx2; do
         ~/bin/tools/ruo2/pydos-ruo2 --notot -p $i -l $d --spd $d \
         -ymin 1.5 -ymax 1.5 -o atom${i}_${d}_orbitals.png
