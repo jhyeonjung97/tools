@@ -12,5 +12,5 @@ python ~/bin/HybridPB/pourbaix.py --legend-out --hybrid \
 --suffix V --Umax 2 --cmin-2d 0.2 --cmax-2d 0.8 --cgap-2d 0.2
 
 mv */*.json .
-python ~/bin/HybridPB/pourbaix.py --legend-out --hybrid \
---Umax 2 --cmin-2d 0.2 --cmax-2d 0.8 --cgap-2d 0.2
+python ~/bin/HybridPB/pourbaix.py --legend-out --hybrid --no-bulk \
+--Umax 3 --cmin-2d 0.2 --cmax-2d 0.8 --cgap-2d 0.2
