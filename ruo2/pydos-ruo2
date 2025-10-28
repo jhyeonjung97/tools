@@ -539,10 +539,11 @@ def dosplot(xen, tdos, pdos, opts):
 
     ax.set_yticks([])
     ax.axhline(0.0, color='black', lw=0.7)
-    ax.axvline(-2.5551, color='C2', lw=0.7)
-    ax.axvline(-3.3965, color='C1', lw=0.7)
-    plt.text(-2.5551+0.1, 7.0, '-2.56', color='C2', fontsize=8, rotation=90)
-    plt.text(-3.3965+0.1, 7.0, '-3.40', color='C1', fontsize=8, rotation=90)
+    ax.axvline(0.0, color='black', lw=0.7)
+    # ax.axvline(-2.5551, color='C2', lw=0.7)
+    # ax.axvline(-3.3965, color='C1', lw=0.7)
+    # plt.text(-2.5551+0.1, 7.0, '-2.56', color='C2', fontsize=8, rotation=90)
+    # plt.text(-3.3965+0.1, 7.0, '-3.40', color='C1', fontsize=8, rotation=90)
 
     ax.xaxis.set_minor_locator(AutoMinorLocator(2))
     ax.yaxis.set_minor_locator(AutoMinorLocator(2))
