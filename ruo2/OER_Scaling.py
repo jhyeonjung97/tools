@@ -78,7 +78,7 @@ def collect_energy_data(base_path):
     # ~를 홈 디렉토리로 확장
     base_path = os.path.expanduser(base_path)
     folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OH_OO"]
-    semi_folders = ["0_V_V", "5_V_OH", "1_O_V", "2_O_OH", "3_O_O", "4_OH_OO/associative", "4_OH_OO"]
+    semi_folders = ["0_V_V", "6_V_OH", "1_O_V", "2_O_OH", "3_O_O", "4_O_OOH", "5_OO_OH"]
     subfolders = ["0_", "1_", "2_", "3_", "4_"]
     energy_data = {}
     
