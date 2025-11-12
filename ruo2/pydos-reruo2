@@ -539,6 +539,7 @@ def dosplot(xen, tdos, pdos, opts):
 
     ax.set_yticks([])
     ax.axhline(0.0, color='black', lw=0.7)
+    ax.axvline(0.0, color='black', lw=0.7)
     ax.axvline(-2.4773, color='C2', lw=0.7)
     ax.axvline(-3.7085, color='C1', lw=0.7)
     plt.text(-2.4773+0.1, 7.0, '-2.48', color='C2', fontsize=8, rotation=90)

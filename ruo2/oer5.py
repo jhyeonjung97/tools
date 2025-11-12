@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 
 # 사용자 환경에 맞춰 경로를 변경하세요
-root = "~/Desktop/3_RuO2/3_OER"
+root = "~/Desktop/3_RuO2/2_RuO2_OER"
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190
@@ -70,11 +70,11 @@ def calculate_oer_energies():
     print("=== Path 1: 5-step OER (V_V → V_OH → V_O → OH_O → V_OOH) ===")
     try:
         oer_path = root_path / "2_OOH-Mtop2"
-        energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.json")
-        energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.json")
-        energy_v_o = get_energy_from_json(oer_path / "3_V_O" / "final_with_calculator.json")
-        energy_oh_o = get_energy_from_json(oer_path / "5_OH_O" / "final_with_calculator.json")
-        energy_v_ooh = get_energy_from_json(oer_path / "7_OH-O" / "final_with_calculator.json")
+        energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.traj")
+        energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.traj")
+        energy_v_o = get_energy_from_json(oer_path / "3_V_O" / "final_with_calculator.traj")
+        energy_oh_o = get_energy_from_json(oer_path / "5_OH_O" / "final_with_calculator.traj")
+        energy_v_ooh = get_energy_from_json(oer_path / "7_OH-O" / "final_with_calculator.traj")
         
         if all(e is not None for e in [energy_v_v, energy_v_oh, energy_v_o, energy_oh_o, energy_v_ooh]):
             step1 = (energy_v_oh + dgoh - goh) - (energy_v_v)
@@ -108,11 +108,11 @@ def calculate_oer_energies():
     print("=== Path 2: 5-step OER (V_V → V_OH → OH_OH → OH_O → V_OOH) ===")
     try:
         oer_path = root_path / "2_OOH-Mtop2"
-        energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.json")
-        energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.json")
-        energy_oh_oh = get_energy_from_json(oer_path / "4_OH_OH" / "final_with_calculator.json")
-        energy_oh_o = get_energy_from_json(oer_path / "5_OH_O" / "final_with_calculator.json")
-        energy_v_ooh = get_energy_from_json(oer_path / "7_OH-O" / "final_with_calculator.json")
+        energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.traj")
+        energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.traj")
+        energy_oh_oh = get_energy_from_json(oer_path / "4_OH_OH" / "final_with_calculator.traj")
+        energy_oh_o = get_energy_from_json(oer_path / "5_OH_O" / "final_with_calculator.traj")
+        energy_v_ooh = get_energy_from_json(oer_path / "7_OH-O" / "final_with_calculator.traj")
         
         if all(e is not None for e in [energy_v_v, energy_v_oh, energy_oh_oh, energy_oh_o, energy_v_ooh]):
             step1 = (energy_v_oh + dgoh - goh) - (energy_v_v)
@@ -146,11 +146,11 @@ def calculate_oer_energies():
     print("=== Path 3: 5-step OER (V_V → V_OH → V_O → OH_O → V_OOH) ===")
     try:
         oer_path = root_path / "6_OOH-Mtop3"
-        energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.json")
-        energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.json")
-        energy_v_o = get_energy_from_json(oer_path / "3_V_O" / "final_with_calculator.json")
-        energy_oh_o = get_energy_from_json(oer_path / "5_OH_O" / "final_with_calculator.json")
-        energy_v_ooh = get_energy_from_json(oer_path / "7_OH-O" / "final_with_calculator.json")
+        energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.traj")
+        energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.traj")
+        energy_v_o = get_energy_from_json(oer_path / "3_V_O" / "final_with_calculator.traj")
+        energy_oh_o = get_energy_from_json(oer_path / "5_OH_O" / "final_with_calculator.traj")
+        energy_v_ooh = get_energy_from_json(oer_path / "7_OH-O" / "final_with_calculator.traj")
         
         if all(e is not None for e in [energy_v_v, energy_v_oh, energy_v_o, energy_oh_o, energy_v_ooh]):
             step1 = (energy_v_oh + dgoh - goh) - (energy_v_v)
@@ -184,11 +184,11 @@ def calculate_oer_energies():
     print("=== Path 4: 5-step OER (V_V → V_OH → OH_OH → OH_O → V_OOH) ===")
     try:
         oer_path = root_path / "6_OOH-Mtop3"
-        energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.json")
-        energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.json")
-        energy_oh_oh = get_energy_from_json(oer_path / "4_OH_OH" / "final_with_calculator.json")
-        energy_oh_o = get_energy_from_json(oer_path / "5_OH_O" / "final_with_calculator.json")
-        energy_v_ooh = get_energy_from_json(oer_path / "7_OH-O" / "final_with_calculator.json")
+        energy_v_v = get_energy_from_json(oer_path / "1_V_V" / "final_with_calculator.traj")
+        energy_v_oh = get_energy_from_json(oer_path / "2_V_OH" / "final_with_calculator.traj")
+        energy_oh_oh = get_energy_from_json(oer_path / "4_OH_OH" / "final_with_calculator.traj")
+        energy_oh_o = get_energy_from_json(oer_path / "5_OH_O" / "final_with_calculator.traj")
+        energy_v_ooh = get_energy_from_json(oer_path / "7_OH-O" / "final_with_calculator.traj")
         
         if all(e is not None for e in [energy_v_v, energy_v_oh, energy_oh_oh, energy_oh_o, energy_v_ooh]):
             step1 = (energy_v_oh + dgoh - goh) - (energy_v_v)
@@ -217,6 +217,81 @@ def calculate_oer_energies():
             print("Path 4: Failed to load some energies")
     except Exception as e:
         print(f"Path 4: Error - {e}")
+
+    # Path 5: 5단계 OER 경로 (V_V → V_OH → OH_OH → OH_O → V_OOH)
+    print("=== Path 5: 5-step OER (V_V → V_OH → OH_OH → OH_O → V_OOH) ===")
+    try:
+        oer_path = root_path / "7_RuO2"
+        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.traj")
+        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.traj")
+        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.traj")
+        energy_o_ooh = get_energy_from_json(oer_path / "4_O_OOH" / "final_with_calculator.traj")
+        
+        if all(e is not None for e in [energy_v_v, energy_v_oh, energy_oh_oh, energy_oh_o, energy_v_ooh]):
+            step1 = (energy_o_oh + dgoh - goh) - (energy_o_v)
+            step2 = (energy_o_o + dgo - go) - (energy_o_oh + dgoh - goh)
+            step3 = (energy_o_ooh + dgooh - gooh) - (energy_o_o + dgo - go)
+            step4 = 0
+            step5 = 4.92 - step1 - step2 - step3 - step4
+            
+            # 표 형태로 데이터 추가
+            oer_data.append({
+                'surface': 'RuO2-associative',
+                'int1': 'O_V',
+                'int2': 'O_OH', 
+                'int3': 'O_O',
+                'int4': 'O_OOH',
+                'int5': 'O_OOH',
+                'step1': step1,
+                'step2': step2,
+                'step3': step3,
+                'step4': step4,
+                'step5': step5
+            })
+            all_paths['Path5'] = [step1, step2, step3, step4, step5]
+            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
+        else:
+            print("Path 5: Failed to load some energies")
+    except Exception as e:
+        print(f"Path 5: Error - {e}")
+
+    # Path 6: 5단계 OER 경로 (V_V → V_OH → OH_OH → OH_O → V_OOH)
+    print("=== Path 6: 5-step OER (V_V → V_OH → OH_OH → OH_O → V_OOH) ===")
+    try:
+        oer_path = root_path / "7_RuO2"
+        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.json")
+        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.json")
+        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.json")
+        energy_oo_oh = get_energy_from_json(oer_path / "5_OO_OH" / "final_with_calculator.json")
+        energy_v_oh = get_energy_from_json(oer_path / "6_V_OH" / "final_with_calculator.json")
+        
+        if all(e is not None for e in [energy_v_v, energy_v_oh, energy_oh_oh, energy_oh_o, energy_v_ooh]):
+            step1 = (energy_o_oh + dgoh - goh) - (energy_o_v)
+            step2 = (energy_o_o + dgo - go) - (energy_o_oh + dgoh - goh)
+            step3 = (energy_oo_oh + dgoh - goh) - (energy_o_o)
+            step5 = (energy_o_v + dgo - go) - (energy_v_oh + dgoh - goh)
+            step4 = 4.92 - step1 - step2 - step3 - step5
+            
+            # 표 형태로 데이터 추가
+            oer_data.append({
+                'surface': 'RuO2-dissociative',
+                'int1': 'O_V',
+                'int2': 'O_OH', 
+                'int3': 'O_O',
+                'int4': 'OO_OH',
+                'int5': 'V_OH',
+                'step1': step1,
+                'step2': step2,
+                'step3': step3,
+                'step4': step4,
+                'step5': step5
+            })
+            all_paths['Path6'] = [step1, step2, step3, step4, step5]
+            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
+        else:
+            print("Path 6: Failed to load some energies")
+    except Exception as e:
+        print(f"Path 6: Error - {e}")
 
     return all_paths, oer_data
 
