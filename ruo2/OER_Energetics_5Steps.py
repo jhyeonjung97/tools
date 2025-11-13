@@ -460,7 +460,7 @@ def plot_all_pathways_combined(all_paths, oer_data):
     steps = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6]
     
     # 색상 설정
-    colors = ['black', 'red', 'orange', 'gold']
+    colors = ['black', 'red', 'orange', 'green']
     zorders = [4, 1, 2, 3]
     
     all_energies = []
