@@ -440,8 +440,9 @@ def plot_all_pathways_combined(all_paths, oer_data):
         return
     
     # 필터링할 surface 목록
-    target_surfaces = ['RuO2', 'ReRuO2', 'RuO2_1%', 'RuO2_2%']
-    
+    target_surfaces = ['RuO2-dissociative', 'ReRuO2', 'RuO2_1%', 'RuO2_2%']
+    names = ['RuO$_2$', 'Re(brg)-RuO$_2$', 'RuO$_2$(+1%)', 'RuO$_2$(+2%)']
+
     # 필터링된 데이터만 추출
     filtered_data = []
     
@@ -459,7 +460,7 @@ def plot_all_pathways_combined(all_paths, oer_data):
     steps = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6]
     
     # 색상 설정
-    colors = ['black', 'red', 'green', 'orange']
+    colors = ['black', 'red', 'orange', 'gold']
     zorders = [4, 1, 2, 3]
     
     all_energies = []
@@ -476,7 +477,7 @@ def plot_all_pathways_combined(all_paths, oer_data):
         # y축: step energies
         step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4, energy5, energy5]
         all_energies.extend(step_energies)
-        surface = path_data["surface"]
+        surface = names[i]
         max_energy = max(path_data['step1'], path_data['step2'], path_data['step3'], path_data['step4'], path_data['step5'])
         overpotential = max_energy - 1.23
         # 선 그래프로 그리기 (plot_individual_energetics_diagrams와 동일한 스타일)

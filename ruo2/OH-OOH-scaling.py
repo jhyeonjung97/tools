@@ -7,6 +7,7 @@ import matplotlib as mpl
 
 mpl.rcParams["axes.prop_cycle"] = plt.cycler(color=plt.get_cmap("tab20").colors)
 
+
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190
 h2o = -14.23091949
@@ -76,7 +77,7 @@ def collect_energy_data(base_path):
     """
     # ~를 홈 디렉토리로 확장
     base_path = os.path.expanduser(base_path)
-    folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OO_OH"]
+    folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OH_OO"]
     semi_folders = ["0_V_V", "6_V_OH", "1_O_V", "2_O_OH", "3_O_O", "4_O_OOH", "5_OO_OH"]
     subfolders = ["0_", "1_", "2_", "3_", "4_"]
     energy_data = {}
@@ -100,7 +101,7 @@ def collect_energy_data(base_path):
                 print(f"JSON 파일이 존재하지 않습니다: {json_path}")
                 energy_data[folder][subfolder] = None
 
-        if folder == "5_O_O" or folder == "7_OO_OH":
+        if folder == "5_O_O" or folder == "7_OH_OO":
             for ueff in range(1, 10):
                 subfolder_path = os.path.join(folder_path, "between_2_and_3", f"{ueff}_")
                 json_path = os.path.join(subfolder_path, "final_with_calculator.json")
@@ -115,13 +116,30 @@ def collect_energy_data(base_path):
         energy_data[folder]["2.5_"] = energy
         energy_data[folder]["RuO2"] = energy
 
-        re_forder_names = ["ReRuO2", "RuO2_1%", "RuO2_2%", "ReRuO2_1%", "ReRuO2_2%"]
-        for f, re_folder in enumerate(["3_ReRuO2", "4_RuO2_strain_XRD", "5_RuO2_strain_ReO2", "6_ReRuO2_strain_1%", "7_ReRuO2_strain_2%"]):
-            folder_name = re_forder_names[f]
-            subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", re_folder, semi_folder)
-            json_path = os.path.join(subfolder_path, "final_with_calculator.json")
-            energy = extract_energy_from_json(json_path)
-            energy_data[folder][folder_name] = energy
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "3_ReRuO2", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["ReRuO2"] = energy
+
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "4_RuO2_strain_XRD", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["RuO2_1%"] = energy
+
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "5_RuO2_strain_ReO2", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["RuO2_2%"] = energy
+
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "6_ReRuO2_strain_1%", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["ReRuO2_1%"] = energy
+
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "7_ReRuO2_strain_2%", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["ReRuO2_2%"] = energy
         
     return energy_data
 
@@ -167,7 +185,7 @@ def main():
 
     print(df)
 
-    # folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OO_OH"]
+    # folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OH_OO"]
     gibbs_correction_o_v = 0.058092 - 0.033706
     gibbs_correction_o_oh = 0.439910 - 0.128005
     gibbs_correction_o_o = 0.156862 - 0.100681
@@ -179,21 +197,17 @@ def main():
     df["ΔG_OH"] = df["2_V_OH"] + gibbs_correction_v_oh - df["1_V_V"] - goh
     df["ΔG_O_O"] = df["5_O_O"] + gibbs_correction_o_o - df["3_O_V"] - gibbs_correction_o_v - go
     df["ΔG_O_OH"] = df["4_O_OH"] + gibbs_correction_o_oh - df["3_O_V"] - gibbs_correction_o_v - goh
-    # df["ΔG_O_OOH"] = df["ΔG_O_OH"] + 3.2
     df["ΔG_O_OOH"] = df["6_O_OOH"] + gibbs_correction_o_ooh - df["3_O_V"] - gibbs_correction_o_v - gooh
-    df["ΔG_OO_OH"] = df["7_OO_OH"] + gibbs_correction_oh_oo - df["3_O_V"] - gibbs_correction_o_v - gooh
+    df["ΔG_OO_OH"] = df["7_OH_OO"] + gibbs_correction_oh_oo - df["3_O_V"] - gibbs_correction_o_v - gooh
     
-    df["ΔG1"] = df["4_O_OH"] + gibbs_correction_o_oh - goh - df["3_O_V"] - gibbs_correction_o_v
-    df["ΔG2"] = df["5_O_O"] + gibbs_correction_o_o - go - df["4_O_OH"] - gibbs_correction_o_oh + goh
-    df["ΔG3a"] = df["6_O_OOH"] + gibbs_correction_o_ooh - goh - df["5_O_O"] - gibbs_correction_o_o
-    # df["ΔG3a"] = df["ΔG_O_OOH"] - df["ΔG_O_O"]
-    df["ΔG3d"] = df["7_OO_OH"] + gibbs_correction_oh_oo - goh - df["5_O_O"] - gibbs_correction_o_o
-    df["ΔG4a"] = df["3_O_V"] + gibbs_correction_o_v - df["6_O_OOH"] - gibbs_correction_o_ooh + gooh + 4.92
-    df["ΔG4d"] = df["2_V_OH"] + gibbs_correction_v_oh - df["7_OO_OH"] - gibbs_correction_oh_oo + goo + 4.92
-    df["ΔG5d"] = df["3_O_V"] + gibbs_correction_o_v - go - df["2_V_OH"] - gibbs_correction_v_oh + goh
+    df["ΔG1: *O→*O+*OH"] = df["4_O_OH"] + gibbs_correction_o_oh - goh - df["3_O_V"] - gibbs_correction_o_v
+    df["ΔG2: *O+*OH→*O+*O"] = df["5_O_O"] + gibbs_correction_o_o - go - df["4_O_OH"] - gibbs_correction_o_oh + goh
+    df["ΔG3a: *O+*O→*O+*OOH"] = df["6_O_OOH"] + gibbs_correction_o_ooh - goh - df["5_O_O"] - gibbs_correction_o_o
+    df["ΔG3d: *O+*O→*OO+*OH"] = df["7_OH_OO"] + gibbs_correction_oh_oo - goh - df["5_O_O"] - gibbs_correction_o_o
+    df["ΔG4a: *O+*OOH→*O+O2"] = df["3_O_V"] + gibbs_correction_o_v - df["6_O_OOH"] - gibbs_correction_o_ooh + gooh + 4.92
+    df["ΔG4d: *OO+*OH→*OH+O2"] = df["2_V_OH"] + gibbs_correction_v_oh - df["7_OH_OO"] - gibbs_correction_oh_oo + goo + 4.92
+    df["ΔG5d: *OH→*O"] = df["3_O_V"] + gibbs_correction_o_v - go - df["2_V_OH"] - gibbs_correction_v_oh + goh
     # df["ΔG4"] = 4.92 - df["ΔG1"] - df["ΔG2"] - df["ΔG3"] - df["ΔG4"] - df["ΔG5"]
-
-    print(df)
 
     # 'ΔG'가 포함되지 않은 컬럼 제거
     dg_columns = [c for c in df.columns if "ΔG" in c]
@@ -203,15 +217,14 @@ def main():
     df_scaling = df_dg.loc[ueff_rows]
 
     # Scaling relationship plot: x=(ΔG_O_O - ΔG_O_OH), y in [ΔG1..ΔG5]
-    if "ΔG_O_O" in df_dg.columns and "ΔG_O_OH" in df_dg.columns:
-        # x_series = (df["ΔG_O"] - df["ΔG_OH"]).rename("ΔG_O - ΔG_OH")
-        x_series = (df_dg["ΔG_O_O"] - df_dg["ΔG_O_OH"]).rename("ΔG_O_O - ΔG_O_OH")
-        y_columns = [c for c in ["ΔG1", "ΔG2", "ΔG3a", "ΔG3d", "ΔG4a", "ΔG4d", "ΔG5d"] if c in df.columns]
+    if "ΔG_OH" in df_dg.columns:
+        x_series = df_dg["ΔG_O_OH"]
+        y_columns = [c for c in ["ΔG_O_OOH", "ΔG_OO_OH"] if c in df.columns]
         if len(y_columns) > 0:
             plt.figure(figsize=(6, 4))
-            xmin, xmax = 1.0, 2.0
-            ymin, ymax = 1.3, 1.9
-            colors = ["C0", "C8", "C1", "C0", "C1", "C0", "C0"]
+            xmin, xmax = 0.0, 1.0
+            ymin, ymax = 3.0, 4.0
+            colors = ["black", "red", "C5", "C1", "C9", "C11", "C13"]
             for idx, ycol in enumerate(y_columns):
                 xy = pd.concat([x_series, df_dg[ycol]], axis=1).dropna()
                 if xy.empty:
@@ -226,37 +239,30 @@ def main():
                     elif row_name == "ReRuO2" and idx == 3:
                         plt.scatter(x, y, color='red', zorder=10)
                     elif row_name == "RuO2_1%" and idx == 3:
-                        plt.scatter(x, y, color='orange', zorder=10)
-                    elif row_name == "RuO2_2%" and idx == 3:
                         plt.scatter(x, y, color='green', zorder=10)
-                    # elif row_name == "ReRuO2_1%" and idx == 3:
-                    #     plt.scatter(x, y, color='magenta', zorder=10)
-                    # elif row_name == "ReRuO2_2%" and idx == 3:
-                    #     plt.scatter(x, y, color='blue', zorder=10)
-                    # else:
-                    #     plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
-                if xvals.size >= 2:
-                    if idx!= 0 and idx != 4:
-                        m, b = np.polyfit(xvals, yvals, 1)
-                        xs = np.linspace(xmin, xmax, 100)
-                        plt.plot(xs, m*xs + b, color=colors[idx % len(colors)], label=f"{ycol}")
-            # plt.scatter(df_dg["ΔG2"]['RuO2'], df_dg["ΔG2"]['RuO2'], facecolor='white', edgecolor=colors[idx % len(colors)], zorder=10)
+                    elif row_name == "RuO2_2%" and idx == 3:
+                        plt.scatter(x, y, color='orange', zorder=10)
+                    elif row_name == "ReRuO2_1%" and idx == 3:
+                        plt.scatter(x, y, color='magenta', zorder=10)
+                    elif row_name == "ReRuO2_2%" and idx == 3:
+                        plt.scatter(x, y, color='blue', zorder=10)
+                    else:
+                        plt.scatter(x, y, marker='s', color=colors[idx % len(colors)], zorder=9)
 
-            plt.axhline(y=1.23+0.196, color='black', linestyle='-', linewidth=1, zorder=0)
-            plt.axhline(y=1.23+0.218, color='black', linestyle='--', linewidth=1, zorder=0)
-            plt.axhline(y=1.23+0.343, color='black', linestyle='--', linewidth=1, zorder=0)
-            plt.text(1.98, 1.23+0.196-0.01, r'Re-RuO$_2$(196 meV)', fontsize=10, color='black', ha='right')
-            plt.text(1.98, 1.23+0.218+0.03, r'sRuO$_2$(218 meV)', fontsize=10, color='black', ha='right')
-            plt.text(1.98, 1.23+0.343+0.03, r'cRuO$_2$(343 meV)', fontsize=10, color='black', ha='right')
-            plt.xlabel(r'$\Delta G_{O} - \Delta G_{OH}$ (eV)')
-            plt.ylabel(r'$\Delta G_{max}$ (eV)')
+            # y=x+3.2 선
+            plt.plot([0.0, 1.0], [3.2, 4.2], color='black', linestyle='--', linewidth=0.5, zorder=2)
+            plt.plot([0.0, 1.0], [2.9, 3.9], color='red', linestyle='--', linewidth=0.5, zorder=2)
+            # 두 선 사이 영역 채우기
+            x_fill = np.array([0.0, 1.0])
+            y_lower = x_fill + 3.1
+            y_upper = x_fill + 3.3
+            plt.fill_between(x_fill, y_lower, y_upper, color='silver', alpha=0.2, zorder=1)
+
+            plt.xlabel(r'$\Delta G_{O+OH}$ (eV)')
+            plt.ylabel(r'$\Delta G_{O+OOH, OO+OH}$ (eV)')
             plt.xlim(xmin, xmax)
             plt.ylim(ymin, ymax)
             plt.grid(True, alpha=0.1)
-            plt.gca().invert_yaxis()
-            # plt.legend(loc='lower right', bbox_to_anchor=(0.99, 0.01), fontsize=9, ncol=1)
-            # plt.legend(loc='upper right', bbox_to_anchor=(0.99, 0.99), fontsize=9, ncol=1)
-            # tight_layout 대신 수동으로 여백 조정
             plt.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.12)
             out_png = "OER_scaling.png"
             plt.savefig(out_png, dpi=300, bbox_inches='tight')
