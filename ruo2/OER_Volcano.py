@@ -211,7 +211,9 @@ def main():
             plt.figure(figsize=(6, 4))
             xmin, xmax = 1.0, 2.0
             ymin, ymax = 1.3, 1.9
-            colors = ["C0", "C8", "C1", "C0", "C1", "C0", "C0"]
+            # colors = ["C0", "C8", "C1", "C0", "C1", "C0", "C0"]
+            colors = ["black", "black", "silver", "black", "silver", "silver", "silver"]
+            zorders = [4, 4, 3, 4, 3, 3, 3]
             for idx, ycol in enumerate(y_columns):
                 xy = pd.concat([x_series, df_dg[ycol]], axis=1).dropna()
                 if xy.empty:
@@ -239,7 +241,7 @@ def main():
                     if idx!= 0 and idx != 4:
                         m, b = np.polyfit(xvals, yvals, 1)
                         xs = np.linspace(xmin, xmax, 100)
-                        plt.plot(xs, m*xs + b, color=colors[idx % len(colors)], label=f"{ycol}")
+                        plt.plot(xs, m*xs + b, color=colors[idx % len(colors)], label=f"{ycol}", zorder=zorders[idx])
             # plt.scatter(df_dg["ΔG2"]['RuO2'], df_dg["ΔG2"]['RuO2'], facecolor='white', edgecolor=colors[idx % len(colors)], zorder=10)
 
             plt.axhline(y=1.23+0.196, color='red', linestyle='-', linewidth=1, zorder=0)
