@@ -6,7 +6,7 @@ from math import gcd
 
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument('-o', '--oxygen', type=float, default=-4.5, help='Oxygen chemical potential (eV/atom)')
+parser.add_argument('-o', '--oxygen', type=float, default=-5.29, help='Oxygen chemical potential (eV/atom)')
 parser.add_argument('-x', '--fig-width', type=float, default=6, help='Figure width (inches)')
 parser.add_argument('-y', '--fig-height', type=float, default=4, help='Figure height (inches)')
 args = parser.parse_args()
@@ -86,8 +86,8 @@ atoms_ruo2 = data_dict[dirs[0]]['Ru']
 energy_ruo2 = atoms_ruo2.get_potential_energy()
 plt.scatter(0.0, 0.0, marker='s', edgecolor='black', facecolor='green')
 plt.scatter(1.0, 0.0, marker='s', edgecolor='black', facecolor='green')
-plt.text(0.0, 0.005, 'RuO$_2$', ha='center', va='bottom')
-plt.text(1.0, 0.005, 'MO$_2$', ha='center', va='bottom')
+plt.text(0.0, 0.01, 'RuO$_2$', ha='center', va='bottom')
+plt.text(1.0, 0.01, 'MO$_2$', ha='center', va='bottom')
 plt.plot([0.0, 1.0], [0.0, 0.0], color='black', linestyle='-', zorder=0)
 cmap = plt.colormaps['YlOrRd']
 non_ru_elements = [el for el in elements if el != 'Ru']
@@ -101,12 +101,15 @@ for i, element in enumerate(non_ru_elements):
         - 1*atoms_mo2.get_potential_energy()
     )/8/8
     plt.scatter(7/8, formation_energy, marker='D', edgecolor='black', facecolor=colors[i])
-    plt.text(7/8-0.02, formation_energy, f'{element}-RuO$_2$', ha='right', va='center')
+    if element == 'Re':
+        plt.text(7/8+0.02, formation_energy, f'{element}-RuO$_2$', ha='left', va='center')
+    else:
+        plt.text(7/8-0.02, formation_energy, f'{element}-RuO$_2$', ha='right', va='center')
 plt.xlabel(r'x, Ru$_x$M$_{1-x}$O$_2$')
 plt.ylabel('Formation energy (eV/unit)')
 plt.xlim(-0.1, 1.1)
 # plt.ylim(-0.16, 0.14)
-plt.ylim(-0.1, 0.4)
+plt.ylim(-0.2, 0.3)
 plt.savefig('RuO2_MO2_convex_hull.png', dpi=300, bbox_inches='tight')
 plt.tight_layout()
 plt.show()
@@ -116,7 +119,7 @@ for element in non_ru_elements:
     plt.figure(figsize=(fig_width, fig_height))
     plt.scatter(0.0, 0.0, marker='s', edgecolor='black', facecolor='green')
     plt.scatter(1.0, 0.0, marker='s', edgecolor='black', facecolor='green')
-    plt.text(0.0, 0.02, 'RuO$_2$', ha='center', va='bottom')
+    plt.text(0.0, 0.01, 'RuO$_2$', ha='center', va='bottom')
     plt.plot([0.0, 1.0], [0.0, 0.0], color='black', linestyle='-', zorder=0)
     atoms_mruo2 = data_dict[dirs[0]][element]
     atoms_mxoy = data_dict[dirs[2]][element]
@@ -127,7 +130,7 @@ for element in non_ru_elements:
         formula = f'{element}O$_{oxygen_ratio}$'
     else:
         formula = f'{element}$_{element_ratio}$O$_{oxygen_ratio}$'
-    plt.text(1.0, 0.02, formula, ha='center', va='bottom')
+    plt.text(1.0, 0.01, formula, ha='center', va='bottom')
     
     formation_energy = (
         atoms_mruo2.get_potential_energy() 
@@ -137,10 +140,10 @@ for element in non_ru_elements:
     )/8
     plt.scatter(7/8, formation_energy, marker='D', edgecolor='black', facecolor='orange')
     plt.text(7/8-0.02, formation_energy, f'{element}-RuO$_2$', ha='right', va='center')
-    plt.xlabel(r'x, Ru$_x$M$_{1-x}$O$_2$')
+    plt.xlabel(r'x, Ru$_x$M$_{1-x}$O$_y$')
     plt.ylabel('Formation energy (eV/unit)')
     plt.xlim(-0.1, 1.1)
-    plt.ylim(-0.1, 0.4)
+    plt.ylim(-0.2, 0.3)
     plt.savefig(f'{element}-RuO2_MO2_convex_hull.png', dpi=300, bbox_inches='tight')
     plt.tight_layout()
     plt.show()
