@@ -47,7 +47,7 @@ calc = vasp_calculator.Vasp(
     gamma=True,
     )
 
-parent_dir = '/pscratch/sd/j/jiuy97/3_RuO2/4_high_valence/1_M-RuO2/0_Ru'
+parent_dir = '/pscratch/sd/j/jiuy97/3_RuO2/4_high_valence/1_M-RuO2/4_Re'
 restart_path = parent_dir + '/restart.json'
 wavecar_path = parent_dir + '/WAVECAR'
 
