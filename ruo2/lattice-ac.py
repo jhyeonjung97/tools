@@ -1,7 +1,7 @@
 import os
 import shutil
 import subprocess
-from ase.io import read, writes
+from ase.io import read, write
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
