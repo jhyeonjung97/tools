@@ -1,7 +1,7 @@
 import os
 import shutil
 import subprocess
-from ase.io import read, writes
+from ase.io import read, write
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
@@ -52,25 +52,26 @@ restart_path = parent_dir + '/restart.json'
 wavecar_path = parent_dir + '/WAVECAR'
 
 a = 6.43
-b = a
-c = 6.23
+b = 6.46
+c = 6.24
 
 lattice_change = [-0.1, 0.0, +0.1]
 for i in lattice_change:
     for j in lattice_change:
-        folder_name = f'{a+i}_{c+j}'
-        folder_path = os.path.join(parent_dir, folder_name)
-        os.makedirs(folder_path)
-        shutil.copy(restart_path, folder_path)
-        shutil.copy(wavecar_path, folder_path)
-        os.chdir(folder_path)
-        atoms = read('restart.json')
-        atoms.set_cell([a+i, b+i, c+j])
-        atoms.calc = calc
-        atoms.write('start.traj')
-        atoms.get_potential_energy()
-        print('Calculation Complete, storing the run + calculator to traj file')
-        subprocess.call('sh ~/bin/verve/correct-contcar.sh', shell=True)
-        Trajectory(f'final_with_calculator.traj', 'w').write(atoms)
-        subprocess.call(f'ase convert -f final_with_calculator.traj final_with_calculator.json', shell=True)
-        os.chdir('../')
+        for k in lattice_change:
+            folder_name = f'rutile_{a+i}_{b+j}_{c+k}'
+            folder_path = os.path.join(parent_dir, folder_name)
+            os.makedirs(folder_path)
+            shutil.copy(restart_path, folder_path)
+            shutil.copy(wavecar_path, folder_path)
+            os.chdir(folder_path)
+            atoms = read('restart.json')
+            atoms.set_cell([a+i, b+j, c+k])
+            atoms.calc = calc
+            atoms.write('start.traj')
+            atoms.get_potential_energy()
+            print('Calculation Complete, storing the run + calculator to traj file')
+            subprocess.call('sh ~/bin/verve/correct-contcar.sh', shell=True)
+            Trajectory(f'final_with_calculator.traj', 'w').write(atoms)
+            subprocess.call(f'ase convert -f final_with_calculator.traj final_with_calculator.json', shell=True)
+            os.chdir('../')
