@@ -50,11 +50,12 @@ calc = vasp_calculator.Vasp(
 parent_dir = '/pscratch/sd/j/jiuy97/3_RuO2/4_high_valence/1_M-RuO2/0_Ru'
 restart_path = parent_dir + '/restart.json'
 wavecar_path = parent_dir + '/WAVECAR'
+chgcar_path = parent_dir + '/CHGCAR'
 
 a = 6.43
 c = 6.23
 
-lattice_change = [-0.1, 0.0, +0.1]
+lattice_change = [-0.02, -0.01, 0.00, +0.01, +0.02]
 for i in lattice_change:
     for j in lattice_change:
         folder_name = f'rutile_{a+i:.2f}_{c+j:.2f}'
@@ -62,6 +63,7 @@ for i in lattice_change:
         os.makedirs(folder_path)
         shutil.copy(restart_path, folder_path)
         shutil.copy(wavecar_path, folder_path)
+        shutil.copy(chgcar_path, folder_path)
         os.chdir(folder_path)
         atoms = read('restart.json')
         atoms.set_cell([a+i, a+i, c+j])
