@@ -14,7 +14,7 @@ oxygen = args.oxygen
 fig_width = args.fig_width
 fig_height = args.fig_height
 
-base_path = "/Users/hailey/Desktop/3_RuO2/4_high_valence"
+base_path = "/Users/jiuy97/Desktop/3_RuO2/4_high_valence"
 elements = ['Ru', 'Hf', 'Ta', 'W', 'Re', 'Os']
 
 dirs = [d for d in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, d))]
@@ -105,7 +105,8 @@ for i, element in enumerate(non_ru_elements):
 plt.xlabel(r'x, Ru$_x$M$_{1-x}$O$_2$')
 plt.ylabel('Formation energy (eV/unit)')
 plt.xlim(-0.1, 1.1)
-plt.ylim(-0.16, 0.14)
+# plt.ylim(-0.16, 0.14)
+plt.ylim(-0.1, 0.4)
 plt.savefig('RuO2_MO2_convex_hull.png', dpi=300, bbox_inches='tight')
 plt.tight_layout()
 plt.show()
