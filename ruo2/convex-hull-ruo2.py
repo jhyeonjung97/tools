@@ -112,7 +112,7 @@ plt.xlim(-0.1, 1.1)
 plt.ylim(-0.2, 0.3)
 plt.savefig('RuO2_MO2_convex_hull.png', dpi=300, bbox_inches='tight')
 plt.tight_layout()
-plt.show()
+# plt.show()
 plt.close()
 
 for element in non_ru_elements:
@@ -146,5 +146,5 @@ for element in non_ru_elements:
     plt.ylim(-0.2, 0.3)
     plt.savefig(f'{element}-RuO2_MO2_convex_hull.png', dpi=300, bbox_inches='tight')
     plt.tight_layout()
-    plt.show()
+    # plt.show()
     plt.close()

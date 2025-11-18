@@ -57,7 +57,7 @@ c = 6.23
 lattice_change = [-0.1, 0.0, +0.1]
 for i in lattice_change:
     for j in lattice_change:
-        folder_name = f'rutile_{a+i}_{c+j}'
+        folder_name = f'rutile_{a+i:.2f}_{c+j:.2f}'
         folder_path = os.path.join(parent_dir, folder_name)
         os.makedirs(folder_path)
         shutil.copy(restart_path, folder_path)
