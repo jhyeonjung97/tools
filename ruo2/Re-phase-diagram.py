@@ -12,6 +12,7 @@ import re
 import numpy as np
 import matplotlib.pyplot as plt
 from pymatgen.analysis.phase_diagram import PhaseDiagram, PDPlotter
+from contextlib import nullcontext
 import warnings
 
 # MPRester import - 최신 버전과 구버전 모두 지원
@@ -46,10 +47,48 @@ def get_phase_diagram(elements, api_key=None, ref_material_ids=None):
     
     print(f"Materials Project에서 {elements} 시스템의 데이터를 가져오는 중...")
     
-    with MPRester(api_key) as mpr:
-        # 주어진 원소 시스템의 모든 entries 가져오기
-        entries = mpr.get_entries_in_chemsys(elements)
-        print(f"총 {len(entries)}개의 entries를 가져왔습니다.")
+    # 먼저 최신 mp_api를 시도하고, 실패하면 구버전 pymatgen MPRester 사용
+    entries = None
+    use_old_api = False
+    
+    try:
+        with MPRester(api_key) as mpr:
+            entries = mpr.get_entries_in_chemsys(elements)
+            print(f"총 {len(entries)}개의 entries를 가져왔습니다.")
+    except AttributeError as e:
+        if "model_fields" in str(e):
+            print("에러: mp_api 라이브러리 버전 호환성 문제가 발생했습니다.")
+            print("pymatgen의 구버전 MPRester를 시도합니다...")
+            use_old_api = True
+        else:
+            raise
+    except Exception as e:
+        print(f"에러 발생: {type(e).__name__}: {e}")
+        print("pymatgen의 구버전 MPRester를 시도합니다...")
+        use_old_api = True
+    
+    # 구버전 API 사용
+    if use_old_api or entries is None:
+        try:
+            from pymatgen.ext.matproj import MPRester as OldMPRester
+            with OldMPRester(api_key) as old_mpr:
+                entries = old_mpr.get_entries_in_chemsys(elements)
+                print(f"총 {len(entries)}개의 entries를 가져왔습니다 (구버전 API 사용).")
+        except Exception as e2:
+            print("구버전 API도 실패했습니다.")
+            print("해결 방법:")
+            print("1. mp-api를 업데이트: pip install --upgrade mp-api")
+            print("2. 또는 다운그레이드: pip install 'mp-api<0.30.0'")
+            print("3. 또는 pymatgen 설치: pip install pymatgen")
+            sys.exit(f"구버전 API 에러: {e2}")
+    
+    # entries가 여전히 None이면 에러
+    if entries is None:
+        sys.exit("에러: entries를 가져올 수 없습니다.")
+    
+    # 나머지 코드는 entries만 사용하므로 mpr 객체가 필요 없음
+    # nullcontext를 사용하여 with 블록 구조 유지
+    with nullcontext():
         
         # 각 원소의 pure element entry 중 가장 낮은 에너지를 가진 것을 reference state로 선택
         best_ref_entries = {}
