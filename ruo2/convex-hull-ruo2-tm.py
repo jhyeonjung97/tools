@@ -15,15 +15,47 @@ oxygen = args.oxygen
 fig_width = args.fig_width
 fig_height = args.fig_height
 
-base_path = "/Users/jiuy97/Desktop/3_RuO2/5_transition_metals/1_MO2"
-elements_3d = ['Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn']
-elements_4d = ['Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd']
-elements_5d = ['La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg']
+base_path = "~/Desktop/3_RuO2/4_high_valence"
+rows = ['3d', '4d', '5d']
+elements = {
+    '3d': ['Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn'],
+    '4d': ['Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd'],
+    '5d': ['La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg']
+}
 
-for elements in [elements_3d, elements_4d, elements_5d]:
-    for element in elements:
-        number = mendeleev.element(element).atomic_number
-        print(f"{element}: {number}")
+atoms_ruo2 = os.path.join(base_path, '1_M-RuO2/0_Ru/final_with_calculator.json')
+energy_ruo2 = read(atoms_ruo2).get_potential_energy()
+
+for row in rows:
+    plt.figure(figsize=(fig_width, fig_height))
+    plt.scatter(0.0, 0.0, marker='s', edgecolor='black', facecolor='green')
+    plt.scatter(1.0, 0.0, marker='s', edgecolor='black', facecolor='green')
+    plt.text(0.0, 0.01, 'RuO$_2$', ha='center', va='bottom')
+    plt.text(1.0, 0.01, 'MO$_2$', ha='center', va='bottom')
+    plt.plot([0.0, 1.0], [0.0, 0.0], color='black', linestyle='-', zorder=0)
+    cmap = plt.colormaps['YlOrRd']
+    for element in elements[row]:
+        atomic_number = mendeleev.element(element).atomic_number
+        colors = [cmap(i / (len(elements[row]) - 1)) for i in range(len(elements[row]))]
+        atoms_mo2 = os.path.join(base_path, f'5_MO2_all/{atomic_number}_{element}/final_with_calculator.json')
+        atoms_mruo2 = os.path.join(base_path, f'4_M-RuO2_all/{atomic_number}_{element}/final_with_calculator.json')
+        energy_mo2 = read(atoms_mo2).get_potential_energy()
+        energy_mruo2 = read(atoms_mruo2).get_potential_energy()
+        formation_energy = (8*energy_mruo2 - 7*energy_ruo2 - 1*energy_mo2)/8/8
+        plt.scatter(7/8, formation_energy, marker='D', edgecolor='black', facecolor=colors[i])
+        if element == 'Re':
+            plt.text(7/8+0.02, formation_energy, f'{element}-RuO$_2$', ha='left', va='center')
+        else:
+            plt.text(7/8-0.02, formation_energy, f'{element}-RuO$_2$', ha='right', va='center')
+    plt.xlabel(r'x, Ru$_x$M$_{1-x}$O$_2$')
+    plt.ylabel('Formation energy (eV/unit)')
+    plt.xlim(-0.1, 1.1)
+    plt.ylim(-0.2, 0.3)
+    plt.savefig(f'RuO2_{row}_MO2_convex_hull.png', dpi=300, bbox_inches='tight')
+    plt.tight_layout()
+    plt.show()
+    plt.close()
+
 
 # dirs = [d for d in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, d))]
 # dirs.sort()
@@ -89,39 +121,7 @@ for elements in [elements_3d, elements_4d, elements_5d]:
 
 # df = pd.DataFrame(df_data, index=elements)
 
-# plt.figure(figsize=(fig_width, fig_height))
-# atoms_ruo2 = data_dict[dirs[0]]['Ru']
-# energy_ruo2 = atoms_ruo2.get_potential_energy()
-# plt.scatter(0.0, 0.0, marker='s', edgecolor='black', facecolor='green')
-# plt.scatter(1.0, 0.0, marker='s', edgecolor='black', facecolor='green')
-# plt.text(0.0, 0.01, 'RuO$_2$', ha='center', va='bottom')
-# plt.text(1.0, 0.01, 'MO$_2$', ha='center', va='bottom')
-# plt.plot([0.0, 1.0], [0.0, 0.0], color='black', linestyle='-', zorder=0)
-# cmap = plt.colormaps['YlOrRd']
-# non_ru_elements = [el for el in elements if el != 'Ru']
-# colors = [cmap(i / (len(non_ru_elements) - 1)) for i in range(len(non_ru_elements))]
-# for i, element in enumerate(non_ru_elements):
-#     atoms_mo2 = data_dict[dirs[1]][element]
-#     atoms_mruo2 = data_dict[dirs[0]][element]
-#     formation_energy = (
-#         8*atoms_mruo2.get_potential_energy() 
-#         - 7*energy_ruo2 
-#         - 1*atoms_mo2.get_potential_energy()
-#     )/8/8
-#     plt.scatter(7/8, formation_energy, marker='D', edgecolor='black', facecolor=colors[i])
-#     if element == 'Re':
-#         plt.text(7/8+0.02, formation_energy, f'{element}-RuO$_2$', ha='left', va='center')
-#     else:
-#         plt.text(7/8-0.02, formation_energy, f'{element}-RuO$_2$', ha='right', va='center')
-# plt.xlabel(r'x, Ru$_x$M$_{1-x}$O$_2$')
-# plt.ylabel('Formation energy (eV/unit)')
-# plt.xlim(-0.1, 1.1)
-# # plt.ylim(-0.16, 0.14)
-# plt.ylim(-0.2, 0.3)
-# plt.savefig('RuO2_MO2_convex_hull.png', dpi=300, bbox_inches='tight')
-# plt.tight_layout()
-# plt.show()
-# plt.close()
+
 
 # for element in non_ru_elements:
 #     plt.figure(figsize=(fig_width, fig_height))
