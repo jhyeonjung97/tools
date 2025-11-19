@@ -16,6 +16,7 @@ fig_width = args.fig_width
 fig_height = args.fig_height
 
 base_path = "~/Desktop/3_RuO2/4_high_valence"
+base_path = os.path.expanduser(base_path)
 rows = ['3d', '4d', '5d']
 elements = {
     '3d': ['Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn'],
@@ -34,7 +35,7 @@ for row in rows:
     plt.text(1.0, 0.01, 'MO$_2$', ha='center', va='bottom')
     plt.plot([0.0, 1.0], [0.0, 0.0], color='black', linestyle='-', zorder=0)
     cmap = plt.colormaps['YlOrRd']
-    for element in elements[row]:
+    for i, element in enumerate(elements[row]):
         atomic_number = mendeleev.element(element).atomic_number
         colors = [cmap(i / (len(elements[row]) - 1)) for i in range(len(elements[row]))]
         atoms_mo2 = os.path.join(base_path, f'5_MO2_all/{atomic_number}_{element}/final_with_calculator.json')
