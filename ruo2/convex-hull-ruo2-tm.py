@@ -8,8 +8,8 @@ import mendeleev
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--oxygen', type=float, default=-5.29, help='Oxygen chemical potential (eV/atom)')
-parser.add_argument('-x', '--fig-width', type=float, default=6, help='Figure width (inches)')
-parser.add_argument('-y', '--fig-height', type=float, default=4, help='Figure height (inches)')
+parser.add_argument('-x', '--fig-width', type=float, default=5.2, help='Figure width (inches)')
+parser.add_argument('-y', '--fig-height', type=float, default=3.6, help='Figure height (inches)')
 args = parser.parse_args()
 oxygen = args.oxygen
 fig_width = args.fig_width
@@ -43,15 +43,16 @@ for row in rows:
         energy_mo2 = read(atoms_mo2).get_potential_energy()
         energy_mruo2 = read(atoms_mruo2).get_potential_energy()
         formation_energy = (8*energy_mruo2 - 7*energy_ruo2 - 1*energy_mo2)/8/8
-        plt.scatter(7/8, formation_energy, marker='D', edgecolor='black', facecolor=colors[i])
+        if element != 'La':
+            plt.scatter(7/8, formation_energy, marker='D', edgecolor='black', facecolor=colors[i])
         if element == 'Re':
             plt.text(7/8+0.02, formation_energy, f'{element}-RuO$_2$', ha='left', va='center')
-        else:
+        elif element != 'La':
             plt.text(7/8-0.02, formation_energy, f'{element}-RuO$_2$', ha='right', va='center')
     plt.xlabel(r'x, Ru$_x$M$_{1-x}$O$_2$')
     plt.ylabel('Formation energy (eV/unit)')
     plt.xlim(-0.1, 1.1)
-    plt.ylim(-0.2, 0.3)
+    plt.ylim(-0.3, 0.3)
     plt.savefig(f'RuO2_{row}_MO2_convex_hull.png', dpi=300, bbox_inches='tight')
     plt.tight_layout()
     plt.show()
