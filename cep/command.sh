@@ -21,6 +21,5 @@ python ~/bin/HybridPB/pourbaix.py --legend-out --hybrid --no-bulk \
 python ~/bin/HybridPB/pourbaix.py --legend-out --hybrid --no-bulk \
 --Gmin -40 --Gmax 40 --Umin -2 --Umax 3 --cmap-2d RdYlBu --suffix RdYlBu39 --cmin-2d 0.3 --cmax-2d 0.9 
 
-
 python ~/bin/HybridPB/pourbaix.py --legend-up --hybrid --no-bulk \
 --Gmin -40 --Gmax 40 --Umin -2 --Umax 3 --cmap-2d RdYlBu --cmin-2d 0.2 --cmax-2d 0.9

@@ -337,14 +337,18 @@ def plot_phase_diagram(pd, elements, entries=None, output_file=None, show_plot=T
                 xytext = (0, 7)  # 마커 위쪽
                 ha = 'center'  # 수평 중앙 정렬
                 va = 'bottom'  # 수직 하단 정렬
-            elif x > 0.5:
-                xytext = (10, 0)  # 마커 오른쪽
-                ha = 'left'  # 수평 중앙 정렬
-                va = 'center'  # 수직 왼쪽 정렬
-            elif x < 0.5:
-                xytext = (0, 10)  # 기본값 (오른쪽 위)
-                ha = 'right'  # 수평 중앙 정렬
-                va = 'center'  # 수직 중앙 정렬
+            # elif x > 0.5:
+            #     xytext = (10, 0)  # 마커 오른쪽
+            #     ha = 'left'  # 수평 중앙 정렬
+            #     va = 'center'  # 수직 왼쪽 정렬
+            # elif x < 0.5:
+            #     xytext = (0, 10)  # 기본값 (오른쪽 위)
+            #     ha = 'right'  # 수평 중앙 정렬
+            #     va = 'center'  # 수직 중앙 정렬
+            else:
+                xytext = (0, -7)
+                ha = 'center'
+                va = 'top'
             
             ax.annotate(label_with_subscript, (x, y), xytext=xytext, 
                        textcoords='offset points', ha=ha, va=va,

@@ -62,6 +62,8 @@ for i in lattice_change:
         for k in lattice_change:
             folder_name = f'rutile_{a+i:.2f}_{b+j:.2f}_{c+k:.2f}'
             folder_path = os.path.join(parent_dir, folder_name)
+            if os.path.exists(folder_path):
+                continue
             os.makedirs(folder_path)
             shutil.copy(restart_path, folder_path)
             shutil.copy(wavecar_path, folder_path)
