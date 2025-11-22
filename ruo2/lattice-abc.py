@@ -64,7 +64,7 @@ for i in lattice_change:
             folder_path = os.path.join(parent_dir, folder_name)
             if os.path.exists(folder_path):
                 continue
-            os.makedirs(folder_path)
+            os.makedirs(folder_path, exist_ok=True)
             shutil.copy(restart_path, folder_path)
             shutil.copy(wavecar_path, folder_path)
             shutil.copy(chgcar_path, folder_path)
