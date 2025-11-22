@@ -16,11 +16,9 @@ for dir in dirs:
     atoms = read(os.path.join(base_path, dir, 'final_with_calculator.json'))
     energy = atoms.get_potential_energy()
     df.loc[len(df)] = [a, b, energy]
-df.to_csv('eos-2d.csv', index=False)
+df.to_csv('eos-ac.csv', index=False)
 vmin = df['energy'].min()
-vmax = df['energy'].max()
 df['energy'] = (df['energy'] - vmin)
-print(vmin, vmax)
 plt.scatter(df['a'], df['b'], c=df['energy'], edgecolors='black', linewidths=0.5, cmap='RdBu', zorder=10)
 plt.tricontourf(df['a'], df['b'], df['energy'], levels=30, cmap='RdBu', zorder=0)
 plt.colorbar(label='Relative energy (eV)')
