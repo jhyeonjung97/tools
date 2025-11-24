@@ -3,6 +3,7 @@ import pandas as pd
 from ase.io import read
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.ticker import FormatStrFormatter
 
 base_path = "~/Desktop/3_RuO2/4_high_valence/1_M-RuO2/4_Re"
 base_path = os.path.expanduser(base_path)
@@ -21,15 +22,17 @@ for dir in dirs:
     atoms = read(json_path)
     energy = atoms.get_potential_energy()
     df.loc[len(df)] = [a, b, c, energy]
-df.to_csv('eos-abc.csv', index=False)
-df = df.loc[df.groupby(['a', 'c'])['energy'].idxmin()].reset_index(drop=True)
 vmin = df['energy'].min()
 df['energy'] = (df['energy'] - vmin)
+df.to_csv('eos-abc.csv', index=False)
+df = df.loc[df.groupby(['a', 'c'])['energy'].idxmin()].reset_index(drop=True)
 print(df)
 plt.scatter(df['a'], df['c'], c=df['energy'], edgecolors='black', linewidths=0.5, cmap='RdBu', zorder=10)
 plt.tricontourf(df['a'], df['c'], df['energy'], levels=30, cmap='RdBu', zorder=0)
 plt.colorbar(label='Relative energy (eV)')
 plt.gca().set_aspect('equal', adjustable='box')
+plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 plt.xlabel('Lattice constant a (Å)')
 plt.ylabel('Lattice constant c (Å)')
 plt.tight_layout()
