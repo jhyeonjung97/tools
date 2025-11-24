@@ -26,6 +26,7 @@ for a in [6.43, 6.44, 6.45]:
             shutil.copy(wavecar_path, folder_path)
             shutil.copy(chgcar_path, folder_path)
             shutil.copy(submit_path, folder_path)
+            shutil.copy(bulk_path, folder_path)
             os.chdir(folder_path)
             atoms = read('restart.json')
             atoms.set_cell([a, b, c], scale_atoms=True)
