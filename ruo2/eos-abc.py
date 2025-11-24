@@ -3,13 +3,15 @@ import pandas as pd
 from ase.io import read
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.ticker import FormatStrFormatter
+from matplotlib.ticker import FormatStrFormatter, MultipleLocator
 
 base_path = "~/Desktop/3_RuO2/4_high_valence/1_M-RuO2/4_Re"
 base_path = os.path.expanduser(base_path)
 dirs = [d for d in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, d))]
 dirs.sort()
 
+figsize = (6.4, 4.8)
+plt.figure(figsize=figsize)
 df = pd.DataFrame(columns=['a', 'b', 'c', 'energy'])
 for dir in dirs:
     parts = dir.split('_')
@@ -31,8 +33,11 @@ plt.scatter(df['a'], df['c'], c=df['energy'], edgecolors='black', linewidths=0.5
 plt.tricontourf(df['a'], df['c'], df['energy'], levels=30, cmap='RdBu', zorder=0)
 plt.colorbar(label='Relative energy (eV)')
 plt.gca().set_aspect('equal', adjustable='box')
-plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
-plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+ax = plt.gca()
+ax.xaxis.set_major_locator(MultipleLocator(0.01))
+ax.yaxis.set_major_locator(MultipleLocator(0.01))
+ax.xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 plt.xlabel('Lattice constant a (Å)')
 plt.ylabel('Lattice constant c (Å)')
 plt.tight_layout()
