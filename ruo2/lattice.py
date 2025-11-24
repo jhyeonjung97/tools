@@ -5,7 +5,7 @@ from ase.io import read, write
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-parent_dir = '/pscratch/sd/j/jiuy97/3_RuO2/4_high_valence/1_M-RuO2/4_Re'
+parent_dir = '/pscratch/sd/j/jiuy97/3_RuO2/4_high_valence/1_M-RuO2/0_Ru'
 restart_path = parent_dir + '/restart.json'
 wavecar_path = parent_dir + '/WAVECAR'
 chgcar_path = parent_dir + '/CHGCAR'
