@@ -17,7 +17,7 @@ a = 6.43
 b = 6.48
 c = 6.24
 
-lattice_change = [-0.01, 0.00, +0.01]
+lattice_change = [-0.02, -0.01, 0.00, +0.01, +0.02]
 for i in lattice_change:
     for j in lattice_change:
         for k in lattice_change:
