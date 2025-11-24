@@ -27,7 +27,7 @@ for a in [6.46]:
         shutil.copy(submit_path, folder_path)
         os.chdir(folder_path)
         atoms = read('restart.json')
-        atoms.set_cell([a, a, c])
+        atoms.set_cell([a, a, c], scale_atoms=True)
         atoms.write('restart.json')
         subprocess.call(f'sh ~/bin/verve/jobname.sh {folder_name}', shell=True)
         os.chdir('../')

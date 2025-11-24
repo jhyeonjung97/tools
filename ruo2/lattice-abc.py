@@ -70,7 +70,7 @@ for i in lattice_change:
             shutil.copy(chgcar_path, folder_path)
             os.chdir(folder_path)
             atoms = read('restart.json')
-            atoms.set_cell([a+i, b+j, c+k])
+            atoms.set_cell([a+i, b+j, c+k], scale_atoms=True)
             atoms.calc = calc
             atoms.write('start.traj')
             atoms.get_potential_energy()
