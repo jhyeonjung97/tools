@@ -334,6 +334,82 @@ def calculate_oer_energies():
     except Exception as e:
         print(f"Path 7: Error - {e}")
 
+    # Path 8: RuO2에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO → 6_V_OH
+    print("\n=== Path 8: RuO2 (O_V → O_OH → O_O → OH_OO → V_OH) ===")
+    try:
+        oer_path = root_path / "3_ReRuO2_OER" / "9_double_cell"
+        energy_o_v = get_energy_from_json(oer_path / "1_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_v
+        energy_o_oh = get_energy_from_json(oer_path / "1_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_oh
+        energy_o_o = get_energy_from_json(oer_path / "2_O_O" / "final_with_calculator.traj") + gibbs_correction_o_o
+        energy_o_ooh = get_energy_from_json(oer_path / "3_OO_OH" / "final_with_calculator.traj") + gibbs_correction_oh_oo
+        energy_v_oh = get_energy_from_json(oer_path / "4_V_OH" / "final_with_calculator.traj") + gibbs_correction_v_oh
+
+        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_o_ooh, energy_v_oh]):
+            # step1 = (energy_o_oh - goh) - (energy_o_v)
+            step2 = (energy_o_o - go) - (energy_o_oh - goh)
+            step3 = (energy_o_ooh - goh) - (energy_o_o)
+            step5 = (energy_o_v - go) - (energy_v_oh - goh)
+            step4 = 4.92 - step1 - step2 - step3 - step5
+            
+            # 표 형태로 데이터 추가
+            oer_data.append({
+                'surface': 'RuO2-associative',
+                'int1': 'O_V',
+                'int2': 'O_OH', 
+                'int3': 'O_O',
+                'int4': 'O_OOH',
+                'int5': 'V_OH',
+                'step1': step1,
+                'step2': step2,
+                'step3': step3,
+                'step4': step4,
+                'step5': step5
+            })
+            all_paths['Path8'] = [step1, step2, step3, step4, step5]
+            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
+        else:
+            print("Path 8: Failed to load some energies")
+    except Exception as e:
+        print(f"Path 8: Error - {e}")
+
+    # Path 9: RuO2에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO → 6_V_OH
+    print("\n=== Path 9: RuO2 (O_V → O_OH → O_O → OH_OO → V_OH) ===")
+    try:
+        oer_path = root_path / "3_ReRuO2_OER" / "9_double_cell"
+        energy_o_v = get_energy_from_json(oer_path / "5_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_v
+        energy_o_oh = get_energy_from_json(oer_path / "5_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_oh
+        energy_o_o = get_energy_from_json(oer_path / "6_O_O" / "final_with_calculator.traj") + gibbs_correction_o_o
+        energy_o_ooh = get_energy_from_json(oer_path / "7_OO_OH" / "final_with_calculator.traj") + gibbs_correction_oh_oo
+        energy_v_oh = get_energy_from_json(oer_path / "8_V_OH" / "final_with_calculator.traj") + gibbs_correction_v_oh
+
+        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_o_ooh, energy_v_oh]):
+            # step1 = (energy_o_oh - goh) - (energy_o_v)
+            step2 = (energy_o_o - go) - (energy_o_oh - goh)
+            step3 = (energy_o_ooh - goh) - (energy_o_o)
+            step5 = (energy_o_v - go) - (energy_v_oh - goh)
+            step4 = 4.92 - step1 - step2 - step3 - step5
+            
+            # 표 형태로 데이터 추가
+            oer_data.append({
+                'surface': 'RuO2-associative',
+                'int1': 'O_V',
+                'int2': 'O_OH', 
+                'int3': 'O_O',
+                'int4': 'O_OOH',
+                'int5': 'V_OH',
+                'step1': step1,
+                'step2': step2,
+                'step3': step3,
+                'step4': step4,
+                'step5': step5
+            })
+            all_paths['Path9'] = [step1, step2, step3, step4, step5]
+            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
+        else:
+            print("Path 9: Failed to load some energies")
+    except Exception as e:
+        print(f"Path 9: Error - {e}")
+
     return all_paths, oer_data
 
 def print_oer_table(oer_data):
