@@ -19,12 +19,12 @@ for a in [6.43, 6.44]:
             if os.path.exists(done_path):
                 continue
             os.makedirs(folder_path, exist_ok=True)
-            shutil.copy(restart_path, folder_path)
-            shutil.copy(wavecar_path, folder_path)
-            shutil.copy(chgcar_path, folder_path)
+            # shutil.copy(restart_path, folder_path)
+            # shutil.copy(wavecar_path, folder_path)
+            # shutil.copy(chgcar_path, folder_path)
             os.chdir(folder_path)
-            atoms = read('restart.json')
-            atoms.set_cell([a, b, c])
-            atoms.write('restart.json')
+            # atoms = read('restart.json')
+            # atoms.set_cell([a+i, b+j, c+k])
+            # atoms.write('restart.json')
             subprocess.call(f'sh ~/bin/verve/jobname.sh {folder_name}', shell=True)
             os.chdir('../')
