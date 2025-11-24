@@ -5,20 +5,15 @@ from ase.io import read, write
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-a = 6.43
-b = 6.46
-c = 6.24
-
 parent_dir = '/pscratch/sd/j/jiuy97/3_RuO2/4_high_valence/1_M-RuO2/4_Re'
 restart_path = parent_dir + '/restart.json'
 wavecar_path = parent_dir + '/WAVECAR'
 chgcar_path = parent_dir + '/CHGCAR'
 
-lattice_change = [-0.02, -0.01, 0.00, +0.01, +0.02]
-for i in lattice_change:
-    for j in lattice_change:
-        for k in lattice_change:
-            folder_name = f'rutile_{a+i:.2f}_{b+j:.2f}_{c+k:.2f}'
+for a in [6.43, 6.44]:
+    for b in [6.44, 6.45, 6.46, 6.47, 6.48]:
+        for c in [6.27]:
+            folder_name = f'rutile_{a:.2f}_{b:.2f}_{c:.2f}'
             folder_path = os.path.join(parent_dir, 'others', folder_name)
             done_path = os.path.join(parent_dir, folder_name, 'DONE')
             if os.path.exists(done_path):
