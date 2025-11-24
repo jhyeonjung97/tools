@@ -11,6 +11,7 @@ restart_path = parent_dir + '/restart.json'
 wavecar_path = parent_dir + '/WAVECAR'
 chgcar_path = parent_dir + '/CHGCAR'
 submit_path = parent_dir + '/submit.sh'
+bulk_path = parent_dir + '/bulk.py'
 
 # for a in [6.42, 6.43, 6.44]:
 #     for b in [6.49]:
@@ -44,6 +45,7 @@ for a in [6.46]:
         shutil.copy(wavecar_path, folder_path)
         shutil.copy(chgcar_path, folder_path)
         shutil.copy(submit_path, folder_path)
+        shutil.copy(bulk_path, folder_path)
         os.chdir(folder_path)
         atoms = read('restart.json')
         atoms.set_cell([a, a, c], scale_atoms=True)
