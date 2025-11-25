@@ -501,8 +501,8 @@ def plot_all_pathways_combined(all_paths, oer_data):
         return
     
     # 필터링할 surface 목록
-    target_surfaces = ['RuO2(d)', 'ReRuO2', 'ReRuO2_1%', 'ReRuO2_2%']
-    names = ['RuO$_2$', 'Re(brg)-RuO$_2$', 'Re(brg)-RuO$_2$(+1%)', 'Re(brg)-RuO$_2$(+2%)']
+    target_surfaces = ['RuO2(d)', 'ReRuO2', 'RuO2_1%', 'RuO2_2%']
+    names = ['RuO$_2$', 'Re(brg)-RuO$_2$', 'RuO$_2$(+1%)', 'RuO$_2$(+2%)'] #'Re(brg)-RuO$_2$(+1%)', 'Re(brg)-RuO$_2$(+2%)']
 
     # 필터링된 데이터만 추출
     filtered_data = []
@@ -512,7 +512,7 @@ def plot_all_pathways_combined(all_paths, oer_data):
             filtered_data.append(path_data)
     
     if not filtered_data:
-        print("No matching data found for RuO2, ReRuO2, ReRuO2_1%, ReRuO2_2%")
+        print("No matching data found for RuO2, ReRuO2, RuO2_1%, RuO2_2%")
         return
     
     fig, ax = plt.subplots(1, 1, figsize=(6, 4))
@@ -521,7 +521,7 @@ def plot_all_pathways_combined(all_paths, oer_data):
     steps = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6]
     
     # 색상 설정
-    colors = ['black', 'red', 'mediumblue', 'purple']
+    colors = ['black', 'red', 'orange', 'green']
     zorders = [4, 3, 2, 1]
     
     all_energies = []
