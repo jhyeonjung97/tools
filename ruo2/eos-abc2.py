@@ -10,7 +10,7 @@ base_path = os.path.expanduser(base_path)
 dirs = [d for d in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, d))]
 dirs.sort()
 
-figsize = (6.4, 4.8)
+figsize = (7.0, 4.8)
 plt.figure(figsize=figsize)
 df = pd.DataFrame(columns=['a', 'b', 'c', 'energy'])
 for dir in dirs:

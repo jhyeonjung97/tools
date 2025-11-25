@@ -322,23 +322,23 @@ def calculate_oer_energies():
 
     try:
         oer_path = root_path / "3_ReRuO2_OER" / "9_double_cell"
-        energy_o_v = get_energy_from_json(oer_path / "1_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_v
+        energy_o_v = get_energy_from_json(oer_path / "0_" / "0_" / "final_with_calculator.traj") + gibbs_correction_o_v
         energy_o_oh = get_energy_from_json(oer_path / "1_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_oh
         energy_o_o = get_energy_from_json(oer_path / "2_O_O" / "final_with_calculator.traj") + gibbs_correction_o_o
         energy_oh_oo = get_energy_from_json(oer_path / "3_OO_OH" / "final_with_calculator.traj") + gibbs_correction_oh_oo
         energy_v_oh = get_energy_from_json(oer_path / "4_V_OH" / "final_with_calculator.traj") + gibbs_correction_v_oh
 
-        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_o_ooh, energy_v_oh]):
-            # step1 = (energy_o_oh - goh) - (energy_o_v)
+        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_oh_oo, energy_v_oh]):
+            step1 = (energy_o_oh - goh) - (energy_o_v)
             step2 = (energy_o_o - go) - (energy_o_oh - goh)
             step3 = (energy_oh_oo - goh) - (energy_o_o)
-            step4 = (energy_v_oh) - (energy_oh_oo - goo) + 4.92
+            # step4 = (energy_v_oh) - (energy_oh_oo - goo) + 4.92
             step5 = (energy_o_v - go) - (energy_v_oh - goh)
-            # step4 = 4.92 - step1 - step2 - step3 - step5
+            step4 = 4.92 - step1 - step2 - step3 - step5
             
             # 표 형태로 데이터 추가
             oer_data.append({
-                'surface': 'ReRuO2-d1',
+                'surface': 'ReRuO2-V1',
                 'int1': 'O_V',
                 'int2': 'O_OH', 
                 'int3': 'O_O',
@@ -359,25 +359,24 @@ def calculate_oer_energies():
 
     try:
         oer_path = root_path / "3_ReRuO2_OER" / "9_double_cell"
-        energy_o_v = get_energy_from_json(oer_path / "5_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_v
+        energy_o_v = get_energy_from_json(oer_path / "0_" / "1_" / "final_with_calculator.traj") + gibbs_correction_o_v
         energy_o_oh = get_energy_from_json(oer_path / "5_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_oh
         energy_o_o = get_energy_from_json(oer_path / "6_O_O" / "final_with_calculator.traj") + gibbs_correction_o_o
         energy_oh_oo = get_energy_from_json(oer_path / "7_OO_OH" / "final_with_calculator.traj") + gibbs_correction_oh_oo
-        energy_v_oh = get_energy_from_json(oer_path / "8_V_OH" / "final_with_calculator.traj") #+ gibbs_correction_v_oh
+        energy_v_oh = get_energy_from_json(oer_path / "8_V_OH" / "final_with_calculator.traj") + gibbs_correction_v_oh
 
         if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_oh_oo, energy_v_oh]):
             print('d2')
-            # step1 = (energy_o_oh - goh) - (energy_o_v)
+            step1 = (energy_o_oh - goh) - (energy_o_v)
             step2 = (energy_o_o - go) - (energy_o_oh - goh)
             step3 = (energy_oh_oo - goh) - (energy_o_o)
-            step4 = (energy_v_oh) - (energy_oh_oo - goo) + 4.92
+            # step4 = (energy_v_oh) - (energy_oh_oo - goo) + 4.92
             step5 = (energy_o_v - go) - (energy_v_oh - goh)
-            # step4 = 4.92 - step1 - step2 - step3 - step5
-            print(energy_v_oh, energy_oh_oo)
+            step4 = 4.92 - step1 - step2 - step3 - step5
             
             # 표 형태로 데이터 추가
             oer_data.append({
-                'surface': 'ReRuO2-d2',
+                'surface': 'ReRuO2-V2',
                 'int1': 'O_V',
                 'int2': 'O_OH', 
                 'int3': 'O_O',
@@ -502,8 +501,8 @@ def plot_all_pathways_combined(all_paths, oer_data):
         return
     
     # 필터링할 surface 목록
-    target_surfaces = ['RuO2(d)', 'ReRuO2', 'RuO2_1%', 'RuO2_2%', 'ReRuO2_1%', 'ReRuO2_2%']
-    names = ['RuO$_2$', 'Re(brg)-RuO$_2$', 'RuO$_2$(+1%)', 'RuO$_2$(+2%)', 'Re(brg)-RuO$_2$(+1%)', 'Re(brg)-RuO$_2$(+2%)']
+    target_surfaces = ['RuO2(d)', 'ReRuO2', 'ReRuO2_1%', 'ReRuO2_2%']
+    names = ['RuO$_2$', 'Re(brg)-RuO$_2$', 'Re(brg)-RuO$_2$(+1%)', 'Re(brg)-RuO$_2$(+2%)']
 
     # 필터링된 데이터만 추출
     filtered_data = []
@@ -513,7 +512,7 @@ def plot_all_pathways_combined(all_paths, oer_data):
             filtered_data.append(path_data)
     
     if not filtered_data:
-        print("No matching data found for RuO2, ReRuO2, RuO2_1%, RuO2_2%, ReRuO2_1%, ReRuO2_2%")
+        print("No matching data found for RuO2, ReRuO2, ReRuO2_1%, ReRuO2_2%")
         return
     
     fig, ax = plt.subplots(1, 1, figsize=(6, 4))
@@ -522,8 +521,8 @@ def plot_all_pathways_combined(all_paths, oer_data):
     steps = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6]
     
     # 색상 설정
-    colors = ['black', 'red', 'orange', 'green', 'blue', 'purple']
-    zorders = [4, 1, 2, 3, 5, 6]
+    colors = ['black', 'red', 'mediumblue', 'purple']
+    zorders = [4, 3, 2, 1]
     
     all_energies = []
     
@@ -573,7 +572,7 @@ def plot_all_pathways_combined(all_paths, oer_data):
     # ax.text(0.02, 0.97, info_text, transform=ax.transAxes, fontsize=10, verticalalignment='top',
     #         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
     
-    plt.legend(fontsize=10)
+    plt.legend(fontsize=10, loc='lower right', bbox_to_anchor=(1.0, 0.0))
     plt.tight_layout()
     # plt.show()
     plt.savefig('all_pathways_combined_5steps.png', dpi=300, bbox_inches='tight')

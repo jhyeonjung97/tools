@@ -77,7 +77,7 @@ def collect_energy_data(base_path):
     """
     # ~를 홈 디렉토리로 확장
     base_path = os.path.expanduser(base_path)
-    folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OH_OO"]
+    folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OO_OH"]
     semi_folders = ["0_V_V", "6_V_OH", "1_O_V", "2_O_OH", "3_O_O", "4_O_OOH", "5_OO_OH"]
     subfolders = ["0_", "1_", "2_", "3_", "4_"]
     energy_data = {}
@@ -101,7 +101,7 @@ def collect_energy_data(base_path):
                 print(f"JSON 파일이 존재하지 않습니다: {json_path}")
                 energy_data[folder][subfolder] = None
 
-        if folder == "5_O_O" or folder == "7_OH_OO":
+        if folder == "5_O_O" or folder == "7_OO_OH":
             for ueff in range(1, 10):
                 subfolder_path = os.path.join(folder_path, "between_2_and_3", f"{ueff}_")
                 json_path = os.path.join(subfolder_path, "final_with_calculator.json")
@@ -121,22 +121,22 @@ def collect_energy_data(base_path):
         energy = extract_energy_from_json(json_path)
         energy_data[folder]["ReRuO2"] = energy
 
-        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "4_RuO2_strain_XRD", semi_folder)
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "4_RuO2_1%", semi_folder)
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
         energy_data[folder]["RuO2_1%"] = energy
 
-        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "5_RuO2_strain_ReO2", semi_folder)
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "5_RuO2_2%", semi_folder)
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
         energy_data[folder]["RuO2_2%"] = energy
 
-        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "6_ReRuO2_strain_1%", semi_folder)
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "6_ReRuO2_1%", semi_folder)
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
         energy_data[folder]["ReRuO2_1%"] = energy
 
-        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "7_ReRuO2_strain_2%", semi_folder)
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "7_ReRuO2_2%", semi_folder)
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
         energy_data[folder]["ReRuO2_2%"] = energy
@@ -185,7 +185,7 @@ def main():
 
     print(df)
 
-    # folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OH_OO"]
+    # folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OO_OH"]
     gibbs_correction_o_v = 0.058092 - 0.033706
     gibbs_correction_o_oh = 0.439910 - 0.128005
     gibbs_correction_o_o = 0.156862 - 0.100681
@@ -198,14 +198,14 @@ def main():
     df["ΔG_O_O"] = df["5_O_O"] + gibbs_correction_o_o - df["3_O_V"] - gibbs_correction_o_v - go
     df["ΔG_O_OH"] = df["4_O_OH"] + gibbs_correction_o_oh - df["3_O_V"] - gibbs_correction_o_v - goh
     df["ΔG_O_OOH"] = df["6_O_OOH"] + gibbs_correction_o_ooh - df["3_O_V"] - gibbs_correction_o_v - gooh
-    df["ΔG_OO_OH"] = df["7_OH_OO"] + gibbs_correction_oh_oo - df["3_O_V"] - gibbs_correction_o_v - gooh
+    df["ΔG_OO_OH"] = df["7_OO_OH"] + gibbs_correction_oh_oo - df["3_O_V"] - gibbs_correction_o_v - gooh
     
     df["ΔG1: *O→*O+*OH"] = df["4_O_OH"] + gibbs_correction_o_oh - goh - df["3_O_V"] - gibbs_correction_o_v
     df["ΔG2: *O+*OH→*O+*O"] = df["5_O_O"] + gibbs_correction_o_o - go - df["4_O_OH"] - gibbs_correction_o_oh + goh
     df["ΔG3a: *O+*O→*O+*OOH"] = df["6_O_OOH"] + gibbs_correction_o_ooh - goh - df["5_O_O"] - gibbs_correction_o_o
-    df["ΔG3d: *O+*O→*OO+*OH"] = df["7_OH_OO"] + gibbs_correction_oh_oo - goh - df["5_O_O"] - gibbs_correction_o_o
+    df["ΔG3d: *O+*O→*OO+*OH"] = df["7_OO_OH"] + gibbs_correction_oh_oo - goh - df["5_O_O"] - gibbs_correction_o_o
     df["ΔG4a: *O+*OOH→*O+O2"] = df["3_O_V"] + gibbs_correction_o_v - df["6_O_OOH"] - gibbs_correction_o_ooh + gooh + 4.92
-    df["ΔG4d: *OO+*OH→*OH+O2"] = df["2_V_OH"] + gibbs_correction_v_oh - df["7_OH_OO"] - gibbs_correction_oh_oo + goo + 4.92
+    df["ΔG4d: *OO+*OH→*OH+O2"] = df["2_V_OH"] + gibbs_correction_v_oh - df["7_OO_OH"] - gibbs_correction_oh_oo + goo + 4.92
     df["ΔG5d: *OH→*O"] = df["3_O_V"] + gibbs_correction_o_v - go - df["2_V_OH"] - gibbs_correction_v_oh + goh
     # df["ΔG4"] = 4.92 - df["ΔG1"] - df["ΔG2"] - df["ΔG3"] - df["ΔG4"] - df["ΔG5"]
 

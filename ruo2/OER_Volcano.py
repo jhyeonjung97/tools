@@ -200,7 +200,7 @@ def main():
     # Ueff 관련 행만 선택 (RuO2, ReRuO2 등 제외)
     ueff_rows = [c for c in df.index if not any(x in c for x in ["RuO2", "ReRuO2"])]
     df_dg = df[dg_columns]
-    df_scaling = df_dg.loc[ueff_rows]
+    # df_scaling = df_dg.loc[ueff_rows]
 
     # Scaling relationship plot: x=(ΔG_O_O - ΔG_O_OH), y in [ΔG1..ΔG5]
     if "ΔG_O_O" in df_dg.columns and "ΔG_O_OH" in df_dg.columns:
@@ -211,8 +211,8 @@ def main():
             plt.figure(figsize=(6, 4))
             xmin, xmax = 1.0, 2.0
             ymin, ymax = 1.3, 1.9
-            # colors = ["C0", "C8", "C1", "C0", "C1", "C0", "C0"]
-            colors = ["black", "black", "silver", "black", "silver", "silver", "silver"]
+            colors = ["C0", "C1", "C2", "C3", "C4", "C5", "C6"]
+            # colors = ["black", "black", "silver", "black", "silver", "silver", "silver"]
             zorders = [4, 4, 3, 4, 3, 3, 3]
             for idx, ycol in enumerate(y_columns):
                 xy = pd.concat([x_series, df_dg[ycol]], axis=1).dropna()
@@ -231,12 +231,12 @@ def main():
                         plt.scatter(x, y, color='orange', zorder=10)
                     elif row_name == "RuO2_2%" and idx == 3:
                         plt.scatter(x, y, color='green', zorder=10)
-                    # elif row_name == "ReRuO2_1%" and idx == 3:
-                    #     plt.scatter(x, y, color='magenta', zorder=10)
-                    # elif row_name == "ReRuO2_2%" and idx == 3:
-                    #     plt.scatter(x, y, color='blue', zorder=10)
-                    # else:
-                    #     plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
+                    elif row_name == "ReRuO2_1%" and idx == 3:
+                        plt.scatter(x, y, color='magenta', zorder=10)
+                    elif row_name == "ReRuO2_2%" and idx == 3:
+                        plt.scatter(x, y, color='blue', zorder=10)
+                    else:
+                        plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
                 if xvals.size >= 2:
                     if idx!= 0 and idx != 4:
                         m, b = np.polyfit(xvals, yvals, 1)
@@ -257,7 +257,7 @@ def main():
             plt.grid(True, alpha=0.1)
             plt.gca().invert_yaxis()
             # plt.legend(loc='lower right', bbox_to_anchor=(0.99, 0.01), fontsize=9, ncol=1)
-            # plt.legend(loc='upper right', bbox_to_anchor=(0.99, 0.99), fontsize=9, ncol=1)
+            plt.legend(loc='upper right', bbox_to_anchor=(0.99, 0.99), fontsize=9, ncol=1)
             # tight_layout 대신 수동으로 여백 조정
             plt.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.12)
             out_png = "OER_scaling.png"
