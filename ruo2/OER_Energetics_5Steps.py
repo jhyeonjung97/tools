@@ -69,8 +69,42 @@ def calculate_oer_energies():
     oer_data = []
     all_paths = {}
 
-    # Path 1: RuO2에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO
-    print("\n=== Path 1: RuO2 (O_V → O_OH → O_O → OH_OO) ===")
+    try:
+        oer_path = root_path / "2_RuO2_OER" / "7_RuO2"
+        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.traj") + gibbs_correction_o_v
+        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_oh
+        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.traj") + gibbs_correction_o_o
+        energy_o_ooh = get_energy_from_json(oer_path / "4_O_OOH" / "final_with_calculator.traj") + gibbs_correction_oh_oo
+        energy_v_oh = get_energy_from_json(oer_path / "6_V_OH" / "final_with_calculator.traj") + gibbs_correction_v_oh
+
+        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_o_ooh, energy_v_oh]):
+            step1 = (energy_o_oh - goh) - (energy_o_v)
+            step2 = (energy_o_o - go) - (energy_o_oh - goh)
+            step3 = (energy_o_ooh - goh) - (energy_o_o)
+            step5 = (energy_o_v - go) - (energy_v_oh - goh)
+            step4 = 4.92 - step1 - step2 - step3 - step5
+            
+            # 표 형태로 데이터 추가
+            oer_data.append({
+                'surface': 'RuO2(a)',
+                'int1': 'O_V',
+                'int2': 'O_OH', 
+                'int3': 'O_O',
+                'int4': 'O_OOH',
+                'int5': 'V_OH',
+                'step1': step1,
+                'step2': step2,
+                'step3': step3,
+                'step4': step4,
+                'step5': step5
+            })
+            all_paths['Path1'] = [step1, step2, step3, step4, step5]
+            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
+        else:
+            print("Path 1: Failed to load some energies")
+    except Exception as e:
+        print(f"Path 1: Error - {e}")
+
     try:
         oer_path = root_path / "2_RuO2_OER" / "7_RuO2"
         energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.traj") + gibbs_correction_o_v
@@ -88,7 +122,7 @@ def calculate_oer_energies():
 
             # 표 형태로 데이터 추가
             oer_data.append({
-                'surface': 'RuO2-dissociative',
+                'surface': 'RuO2(d)',
                 'int1': 'O_V',
                 'int2': 'O_OH', 
                 'int3': 'O_O',
@@ -100,15 +134,13 @@ def calculate_oer_energies():
                 'step4': step4,
                 'step5': step5
             })
-            all_paths['Path1'] = [step1, step2, step3, step4, step5]
+            all_paths['Path2'] = [step1, step2, step3, step4, step5]
             print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
         else:
-            print("Path 1: Failed to load some energies")
+            print("Path 2: Failed to load some energies")
     except Exception as e:
-        print(f"Path 1: Error - {e}")
+        print(f"Path 2: Error - {e}")
 
-    # Path 2: ReRuO2에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO
-    print("\n=== Path 2: ReRuO2 (O_V → O_OH → O_O → OH_OO) ===")
     try:
         oer_path = root_path / "3_ReRuO2_OER" / "3_ReRuO2"
         energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.traj") + gibbs_correction_o_v
@@ -138,17 +170,15 @@ def calculate_oer_energies():
                 'step4': step4,
                 'step5': step5
             })
-            all_paths['Path2'] = [step1, step2, step3, step4, step5]
+            all_paths['Path3'] = [step1, step2, step3, step4, step5]
             print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
         else:
-            print("Path 2: Failed to load some energies")
+            print("Path 3: Failed to load some energies")
     except Exception as e:
-        print(f"Path 2: Error - {e}")
+        print(f"Path 3: Error - {e}")
 
-    # Path 3: RuO2_strain_XRD에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO
-    print("\n=== Path 3: RuO2_strain_XRD (O_V → O_OH → O_O → OH_OO) ===")
     try:
-        oer_path = root_path / "3_ReRuO2_OER" / "4_RuO2_strain_XRD"
+        oer_path = root_path / "3_ReRuO2_OER" / "4_RuO2_1%"
         energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.traj") + gibbs_correction_o_v
         energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_oh
         energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.traj") + gibbs_correction_o_o
@@ -176,17 +206,15 @@ def calculate_oer_energies():
                 'step4': step4,
                 'step5': step5
             })
-            all_paths['Path3'] = [step1, step2, step3, step4, step5]
+            all_paths['Path4'] = [step1, step2, step3, step4, step5]
             print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
         else:
-            print("Path 3: Failed to load some energies")
+            print("Path 4: Failed to load some energies")
     except Exception as e:
-        print(f"Path 3: Error - {e}")
+        print(f"Path 4: Error - {e}")
 
-    # Path 4: RuO2_strain_ReO2에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO
-    print("\n=== Path 4: RuO2_strain_ReO2 (O_V → O_OH → O_O → OH_OO) ===")
     try:
-        oer_path = root_path / "3_ReRuO2_OER" / "5_RuO2_strain_ReO2"
+        oer_path = root_path / "3_ReRuO2_OER" / "5_RuO2_2%"
         energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.traj") + gibbs_correction_o_v
         energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_oh
         energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.traj") + gibbs_correction_o_o
@@ -213,17 +241,15 @@ def calculate_oer_energies():
                 'step4': step4,
                 'step5': step5
             })
-            all_paths['Path4'] = [step1, step2, step3, step4, step5]
+            all_paths['Path5'] = [step1, step2, step3, step4, step5]
             print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
         else:
-            print("Path 4: Failed to load some energies")
+            print("Path 5: Failed to load some energies")
     except Exception as e:
-        print(f"Path 4: Error - {e}")
+        print(f"Path 5: Error - {e}")
 
-    # Path 6: ReRuO2_strain_1%에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO
-    print("\n=== Path 6: ReRuO2_strain_1% (O_V → O_OH → O_O → OH_OO) ===")
     try:
-        oer_path = root_path / "3_ReRuO2_OER" / "6_ReRuO2_strain_1%"
+        oer_path = root_path / "3_ReRuO2_OER" / "6_ReRuO2_1%"
         energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.traj") + gibbs_correction_o_v
         energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_oh
         energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.traj") + gibbs_correction_o_o
@@ -251,17 +277,15 @@ def calculate_oer_energies():
                 'step4': step4,
                 'step5': step5
             })
-            all_paths['Path5'] = [step1, step2, step3, step4, step5]
+            all_paths['Path6'] = [step1, step2, step3, step4, step5]
             print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
         else:
-            print("Path 5: Failed to load some energies")
+            print("Path 6: Failed to load some energies")
     except Exception as e:
-        print(f"Path 5: Error - {e}")
+        print(f"Path 6: Error - {e}")
 
-    # Path 6: ReRuO2_strain_2%에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO
-    print("\n=== Path 6: ReRuO2_strain_2% (O_V → O_OH → O_O → OH_OO) ===")
     try:
-        oer_path = root_path / "3_ReRuO2_OER" / "7_ReRuO2_strain_2%"
+        oer_path = root_path / "3_ReRuO2_OER" / "7_ReRuO2_2%"
         energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.traj") + gibbs_correction_o_v
         energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_oh
         energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.traj") + gibbs_correction_o_o
@@ -289,44 +313,6 @@ def calculate_oer_energies():
                 'step4': step4,
                 'step5': step5
             })
-            all_paths['Path6'] = [step1, step2, step3, step4, step5]
-            print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
-        else:
-            print("Path 6: Failed to load some energies")
-    except Exception as e:
-        print(f"Path 6: Error - {e}")
-
-    # Path 7: RuO2에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO → 6_V_OH
-    print("\n=== Path 7: RuO2 (O_V → O_OH → O_O → OH_OO → V_OH) ===")
-    try:
-        oer_path = root_path / "2_RuO2_OER" / "7_RuO2"
-        energy_o_v = get_energy_from_json(oer_path / "1_O_V" / "final_with_calculator.traj") + gibbs_correction_o_v
-        energy_o_oh = get_energy_from_json(oer_path / "2_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_oh
-        energy_o_o = get_energy_from_json(oer_path / "3_O_O" / "final_with_calculator.traj") + gibbs_correction_o_o
-        energy_o_ooh = get_energy_from_json(oer_path / "4_O_OOH" / "final_with_calculator.traj") + gibbs_correction_oh_oo
-        energy_v_oh = get_energy_from_json(oer_path / "6_V_OH" / "final_with_calculator.traj") + gibbs_correction_v_oh
-
-        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_o_ooh, energy_v_oh]):
-            step1 = (energy_o_oh - goh) - (energy_o_v)
-            step2 = (energy_o_o - go) - (energy_o_oh - goh)
-            step3 = (energy_o_ooh - goh) - (energy_o_o)
-            step5 = (energy_o_v - go) - (energy_v_oh - goh)
-            step4 = 4.92 - step1 - step2 - step3 - step5
-            
-            # 표 형태로 데이터 추가
-            oer_data.append({
-                'surface': 'RuO2-associative',
-                'int1': 'O_V',
-                'int2': 'O_OH', 
-                'int3': 'O_O',
-                'int4': 'O_OOH',
-                'int5': 'V_OH',
-                'step1': step1,
-                'step2': step2,
-                'step3': step3,
-                'step4': step4,
-                'step5': step5
-            })
             all_paths['Path7'] = [step1, step2, step3, step4, step5]
             print(f"Step1: {step1:.3f} eV, Step2: {step2:.3f} eV, Step3: {step3:.3f} eV, Step4: {step4:.3f} eV, Step5: {step5:.3f} eV")
         else:
@@ -334,26 +320,25 @@ def calculate_oer_energies():
     except Exception as e:
         print(f"Path 7: Error - {e}")
 
-    # Path 8: RuO2에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO → 6_V_OH
-    print("\n=== Path 8: RuO2 (O_V → O_OH → O_O → OH_OO → V_OH) ===")
     try:
         oer_path = root_path / "3_ReRuO2_OER" / "9_double_cell"
         energy_o_v = get_energy_from_json(oer_path / "1_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_v
         energy_o_oh = get_energy_from_json(oer_path / "1_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_oh
         energy_o_o = get_energy_from_json(oer_path / "2_O_O" / "final_with_calculator.traj") + gibbs_correction_o_o
-        energy_o_ooh = get_energy_from_json(oer_path / "3_OO_OH" / "final_with_calculator.traj") + gibbs_correction_oh_oo
+        energy_oh_oo = get_energy_from_json(oer_path / "3_OO_OH" / "final_with_calculator.traj") + gibbs_correction_oh_oo
         energy_v_oh = get_energy_from_json(oer_path / "4_V_OH" / "final_with_calculator.traj") + gibbs_correction_v_oh
 
         if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_o_ooh, energy_v_oh]):
             # step1 = (energy_o_oh - goh) - (energy_o_v)
             step2 = (energy_o_o - go) - (energy_o_oh - goh)
-            step3 = (energy_o_ooh - goh) - (energy_o_o)
+            step3 = (energy_oh_oo - goh) - (energy_o_o)
+            step4 = (energy_v_oh) - (energy_oh_oo - goo) + 4.92
             step5 = (energy_o_v - go) - (energy_v_oh - goh)
-            step4 = 4.92 - step1 - step2 - step3 - step5
+            # step4 = 4.92 - step1 - step2 - step3 - step5
             
             # 표 형태로 데이터 추가
             oer_data.append({
-                'surface': 'RuO2-associative',
+                'surface': 'ReRuO2-d1',
                 'int1': 'O_V',
                 'int2': 'O_OH', 
                 'int3': 'O_O',
@@ -372,26 +357,27 @@ def calculate_oer_energies():
     except Exception as e:
         print(f"Path 8: Error - {e}")
 
-    # Path 9: RuO2에서 1_O_V → 2_O_OH → 3_O_O → 5_OH_OO → 6_V_OH
-    print("\n=== Path 9: RuO2 (O_V → O_OH → O_O → OH_OO → V_OH) ===")
     try:
         oer_path = root_path / "3_ReRuO2_OER" / "9_double_cell"
         energy_o_v = get_energy_from_json(oer_path / "5_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_v
         energy_o_oh = get_energy_from_json(oer_path / "5_O_OH" / "final_with_calculator.traj") + gibbs_correction_o_oh
         energy_o_o = get_energy_from_json(oer_path / "6_O_O" / "final_with_calculator.traj") + gibbs_correction_o_o
-        energy_o_ooh = get_energy_from_json(oer_path / "7_OO_OH" / "final_with_calculator.traj") + gibbs_correction_oh_oo
-        energy_v_oh = get_energy_from_json(oer_path / "8_V_OH" / "final_with_calculator.traj") + gibbs_correction_v_oh
+        energy_oh_oo = get_energy_from_json(oer_path / "7_OO_OH" / "final_with_calculator.traj") + gibbs_correction_oh_oo
+        energy_v_oh = get_energy_from_json(oer_path / "8_V_OH" / "final_with_calculator.traj") #+ gibbs_correction_v_oh
 
-        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_o_ooh, energy_v_oh]):
+        if all(e is not None for e in [energy_o_v, energy_o_oh, energy_o_o, energy_oh_oo, energy_v_oh]):
+            print('d2')
             # step1 = (energy_o_oh - goh) - (energy_o_v)
             step2 = (energy_o_o - go) - (energy_o_oh - goh)
-            step3 = (energy_o_ooh - goh) - (energy_o_o)
+            step3 = (energy_oh_oo - goh) - (energy_o_o)
+            step4 = (energy_v_oh) - (energy_oh_oo - goo) + 4.92
             step5 = (energy_o_v - go) - (energy_v_oh - goh)
-            step4 = 4.92 - step1 - step2 - step3 - step5
+            # step4 = 4.92 - step1 - step2 - step3 - step5
+            print(energy_v_oh, energy_oh_oo)
             
             # 표 형태로 데이터 추가
             oer_data.append({
-                'surface': 'RuO2-associative',
+                'surface': 'ReRuO2-d2',
                 'int1': 'O_V',
                 'int2': 'O_OH', 
                 'int3': 'O_O',
@@ -458,7 +444,7 @@ def plot_individual_energetics_diagrams(all_paths, oer_data):
     # 각 path별로 개별 그래프 생성
     for i, (path_name, energies) in enumerate(all_paths.items()):
         fig, ax = plt.subplots(1, 1, figsize=(6, 4))
-        
+
         # 데이터에서 해당 path 정보 찾기 (인덱스로 찾기)
         path_data = oer_data[i] if i < len(oer_data) else None
         if not path_data:
@@ -516,8 +502,8 @@ def plot_all_pathways_combined(all_paths, oer_data):
         return
     
     # 필터링할 surface 목록
-    target_surfaces = ['RuO2-dissociative', 'ReRuO2', 'RuO2_1%', 'RuO2_2%']
-    names = ['RuO$_2$', 'Re(brg)-RuO$_2$', 'RuO$_2$(+1%)', 'RuO$_2$(+2%)']
+    target_surfaces = ['RuO2(d)', 'ReRuO2', 'RuO2_1%', 'RuO2_2%', 'ReRuO2_1%', 'ReRuO2_2%']
+    names = ['RuO$_2$', 'Re(brg)-RuO$_2$', 'RuO$_2$(+1%)', 'RuO$_2$(+2%)', 'Re(brg)-RuO$_2$(+1%)', 'Re(brg)-RuO$_2$(+2%)']
 
     # 필터링된 데이터만 추출
     filtered_data = []
@@ -527,7 +513,7 @@ def plot_all_pathways_combined(all_paths, oer_data):
             filtered_data.append(path_data)
     
     if not filtered_data:
-        print("No matching data found for RuO2, ReRuO2, RuO2_1%, RuO2_2%")
+        print("No matching data found for RuO2, ReRuO2, RuO2_1%, RuO2_2%, ReRuO2_1%, ReRuO2_2%")
         return
     
     fig, ax = plt.subplots(1, 1, figsize=(6, 4))
@@ -536,8 +522,8 @@ def plot_all_pathways_combined(all_paths, oer_data):
     steps = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6]
     
     # 색상 설정
-    colors = ['black', 'red', 'orange', 'green']
-    zorders = [4, 1, 2, 3]
+    colors = ['black', 'red', 'orange', 'green', 'blue', 'purple']
+    zorders = [4, 1, 2, 3, 5, 6]
     
     all_energies = []
     
@@ -604,13 +590,13 @@ def plot_ruo2_pathways(all_paths, oer_data):
     path2_data = None
     
     for i, data in enumerate(oer_data):
-        if data['surface'] == 'RuO2-associative' and data['int4'] == 'O_OOH':
+        if data['surface'] == 'RuO2(a)' and data['int4'] == 'O_OOH':
             path1_data = data
-        elif data['surface'] == 'RuO2-dissociative' and data['int4'] == 'OH_OO':
+        elif data['surface'] == 'RuO2(d)' and data['int4'] == 'OH_OO':
             path2_data = data
     
     if not path1_data or not path2_data:
-        print("RuO2-associative and RuO2-dissociative pathways not found in data")
+        print("RuO2(a) and RuO2(d) pathways not found in data")
         return
     
     fig, ax = plt.subplots(1, 1, figsize=(6, 4))

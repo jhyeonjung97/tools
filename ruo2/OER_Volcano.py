@@ -116,7 +116,7 @@ def collect_energy_data(base_path):
         energy_data[folder]["RuO2"] = energy
 
         re_forder_names = ["ReRuO2", "RuO2_1%", "RuO2_2%", "ReRuO2_1%", "ReRuO2_2%"]
-        for f, re_folder in enumerate(["3_ReRuO2", "4_RuO2_strain_XRD", "5_RuO2_strain_ReO2", "6_ReRuO2_strain_1%", "7_ReRuO2_strain_2%"]):
+        for f, re_folder in enumerate(["3_ReRuO2", "4_RuO2_1%", "5_RuO2_2%", "6_ReRuO2_1%", "7_ReRuO2_2%"]):
             folder_name = re_forder_names[f]
             subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", re_folder, semi_folder)
             json_path = os.path.join(subfolder_path, "final_with_calculator.json")
