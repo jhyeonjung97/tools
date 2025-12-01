@@ -494,7 +494,7 @@ def plot_individual_energetics_diagrams(all_paths, oer_data):
         
         print(f"Saved: {filename}")
 
-def plot_all_pathways_combined(all_paths, oer_data):
+def plot_all_pathways_combined_RuO2(all_paths, oer_data):
     """RuO2, ReRuO2, RuO2_1%, RuO2_2% 케이스를 하나의 그래프에 그리는 함수"""
     if not all_paths or not oer_data:
         print("No data found for plotting combined pathways")
@@ -575,8 +575,92 @@ def plot_all_pathways_combined(all_paths, oer_data):
     plt.legend(fontsize=10, loc='lower right', bbox_to_anchor=(1.0, 0.0))
     plt.tight_layout()
     # plt.show()
-    plt.savefig('all_pathways_combined_5steps.png', dpi=300, bbox_inches='tight')
-    print("Saved: all_pathways_combined_5steps.png")
+    plt.savefig('all_pathways_combined_5steps_RuO2.png', dpi=300, bbox_inches='tight')
+    print("Saved: all_pathways_combined_5steps_RuO2.png")
+
+def plot_all_pathways_combined_ReRuO2(all_paths, oer_data):
+    """RuO2, ReRuO2, RuO2_1%, RuO2_2% 케이스를 하나의 그래프에 그리는 함수"""
+    if not all_paths or not oer_data:
+        print("No data found for plotting combined pathways")
+        return
+    
+    # 필터링할 surface 목록
+    target_surfaces = ['RuO2(d)', 'ReRuO2', 'ReRuO2_1%', 'ReRuO2_2%']
+    names = ['RuO$_2$', 'Re(brg)-RuO$_2$', 'Re(brg)-RuO$_2$(+1%)', 'Re(brg)-RuO$_2$(+2%)'] #'Re(brg)-RuO$_2$(+1%)', 'Re(brg)-RuO$_2$(+2%)']
+
+    # 필터링된 데이터만 추출
+    filtered_data = []
+    
+    for path_data in oer_data:
+        if path_data['surface'] in target_surfaces:
+            filtered_data.append(path_data)
+    
+    if not filtered_data:
+        print("No matching data found for RuO2, ReRuO2, ReRuO2_1%, ReRuO2_2%")
+        return
+    
+    fig, ax = plt.subplots(1, 1, figsize=(6, 4))
+    
+    # x축: 반응 단계 (plot_individual_energetics_diagrams와 동일한 스타일)
+    steps = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6]
+    
+    # 색상 설정
+    colors = ['black', 'red', 'orange', 'green']
+    zorders = [4, 3, 2, 1]
+    
+    all_energies = []
+    
+    for i, path_data in enumerate(filtered_data):
+        # 에너지 계산
+        energy0 = 0.0
+        energy1 = path_data['step1']
+        energy2 = path_data['step2'] + energy1
+        energy3 = path_data['step3'] + energy2
+        energy4 = path_data['step4'] + energy3
+        energy5 = path_data['step5'] + energy4
+        
+        # y축: step energies
+        step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4, energy5, energy5]
+        all_energies.extend(step_energies)
+        surface = names[i]
+        max_energy = max(path_data['step1'], path_data['step2'], path_data['step3'], path_data['step4'], path_data['step5'])
+        overpotential = max_energy - 1.23
+        # 선 그래프로 그리기 (plot_individual_energetics_diagrams와 동일한 스타일)
+        ax.plot(steps, step_energies, '-', color=colors[i % len(colors)], linewidth=2, 
+                label=f'{surface} (η = {overpotential:.2f} V)', zorder=zorders[i % len(colors)])
+    
+    # 그래프 설정 (plot_individual_energetics_diagrams와 동일한 스타일)
+    ax.set_xticks([])
+    ax.set_xlabel('Reaction Coordinate', fontsize=12)
+    ax.set_ylabel('Relative Energy (ΔG, eV)', fontsize=12)
+    
+    # y_min = min(all_energies) - 0.2
+    # y_max = max(all_energies) + 0.3
+    # y_min, y_max = 0.0, 3.0
+    # ax.set_ylim(y_min, y_max)
+    ax.set_xlim(min(steps), max(steps))
+    
+    # 최대 에너지와 과전위 정보 추가 (plot_individual_energetics_diagrams와 동일한 스타일)
+    info_text = ""
+    for path_data in filtered_data:
+        max_energy = max(path_data['step1'], path_data['step2'], path_data['step3'], path_data['step4'], path_data['step5'])
+        overpotential = max_energy - 1.23
+        info_text += f'{path_data["surface"]}:\n'
+        info_text += f'ΔG1: {path_data["step1"]:.2f} eV\n'
+        info_text += f'ΔG2: {path_data["step2"]:.2f} eV\n'
+        info_text += f'ΔG3: {path_data["step3"]:.2f} eV\n'
+        info_text += f'ΔG4: {path_data["step4"]:.2f} eV\n'
+        info_text += f'ΔG5: {path_data["step5"]:.2f} eV\n'
+        info_text += f'Overpotential: {overpotential:.2f} V\n\n'
+    
+    # ax.text(0.02, 0.97, info_text, transform=ax.transAxes, fontsize=10, verticalalignment='top',
+    #         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+    
+    plt.legend(fontsize=10, loc='lower right', bbox_to_anchor=(1.0, 0.0))
+    plt.tight_layout()
+    # plt.show()
+    plt.savefig('all_pathways_combined_5steps_ReRuO2.png', dpi=300, bbox_inches='tight')
+    print("Saved: all_pathways_combined_5steps_ReRuO2.png")
 
 def plot_ruo2_pathways(all_paths, oer_data):
     """RuO2 표면의 Path 1과 Path 2를 하나의 그래프에 그리는 함수"""
@@ -638,16 +722,18 @@ def plot_ruo2_pathways(all_paths, oer_data):
     all_energies = path1_step_energies + path2_step_energies
     y_min = min(all_energies) - 0.2
     y_max = max(all_energies) + 0.3
-    ax.set_ylim(y_min, y_max)
+    ax.set_ylim(-0.2, 5.4)
     ax.set_xlim(0, 6)
     
-    ax.text(0.02, 0.97, f'Ueff: 2.50 eV\nΔG1: {path1_data["step1"]:.2f} eV\nΔG2: {path1_data["step2"]:.2f} eV\nΔG3a: {path1_data["step3"]:.2f} eV\nΔG3d: {path2_data["step3"]:.2f} eV\nΔG4a: {path1_data["step4"]:.2f} eV\nΔG4d: {path2_data["step4"]:.2f} eV', 
-            transform=ax.transAxes, fontsize=10, verticalalignment='top', horizontalalignment='left',
-            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+    # ax.text(0.02, 0.97, f'Ueff: 2.50 eV\nΔG1: {path1_data["step1"]:.2f} eV\nΔG2: {path1_data["step2"]:.2f} eV\nΔG3a: {path1_data["step3"]:.2f} eV\nΔG3d: {path2_data["step3"]:.2f} eV\nΔG4a: {path1_data["step4"]:.2f} eV\nΔG4d: {path2_data["step4"]:.2f} eV', 
+    #         transform=ax.transAxes, fontsize=10, verticalalignment='top', horizontalalignment='left',
+    #         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
 
-    plt.legend(loc='lower right', bbox_to_anchor=(1.0, 0.0), fontsize=10)
+    # plt.legend(loc='lower right', bbox_to_anchor=(1.0, 0.0), fontsize=10)
+    plt.legend(loc='upper left', bbox_to_anchor=(0.0, 1.0), fontsize=10)
     plt.tight_layout()
     plt.savefig('RuO2_pathways_comparison.png', dpi=300, bbox_inches='tight')
+    plt.show()
     print("Saved: RuO2_pathways_comparison.png")
 
 if __name__ == "__main__":
@@ -661,7 +747,8 @@ if __name__ == "__main__":
 
         # 모든 pathway를 하나의 그래프에 출력
         print("\nGenerating combined pathways diagram...")
-        plot_all_pathways_combined(all_paths, oer_data)
+        plot_all_pathways_combined_RuO2(all_paths, oer_data)
+        plot_all_pathways_combined_ReRuO2(all_paths, oer_data)
         
         # 개별 energetics diagram 출력
         print("\nGenerating individual energetics diagrams...")

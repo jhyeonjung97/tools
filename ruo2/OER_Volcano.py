@@ -209,8 +209,8 @@ def main():
         y_columns = [c for c in ["ΔG1", "ΔG2", "ΔG3a", "ΔG3d", "ΔG4a", "ΔG4d", "ΔG5d"] if c in df.columns]
         if len(y_columns) > 0:
             plt.figure(figsize=(6, 4))
-            xmin, xmax = 1.0, 2.0
-            ymin, ymax = 1.3, 1.9
+            xmin, xmax = 1.05, 1.85
+            ymin, ymax = 1.35, 1.85
             colors = ["C0", "C1", "C2", "C3", "C4", "C5", "C6"]
             # colors = ["black", "black", "silver", "black", "silver", "silver", "silver"]
             zorders = [4, 4, 3, 4, 3, 3, 3]
@@ -224,24 +224,27 @@ def main():
                 for i, (x, y) in enumerate(zip(xvals, yvals)):
                     row_name = xy.index[i]
                     if row_name == "RuO2" and idx == 3:
-                        plt.scatter(x, y, color='black', zorder=10)
-                    elif row_name == "ReRuO2" and idx == 3:
-                        plt.scatter(x, y, color='red', zorder=10)
+                        plt.scatter(x, y, marker='o', facecolor='white', edgecolor='black', zorder=10)
                     elif row_name == "RuO2_1%" and idx == 3:
-                        plt.scatter(x, y, color='orange', zorder=10)
+                        plt.scatter(x, y, marker='o', facecolor='white', edgecolor='blue', zorder=10)
                     elif row_name == "RuO2_2%" and idx == 3:
-                        plt.scatter(x, y, color='green', zorder=10)
+                        plt.scatter(x, y, marker='o', facecolor='white', edgecolor='green', zorder=10)
+                    elif row_name == "ReRuO2" and idx == 3:
+                        plt.scatter(x, y, marker='o', facecolor='red', edgecolor='red', zorder=10)
                     elif row_name == "ReRuO2_1%" and idx == 3:
-                        plt.scatter(x, y, color='magenta', zorder=10)
+                        plt.scatter(x, y, marker='o', facecolor='blue', edgecolor='blue', zorder=10)
                     elif row_name == "ReRuO2_2%" and idx == 3:
-                        plt.scatter(x, y, color='blue', zorder=10)
-                    else:
-                        plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
-                if xvals.size >= 2:
-                    if idx!= 0 and idx != 4:
-                        m, b = np.polyfit(xvals, yvals, 1)
-                        xs = np.linspace(xmin, xmax, 100)
-                        plt.plot(xs, m*xs + b, color=colors[idx % len(colors)], label=f"{ycol}", zorder=zorders[idx])
+                        plt.scatter(x, y, marker='o', facecolor='green', edgecolor='green', zorder=10)
+                    # else:
+                    #     plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
+                # if xvals.size >= 2:
+                #     if idx!= 0 and idx != 4:
+                #         m, b = np.polyfit(xvals, yvals, 1)
+                #         xs = np.linspace(xmin, xmax, 100)
+                #         plt.plot(xs, m*xs + b, color=colors[idx % len(colors)], label=f"{ycol}", zorder=zorders[idx])
+                plt.plot([1, 2], [1, 2], color='black', linewidth=0.5, zorder=0)
+                plt.plot([1, 2], [2.2, 1.2], color='black', linewidth=0.5, zorder=0, dashes=(5, 5))         
+                plt.plot([1, 2], [1.9, 0.9], color='black', linewidth=0.5, zorder=0)                
             # plt.scatter(df_dg["ΔG2"]['RuO2'], df_dg["ΔG2"]['RuO2'], facecolor='white', edgecolor=colors[idx % len(colors)], zorder=10)
 
             # plt.axhline(y=1.23+0.196, color='red', linestyle='-', linewidth=1, zorder=0)
@@ -257,7 +260,7 @@ def main():
             plt.grid(True, alpha=0.1)
             plt.gca().invert_yaxis()
             # plt.legend(loc='lower right', bbox_to_anchor=(0.99, 0.01), fontsize=9, ncol=1)
-            plt.legend(loc='upper right', bbox_to_anchor=(0.99, 0.99), fontsize=9, ncol=1)
+            # plt.legend(loc='upper right', bbox_to_anchor=(0.99, 0.99), fontsize=9, ncol=1)
             # tight_layout 대신 수동으로 여백 조정
             plt.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.12)
             out_png = "OER_scaling.png"
