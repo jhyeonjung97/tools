@@ -253,6 +253,7 @@ def main():
                     #     plt.scatter(x, y, color='blue', zorder=10)
                     # else:
                     plt.scatter(x, y, marker='s', color=colors[idx % len(colors)], zorder=9)
+                    # plt.annotate(row_name, (x, y), xytext=(0, 7), textcoords='offset points', fontsize=8, ha='center', va='top')
                     # print(row_name,  x, y)
 
             # y=x+3.2 선
