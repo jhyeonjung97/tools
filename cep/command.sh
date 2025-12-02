@@ -22,4 +22,17 @@ python ~/bin/HybridPB/pourbaix.py --legend-out --hybrid --no-bulk \
 --Gmin -40 --Gmax 40 --Umin -2 --Umax 3 --cmap-2d RdYlBu --suffix RdYlBu39 --cmin-2d 0.3 --cmax-2d 0.9 
 
 python ~/bin/HybridPB/pourbaix.py --legend-up --hybrid --no-bulk \
---Gmin -40 --Gmax 40 --Umin -2 --Umax 3 --cmap-2d RdYlBu --cmin-2d 0.2 --cmax-2d 0.9
+--Gmin -40 --Gmax 40 --Umin -1 --Umax 2 --cmap-2d RdYlBu --cmin-2d 0.2 --cmax-2d 0.9
+
+python ~/bin/HybridPB/pourbaix.py --legend-up --hybrid --no-bulk \
+--Gmin -40 --Gmax 40 --Umin -1 --Umax 2 --cmap autumn --cmap-2d winter --suffix autumn_winter
+
+python ~/bin/HybridPB/pourbaix.py --legend-up --hybrid --no-bulk \
+--Gmin -40 --Gmax 40 --Umin -1 --Umax 2 --cmap Oranges --cmap-2d Purples --suffix Oranges_Purples
+
+python ~/bin/HybridPB/pourbaix.py --legend-up --hybrid --no-bulk \
+--Gmin -40 --Gmax 40 --Umin -1 --Umax 2 --cmap-2d Reds --cmin-2d 0.2 --cmax-2d 0.9 --suffix Reds
+
+python ~/bin/HybridPB/pourbaix.py --legend-up --hybrid --no-bulk \
+--Gmin -40 --Gmax 40 --Umin -1 --Umax 2 --cmap YlOrBr --cmin 0.2 --cmax 0.8 --cmap-2d PuBuGn --cmin-2d 0.2 --cmax-2d 0.8 --suffix YlOrBr_PuBuGn
+YlOrBr PuBuGn
