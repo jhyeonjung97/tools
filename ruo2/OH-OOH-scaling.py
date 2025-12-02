@@ -116,11 +116,6 @@ def collect_energy_data(base_path):
         energy_data[folder]["2.5_"] = energy
         energy_data[folder]["RuO2"] = energy
 
-        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "3_ReRuO2", semi_folder)
-        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
-        energy = extract_energy_from_json(json_path)
-        energy_data[folder]["ReRuO2"] = energy
-
         subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "4_RuO2_1%", semi_folder)
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
@@ -131,6 +126,11 @@ def collect_energy_data(base_path):
         energy = extract_energy_from_json(json_path)
         energy_data[folder]["RuO2_2%"] = energy
 
+        subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "3_ReRuO2", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["ReRuO2"] = energy
+
         subfolder_path = os.path.join(base_path, "3_ReRuO2_OER", "6_ReRuO2_1%", semi_folder)
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
@@ -140,6 +140,11 @@ def collect_energy_data(base_path):
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
         energy_data[folder]["ReRuO2_2%"] = energy
+
+        subfolder_path = os.path.join(base_path, "5_ReRuO2_alloy", "3_OER", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["ReRuO2_alloy"] = energy
         
     return energy_data
 
@@ -169,7 +174,7 @@ def create_dataframe(energy_data):
     df = pd.DataFrame(data_dict).T
     
     # 인덱스 순서 정렬
-    df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'ReRuO2', 'RuO2_1%', 'RuO2_2%', 'ReRuO2_1%', 'ReRuO2_2%'])
+    df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'RuO2_1%', 'RuO2_2%', 'ReRuO2', 'ReRuO2_1%', 'ReRuO2_2%', 'ReRuO2_alloy'])
     # df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'ReRuO2', 'RuO2_1%', 'RuO2_2%'])
     
     return df
@@ -234,20 +239,21 @@ def main():
                 # Ueff 관련 데이터는 흰색, RuO2/ReRuO2 관련 데이터는 색칠
                 for i, (x, y) in enumerate(zip(xvals, yvals)):
                     row_name = xy.index[i]
-                    if row_name == "RuO2" and idx == 3:
-                        plt.scatter(x, y, color='black', zorder=10)
-                    elif row_name == "ReRuO2" and idx == 3:
-                        plt.scatter(x, y, color='red', zorder=10)
-                    elif row_name == "RuO2_1%" and idx == 3:
-                        plt.scatter(x, y, color='green', zorder=10)
-                    elif row_name == "RuO2_2%" and idx == 3:
-                        plt.scatter(x, y, color='orange', zorder=10)
-                    elif row_name == "ReRuO2_1%" and idx == 3:
-                        plt.scatter(x, y, color='magenta', zorder=10)
-                    elif row_name == "ReRuO2_2%" and idx == 3:
-                        plt.scatter(x, y, color='blue', zorder=10)
-                    else:
-                        plt.scatter(x, y, marker='s', color=colors[idx % len(colors)], zorder=9)
+                    # if row_name == "RuO2" and idx == 3:
+                    #     plt.scatter(x, y, color='black', zorder=10)
+                    # elif row_name == "ReRuO2" and idx == 3:
+                    #     plt.scatter(x, y, color='red', zorder=10)
+                    # elif row_name == "RuO2_1%" and idx == 3:
+                    #     plt.scatter(x, y, color='green', zorder=10)
+                    # elif row_name == "RuO2_2%" and idx == 3:
+                    #     plt.scatter(x, y, color='orange', zorder=10)
+                    # elif row_name == "ReRuO2_1%" and idx == 3:
+                    #     plt.scatter(x, y, color='magenta', zorder=10)
+                    # elif row_name == "ReRuO2_2%" and idx == 3:
+                    #     plt.scatter(x, y, color='blue', zorder=10)
+                    # else:
+                    plt.scatter(x, y, marker='s', color=colors[idx % len(colors)], zorder=9)
+                    # print(row_name,  x, y)
 
             # y=x+3.2 선
             plt.plot([0.0, 1.0], [3.2, 4.2], color='black', linestyle='--', linewidth=0.5, zorder=2)

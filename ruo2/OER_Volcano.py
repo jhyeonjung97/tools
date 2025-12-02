@@ -123,6 +123,11 @@ def collect_energy_data(base_path):
             energy = extract_energy_from_json(json_path)
             energy_data[folder][folder_name] = energy
         
+        subfolder_path = os.path.join(base_path, "5_ReRuO2_alloy", "3_OER", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["ReRuO2_alloy"] = energy
+        
     return energy_data
 
 def create_dataframe(energy_data):
@@ -151,7 +156,7 @@ def create_dataframe(energy_data):
     df = pd.DataFrame(data_dict).T
     
     # 인덱스 순서 정렬
-    df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'ReRuO2', 'RuO2_1%', 'RuO2_2%', 'ReRuO2_1%', 'ReRuO2_2%'])
+    df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'ReRuO2', 'RuO2_1%', 'RuO2_2%', 'ReRuO2_1%', 'ReRuO2_2%', 'ReRuO2_alloy'])
     # df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'ReRuO2', 'RuO2_1%', 'RuO2_2%'])
     
     return df
@@ -207,8 +212,9 @@ def main():
         # x_series = (df["ΔG_O"] - df["ΔG_OH"]).rename("ΔG_O - ΔG_OH")
         x_series = (df_dg["ΔG_O_O"] - df_dg["ΔG_O_OH"]).rename("ΔG_O_O - ΔG_O_OH")
         y_columns = [c for c in ["ΔG1", "ΔG2", "ΔG3a", "ΔG3d", "ΔG4a", "ΔG4d", "ΔG5d"] if c in df.columns]
+        print(y_columns)
         if len(y_columns) > 0:
-            plt.figure(figsize=(6, 4))
+            plt.figure(figsize=(4, 4))
             xmin, xmax = 1.05, 1.85
             ymin, ymax = 1.35, 1.85
             colors = ["C0", "C1", "C2", "C3", "C4", "C5", "C6"]
@@ -226,15 +232,17 @@ def main():
                     if row_name == "RuO2" and idx == 3:
                         plt.scatter(x, y, marker='o', facecolor='white', edgecolor='black', zorder=10)
                     elif row_name == "RuO2_1%" and idx == 3:
-                        plt.scatter(x, y, marker='o', facecolor='white', edgecolor='blue', zorder=10)
+                        plt.scatter(x, y, marker='o', facecolor='white', edgecolor='orange', zorder=10)
                     elif row_name == "RuO2_2%" and idx == 3:
                         plt.scatter(x, y, marker='o', facecolor='white', edgecolor='green', zorder=10)
                     elif row_name == "ReRuO2" and idx == 3:
-                        plt.scatter(x, y, marker='o', facecolor='red', edgecolor='red', zorder=10)
+                        plt.scatter(x, y, marker='o', facecolor='black', edgecolor='black', zorder=10)
                     elif row_name == "ReRuO2_1%" and idx == 3:
-                        plt.scatter(x, y, marker='o', facecolor='blue', edgecolor='blue', zorder=10)
+                        plt.scatter(x, y, marker='o', facecolor='orange', edgecolor='orange', zorder=10)
                     elif row_name == "ReRuO2_2%" and idx == 3:
                         plt.scatter(x, y, marker='o', facecolor='green', edgecolor='green', zorder=10)
+                    elif row_name == "ReRuO2_alloy" and idx == 1:
+                        plt.scatter(x, y, marker='o', facecolor='red', edgecolor='red', zorder=10)
                     # else:
                     #     plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
                 # if xvals.size >= 2:
@@ -263,7 +271,7 @@ def main():
             # plt.legend(loc='upper right', bbox_to_anchor=(0.99, 0.99), fontsize=9, ncol=1)
             # tight_layout 대신 수동으로 여백 조정
             plt.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.12)
-            out_png = "OER_scaling.png"
+            out_png = "OER_volcano.png"
             plt.savefig(out_png, dpi=300, bbox_inches='tight')
             plt.show()
             plt.close()
