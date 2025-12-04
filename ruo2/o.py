@@ -2,10 +2,10 @@ from ase.io import read, write
 from ase import Atoms
 
 atoms = read('restart.json')
-atoms += Atoms('O', positions=[atoms[2].position - (0.0, 0.0, 2.0)])
+atoms += Atoms('O', positions=[atoms[4].position - (0.0, 0.0, 2.0)])
+atoms += Atoms('O', positions=[atoms[5].position - (0.0, 0.0, 2.0)])
 atoms += Atoms('O', positions=[atoms[16].position + (0.0, 0.0, 2.0)])
-atoms += Atoms('O', positions=[atoms[17].position - (0.0, 0.0, 2.0)])
-atoms += Atoms('O', positions=[atoms[19].position + (0.0, 0.0, 2.0)])
+atoms += Atoms('O', positions=[atoms[17].position + (0.0, 0.0, 2.0)])
 
 min_z = atoms.positions[:,2].min()
 max_z = atoms.positions[:,2].max()
