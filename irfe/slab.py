@@ -18,4 +18,11 @@ for file in os.listdir('./'):
         a3 = atoms.cell.angles()[2]
         atoms.cell = (l1, l2, height, a1, a2, a3)
 
+        symbols = atoms.get_chemical_symbols()
+        ir_indices = [i for i, sym in enumerate(symbols) if sym == 'Ir']
+        o_indices = [i for i, sym in enumerate(symbols) if sym == 'O']
+        other_indices = [i for i, sym in enumerate(symbols) if sym != 'Ir' and sym != 'O']
+        new_indices = ir_indices + o_indices + other_indices
+        atoms = atoms[new_indices]
+
         atoms.write(f'{filename}.vasp')
