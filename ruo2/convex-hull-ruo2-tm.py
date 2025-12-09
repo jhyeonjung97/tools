@@ -110,6 +110,17 @@ def main():
                 else:
                     formula = f'{element}$_{element_ratio}$O$_{oxygen_ratio}$'
                 formation_energy = (energy_mruo2 - energy_ruo2*7/8 - energy_mxoy/element_count - oxygen*(2-oxygen_count/element_count))/8
+                if element == 'Co':
+                    print(f"formation_energy_mxoy: {formation_energy}")
+                    print(f"energy_mxoy: {energy_mxoy}")
+                    print(f"element_count: {element_count}")
+                    print(f"oxygen_count: {oxygen_count}")
+                    print(f"element_ratio: {element_ratio}")
+                    print(f"oxygen_ratio: {oxygen_ratio}")
+                    print(f"energy_mo2: {energy_mo2}")
+                    print(f"energy_mruo2: {energy_mruo2}")
+                    print(f"energy_ruo2: {energy_ruo2}")
+                    print(f"formation_energy_mxoy: {formation_energy}")
                 plt.figure(figsize=(fig_width, fig_height))
                 plt.scatter(0.0, 0.0, marker='s', edgecolor='black', facecolor='green')
                 plt.scatter(1.0, 0.0, marker='s', edgecolor='black', facecolor='green')
