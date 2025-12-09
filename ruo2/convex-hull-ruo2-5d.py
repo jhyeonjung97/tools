@@ -44,7 +44,7 @@ def main():
         elif temperature >= 100:
             oxygen -= 0.08
 
-    base_path = "~/Desktop/3_RuO2/4_high_valence"
+    base_path = "~/Desktop/3_RuO2"
     base_path = os.path.expanduser(base_path)
     rows = ['3d', '4d', '5d']
     elements = {
@@ -53,17 +53,19 @@ def main():
         '5d': ['La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg']
     }
 
-    atoms_ruo2 = os.path.join(base_path, '1_M-RuO2/0_Ru/final_with_calculator.json')
+    atoms_ruo2 = os.path.join(base_path, '4_high_valence/1_M-RuO2/0_Ru/final_with_calculator.json')
     energy_ruo2 = read(atoms_ruo2).get_potential_energy()
+    atoms_reo2 = os.path.join(base_path, '3_ReRuO2_OER/0_bulk/convex_hull/3_ReO2/final_with_calculator.json')
+    energy_reo2 = read(atoms_reo2).get_potential_energy()
 
     for row in rows:
         cmap = plt.colormaps['YlOrRd']
         for i, element in enumerate(elements[row]):
             atomic_number = mendeleev.element(element).atomic_number
             colors = [cmap(i / (len(elements[row]) - 1)) for i in range(len(elements[row]))]
-            atoms_mruo2 = os.path.join(base_path, f'4_M-RuO2_all/precise2/{atomic_number}_{element}/final_with_calculator.json')
-            atoms_mo2 = os.path.join(base_path, f'5_MO2_all/precise2/{atomic_number}_{element}/final_with_calculator.json')
-            atoms_mxoy = os.path.join(base_path, f'6_MxOy_all/precise2/{atomic_number}_{element}/final_with_calculator.json')
+            atoms_mruo2 = os.path.join(base_path, f'4_high_valence/4_M-RuO2_all/precise2/{atomic_number}_{element}/final_with_calculator.json')
+            atoms_mo2 = os.path.join(base_path, f'4_high_valence/5_MO2_all/precise2/{atomic_number}_{element}/final_with_calculator.json')
+            atoms_mxoy = os.path.join(base_path, f'4_high_valence/6_MxOy_all/precise2/{atomic_number}_{element}/final_with_calculator.json')
             energy_mruo2 = read(atoms_mruo2).get_potential_energy()
             energy_mo2 = read(atoms_mo2).get_potential_energy()
             energy_mxoy = read(atoms_mxoy).get_potential_energy()
@@ -93,16 +95,25 @@ def main():
             plt.figure(figsize=(fig_width, fig_height))
             plt.scatter(0.0, 0.0, marker='s', edgecolor='black', facecolor='green')
             plt.scatter(1.0, 0.0, marker='s', edgecolor='black', facecolor='green')
-            plt.text(0.0, 0.01, 'RuO$_2$', ha='center', va='bottom')
-            plt.text(1.0, 0.01, f'{element}O$_2$', ha='center', va='bottom')
+            plt.text(0.0, 0.02, 'RuO$_2$\n(rutile)', ha='center', va='bottom', linespacing=0.8)
+            plt.text(1.0, 0.02, f'{element}O$_2$\n(rutile)', ha='center', va='bottom', linespacing=0.8)
             plt.plot([0.0, 1.0], [0.0, 0.0], color='black', linestyle='-', zorder=0)
             plt.scatter(7/8, formation_energy_mruo2, marker='D', edgecolor='black', facecolor='orange')
-            plt.scatter(1.0, formation_energy_mxoy, marker='D', edgecolor='black', facecolor='blue')
-            plt.text(7/8-0.03, formation_energy_mruo2, f'{element}-RuO$_2$', ha='right', va='center')
-            plt.xlabel(r'x, Ru$_x$M$_{1-x}$O$_2$')
+            if element == 'Os':
+                plt.text(7/8-0.12, formation_energy_mruo2-0.04, f'{element}-RuO$_2$\n(rutile)', ha='center', va='center', linespacing=0.8)
+            else:
+                plt.text(7/8-0.12, formation_energy_mruo2, f'{element}-RuO$_2$\n(rutile)', ha='center', va='center', linespacing=0.8)
+            plt.scatter(1.0, formation_energy_mxoy, marker='s', edgecolor='black', facecolor='blue')
+            if element == 'Re':
+                formation_energy_reo2 = (energy_reo2/4 - energy_mo2/8)/8
+                plt.scatter(1.0, formation_energy_reo2, marker='s', edgecolor='black', facecolor='blue')
+                plt.text(1.03, formation_energy_reo2, f'ReO$_2$', ha='left', va='center')
+            plt.text(1.03, formation_energy_mxoy, f'{formula}', ha='left', va='center')
+            plt.xlabel(r'x, Ru$_x$' + f'{element}' + r'$_{1-x}$O$_y$')
             plt.ylabel('Formation energy (eV/unit)')
-            plt.xlim(-0.1, 1.1)
+            plt.xlim(-0.1, 1.2)
             plt.ylim(-0.4, 0.4)
+            plt.xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
             plt.savefig(f'RuO2_5d_{atomic_number}_{element}xOy_convex_hull.png', dpi=300, bbox_inches='tight')
             plt.tight_layout()
             if show:
