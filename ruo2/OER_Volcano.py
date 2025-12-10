@@ -123,7 +123,7 @@ def collect_energy_data(base_path):
             energy = extract_energy_from_json(json_path)
             energy_data[folder][folder_name] = energy
         
-        subfolder_path = os.path.join(base_path, "5_ReRuO2_alloy", "3_OER", semi_folder)
+        subfolder_path = os.path.join(base_path, "5_ReRuO2_alloy", "1_OER", semi_folder)
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
         energy_data[folder]["ReRuO2_alloy"] = energy
@@ -261,7 +261,7 @@ def main():
             # plt.text(1.98, 1.23+0.196-0.01, r'Re-RuO$_2$(196 meV)', fontsize=10, color='red', ha='right')
             # plt.text(1.98, 1.23+0.218+0.03, r'sRuO$_2$(218 meV)', fontsize=10, color='black', ha='right')
             # plt.text(1.98, 1.23+0.343+0.03, r'cRuO$_2$(343 meV)', fontsize=10, color='black', ha='right')
-            plt.xlabel(r'$\Delta G_{O} - \Delta G_{OH}$ (eV)')
+            plt.xlabel(r'$\Delta G_{O+O} - \Delta G_{O+OH}$ (eV)')
             plt.ylabel(r'$\Delta G_{max}$ (eV)')
             plt.xlim(xmin, xmax)
             plt.ylim(ymin, ymax)
@@ -273,6 +273,7 @@ def main():
             plt.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.12)
             out_png = "OER_volcano.png"
             plt.savefig(out_png, dpi=300, bbox_inches='tight')
+            plt.tight_layout()
             plt.show()
             plt.close()
             print(f"스케일링 플롯 저장됨: {out_png}")
