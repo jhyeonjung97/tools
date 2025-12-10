@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 mpl.rcParams["axes.prop_cycle"] = plt.cycler(color=plt.get_cmap("tab20").colors)
+plt.rcParams['font.family'] = 'Helvetica'
+plt.rcParams['font.sans-serif'] = ['Helvetica']
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190
@@ -231,10 +233,13 @@ def main():
                     row_name = xy.index[i]
                     if row_name == "RuO2" and idx == 3:
                         plt.scatter(x, y, marker='o', facecolor='white', edgecolor='black', zorder=10)
+                        plt.scatter(x, y, marker='x', s=20, color='black', zorder=10, linewidth=1.0)
                     elif row_name == "RuO2_1%" and idx == 3:
                         plt.scatter(x, y, marker='o', facecolor='white', edgecolor='orange', zorder=10)
+                        plt.scatter(x, y, marker='x', s=20, color='orange', zorder=10, linewidth=1.0)
                     elif row_name == "RuO2_2%" and idx == 3:
                         plt.scatter(x, y, marker='o', facecolor='white', edgecolor='green', zorder=10)
+                        plt.scatter(x, y, marker='x', s=20, color='green', zorder=10, linewidth=1.0)
                     elif row_name == "ReRuO2" and idx == 3:
                         plt.scatter(x, y, marker='o', facecolor='black', edgecolor='black', zorder=10)
                     elif row_name == "ReRuO2_1%" and idx == 3:
@@ -242,7 +247,7 @@ def main():
                     elif row_name == "ReRuO2_2%" and idx == 3:
                         plt.scatter(x, y, marker='o', facecolor='green', edgecolor='green', zorder=10)
                     elif row_name == "ReRuO2_alloy" and idx == 1:
-                        plt.scatter(x, y, marker='o', facecolor='red', edgecolor='red', zorder=10)
+                        plt.scatter(x, y, marker='o', facecolor='blue', edgecolor='blue', zorder=10)
                     # else:
                     #     plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
                 # if xvals.size >= 2:
@@ -250,9 +255,9 @@ def main():
                 #         m, b = np.polyfit(xvals, yvals, 1)
                 #         xs = np.linspace(xmin, xmax, 100)
                 #         plt.plot(xs, m*xs + b, color=colors[idx % len(colors)], label=f"{ycol}", zorder=zorders[idx])
-                plt.plot([1, 2], [1, 2], color='black', linewidth=0.5, zorder=0)
-                plt.plot([1, 2], [2.2, 1.2], color='black', linewidth=0.5, zorder=0, dashes=(5, 5))         
-                plt.plot([1, 2], [1.9, 0.9], color='black', linewidth=0.5, zorder=0)                
+                plt.plot([1.45, 2], [1.45, 2], color='black', linewidth=1.0, zorder=0)
+                plt.plot([1, 1.6], [2.2, 1.6], color='black', linewidth=1.0, zorder=0, linestyle='--')      
+                plt.plot([1, 1.45], [1.9, 1.45], color='red', linewidth=1.0, zorder=0, linestyle='--')
             # plt.scatter(df_dg["ΔG2"]['RuO2'], df_dg["ΔG2"]['RuO2'], facecolor='white', edgecolor=colors[idx % len(colors)], zorder=10)
 
             # plt.axhline(y=1.23+0.196, color='red', linestyle='-', linewidth=1, zorder=0)
@@ -261,8 +266,8 @@ def main():
             # plt.text(1.98, 1.23+0.196-0.01, r'Re-RuO$_2$(196 meV)', fontsize=10, color='red', ha='right')
             # plt.text(1.98, 1.23+0.218+0.03, r'sRuO$_2$(218 meV)', fontsize=10, color='black', ha='right')
             # plt.text(1.98, 1.23+0.343+0.03, r'cRuO$_2$(343 meV)', fontsize=10, color='black', ha='right')
-            plt.xlabel(r'$\Delta G_{O+O} - \Delta G_{O+OH}$ (eV)')
-            plt.ylabel(r'$\Delta G_{max}$ (eV)')
+            plt.xlabel(r'$\Delta G_{O+O} - \Delta G_{O+OH}$ (eV)', fontsize=12)
+            plt.ylabel(r'$\Delta G_{max}$ (eV)', fontsize=12)
             plt.xlim(xmin, xmax)
             plt.ylim(ymin, ymax)
             plt.grid(True, alpha=0.1)

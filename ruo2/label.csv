@@ -22,8 +22,6 @@ Ru2O2_brg.json,*V_Ru2O2(brg),0
 RuO2_brg.json,*V_RuO2(brg),0
 V_OH.json,*OH(cus),1
 V_V.json,clean,0
-O_brg.json,*V_O(brg),0
-O2_brg.json,2*V_O(brg),0
 H_V_OH.json,2*H(brg)+*OH(cus),3
 H_V_O.json,2*H(brg)+*O(cus),2
 H_O_OH.json,2*H(brg)+*O(cus)+*OH(cus),3

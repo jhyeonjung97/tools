@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 mpl.rcParams["axes.prop_cycle"] = plt.cycler(color=plt.get_cmap("tab20").colors)
-
+plt.rcParams['font.family'] = 'Helvetica'
+plt.rcParams['font.sans-serif'] = ['Helvetica']
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190
@@ -141,7 +142,7 @@ def collect_energy_data(base_path):
         energy = extract_energy_from_json(json_path)
         energy_data[folder]["ReRuO2_2%"] = energy
 
-        subfolder_path = os.path.join(base_path, "5_ReRuO2_alloy", "3_OER", semi_folder)
+        subfolder_path = os.path.join(base_path, "5_ReRuO2_alloy", "1_OER", semi_folder)
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
         energy_data[folder]["ReRuO2_alloy"] = energy
@@ -257,16 +258,16 @@ def main():
                     # print(row_name,  x, y)
 
             # y=x+3.2 선
-            plt.plot([0.0, 1.0], [3.2, 4.2], color='black', linestyle='--', linewidth=0.5, zorder=2)
-            plt.plot([0.0, 1.0], [2.9, 3.9], color='red', linestyle='--', linewidth=0.5, zorder=2)
+            plt.plot([0.0, 1.0], [3.2, 4.2], color='black', linestyle='--', linewidth=1.0, zorder=2)
+            plt.plot([0.0, 1.0], [2.9, 3.9], color='red', linestyle='--', linewidth=1.0, zorder=2)
             # 두 선 사이 영역 채우기
             x_fill = np.array([0.0, 1.0])
             y_lower = x_fill + 3.1
             y_upper = x_fill + 3.3
             plt.fill_between(x_fill, y_lower, y_upper, color='silver', alpha=0.2, zorder=1)
 
-            plt.xlabel(r'$\Delta G_{O+OH}$ (eV)')
-            plt.ylabel(r'$\Delta G_{O+OOH, OO+OH}$ (eV)')
+            plt.xlabel(r'$\Delta G_{O+OH}$ (eV)', fontsize=12)
+            plt.ylabel(r'$\Delta G_{O+OOH, OO+OH}$ (eV)', fontsize=12)
             plt.xlim(xmin, xmax)
             plt.ylim(ymin, ymax)
             plt.grid(True, alpha=0.1)

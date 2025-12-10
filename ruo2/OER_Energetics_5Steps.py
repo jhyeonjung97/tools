@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import numpy as np
 
+# 폰트 설정: Arial
+plt.rcParams['font.family'] = 'Helvetica'
+plt.rcParams['font.sans-serif'] = ['Helvetica']
+
 # 사용자 환경에 맞춰 경로를 변경하세요
 root = "~/Desktop/3_RuO2"
 
@@ -518,7 +522,7 @@ def plot_individual_energetics_diagrams(all_paths, oer_data):
         max_energy = max(path_data['step1'], path_data['step2'], path_data['step3'], path_data['step4'], path_data['step5'])
         overpotential = max_energy - 1.23
         ax.text(0.02, 0.97, f'Surface: {surface}\nΔG1: {path_data["step1"]:.2f} eV\nΔG2: {path_data["step2"]:.2f} eV\nΔG3: {path_data["step3"]:.2f} eV\nΔG4: {path_data["step4"]:.2f} eV\nΔG5: {path_data["step5"]:.2f} eV\nOverpotential: {overpotential:.2f} V', 
-                transform=ax.transAxes, fontsize=11, verticalalignment='top',
+                transform=ax.transAxes, fontsize=10, verticalalignment='top',
                 bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
         
         plt.tight_layout()
@@ -609,7 +613,7 @@ def plot_all_pathways_combined_RuO2(all_paths, oer_data):
     # ax.text(0.02, 0.97, info_text, transform=ax.transAxes, fontsize=10, verticalalignment='top',
     #         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
     
-    plt.legend(fontsize=10, loc='lower right', bbox_to_anchor=(1.0, 0.0))
+    plt.legend(fontsize=12, loc='lower right', bbox_to_anchor=(1.0, 0.0))
     plt.tight_layout()
     # plt.show()
     plt.savefig('all_pathways_combined_5steps_RuO2.png', dpi=300, bbox_inches='tight')
@@ -693,7 +697,7 @@ def plot_all_pathways_combined_ReRuO2(all_paths, oer_data):
     # ax.text(0.02, 0.97, info_text, transform=ax.transAxes, fontsize=10, verticalalignment='top',
     #         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
     
-    plt.legend(fontsize=10, loc='lower right', bbox_to_anchor=(1.0, 0.0))
+    plt.legend(fontsize=12, loc='lower right', bbox_to_anchor=(1.0, 0.0))
     plt.tight_layout()
     # plt.show()
     plt.savefig('all_pathways_combined_5steps_ReRuO2.png', dpi=300, bbox_inches='tight')
@@ -738,7 +742,7 @@ def plot_ruo2_pathways(all_paths, oer_data):
     energy4 = path1_data['step4'] + energy3
     energy5 = path1_data['step5'] + energy4
     path1_step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4, energy5, energy5]
-    ax.plot(steps, path1_step_energies, '-', color='black', linewidth=2, label=f'Associative Mechanism, η = {over1:.2f} V', zorder=2)
+    ax.plot(steps, path1_step_energies, '-', color='black', linewidth=2, label=f'Single-site mechanism, η = {over1:.2f} V', zorder=2)
     
     # Path 2: O_V → O_OH → O_O → OH_OO
     energy0 = 0.0
@@ -748,7 +752,7 @@ def plot_ruo2_pathways(all_paths, oer_data):
     energy4 = path2_data['step4'] + energy3
     energy5 = path2_data['step5'] + energy4
     path2_step_energies = [energy0, energy0, energy1, energy1, energy2, energy2, energy3, energy3, energy4, energy4, energy5, energy5]
-    ax.plot(steps, path2_step_energies, '-', color='red', linewidth=2, label=f'Dissociative Mechanism, η = {over2:.2f} V', zorder=1)
+    ax.plot(steps, path2_step_energies, '-', color='red', linewidth=2, label=f'Dual-site mechanism, η = {over2:.2f} V', zorder=1)
     
     # 그래프 설정 (plot_individual_energetics_diagrams와 동일한 스타일)
     ax.set_xticks([])
@@ -767,7 +771,7 @@ def plot_ruo2_pathways(all_paths, oer_data):
     #         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
 
     # plt.legend(loc='lower right', bbox_to_anchor=(1.0, 0.0), fontsize=10)
-    plt.legend(loc='upper left', bbox_to_anchor=(0.0, 1.0), fontsize=10)
+    plt.legend(loc='upper left', bbox_to_anchor=(0.0, 1.0), fontsize=12)
     plt.tight_layout()
     plt.savefig('RuO2_pathways_comparison.png', dpi=300, bbox_inches='tight')
     # plt.show()
