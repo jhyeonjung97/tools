@@ -270,7 +270,7 @@ def main():
             plt.ylabel(r'$\Delta G_{max}$ (eV)', fontsize=12)
             plt.xlim(xmin, xmax)
             plt.ylim(ymin, ymax)
-            plt.grid(True, alpha=0.1)
+            # plt.grid(True, alpha=0.1)
             plt.gca().invert_yaxis()
             # plt.legend(loc='lower right', bbox_to_anchor=(0.99, 0.01), fontsize=9, ncol=1)
             # plt.legend(loc='upper right', bbox_to_anchor=(0.99, 0.99), fontsize=9, ncol=1)
