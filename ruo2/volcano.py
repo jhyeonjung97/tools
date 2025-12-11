@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 mpl.rcParams["axes.prop_cycle"] = plt.cycler(color=plt.get_cmap("tab20").colors)
+plt.rcParams['font.family'] = 'Helvetica'
+plt.rcParams['font.sans-serif'] = ['Helvetica']
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190
@@ -66,13 +68,13 @@ def extract_energy_from_json(json_path):
 
 def main():
     plt.figure(figsize=(4, 4))
-    plt.plot([0, 2], [0, 2], color='black', linewidth=0.5, zorder=2)
-    plt.plot([0, 2], [3.2, 1.2], color='black', linewidth=0.5, zorder=2)         
-    plt.plot([0, 2], [2.46, 0.46], color='black', linewidth=0.5, zorder=2)
-    plt.axhline(1.23, color='black', linewidth=0.5, zorder=1, dashes=(5, 5))
-    plt.axvspan(1.23, 1.60, color='gainsboro', zorder=0)    # mistyrose
-    plt.xlabel(r'$\Delta G_{O} - \Delta G_{OH}$ (eV)')
-    plt.ylabel(r'$\Delta G_{max}$ (eV)')
+    plt.plot([1.23, 2], [1.23, 2], color='black', linewidth=1.0, zorder=2)
+    plt.plot([0, 1.6], [3.2, 1.6], color='black', linewidth=1.0, zorder=2)         
+    plt.plot([0, 1.23], [2.46, 1.23], color='black', linewidth=1.0, zorder=2)
+    plt.axhline(1.23, color='black', linewidth=1.0, zorder=1, linestyle='--')
+    plt.axvspan(1.23, 1.60, color='lightsteelblue', zorder=0, alpha=0.5)    # mistyrose
+    plt.xlabel(r'$\Delta G_{O} - \Delta G_{OH}$ (eV)', fontsize=12)
+    plt.ylabel(r'$\Delta G_{max}$ (eV)', fontsize=12)
     plt.xlim(0.6, 2)
     plt.ylim(1.1, 2.1)
     plt.grid(True, alpha=0.1)

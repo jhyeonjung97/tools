@@ -6,12 +6,19 @@ from math import gcd
 import mendeleev
 import argparse
 
+plt.rcParams['font.family'] = 'Helvetica'
+plt.rcParams['font.sans-serif'] = ['Helvetica']
+
+# dH of molecular references at 300K:
+# 1/2 O2 derived from H2O/H2:  -4.658724749999999
+# 1/2 O2 derived from PBE:  -4.851213114999999
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-b', '--base-path', type=str, default='~/Desktop/3_RuO2/4_high_valence', help='Base path')
     parser.add_argument('-x', '--fig-width', type=float, default=5.2, help='Figure width (inches)')
     parser.add_argument('-y', '--fig-height', type=float, default=3.6, help='Figure height (inches)')
-    parser.add_argument('-o', '--oxygen', type=float, default=-5.29, help='Oxygen chemical potential (eV/atom)')
+    parser.add_argument('-o', '--oxygen', type=float, default=-4.658724749999999+0.27-0.73, help='Oxygen chemical potential (eV/atom)')
     parser.add_argument('-t', '--temperature', type=float, default=None, help='Temperature (K)')
     parser.add_argument('--show', action='store_true', help='Show figure')
     args = parser.parse_args()
@@ -53,6 +60,7 @@ def main():
         '5d': ['La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg']
     }
 
+    print('oxygen: ', oxygen)
     atoms_ruo2 = os.path.join(base_path, '4_high_valence/1_M-RuO2/0_Ru/final_with_calculator.json')
     energy_ruo2 = read(atoms_ruo2).get_potential_energy()
     atoms_reo2 = os.path.join(base_path, '3_ReRuO2_OER/0_bulk/convex_hull/3_ReO2/final_with_calculator.json')
@@ -109,8 +117,8 @@ def main():
                 plt.scatter(1.0, formation_energy_reo2, marker='s', edgecolor='black', facecolor='blue')
                 plt.text(1.03, formation_energy_reo2, f'ReO$_2$', ha='left', va='center')
             plt.text(1.03, formation_energy_mxoy, f'{formula}', ha='left', va='center')
-            plt.xlabel(r'x, Ru$_x$' + f'{element}' + r'$_{1-x}$O$_y$')
-            plt.ylabel('Formation energy (eV/unit)')
+            plt.xlabel(r'x, Ru$_x$' + f'{element}' + r'$_{1-x}$O$_y$', fontsize=12)
+            plt.ylabel('Formation energy (eV/unit)', fontsize=12)
             plt.xlim(-0.1, 1.2)
             plt.ylim(-0.4, 0.4)
             plt.xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])

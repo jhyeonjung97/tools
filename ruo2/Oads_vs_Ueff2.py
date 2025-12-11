@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import numpy as np
 
+plt.rcParams['font.family'] = 'Helvetica'
+plt.rcParams['font.sans-serif'] = ['Helvetica']
+
 root = "~/Desktop/3_RuO2/1_RuO2_Ueff"
 
 # gas
@@ -20,6 +23,8 @@ tsh2 = 0.408
 gh2o = h2o + zpeh2o - tsh2o + cvh2o
 gh2 = h2 + zpeh2 - tsh2 + cvh2
 go = gh2o - gh2 - 1.229*2
+
+print('go: ', go)
 
 # ads
 zpeoh = 0.376
@@ -103,13 +108,13 @@ def plot_adsorption_energies_vs_ueff(ueff_values, o_energies_2, oh_energies_2):
     plt.figure(figsize=(4, 4))
     
     # 두 번째 O 흡착 에너지: O-covered surface에서 O 흡착
-    plt.plot(ueff_values, o_energies_2, color='black', marker='o', markeredgecolor='black', markerfacecolor='black', label=r'$\Delta G_{O}$')
+    plt.plot(ueff_values, o_energies_2, color='black', marker='o', markeredgecolor='black', markerfacecolor='black', label=r'$\Delta G_{O+O}$')
     
     # 두 번째 OH 흡착 에너지: O-covered surface에서 OH 흡착
-    plt.plot(ueff_values, oh_energies_2, color='black', marker='o', markeredgecolor='black', markerfacecolor='white', label=r'$\Delta G_{OH}$')
+    plt.plot(ueff_values, oh_energies_2, color='black', marker='o', markeredgecolor='black', markerfacecolor='white', label=r'$\Delta G_{O+OH}$')
     
-    plt.xlabel(r'$U_{\mathrm{eff}}$ (eV)')
-    plt.ylabel(r'$\Delta G_{O}$ or $\Delta G_{OH}$ (eV)')
+    plt.xlabel(r'$U_{\mathrm{eff}}$ (eV)', fontsize=12)
+    plt.ylabel(r'$\Delta G_{O+O}$ or $\Delta G_{O+OH}$ (eV)', fontsize=12)
     plt.xlim(-0.5, 4.5)
     plt.legend()
     

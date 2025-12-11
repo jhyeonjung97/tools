@@ -2,6 +2,9 @@ from ase.io import read
 import matplotlib.pyplot as plt
 from pathlib import Path
 
+plt.rcParams['font.family'] = 'Helvetica'
+plt.rcParams['font.sans-serif'] = ['Helvetica']
+
 root = "~/Desktop/3_RuO2/1_RuO2_Ueff"
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
@@ -110,17 +113,23 @@ def plot_o_minus_oh_vs_ueff(ueff_values, O_Ocovered, OH_Ocovered):
 
     plt.plot(ueff_values, D_Ocovered, color='black', marker='o', label=r'$\Delta G_{O} - \Delta G_{OH}$')
 
-    plt.xlabel(r'$U_{\mathrm{eff}}$ (eV)')
-    plt.ylabel(r'$\Delta G_{O} - \Delta G_{OH}$ (eV)')
+    plt.xlabel(r'$U_{\mathrm{eff}}$ (eV)', fontsize=12)
+    plt.ylabel(r'$\Delta G_{O+O} - \Delta G_{O+OH}$ (eV)', fontsize=12)
     plt.xlim(-0.5, 4.5)
-    plt.legend()
     
     # 데이터 포인트에 값 표시
     for i, (x, y) in enumerate(zip(ueff_values, D_Ocovered)):
-        plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", xytext=(0,10), ha='center', va='center')
+        if i == 0 or i == 2 or i == 1:
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", xytext=(0,-14), ha='center', va='center')
+        else:
+            plt.annotate(f'{y:.2f}', (x, y), textcoords="offset points", xytext=(0,10), ha='center', va='center')
 
-    plt.ylim(0.8, 2.0)
-    plt.axhspan(1.23, 1.60, color='gainsboro', zorder=0)    # mistyrose
+    plt.ylim(0.8, 1.8)
+    plt.axhline(1.327, color='blue', linewidth=1.0, linestyle='--')
+    plt.axhline(1.573, color='blue', linewidth=1.0, linestyle='--')
+    plt.scatter(2.5, 1.327, color='blue', marker='s')
+    plt.scatter(3.9, 1.573, color='blue', marker='s')
+    # plt.axhspan(1.23, 1.60, color='lightsteelblue', zorder=0, alpha=0.5)    # mistyrose, gainsboro
 
     plt.tight_layout()
     plt.savefig('OminusOH_adsorption_energies_vs_Ueff.png', dpi=300, bbox_inches='tight')
