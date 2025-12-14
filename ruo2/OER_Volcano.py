@@ -218,7 +218,7 @@ def main():
         if len(y_columns) > 0:
             plt.figure(figsize=(4, 4))
             xmin, xmax = 1.05, 1.85
-            ymin, ymax = 1.35, 1.85
+            ymin, ymax = 1.4, 1.85
             colors = ["C0", "C1", "C2", "C3", "C4", "C5", "C6"]
             # colors = ["black", "black", "silver", "black", "silver", "silver", "silver"]
             zorders = [4, 4, 3, 4, 3, 3, 3]
@@ -232,20 +232,20 @@ def main():
                 for i, (x, y) in enumerate(zip(xvals, yvals)):
                     row_name = xy.index[i]
                     if row_name == "RuO2" and idx == 3:
-                        plt.scatter(x, y, marker='o', facecolor='white', edgecolor='black', zorder=10)
+                        plt.scatter(x, y, marker='o', facecolor='black', edgecolor='black', zorder=10)
                         plt.scatter(x, y, marker='x', s=20, color='black', zorder=10, linewidth=1.0)
                     elif row_name == "RuO2_1%" and idx == 3:
-                        plt.scatter(x, y, marker='o', facecolor='white', edgecolor='orange', zorder=10)
-                        plt.scatter(x, y, marker='x', s=20, color='orange', zorder=10, linewidth=1.0)
-                    elif row_name == "RuO2_2%" and idx == 3:
-                        plt.scatter(x, y, marker='o', facecolor='white', edgecolor='green', zorder=10)
-                        plt.scatter(x, y, marker='x', s=20, color='green', zorder=10, linewidth=1.0)
-                    elif row_name == "ReRuO2" and idx == 3:
-                        plt.scatter(x, y, marker='o', facecolor='black', edgecolor='black', zorder=10)
-                    elif row_name == "ReRuO2_1%" and idx == 3:
                         plt.scatter(x, y, marker='o', facecolor='orange', edgecolor='orange', zorder=10)
-                    elif row_name == "ReRuO2_2%" and idx == 3:
+                        # plt.scatter(x, y, marker='x', s=20, color='orange', zorder=10, linewidth=1.0)
+                    elif row_name == "RuO2_2%" and idx == 3:
                         plt.scatter(x, y, marker='o', facecolor='green', edgecolor='green', zorder=10)
+                        # plt.scatter(x, y, marker='x', s=20, color='green', zorder=10, linewidth=1.0)
+                    elif row_name == "ReRuO2" and idx == 3:
+                        plt.scatter(x, y, marker='o', facecolor='red', edgecolor='red', zorder=10)
+                    # elif row_name == "ReRuO2_1%" and idx == 3:
+                    #     plt.scatter(x, y, marker='o', facecolor='orange', edgecolor='orange', zorder=10)
+                    # elif row_name == "ReRuO2_2%" and idx == 3:
+                    #     plt.scatter(x, y, marker='o', facecolor='green', edgecolor='green', zorder=10)
                     elif row_name == "ReRuO2_alloy" and idx == 1:
                         plt.scatter(x, y, marker='o', facecolor='blue', edgecolor='blue', zorder=10)
                     # else:

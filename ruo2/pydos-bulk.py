@@ -11,12 +11,17 @@ from optparse import OptionParser
 import matplotlib as mpl
 mpl.use('agg')
 mpl.rcParams['axes.unicode_minus'] = False
+# Set font to Helvetica
+mpl.rcParams['font.family'] = 'Helvetica'
+mpl.rcParams['font.sans-serif'] = ['Helvetica']
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
 from matplotlib.patches import Polygon
+from matplotlib.font_manager import FontProperties
 import matplotlib.colors as mcolors
-
+plt.rcParams['font.family'] = 'Helvetica'
+plt.rcParams['font.sans-serif'] = ['Helvetica']
 
 ############################################################
 __version__ = "1.0"
@@ -455,23 +460,10 @@ def saveDOSToFile(opts, xen, tDOS, pDOS):
 ############################################################
 
 
-def dosplot(xen, tdos, pdos, opts):
+def plot_single_dos(ax, xen, tdos, pdos, opts, vlines1, vlines2, labels1, labels2):
     '''
-    Use matplotlib to plot band structure
+    Plot DOS on a single axes
     '''
-
-    width, height = opts.figsize
-    xmin, xmax = opts.xlim
-    dpi = opts.dpi
-
-    plt.style.use(opts.mpl_style)
-    # DO NOT use unicode minus regardless of the style
-    mpl.rcParams['axes.unicode_minus'] = False
-
-    fig = plt.figure()
-    fig.set_size_inches(width, height)
-    ax = plt.subplot(111)
-
     LINES = []
     nspin = tdos.shape[1]
 
@@ -492,18 +484,22 @@ def dosplot(xen, tdos, pdos, opts):
 
     plabels += ['total']
 
-    xen -= opts.zero
+    xen_plot = xen - opts.zero
+    line = None
     for ip, p in enumerate(pdos):
         for ii in range(nspin):
             fill_direction = 1 if ii == 0 else -1
-            lc = LCs[ip] if ii == 0 else line.get_color()
+            if ii == 0:
+                lc = LCs[ip] if LCs[ip] is not None else None
+            else:
+                lc = line.get_color() if line is not None else None
 
             if opts.fill:
-                line, im = gradient_fill(xen, p[:, ii], ax=ax, lw=LWs[ip],
+                line, im = gradient_fill(xen_plot, p[:, ii], ax=ax, lw=LWs[ip],
                                          color=lc,
                                          direction=fill_direction)
             else:
-                line, = ax.plot(xen, p[:, ii], lw=LWs[ip], alpha=0.6,
+                line, = ax.plot(xen_plot, p[:, ii], lw=LWs[ip], alpha=0.6,
                                 color=lc)
             if ii == 0:
                 LINES += [line]
@@ -511,27 +507,37 @@ def dosplot(xen, tdos, pdos, opts):
     if opts.showtotal:
         for ii in range(nspin):
             fill_direction = 1 if ii == 0 else -1
-            lc = 'k' if ii == 0 else line.get_color()
+            if ii == 0:
+                lc = 'k'
+            else:
+                lc = line.get_color() if line is not None else None
 
             if opts.fill:
-                line, im = gradient_fill(xen, tdos[:, ii], ax=ax,
+                line, im = gradient_fill(xen_plot, tdos[:, ii], ax=ax,
                                          color=lc,
                                          lw=0.5,
                                          # zorder=-1,
                                          direction=fill_direction,
                                          )
             else:
-                line, = ax.plot(xen, tdos[:, ii], color=lc,
+                line, = ax.plot(xen_plot, tdos[:, ii], color=lc,
                                 lw=0.5, alpha=0.6)
             if ii == 0:
                 LINES += [line]
 
-    ax.set_xlabel('Energy [eV]',  # fontsize='small',
-                  labelpad=5)
-    ax.set_ylabel('DOS [arb. unit]',  # fontsize='small',
-                  labelpad=10)
-    ax.tick_params(which='both', labelsize='small')
+    # Create semibold font for labels
+    # Arial doesn't support intermediate weights, so we'll use 'normal' with slight adjustment
+    # or try 'semibold' if the font supports it
+    try:
+        semibold_font = FontProperties(weight='semibold')
+    except:
+        # Fallback to normal if semibold not supported
+        semibold_font = FontProperties(weight='normal')
+    ax.set_ylabel('DOS [a.u.]',  # fontsize='small',
+                  labelpad=10, fontproperties=semibold_font)
+    ax.tick_params(which='both', labelsize='small', direction='in')
 
+    xmin, xmax = opts.xlim
     ax.set_xlim(xmin, xmax)
     if opts.ylim is not None:
         ymin, ymax = opts.ylim
@@ -540,23 +546,85 @@ def dosplot(xen, tdos, pdos, opts):
     ax.set_yticks([])
     ax.axhline(0.0, color='black', lw=0.7)
     ax.axvline(0.0, color='black', lw=0.7)
-    ax.axvline(-2.5551, color='C2', lw=0.7)
-    ax.axvline(-3.3965, color='C1', lw=0.7)
-    plt.text(-2.5551+0.1, 7.0, '-2.56', color='C2', fontsize=8, rotation=90)
-    plt.text(-3.3965+0.1, 7.0, '-3.40', color='C1', fontsize=8, rotation=90)
+    ax.axvline(vlines1, color='C2', lw=0.7)
+    ax.axvline(vlines2, color='C1', lw=0.7)
+    ax.text(vlines1+0.1, ax.get_ylim()[1]*0.5, labels1, color='C2', fontsize=8, rotation=90)
+    ax.text(vlines2+0.1, ax.get_ylim()[1]*0.5, labels2, color='C1', fontsize=8, rotation=90)
 
     ax.xaxis.set_minor_locator(AutoMinorLocator(2))
     ax.yaxis.set_minor_locator(AutoMinorLocator(2))
 
     opts.pdosLabel = plabels
-    ax.legend(LINES, plabels,
-              loc=opts.legendloc,
-              fontsize='small',
-              frameon=True,
-              framealpha=0.6)
+    leg = ax.legend(LINES, plabels,
+                     loc=opts.legendloc,
+                     fontsize='small',
+                     frameon=True,
+                     framealpha=1.0,
+                     labelspacing=0.3)  # Adjust vertical spacing between legend entries
+    
+    # Make lines in legend thicker
+    for line in leg.get_lines():
+        line.set_linewidth(1.0)
 
-    plt.tight_layout(pad=0.50)
-    plt.savefig(opts.dosimage, dpi=opts.dpi)
+    return LINES
+
+
+def dosplot_bulk(xen1, tdos1, pdos1, opts1, xen2, tdos2, pdos2, opts2):
+    '''
+    Use matplotlib to plot two DOS plots in one figure, stacked vertically with shared x-axis
+    '''
+
+    width, height = opts1.figsize
+    # Double the height for two plots
+    height = height * 2
+    dpi = opts1.dpi
+
+    plt.style.use(opts1.mpl_style)
+    # DO NOT use unicode minus regardless of the style
+    mpl.rcParams['axes.unicode_minus'] = False
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(width, height))
+    
+    # Plot first DOS (top, pydos-ruo2 style)
+    plot_single_dos(ax1, xen1, tdos1, pdos1, opts1, 
+                    -2.4773, -3.7085, '-2.48', '-3.71')
+
+    # Plot second DOS (bottom, pydos-reruo2 style)
+    plot_single_dos(ax2, xen2, tdos2, pdos2, opts2,
+                    -2.5551, -3.3965, '-2.56', '-3.40')
+
+    # Set xlabel only on bottom plot
+    try:
+        semibold_font = FontProperties(weight='semibold')
+    except:
+        # Fallback to normal if semibold not supported
+        semibold_font = FontProperties(weight='normal')
+    ax2.set_xlabel('Energy [eV]',  # fontsize='small',
+                  labelpad=5, fontproperties=semibold_font)
+
+    # Remove x-axis ticks and labels from top plot
+    ax1.tick_params(labelbottom=False, bottom=True, top=False, direction='in')
+    # Remove top ticks from bottom plot
+    ax2.tick_params(top=False, direction='in')
+    
+    # Adjust subplots to be tightly packed with no space between them
+    fig.subplots_adjust(left=0.15, right=0.95, top=0.95, bottom=0.1, hspace=0.0, wspace=0.0)
+    
+    # Manually set positions to ensure they are exactly touching
+    # Get current positions to preserve x coordinates
+    pos1 = ax1.get_position()
+    pos2 = ax2.get_position()
+    
+    # Make them exactly touch with equal heights
+    # Total available height: 0.95 - 0.10 = 0.85
+    # Each plot gets half: 0.425
+    # Top plot: from 0.525 to 0.95 (height = 0.425)
+    # Bottom plot: from 0.10 to 0.525 (height = 0.425)
+    plot_height = 0.30
+    ax1.set_position([pos1.x0, 0.10 + plot_height, pos1.width, plot_height])  # top plot
+    ax2.set_position([pos2.x0, 0.10, pos2.width, plot_height])  # bottom plot
+    
+    plt.savefig(opts1.dosimage, dpi=dpi, transparent=True)
 
 ############################################################
 
@@ -568,12 +636,32 @@ def command_line_arg():
     par.add_option("-i", '--input',
                    action='store', type="string", dest='procar',
                    default='PROCAR',
-                   help='location of the PROCAR')
+                   help='location of the first PROCAR')
+
+    par.add_option('--input2',
+                   action='store', type="string", dest='procar2',
+                   default=None,
+                   help='location of the second PROCAR')
+
+    par.add_option("-d", '--dir1',
+                   action='store', type="string", dest='dir1',
+                   default=None,
+                   help='first directory path (PROCAR will be read from this directory)')
+
+    par.add_option('--dir2',
+                   action='store', type="string", dest='dir2',
+                   default=None,
+                   help='second directory path (PROCAR will be read from this directory)')
 
     par.add_option("-p", '--pdos',
                    action='append', type="string", dest='pdosAtom',
                    default=[],
-                   help='specify which atoms to plot the pdos, 0 for all atoms')
+                   help='specify which atoms to plot the pdos, 0 for all atoms (for first plot)')
+
+    par.add_option('--pdos2',
+                   action='append', type="string", dest='pdosAtom2',
+                   default=[],
+                   help='specify which atoms to plot the pdos, 0 for all atoms (for second plot)')
 
     par.add_option("-k", '--kpts',
                    action='append', type="string", dest='pdosKpts',
@@ -593,7 +681,12 @@ def command_line_arg():
     par.add_option("-l", '--label',
                    action='append', type="string", dest='pdosLabel',
                    default=[],
-                   help='label of the pdos')
+                   help='label of the pdos (for first plot)')
+
+    par.add_option('--label2',
+                   action='append', type="string", dest='pdosLabel2',
+                   default=[],
+                   help='label of the pdos (for second plot)')
 
     par.add_option('--lloc',
                    action='store', type="string", dest='legendloc',
@@ -608,7 +701,12 @@ def command_line_arg():
     par.add_option('-z', '--zero',
                    action='store', type="float",
                    dest='zero', default=0.0,
-                   help='energy reference of the band plot')
+                   help='energy reference of the band plot (for first plot)')
+
+    par.add_option('--zero2',
+                   action='store', type="float",
+                   dest='zero2', default=None,
+                   help='energy reference of the band plot (for second plot, defaults to first plot value)')
 
     par.add_option('--sigma',
                    action='store', type="float",
@@ -622,8 +720,8 @@ def command_line_arg():
 
     par.add_option('-o', '--output',
                    action='store', type="string", dest='dosimage',
-                   default='dos.pdf',
-                   help='output image name, "dos.pdf" by default')
+                   default='dos-bulk.pdf',
+                   help='output image name, "dos-bulk.pdf" by default')
 
     par.add_option('-s', '--size', nargs=2,
                    action='store', type="float", dest='figsize',
@@ -653,7 +751,12 @@ def command_line_arg():
     par.add_option('--lc',
                    action='append', type="string", dest='linecolors',
                    default=[],
-                   help='linecolors of the band plot')
+                   help='linecolors of the band plot (for first plot)')
+
+    par.add_option('--lc2',
+                   action='append', type="string", dest='linecolors2',
+                   default=[],
+                   help='linecolors of the band plot (for second plot)')
 
     par.add_option('--fill',
                    action='store_true', dest='fill',
@@ -696,12 +799,23 @@ def command_line_arg():
     par.add_option('--spd',
                    action='append', type="string", dest='spdProjections',
                    default=[],
-                   help="Spd-projected wavefunction character of each KS orbital.\n"
+                   help="Spd-projected wavefunction character of each KS orbital (for first plot).\n"
                    "    s orbital: 0\n"
                    "    py, pz, px orbital: 1 2 3\n"
                    "    dxy, dyz, dz2, dxz, dx2 orbital: 4 5 6 7 8 \n"
                    "    fy(3x2-y2), fxyz, fyz2, fz3, fxz2, fz(x2-y2), fx(x2-3y2) orbital: 9 10 11 12 13 14 15\n"
                    "\nFor example, --spd 's dxy 9\n"
+                   )
+
+    par.add_option('--spd2',
+                   action='append', type="string", dest='spdProjections2',
+                   default=[],
+                   help="Spd-projected wavefunction character of each KS orbital (for second plot).\n"
+                   "    s orbital: 0\n"
+                   "    py, pz, px orbital: 1 2 3\n"
+                   "    dxy, dyz, dz2, dxz, dx2 orbital: 4 5 6 7 8 \n"
+                   "    fy(3x2-y2), fxyz, fyz2, fz3, fxz2, fz(x2-y2), fx(x2-3y2) orbital: 9 10 11 12 13 14 15\n"
+                   "\nFor example, --spd2 's dxy 9\n"
                    )
 
     par.add_option('--lsorbit',
@@ -715,12 +829,22 @@ def command_line_arg():
     par.add_option('--elem',
                    action='append', type='string', dest='elem_list',
                    default=[],
-                   help='display the PDOS of given element(s), if --elem == "XX", show all of them respectively.')  # Ionizing
+                   help='display the PDOS of given element(s), if --elem == "XX", show all of them respectively. (for first plot)')  # Ionizing
+
+    par.add_option('--elem2',
+                   action='append', type='string', dest='elem_list2',
+                   default=[],
+                   help='display the PDOS of given element(s), if --elem2 == "XX", show all of them respectively. (for second plot)')  # Ionizing
 
     par.add_option('--poscar',
                    action='store', type='string', dest='posfile',
                    default='POSCAR',
-                   help='specify which poscar to read, if "--elem" is not empty')  # Ionizing
+                   help='specify which poscar to read, if "--elem" is not empty (for first plot)')  # Ionizing
+
+    par.add_option('--poscar2',
+                   action='store', type='string', dest='posfile2',
+                   default='POSCAR',
+                   help='specify which poscar to read, if "--elem2" is not empty (for second plot)')  # Ionizing
 
     return par.parse_args()
 
@@ -728,24 +852,82 @@ def command_line_arg():
 ############################################################
 if __name__ == '__main__':
     from time import time
+    import copy
+    import os
     opts, args = command_line_arg()
 
+    # Handle directory paths
+    if opts.dir1:
+        if not os.path.isabs(opts.procar):
+            opts.procar = os.path.join(opts.dir1, opts.procar)
+        if not os.path.isabs(opts.posfile):
+            opts.posfile = os.path.join(opts.dir1, opts.posfile)
+    
+    if opts.dir2:
+        if opts.procar2 is None:
+            opts.procar2 = 'PROCAR'
+        if not os.path.isabs(opts.procar2):
+            opts.procar2 = os.path.join(opts.dir2, opts.procar2)
+        if not os.path.isabs(opts.posfile2):
+            opts.posfile2 = os.path.join(opts.dir2, opts.posfile2)
+    elif opts.procar2 is None:
+        opts.procar2 = 'PROCAR2'
+
+    # Create options for second PROCAR (copy from first)
+    opts2 = copy.deepcopy(opts)
+    opts2.procar = opts.procar2
+    opts2.posfile = opts.posfile2
+    
+    # Override with second plot specific options if provided
+    if opts.pdosAtom2:
+        opts2.pdosAtom = opts.pdosAtom2
+    if opts.pdosLabel2:
+        opts2.pdosLabel = opts.pdosLabel2
+    if opts.spdProjections2:
+        opts2.spdProjections = opts.spdProjections2
+    if opts.linecolors2:
+        opts2.linecolors = opts.linecolors2
+    if opts.elem_list2:
+        opts2.elem_list = opts.elem_list2
+    if opts.zero2 is not None:
+        opts2.zero = opts.zero2
+
+    # Check if PROCAR files exist
+    if not os.path.isfile(opts.procar):
+        print("Error: First PROCAR file not found: %s" % opts.procar)
+        exit(1)
+    if not os.path.isfile(opts2.procar):
+        print("Error: Second PROCAR file not found: %s" % opts2.procar)
+        print("Please check if the file exists or specify the correct path with --input2 or --dir2")
+        exit(1)
+
     if opts.dosFromFile:
-        xen, tdos, pdos = readDOSFromFile(opts)
+        xen1, tdos1, pdos1 = readDOSFromFile(opts)
+        # For second file, use same function but with opts2
+        if hasattr(opts2, 'dosFromFile') and opts2.dosFromFile:
+            xen2, tdos2, pdos2 = readDOSFromFile(opts2)
+        else:
+            # If no second file specified, use same data (for testing)
+            xen2, tdos2, pdos2 = xen1, tdos1, pdos1
     else:
         t0 = time()
-        xen, tdos, pdos = generateDos(opts)
+        xen1, tdos1, pdos1 = generateDos(opts)
         t1 = time()
-        print('DOS calc completed! Time Used: %.2f [sec]' % (t1 - t0))
+        print('First DOS calc completed! Time Used: %.2f [sec]' % (t1 - t0))
+
+        t0 = time()
+        xen2, tdos2, pdos2 = generateDos(opts2)
+        t1 = time()
+        print('Second DOS calc completed! Time Used: %.2f [sec]' % (t1 - t0))
 
     t0 = time()
-    dosplot(xen, tdos, pdos, opts)
+    dosplot_bulk(xen1, tdos1, pdos1, opts, xen2, tdos2, pdos2, opts2)
     t1 = time()
     print('DOS plot completed! Time Used: %.2f [sec]' % (t1 - t0))
 
     # save dos to file
     if opts.dosToFile:
-        saveDOSToFile(opts, xen, tdos, pdos)
+        saveDOSToFile(opts, xen1, tdos1, pdos1)
 
     if not opts.quiet:
         try:
