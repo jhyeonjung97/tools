@@ -65,7 +65,9 @@ def main():
     energy_ruo2 = read(atoms_ruo2).get_potential_energy()
     atoms_reo2 = os.path.join(base_path, '3_ReRuO2_OER/0_bulk/convex_hull/3_ReO2/final_with_calculator.json')
     energy_reo2 = read(atoms_reo2).get_potential_energy()
-
+    atoms_re2o7 = os.path.join(base_path, '3_ReRuO2_OER/0_bulk/convex_hull/5_Re2O7/final_with_calculator.json')
+    energy_re2o7 = read(atoms_re2o7).get_potential_energy()
+    
     for row in rows:
         cmap = plt.colormaps['YlOrRd']
         for i, element in enumerate(elements[row]):
@@ -115,8 +117,15 @@ def main():
             if element == 'Re':
                 formation_energy_reo2 = (energy_reo2/4 - energy_mo2/8)/8
                 plt.scatter(1.0, formation_energy_reo2, marker='s', edgecolor='black', facecolor='blue')
-                plt.text(1.03, formation_energy_reo2, f'ReO$_2$', ha='left', va='center')
-            plt.text(1.03, formation_energy_mxoy, f'{formula}', ha='left', va='center')
+                plt.text(1.03, formation_energy_reo2, f'ReO$_2$\n(ortho-\nrhombic)', ha='left', va='center', linespacing=0.8)
+                formation_energy_re2o7 = (energy_re2o7/16 - energy_mo2/8 - oxygen*(3.5-2))/8
+                plt.scatter(1.0, formation_energy_re2o7, marker='s', edgecolor='black', facecolor='blue')
+                plt.text(1.03, formation_energy_re2o7-0.01, f'Re$_2$O$_7$', ha='left', va='center')
+                plt.text(1.03, formation_energy_mxoy+0.01, r'RuO$_3$', ha='left', va='center', linespacing=0.8)
+            elif element == 'Hf':
+                plt.text(1.03, formation_energy_mxoy-0.04, f'HfO$_2$\n(mono-\nclinic)', ha='left', va='center', linespacing=0.8)
+            else:
+                plt.text(1.03, formation_energy_mxoy, f'{formula}', ha='left', va='center')
             plt.xlabel(r'x, Ru$_x$' + f'{element}' + r'$_{1-x}$O$_y$', fontsize=12)
             plt.ylabel('Formation energy (eV/unit)', fontsize=12)
             plt.xlim(-0.1, 1.2)
