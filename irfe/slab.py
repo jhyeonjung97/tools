@@ -5,7 +5,7 @@ import os
 for file in os.listdir('./'):
     if file.endswith('.json'):
         filename = file.split('.')[0]
-        atoms = read('restart.json')
+        atoms = read(f'{filename}.json')
         min_z = atoms.positions[:,2].min()
         max_z = atoms.positions[:,2].max()
         height = max_z - min_z + 15.0
