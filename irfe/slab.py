@@ -26,7 +26,7 @@ for file in os.listdir('./'):
         symbols = atoms.get_chemical_symbols()
         ir_indices = [i for i, sym in enumerate[Any](symbols) if sym == 'Ir']
         fe_indices = [i for i, sym in enumerate[Any](symbols) if sym == 'Fe']
-        o_indices = [i for i, sym in enumerate(symbols) if sym == 'O']
+        o_indices = [i for i, sym in enumerate[Any](symbols) if sym == 'O']
         new_indices = ir_indices + fe_indices + o_indices
         atoms = atoms[new_indices]
 
