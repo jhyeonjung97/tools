@@ -24,7 +24,9 @@ for file in */; do
 
     # 원래 디렉토리로 돌아가기
     cd - > /dev/null
-    cp ./${file}final_with_calculator.json ./${name}.json
+    if [ -f ./${file}DONE ]; then
+        cp ./${file}final_with_calculator.json ./${name}.json
+    fi
 
 done
 
