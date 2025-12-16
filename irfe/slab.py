@@ -1,8 +1,6 @@
-from typing import Any
-
-
 from ase.io import read, write
 from ase import Atoms
+import os
 
 for file in os.listdir('./'):
     if file.endswith('.json'):
