@@ -27,8 +27,7 @@ for file in os.listdir('./'):
         ir_indices = [i for i, sym in enumerate[Any](symbols) if sym == 'Ir']
         fe_indices = [i for i, sym in enumerate[Any](symbols) if sym == 'Fe']
         o_indices = [i for i, sym in enumerate(symbols) if sym == 'O']
-        other_indices = [i for i, sym in enumerate(symbols) if sym != 'Ir' and sym != 'O']
-        new_indices = ir_indices + fe_indices + o_indices + other_indices
+        new_indices = ir_indices + fe_indices + o_indices
         atoms = atoms[new_indices]
 
         atoms.write('POSCAR', format='vasp')
