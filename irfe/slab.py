@@ -1,3 +1,6 @@
+from typing import Any
+
+
 from ase.io import read, write
 from ase import Atoms
 
@@ -22,10 +25,11 @@ atoms.cell = (l1, l2, height, a1, a2, a3)
 # atoms.center(axis=2)
 
 symbols = atoms.get_chemical_symbols()
-ir_indices = [i for i, sym in enumerate(symbols) if sym == 'Ir']
+ir_indices = [i for i, sym in enumerate[Any](symbols) if sym == 'Ir']
+fe_indices = [i for i, sym in enumerate[Any](symbols) if sym == 'Fe']
 o_indices = [i for i, sym in enumerate(symbols) if sym == 'O']
 other_indices = [i for i, sym in enumerate(symbols) if sym != 'Ir' and sym != 'O']
-new_indices = ir_indices + o_indices + other_indices
+new_indices = ir_indices + fe_indices + o_indices + other_indices
 atoms = atoms[new_indices]
 
 atoms.write('POSCAR', format='vasp')
