@@ -122,10 +122,12 @@ def main():
                 plt.scatter(1.0, formation_energy_re2o7, marker='s', edgecolor='black', facecolor='blue')
                 plt.text(1.03, formation_energy_re2o7-0.01, f'Re$_2$O$_7$', ha='left', va='center')
                 plt.text(1.03, formation_energy_mxoy+0.01, r'RuO$_3$', ha='left', va='center', linespacing=0.8)
+                print(element, formation_energy_re2o7-formation_energy_mruo2)
             elif element == 'Hf':
                 plt.text(1.03, formation_energy_mxoy-0.04, f'HfO$_2$\n(mono-\nclinic)', ha='left', va='center', linespacing=0.8)
             else:
                 plt.text(1.03, formation_energy_mxoy, f'{formula}', ha='left', va='center')
+            print(element, formation_energy_mxoy-formation_energy_mruo2)
             plt.xlabel(r'x, Ru$_x$' + f'{element}' + r'$_{1-x}$O$_y$', fontsize=12)
             plt.ylabel('Formation energy (eV/unit)', fontsize=12)
             plt.xlim(-0.1, 1.2)

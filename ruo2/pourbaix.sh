@@ -21,3 +21,10 @@ python ~/bin/HybridPB/pourbaix.py --hybrid --no-bulk \
 python ~/bin/HybridPB/pourbaix.py --hybrid --Umin -2 --Umax 2 --cmin 0.1 --cmax 0.6
 
 --cmap-2d RdYlBu --cmin-2d 0.3 --cmax-2d 0.8 --cgap-2d 0.0 --cmin 0.0 --cmax 0.3
+
+python ~/bin/HybridPB/pourbaix.py --hybrid --no-bulk --colors-bulk white whitesmoke white \
+--Umin -0.5 --Umax 2.5 --cmap-2d RdYlBu --cmin-2d 0.3 --cmax-2d 0.8 --cgap-2d 0.0 --legend-out --suffix top
+
+
+python ~/bin/HybridPB/pourbaix.py --hybrid --no-bulk \
+--Umin -0.5 --Umax 2.5 --cmap-2d RdYlBu --cmin-2d 0.3 --cmax-2d 0.8 --cgap-2d 0.0 --legend-out --suffix vojvodic
