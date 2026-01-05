@@ -26,6 +26,7 @@ tsh2 = 0.408    # Entropy correction T×S (eV)
 # Gibbs free energies of gas phases
 gh2o = h2o + zpeh2o - tsh2o + cvh2o  # G(H₂O) gas phase
 gh2 = h2 + zpeh2 - tsh2 + cvh2       # G(H₂) gas phase
+gh2o, gh2 = -14.586115, -6.905510 
 
 # Derived chemical potentials
 gh = gh2 / 2                    # μ(H) = ½G(H₂)
@@ -45,6 +46,11 @@ tso = 0.060     # Entropy T×S (eV)
 dgo = zpeo + cvo - tso        # Gibbs correction for O* adsorbate
 dgoh = zpeoh + cvoh - tsoh    # Gibbs correction for OH* adsorbate
 dgh = dgoh - dgo              # Gibbs correction for H* adsorbate (derived)
+
+t = 298.15
+dgh = (1.577213-t*0.000460)/8
+dgoh = (2.928444-t*0.001666)/8
+dgo = (0.690383-t*0.000800)/8
 
 def get_energy_from_json(json_path):
     """JSON 파일에서 에너지를 읽어오는 함수"""
@@ -119,7 +125,8 @@ def calculate_electrons_needed(prev_n_H, prev_n_O, prev_oh_count,
     return n_electrons, charge_change
 
 
-def plot_energetics_diagram(voltage=0.0, ymin=None, ymax=None, xmin=None, xmax=None):
+def plot_energetics_diagram(voltage=0.0, ymin=None, ymax=None, xmin=None, xmax=None, 
+                           show_legend=False, show_text=True):
     """Energetics 다이어그램을 그리는 함수
     
     Parameters:
@@ -135,6 +142,10 @@ def plot_energetics_diagram(voltage=0.0, ymin=None, ymax=None, xmin=None, xmax=N
         x축 최소값. 기본값은 None (자동 계산: 0)
     xmax : float, optional
         x축 최대값. 기본값은 None (자동 계산: len(x_positions) - 1)
+    show_legend : bool, optional
+        범례 표시 여부. 기본값은 False.
+    show_text : bool, optional
+        각 점의 레이블(annotation) 표시 여부. 기본값은 True.
     """
     # label.csv 파일에서 OH 개수 읽기
     file_oh_counts = load_label_csv('label.csv')
@@ -147,9 +158,11 @@ def plot_energetics_diagram(voltage=0.0, ymin=None, ymax=None, xmin=None, xmax=N
         ('Ir_O_Ir.json', 'Ir-O-Ir'),
         ('OH_Ir_O_Ir.json', 'OH-Ir-O-Ir'),
         ('O_Ir_O_Ir.json', 'O-Ir-O-Ir'),
+        ('ir_O_ir_O_Ir.json', '½Ir-O-½Ir-O-Ir'),
         ('Ir_O_O_Ir.json', 'Ir-O-O-Ir'),
         ('OH_Ir_O_O_Ir.json', 'OH-Ir-O-O-Ir'),
         ('O_Ir_O_O_Ir.json', 'O-Ir-O-O-Ir'),
+        ('O_ir_O_ir_O_Ir.json', 'O-½Ir-O-½Ir-O-Ir'),
     ]
     
     # 에너지 읽기 및 보정 적용
@@ -241,8 +254,8 @@ def plot_energetics_diagram(voltage=0.0, ymin=None, ymax=None, xmin=None, xmax=N
                 reaction_energy = reaction_energy_0V
                 reaction_potential = None
             
-            cumulative_energy = cumulative_energies[i-1] + reaction_energy
-            
+            cumulative_energy = cumulative_energies[2*i-1] + reaction_energy
+
             print(f"Step {i}: {labels[i-1]} → {labels[i]}")
             # print(f"  필요한 전자 수 = {n_electrons:.2f} e⁻/site")
             print(f"  반응 에너지 (0V 기준) = {reaction_energy_0V:.6f} eV/site")
@@ -255,9 +268,24 @@ def plot_energetics_diagram(voltage=0.0, ymin=None, ymax=None, xmin=None, xmax=N
             #     print(f"  반응 포텐셜 = N/A (화학 반응)")
         
         reaction_energies.append(reaction_energy)
+        reaction_energies.append(0)
+        cumulative_energies.append(cumulative_energy)
         cumulative_energies.append(cumulative_energy)
         reaction_potentials.append(reaction_potential)
+        reaction_potentials.append(0)
     
+    # labels도 각 스텝마다 두 번씩 추가
+    expanded_labels = []
+    for i, label in enumerate(labels):
+        expanded_labels.append(label)
+        expanded_labels.append(label)
+    labels = expanded_labels
+    
+    # print(f"reaction_energies: {reaction_energies}")
+    # print(f"cumulative_energies: {cumulative_energies}")
+    # print(f"reaction_potentials: {reaction_potentials}")
+    # print(f"labels: {labels}")
+
     # 첫 번째 에너지를 기준으로 상대 에너지 계산 (첫 번째 단계 = 0)
     relative_energies = cumulative_energies
     
@@ -285,52 +313,62 @@ def plot_energetics_diagram(voltage=0.0, ymin=None, ymax=None, xmin=None, xmax=N
         x_segment = [x_positions[i], x_positions[i+1]]
         y_segment = [relative_energies[i], relative_energies[i+1]]
         
-        # 전기화학 반응인지 화학 반응인지 확인
-        if reaction_potentials[i+1] is not None:
-            # 전기화학 반응: solid line
+        # 홀수번째 반응(1번째, 3번째, 5번째...)은 항상 solid line
+        if i % 2 == 0:  # i=0,2,4,...는 홀수번째 반응 (1번째, 3번째, 5번째...)
             linestyle = '-'
+            linewidth = 2
             label = 'Electrochemical' if not electrochemical_plotted else ''
             electrochemical_plotted = True
         else:
-            # 화학 반응: dashed line
-            linestyle = '--'
-            label = 'Chemical' if not chemical_plotted else ''
-            chemical_plotted = True
+            linewidth = 1
+            # 짝수번째 반응은 전기화학 반응인지 화학 반응인지에 따라 결정
+            # reaction_potentials가 0이 아니고 None이 아니면 전기화학 반응
+            if reaction_potentials[i+1] is not None and reaction_potentials[i+1] != 0:
+                # 전기화학 반응: solid line
+                linestyle = '-'
+                label = 'Electrochemical' if not electrochemical_plotted else ''
+                electrochemical_plotted = True
+            else:
+                # 화학 반응: dashed line
+                linestyle = '--'
+                label = 'Chemical' if not chemical_plotted else ''
+                chemical_plotted = True
         
-        ax.plot(x_segment, y_segment, linestyle=linestyle, color=line_color, label=label)
+        ax.plot(x_segment, y_segment, linestyle=linestyle, color=line_color, label=label, linewidth=linewidth)
     
-    # 모든 점에 동일한 검정색 마커 추가
-    for i, (x, y) in enumerate(zip(x_positions, relative_energies)):
-        ax.plot(x, y, 'o', color='black', markerfacecolor='white', markeredgewidth=1.5, zorder=5)
+    # # 모든 점에 동일한 검정색 마커 추가
+    # for i, (x, y) in enumerate(zip(x_positions, relative_energies)):
+    #     ax.plot(x, y, 'o', color='black', markerfacecolor='white', markeredgewidth=1.5, zorder=5)
     
     # 각 점에 레이블 추가 (다음 단계의 반응 에너지에 따라 위치 조정)
-    for i, (x, y, label) in enumerate(zip(x_positions, relative_energies, labels)):
-        # 다음 단계의 반응 에너지 확인
-        if i < len(reaction_energies) - 1:
-            # 다음 단계(i+1)의 반응 에너지 확인
-            next_reaction_energy = reaction_energies[i+1]
-            
-            if next_reaction_energy > 0:
-                # 다음 단계의 반응 에너지가 양수: 아래쪽에 표시
-                y_offset = -0.05
-                ha = 'right'
-                va = 'top'
+    if show_text:
+        for i, (x, y, label) in enumerate(zip(x_positions, relative_energies, labels)):
+            # 다음 단계의 반응 에너지 확인
+            if i < len(reaction_energies) - 1:
+                # 다음 단계(i+1)의 반응 에너지 확인
+                next_reaction_energy = reaction_energies[i+1]
+                
+                if next_reaction_energy > 0.1:
+                    # 다음 단계의 반응 에너지가 양수: 아래쪽에 표시
+                    y_offset = -0.05
+                    ha = 'right'
+                    va = 'top'
+                else:
+                    # 다음 단계의 반응 에너지가 0 이하: 위쪽에 표시
+                    y_offset = 0.05
+                    ha = 'left'
+                    va = 'bottom'
             else:
-                # 다음 단계의 반응 에너지가 0 이하: 위쪽에 표시
+                # 마지막 점: 위쪽에 표시
                 y_offset = 0.05
                 ha = 'left'
                 va = 'bottom'
-        else:
-            # 마지막 점: 위쪽에 표시
-            y_offset = 0.05
-            ha = 'left'
-            va = 'bottom'
-        
-        ax.text(x, y + y_offset, label, ha=ha, va=va, fontsize=9, rotation=45)
+            
+            ax.text(x, y + y_offset, label, ha=ha, va=va, fontsize=9, rotation=45)
     
     # 범례 추가
-    # ax.legend(loc='upper left', bbox_to_anchor=(0.0, 1.0))
-    ax.legend(loc='best')
+    if show_legend:
+        ax.legend(loc='lower left', bbox_to_anchor=(0.0, 0.0))
     
     # 그래프 설정
     ax.set_xlabel('Reaction Coordinate', fontsize=12)
@@ -374,12 +412,12 @@ def plot_energetics_diagram(voltage=0.0, ymin=None, ymax=None, xmin=None, xmax=N
     print(f"\nEnergetics diagram saved as 'energetics_diagram.png'")
     print(f"Note: Energies are corrected with Gibbs free energy corrections from label.csv")
     print(f"Note: Energies are normalized per active site (n_sites = {n_sites})")
-    
+
     # 반응 포텐셜 요약 출력
     print("\n=== 반응 포텐셜 요약 ===")
-    for i in range(1, len(reaction_potentials)):
-        if reaction_potentials[i] is not None:
-            print(f"Step {i} ({labels[i-1]} → {labels[i]}): {reaction_potentials[i]:.4f} V")
+    for i in range(1, int(len(labels)/2)):
+        if reaction_potentials[2*i] is not None:
+            print(f"Step {i} ({labels[2*i-1]} → {labels[2*i]}): {reaction_potentials[2*i]:.4f} V")
     
     plt.show()
 
@@ -396,8 +434,15 @@ if __name__ == '__main__':
                         help='x축 최소값. 기본값은 자동 계산 (0)')
     parser.add_argument('--xmax', type=float, default=None,
                         help='x축 최대값. 기본값은 자동 계산 (len(x_positions) - 1)')
+    parser.add_argument('--show-legend', action='store_true',
+                        help='범례를 표시합니다. (기본값: False)')
+    parser.add_argument('--show-text', dest='show_text', action='store_const', const=True, default=True,
+                        help='각 점의 레이블(annotation)을 표시합니다. (기본값: True)')
+    parser.add_argument('--no-show-text', dest='show_text', action='store_const', const=False,
+                        help='각 점의 레이블(annotation)을 표시하지 않습니다.')
     
     args = parser.parse_args()
     
     plot_energetics_diagram(voltage=args.voltage, ymin=args.ymin, ymax=args.ymax, 
-                           xmin=args.xmin, xmax=args.xmax)
+                           xmin=args.xmin, xmax=args.xmax,
+                           show_legend=args.show_legend, show_text=args.show_text)
