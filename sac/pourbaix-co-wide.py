@@ -165,7 +165,7 @@ def get_ion_entries():
     
     for ion, energy in ions.items():
         comp = Ion.from_formula(ion)
-        entry = PourbaixEntry(IonEntry(comp, energy), concentration=1e-6)
+        entry = PourbaixEntry(PDEntry(comp, energy - 0.05917 * log10(1e-6)))
         ion_entries.append(entry)
 
     return ion_entries

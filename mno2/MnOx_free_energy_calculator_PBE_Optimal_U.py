@@ -316,8 +316,8 @@ print('B-MnOOH: dH=',dh_B_MnOOH, 'eV  ',dh_B_MnOOH*kjmol, 'kj/mol   exp: ', dh_B
 dh_D_MnOOH=D_MnOOH-(2*o_ref2+Mn_metal3+h_ref)
 print('D-MnOOH: dH=',dh_D_MnOOH, 'eV  ',dh_D_MnOOH*kjmol, 'kj/mol')
 
-#dh_B_MnOH2=B_MnOH2-(2*o_ref2+Mn_metal2+2*h_ref)
-#print('B-MnOH2: dH=',dh_B_MnOH2, 'eV  ',dh_B_MnOH2*kjmol, 'kj/mol')
+dh_B_MnOH2=B_MnOH2-(2*o_ref2+Mn_metal2+2*h_ref)
+print('B-MnOH2: dH=',dh_B_MnOH2, 'eV  ',dh_B_MnOH2*kjmol, 'kj/mol')
 
 dh_D_MnOH2=D_MnOH2-(2*o_ref2+Mn_metal2+2*h_ref)
 print('D-MnOH2: dH=',dh_D_MnOH2, 'eV  ',dh_D_MnOH2*kjmol, 'kj/mol   exp: ', dh_D_MnOH2_exp*kjmol, 'kjmol')
@@ -334,6 +334,7 @@ print('Mn2O3: dH=',dh_Mn2O3, 'eV  ',dh_Mn2O3*kjmol, 'kj/mol   exp: ', dh_Mn2O3_e
 ################################
 print('\nCalculate dGs now')
 
+TdS_MnO=(S_MnO_exp-S_Mn_metal_exp-S_o2_gas_exp/2)*convert_dS
 TdS_MnO2=(S_MnO2_solid_exp-S_Mn_metal_exp-S_o2_gas_exp)*convert_dS
 dg_B_MnO2=dh_B_MnO2-TdS_MnO2
 print('B-MnO2: dG= ' ,dg_B_MnO2, 'eV ', dg_B_MnO2*kjmol, 'kj/mol   exp: ', dg_B_MnO2_exp, 'kj/mol')
@@ -354,8 +355,8 @@ dg_D_MnOOH=dh_D_MnOOH-TdS_MnOOH
 print('D-MnOOH: dG= ' ,dg_D_MnOOH, 'eV ', dg_D_MnOOH*kjmol, 'kj/mol   exp: ', dg_D_MnOOH_exp, 'kj/mol')
 
 TdS_MnOH2=(S_D_MnOH2_exp-S_Mn_metal_exp-S_o2_gas_exp-S_h2_gas_exp)*convert_dS
-#dg_B_MnOH2=dh_B_MnOH2-TdS_MnOH2
-#print('B-MnOH2: dG= ' ,dg_B_MnOH2, 'eV ', dg_B_MnOH2*kjmol, 'kj/mol')
+dg_B_MnOH2=dh_B_MnOH2-TdS_MnOH2
+print('B-MnOH2: dG= ' ,dg_B_MnOH2, 'eV ', dg_B_MnOH2*kjmol, 'kj/mol')
 dg_D_MnOH2=dh_D_MnOH2-TdS_MnOH2
 print('D-MnOH2: dG= ' ,dg_D_MnOH2, 'eV ', dg_D_MnOH2*kjmol, 'kj/mol   exp: ', dg_D_MnOH2_exp, 'kj/mol')
 
@@ -365,9 +366,14 @@ print('Mn3O4: dG= ' ,dg_Mn3O4, 'eV ', dg_Mn3O4*kjmol, 'kj/mol  exp: ', dg_Mn3O4_
 
 TdS_Mn2O3=(S_Mn2O3_exp-2*S_Mn_metal_exp-3*S_o2_gas_exp/2)*convert_dS
 dg_Mn2O3=dh_Mn2O3-TdS_Mn2O3
-print('Mn2O3: dG= ' ,dg_Mn2O3, 'eV ', dg_Mn2O3*kjmol, 'kj/mol  exp: ', dg_Mn2O3_exp, 'kjmol')
+print('Mn2O3: dG= ' ,dg_Mn2O3, 'eV ', dg_Mn2O3*kjmol, 'kj/mol  exp: ', dg_Mn2O3_exp, 'kjmol\n')
 
-
+print('MnO: TdS= ', TdS_MnO, 'eV')
+print('MnO2: TdS= ', TdS_MnO2, 'eV')
+print('MnOOH: TdS= ', TdS_MnOOH, 'eV')
+print('MnOH2: TdS= ', TdS_MnOH2, 'eV')
+print('Mn3O4: TdS= ', TdS_Mn3O4, 'eV')
+print('Mn2O3: TdS= ', TdS_Mn2O3, 'eV')
 
 
 print('\n#############################the end ###################################')
