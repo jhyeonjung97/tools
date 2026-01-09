@@ -219,6 +219,8 @@ Mn2O3 = -38.36185625+Mn2O3_ZPE
 D_MnO2 = -21.86585854+D_MnO2_ZPE
 D_MnOOH = -26.64541314+MnOOH_ZPE
 E_MnO2 = -21.6852213333+MnO2_ZPE
+A_MnO2 = -21.95011478+MnO2_ZPE
+A_HMnO2 = -24.22584485+MnO2_ZPE
 
 '''
 #####
@@ -310,6 +312,11 @@ print('D-MnO2: dH=' ,dh_D_MnO2, 'eV  ', dh_D_MnO2*kjmol, 'kj/mol')
 dh_E_MnO2=E_MnO2-(2*o_ref2+Mn_metal4)
 print('E-MnO2: dH=' ,dh_E_MnO2, 'eV  ', dh_E_MnO2*kjmol, 'kj/mol')
 
+dh_A_MnO2=A_MnO2-(2*o_ref2+Mn_metal4)
+print('A-MnO2: dH=' ,dh_A_MnO2, 'eV  ', dh_A_MnO2*kjmol, 'kj/mol')
+dh_A_HMnO2=A_HMnO2-(2*o_ref2+Mn_metal4+h_ref/2)
+print('A-HMnO2: dH=' ,dh_A_HMnO2, 'eV  ', dh_A_HMnO2*kjmol, 'kj/mol')
+
 dh_B_MnOOH=B_MnOOH-(2*o_ref2+Mn_metal3+h_ref)
 print('B-MnOOH: dH=',dh_B_MnOOH, 'eV  ',dh_B_MnOOH*kjmol, 'kj/mol   exp: ', dh_B_MnOOH_exp*kjmol, 'kjmol')
 
@@ -344,7 +351,10 @@ dg_D_MnO2=dh_D_MnO2-TdS_MnO2
 print('D-MnO2: dG= ' ,dg_D_MnO2, 'eV ', dg_D_MnO2*kjmol, 'kj/mol   exp: ', dg_D_MnO2_exp, 'kj/mol')
 dg_E_MnO2=dh_E_MnO2-TdS_MnO2
 print('E-MnO2: dG= ' ,dg_E_MnO2, 'eV ', dg_E_MnO2*kjmol, 'kj/mol')
-
+dg_A_MnO2=dh_A_MnO2-TdS_MnO2
+print('A-MnO2: dG= ' ,dg_A_MnO2, 'eV ', dg_A_MnO2*kjmol, 'kj/mol')
+dg_A_HMnO2=dh_A_HMnO2-TdS_MnO2
+print('A-HMnO2: dG= ' ,dg_A_HMnO2, 'eV ', dg_A_HMnO2*kjmol, 'kj/mol')
  
 TdS_MnOOH=(S_B_MnOOH_exp-S_Mn_metal_exp-S_o2_gas_exp-S_h2_gas_exp/2)*convert_dS
 #TdS_MnOOH=(-S_Mn_metal_exp-S_o2_gas_exp-S_h2_gas_exp)*convert_dS

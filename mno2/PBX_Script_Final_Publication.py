@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-plotname='Pourbaix_PBE+U_U2p75_Mn1E-6_Zn_Epsilon'
+plotname='Pourbaix_PBE+U_U2p75_Mn1E-6_Zn'
 
 
 import sys, os 
@@ -163,19 +163,24 @@ ion_dict_solids_expt = {
 ion_dict_solids_expt = {
 'Mn': 0,
 "Zn": 0,
-# 'MnO2' : -465.138/kJmol, #Beta(rutile)Exp
-'MnO2' : -440.16/kJmol, #Epsilon PBE+U=2.75
+'MnO2' : -465.138/kJmol, #Beta(rutile)Exp
 'Mn2O3' : -881.114/kJmol, #Exp.
 'Mn3O4' : -1283.232/kJmol, #Exp.
 'MnOOH' : -557.7/kJmol, #Beta (manganite) Exp
 'Mn(OH)2' : -615.63376/kJmol, #Delta Exp
+
+# 'MnO2' : -465.71638408058675/kJmol, #Alpha
+# 'Mn2O3' : -886.1520794995738/kJmol,
+# 'Mn3O4' : -1294.3840604646095/kJmol,
+# 'MnOOH' : -558.8619486482868/kJmol,
+# 'Mn(OH)2' : -604.871812020137/kJmol,
 
 # 'HMn8O16' : -472.454106166424*8/kJmol,#Alpha
 # 'HMn4O8' : -482.1357496267614*4/kJmol, #Rams
 # 'HMn2O4' : -505.35005103608654*2/kJmol, #Alpha
 #'MnOOH' : -555.836682699987/kJmol, #Beta (manganite)
 #'MnOOH' : -558.8619486482868/kJmol, # (Feitknechtite)
-#'Mn(OH)2' : -617.7977867001371/kJmol #Delta
+# 'Mn(OH)2' : -604.871812020137/kJmol, #Delta
 #'LiMn8O16' : -501.8760566661115*8/kJmol, #Alpha
 #'LiMn4O8' : -541.4949017528368*4/kJmol, #Spinel
 #'LiMn2O4' : -628.4736761018866*2/kJmol, #Spinel
@@ -195,10 +200,10 @@ ion_dict_solids_expt = {
 #'CaMn4O8' : -610.3130240639866*4/kJmol, #Delta
 #'CaMn2O4' : -731.9304954141866*2/kJmol, #Delta
 #'CaMnO2' : -903.7094643425364/kJmol, #Delta
-'ZnMn8O16' : -481.6435639588431*8/kJmol, #Alpha
-'ZnMn4O8' : -516.324975188399*4/kJmol, #Spinel
-'ZnMn2O4' : -584.5695268490117*2/kJmol, #Spinel
-'ZnMnO2' : -584.1993931540368/kJmol, #Delta
+# 'ZnMn8O16' : -481.6435639588431*8/kJmol, #Alpha
+# 'ZnMn4O8' : -516.324975188399*4/kJmol, #Spinel
+# 'ZnMn2O4' : -584.5695268490117*2/kJmol, #Spinel
+# 'ZnMnO2' : -584.1993931540368/kJmol, #Delta
 #'AlMn8O16' : -525.3090491264901*8/kJmol, #Spinel
 #'AlMn4O8' : -602.475499791193*4/kJmol, #Delta
 #'AlMn2O4' : -737.8049654167493*2/kJmol, #Spinel
@@ -440,9 +445,11 @@ ion_dict = ion_dict_Mn + ion_dict_X
 for id in ion_dict_X:
     comp = Ion.from_formula(id['Name']) # Ion name-> Ion comp name (ex. Fe[3+] -> Ion: Fe1 +3)
     energy = id['Energy'] #+ ion_correction * factor
-    conc_dict[id['Name']] = 1
+    conc_dict[id['Name']] = 1e-6
+    # if id['Name'] == "Zn[2+]":
+    #     conc_dict[id['Name']] = 1
     print(id['Name'], comp, energy)
-    pbx_entry_ion = PourbaixEntry(IonEntry(comp, energy, id['Name']))
+    pbx_entry_ion = PourbaixEntry(IonEntry(comp, energy, id['Name']), concentration=conc_dict[id['Name']])
     #if pbx_entry_ion.name not in ["HZnO2[-]","ZnO2[2-]","Zn(OH)2(aq)","ZnOH[+]"]:
     #if pbx_entry_ion.name not in ["HZnO2[-]","ZnO2[2-]","Zn(OH)2(aq)"]:
     #if pbx_entry_ion.name not in ["HZnO2[-]","ZnO2[2-]"]:
@@ -459,18 +466,15 @@ for id in ion_dict_Mn:
     comp = Ion.from_formula(id['Name']) # Ion name-> Ion comp name (ex. Fe[3+] -> Ion: Fe1 +3)
     energy = id['Energy'] #+ ion_correction * factor
     conc_dict[id['Name']] = 1e-6
+    # if id['Name'] == "Mn[2+]":
+    #     conc_dict[id['Name']] = 1
     print(id['Name'], comp, energy)
-    pbx_entry_ion = PourbaixEntry(IonEntry(comp, energy, id['Name']))
+    pbx_entry_ion = PourbaixEntry(IonEntry(comp, energy, id['Name']), concentration=conc_dict[id['Name']])
     if pbx_entry_ion.name not in ["HCoO3[2-]"]:
         pbx_ion_entries.append(pbx_entry_ion)
 
-conc_dict["Mn2+"]=1
-conc_dict["Zn2+"]=1
-
 print()
 all_entries = pbx_solid_entries + pbx_ion_entries
-
-conc_dict["Zn"]=1
 
 for a in conc_dict:
     print(a, conc_dict[a])
@@ -478,9 +482,9 @@ for a in conc_dict:
 def replot(all_entries):
     pourbaix = PourbaixDiagram(all_entries, comp_dict = {"Mn": 0.5, "Zn": 0.5}, conc_dict=conc_dict)
     plotter = PourbaixPlotter(pourbaix)
-    ax = plotter.get_pourbaix_plot(limits=[[0, 16],[-1.5, 2.0]],label_domains=True, show_neutral_axes=False)
+    ax = plotter.get_pourbaix_plot(limits=[[0, 16],[-1.5, 1.5]],label_domains=True, show_neutral_axes=False)
     f = ax.figure
-    f.set_size_inches((12*1.5, 7*1.5))  # 또는 cm 단위: (30/2.54, 20/2.54)
+    f.set_size_inches((10, 8))  # 또는 cm 단위: (30/2.54, 20/2.54)
     
     # xlabel과 ylabel의 fontsize 변경
     ax.set_xlabel(ax.get_xlabel(), fontsize=28)  # 원하는 fontsize로 변경 가능
@@ -496,7 +500,7 @@ def replot(all_entries):
     
     # entry 이름(도메인 레이블)의 fontsize 변경
     for text in ax.texts:
-        text.set_fontsize(24)  # 원하는 fontsize로 변경 가능
+        text.set_fontsize(12)  # 원하는 fontsize로 변경 가능
     
     plt.tight_layout()
 
