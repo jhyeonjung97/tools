@@ -327,7 +327,7 @@ def main():
     bulk_entries.append(PourbaixEntry(ComputedEntry('Mn(OH)2', -615.63376/kjmol), entry_id='D-Mn(OH)2_exp', concentration=1))
     bulk_entries.append(PourbaixEntry(ComputedEntry('Mn3O4', -1283.232/kjmol), entry_id='Mn3O4_exp', concentration=1))
     bulk_entries.append(PourbaixEntry(ComputedEntry('Mn2O3', -881.114/kjmol), entry_id='Mn2O3_exp', concentration=1))
-    bulk_entries.append(PourbaixEntry(ComputedEntry('MnO2', -453.1272/kjmol), entry_id='D-MnO2_exp', concentration=1))
+    # bulk_entries.append(PourbaixEntry(ComputedEntry('MnO2', -453.1272/kjmol), entry_id='D-MnO2_exp', concentration=1))
 
     exp_entries = []
     
