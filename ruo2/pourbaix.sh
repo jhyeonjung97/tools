@@ -32,3 +32,25 @@ python ~/bin/HybridPB/pourbaix.py \
 --Umin -0.5 --Umax 2.5 --Gmin -15 --Gmax 15 \
 --cmap-2d RdYlBu --cmin-2d 0.3 --cmax-2d 0.8 --cgap-2d 0.0 \
 --cmin 0.0 --cmax 0.6
+
+python ~/bin/HybridPB/pourbaix.py \
+--Umin -0.5 --Umax 2.5 --Gmin -15 --Gmax 15 \
+--cmap-2d RdYlBu --cmin-2d 0.0 --cmax-2d 1.0 --cgap-2d 0.0 \
+--cmin 0.0 --cmax 0.2
+
+python ~/bin/HybridPB/pourbaix.py \
+--Umin -0.5 --Umax 2.5 --Gmin -15 --Gmax 15 \
+--cmap RdYlBu --cmin 0.0 --cmax 1.0 --cgap 0.0 \
+--cmap-2d Greys --cmin-2d 0.0 --cmax-2d 0.2 \
+--hybrid --legend-out --tick 0.04 --suffix O
+
+python ~/bin/HybridPB/pourbaix.py \
+--Umin -0.5 --Umax 2.5 --Gmin -15 --Gmax 15 \
+--cmap RdYlBu --cmin 0.0 --cmax 1.0 --cgap 0.0 \
+--cmap-2d Greys --cmin-2d 0.0 --cmax-2d 0.2 \
+--hybrid --legend-out --tick 0.02 --suffix V
+
+python ~/bin/HybridPB/pourbaix.py --hybrid \
+--Umin -0.5 --Umax 2.5 --Gmin -15 --Gmax 15 \
+--cmap RdYlBu --cmin 0.0 --cmax 1.0 --cgap 0.0 \
+--cmap-2d Greys --cmin-2d 0.0 --cmax-2d 0.2
