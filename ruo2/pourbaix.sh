@@ -52,5 +52,5 @@ python ~/bin/HybridPB/pourbaix.py \
 
 python ~/bin/HybridPB/pourbaix.py --hybrid \
 --Umin -0.5 --Umax 2.5 --Gmin -15 --Gmax 15 \
---cmap RdYlBu --cmin 0.0 --cmax 1.0 --cgap 0.0 \
---cmap-2d Greys --cmin-2d 0.0 --cmax-2d 0.2
+--cmap RdYlBu --cmin 0.2 --cmax 0.8 --cgap 0.0 \
+--cmap-2d Greys --cmin-2d 0.0 --cmax-2d 0.2 --suffix mild

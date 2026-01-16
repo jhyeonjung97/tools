@@ -19,6 +19,7 @@ tag = ''
 
 kbt = 0.0256 
 const = kbt * np.log(10)
+print('const', const)
 
 kJmol = 96.485
 calmol = 23.061
@@ -170,7 +171,6 @@ def get_ion_entries():
         'Fe+++': -2.530/calmol,
         'FeOH++': -55.910/calmol,
         'Fe(OH)2+': -106.200/calmol,
-        'FeO4-': -111.685/calmol,
         }
     
     for ion, energy in ions.items():
@@ -218,23 +218,20 @@ def plot_pourbaix(entries, png_name):
         'XH2(s) + Fe(s)': 0,
         'XH2(s) + Fe[+2]': 1,
         'XH2(s) + Fe[+3]': 2,
-        'XH2(s) + FeO4[-1]': 3,
-        'X(s) + Fe[+3]': 4,
-        'X(s) + FeO4[-1]': 5,
+        'X(s) + Fe[+3]': 3,
+        'X(s) + Fe2O3(s)': 4,
         'Fe(s) + XH2(s)': 0,
         'Fe[+2] + XH2(s)': 1,
         'Fe[+3] + XH2(s)': 2,
-        'FeO4[-1] + XH2(s)': 3,
-        'Fe[+3] + X(s)': 4,
-        'FeO4[-1] + X(s)': 5,
+        'Fe[+3] + X(s)': 3,
+        'Fe2O3(s) + X(s)': 4,
 
         'Fe(s)': 0,
         'Fe[+2]': 1,
         'Fe[+3]': 2, 
-        'FeO4[-1]': 3, 
-        'FeHO2[-1]': 4, 
-        'Fe2O3(s)': 5,
-        'Fe3O4(s)': 6,
+        'FeHO2[-1]': 3, 
+        'Fe2O3(s)': 4,
+        'Fe3O4(s)': 5,
     }
 
 
@@ -242,8 +239,8 @@ def plot_pourbaix(entries, png_name):
         'XFe(s)': 0,
         'XFeHO(s)': 1,
         'XFeO(s)': 2,
-        'XFeHO2(s)': 3,
-        'XFeO2(s)': 4,
+        'XFeO2(s)': 3,
+        'XFeHO2(s)': 4,
     }
 
     for entry in vac_entries:
