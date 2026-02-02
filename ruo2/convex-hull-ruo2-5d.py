@@ -88,20 +88,21 @@ def main():
                 formula = f'{element}O$_{oxygen_ratio}$'
             else:
                 formula = f'{element}$_{element_ratio}$O$_{oxygen_ratio}$'
-            formation_energy_mruo2 = (8*energy_mruo2 - 7*energy_ruo2 - 1*energy_mo2)/8/24
-            formation_energy_mxoy = (energy_mxoy/element_count - energy_mo2/8 - oxygen*(oxygen_count/element_count-2))/(element_ratio+oxygen_ratio)
-            if element == 'Os' or element == 'Sc':
-                print(f"formation_energy_mxoy: {formation_energy_mxoy}")
-                print(f"energy_mxoy: {energy_mxoy}")
-                print(f"element_count: {element_count}")
-                print(f"oxygen_count: {oxygen_count}")
-                print(f"element_ratio: {element_ratio}")
-                print(f"oxygen_ratio: {oxygen_ratio}")
-                print(f"energy_mo2: {energy_mo2}")
-                print(f"energy_mruo2: {energy_mruo2}")
-                print(f"energy_ruo2: {energy_ruo2}")
-                print(f"formation_energy_mxoy: {formation_energy_mxoy}")
-                print(f"formula: {formula}")
+            formation_energy_mruo2 = (8/8*energy_mruo2 - 7/8*energy_ruo2 - 1/8*energy_mo2)/24
+            formation_energy_mxoy = (energy_mxoy/element_count - energy_mo2/8 - oxygen*(oxygen_count/element_count-2))/3
+            # formation_energy_mxoy = (energy_mxoy/element_count - energy_mo2/8 - oxygen*(oxygen_count/element_count-2))/(element_ratio+oxygen_ratio)
+            # if element == 'Os' or element == 'Sc':
+            #     print(f"formation_energy_mxoy: {formation_energy_mxoy}")
+            #     print(f"energy_mxoy: {energy_mxoy}")
+            #     print(f"element_count: {element_count}")
+            #     print(f"oxygen_count: {oxygen_count}")
+            #     print(f"element_ratio: {element_ratio}")
+            #     print(f"oxygen_ratio: {oxygen_ratio}")
+            #     print(f"energy_mo2: {energy_mo2}")
+            #     print(f"energy_mruo2: {energy_mruo2}")
+            #     print(f"energy_ruo2: {energy_ruo2}")
+            #     print(f"formation_energy_mxoy: {formation_energy_mxoy}")
+            #     print(f"formula: {formula}")
             plt.figure(figsize=(fig_width, fig_height))
             plt.scatter(0.0, 0.0, marker='s', edgecolor='black', facecolor='green')
             plt.scatter(1.0, 0.0, marker='s', edgecolor='black', facecolor='green')
