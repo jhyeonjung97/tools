@@ -82,57 +82,61 @@ def main():
             element_count = read(atoms_mxoy).get_chemical_symbols().count(element)
             oxygen_count = read(atoms_mxoy).get_chemical_symbols().count('O')
             element_ratio, oxygen_ratio = get_simplest_formula(element_count, oxygen_count)
+            ratio = element_count/element_ratio
             if element_ratio == 1 and oxygen_ratio == 1:
                 formula = f'{element}O'
             elif element_ratio == 1:
                 formula = f'{element}O$_{oxygen_ratio}$'
             else:
                 formula = f'{element}$_{element_ratio}$O$_{oxygen_ratio}$'
-            formation_energy_mruo2 = (8/8*energy_mruo2 - 7/8*energy_ruo2 - 1/8*energy_mo2)/24
-            formation_energy_mxoy = (energy_mxoy/element_count - energy_mo2/8 - oxygen*(oxygen_count/element_count-2))/3
-            # formation_energy_mxoy = (energy_mxoy/element_count - energy_mo2/8 - oxygen*(oxygen_count/element_count-2))/(element_ratio+oxygen_ratio)
-            # if element == 'Os' or element == 'Sc':
-            #     print(f"formation_energy_mxoy: {formation_energy_mxoy}")
-            #     print(f"energy_mxoy: {energy_mxoy}")
-            #     print(f"element_count: {element_count}")
-            #     print(f"oxygen_count: {oxygen_count}")
-            #     print(f"element_ratio: {element_ratio}")
-            #     print(f"oxygen_ratio: {oxygen_ratio}")
-            #     print(f"energy_mo2: {energy_mo2}")
-            #     print(f"energy_mruo2: {energy_mruo2}")
-            #     print(f"energy_ruo2: {energy_ruo2}")
-            #     print(f"formation_energy_mxoy: {formation_energy_mxoy}")
-            #     print(f"formula: {formula}")
+            formation_energy_mruo2 = (8*energy_mruo2 - 7*energy_ruo2 - 1*energy_mo2)/8/24
+            # formation_energy_mxoy = (energy_mxoy/ratio - energy_mo2/8*element_ratio - oxygen*(oxygen_ratio-2*element_ratio))/(element_ratio+oxygen_ratio)
+            formation_energy_mxoy = (energy_mxoy/ratio - energy_mo2/8*element_ratio - oxygen*(oxygen_ratio-2*element_ratio))/element_ratio/3
+            if element == 'Sc' or element == 'W':
+                print(f"formation_energy_mxoy: {formation_energy_mxoy}")
+                print(f"energy_mxoy: {energy_mxoy}")
+                print(f"element_count: {element_count}")
+                print(f"oxygen_count: {oxygen_count}")
+                print(f"element_ratio: {element_ratio}")
+                print(f"oxygen_ratio: {oxygen_ratio}")
+                print(f"ratio: {ratio}")
+                print(f"energy_mo2: {energy_mo2}")
+                print(f"energy_mruo2: {energy_mruo2}")
+                print(f"energy_ruo2: {energy_ruo2}")
+                print(f"formation_energy_mxoy: {formation_energy_mxoy}")
+                print(f"formula: {formula}")
             plt.figure(figsize=(fig_width, fig_height))
-            plt.scatter(0.0, 0.0, marker='s', edgecolor='black', facecolor='green')
-            plt.scatter(1.0, 0.0, marker='s', edgecolor='black', facecolor='green')
+            plt.scatter(0.0, 0.0, marker='s', edgecolor='black', facecolor='green', zorder=2)
+            plt.scatter(1.0, 0.0, marker='s', edgecolor='black', facecolor='green', zorder=2)
             plt.text(0.0, 0.02, 'RuO$_2$\n(rutile)', ha='center', va='bottom', linespacing=0.8)
             plt.text(1.0, 0.02, f'{element}O$_2$\n(rutile)', ha='center', va='bottom', linespacing=0.8)
-            plt.plot([0.0, 1.0], [0.0, 0.0], color='black', linestyle='-', zorder=0)
-            plt.scatter(7/8, formation_energy_mruo2, marker='D', edgecolor='black', facecolor='orange')
-            if element == 'Os':
-                plt.text(7/8-0.12, formation_energy_mruo2-0.04, f'{element}-RuO$_2$\n(rutile)', ha='center', va='center', linespacing=0.8)
-            else:
-                plt.text(7/8-0.12, formation_energy_mruo2, f'{element}-RuO$_2$\n(rutile)', ha='center', va='center', linespacing=0.8)
-            plt.scatter(1.0, formation_energy_mxoy, marker='s', edgecolor='black', facecolor='blue')
+            plt.plot([0.0, 1.0], [0.0, 0.0], color='black', linestyle='-', zorder=1)
+            plt.scatter(1/8, formation_energy_mruo2, marker='D', edgecolor='black', facecolor='orange', zorder=2)
+            plt.text(1/8, 0.02, f'{element}-RuO$_2$\n(rutile)', ha='left', va='bottom', linespacing=0.8)
+            plt.scatter(1.0, formation_energy_mxoy, marker='s', edgecolor='black', facecolor='blue', zorder=2)
+            plt.plot([0.0, 1.0], [0.0, formation_energy_mxoy], color='black', linestyle='-', zorder=1)
+            plt.plot([1/8, 1/8], [formation_energy_mruo2, formation_energy_mxoy/8], color='red', linestyle='-', zorder=0)
+            plt.text(1/8+0.02, formation_energy_mxoy/16+formation_energy_mruo2/2-0.02, f'+{-formation_energy_mxoy/8+formation_energy_mruo2:.2f} eV', ha='left', va='center', color='red')
             if element == 'Re':
-                formation_energy_reo2 = (energy_reo2/4 - energy_mo2/8)/8
-                plt.scatter(1.0, formation_energy_reo2, marker='s', edgecolor='black', facecolor='blue')
-                plt.text(1.03, formation_energy_reo2, f'ReO$_2$\n(ortho-\nrhombic)', ha='left', va='center', linespacing=0.8)
-                formation_energy_re2o7 = (energy_re2o7/16 - energy_mo2/8 - oxygen*(3.5-2))/8
-                plt.scatter(1.0, formation_energy_re2o7, marker='s', edgecolor='black', facecolor='blue')
-                plt.text(1.03, formation_energy_re2o7-0.01, f'Re$_2$O$_7$', ha='left', va='center')
-                plt.text(1.03, formation_energy_mxoy+0.01, r'RuO$_3$', ha='left', va='center', linespacing=0.8)
+                formation_energy_reo2 = (energy_reo2/4 - energy_mo2/8)/3
+                plt.scatter(1.0, formation_energy_reo2, marker='s', edgecolor='black', facecolor='blue', zorder=2)
+                plt.text(1.0, formation_energy_reo2-0.03, f'ReO$_2$\n(ortho-\nrhombic)', ha='center', va='top', linespacing=0.8)
+                formation_energy_re2o7 = (energy_re2o7/8 - energy_mo2/8*2 - oxygen*3)/9
+                plt.scatter(1.0, formation_energy_re2o7, marker='s', edgecolor='black', facecolor='blue', zorder=2)
+                plt.text(1.0, formation_energy_re2o7-0.03, r'Re$_2$O$_7$', ha='center', va='top')
+                plt.text(1.0, formation_energy_mxoy-0.03, r'ReO$_3$', ha='center', va='top')
                 print(element, formation_energy_re2o7-formation_energy_mruo2)
             elif element == 'Hf':
-                plt.text(1.03, formation_energy_mxoy-0.04, f'HfO$_2$\n(mono-\nclinic)', ha='left', va='center', linespacing=0.8)
+                plt.text(1.0, formation_energy_mxoy-0.03, f'HfO$_2$\n(mono-\nclinic)', ha='center', va='top', linespacing=0.8)
             else:
-                plt.text(1.03, formation_energy_mxoy, f'{formula}', ha='left', va='center')
+                plt.text(1.0, formation_energy_mxoy-0.03, f'{formula}', ha='center', va='top')
             print(element, formation_energy_mxoy-formation_energy_mruo2)
             plt.xlabel(r'x, Ru$_x$' + f'{element}' + r'$_{1-x}$O$_y$', fontsize=12)
+            plt.xlabel(r'x, ' + f'{element}' + r'$_{x}$Ru$_{1-x}$O$_y$', fontsize=12)
             plt.ylabel('Formation energy (eV/atom)', fontsize=12)
-            plt.xlim(-0.1, 1.2)
-            plt.ylim(-0.4, 0.4)
+            plt.xlim(-0.1, 1.1)
+            # plt.ylim(-0.8, 0.2)
+            plt.ylim(-1.2, 0.2)
             plt.xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
             plt.savefig(f'RuO2_5d_{atomic_number}_{element}xOy_convex_hull.png', dpi=300, bbox_inches='tight')
             plt.tight_layout()
