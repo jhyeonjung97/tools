@@ -22,6 +22,7 @@ atoms.calc = vasp_calculator.Vasp(
     kpts=(1,1,1),
     kpar=1,
     npar=6,
+    ncore=1,
     gamma=True,
     ismear=0,
     sigma=0.05,
