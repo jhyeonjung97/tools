@@ -34,10 +34,10 @@ atoms.calc = vasp_calculator.Vasp(
     ediff=1e-5,
     nsw=800,
     setups='recommended',
-    laechg=True,
+    # laechg=True,
     # isym=0,
-    lorbit=11,
-    lwave=False,
+    # lorbit=11,
+    # lwave=False,
     # lsol=True,
     )
 
