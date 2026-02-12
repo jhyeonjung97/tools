@@ -16,7 +16,7 @@ import numpy as np
 
 
 ## Calculation Parameters
-neutral_electrons = 539.0 # Number of electrons in the uncharged slab
+neutral_electrons = 133.0 # Number of electrons in the uncharged slab
 fermi_shift = -1.1994 # Fermi shift from VaspSol (eV)
 
 ## Constants
