@@ -38,7 +38,7 @@ for folder, label, color in zip(folders, labels, colors):
         energies = data[:, 1]
 
         # Scatter plot of data points
-        plt.scatter(potentials, energies, color=color)
+        plt.scatter(potentials, energies, color=color, zorder=10)
 
         # Perform quadratic fitting
         coeffs = np.polyfit(potentials, energies, deg=2)
