@@ -57,3 +57,4 @@ with open('time.log', 'a') as f:
     f.write("="*40 + "\n")
 
 print(f"Execution time logged in 'time.log'.")
+subprocess.call(f'python ~/bin/get_restart3', shell=True)
