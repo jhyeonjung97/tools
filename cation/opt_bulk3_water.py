@@ -20,8 +20,8 @@ atoms.calc = vasp_calculator.Vasp(
     gga='RP',
     ivdw=12,
     kpts=(3, 3, 1),
-    kpar=4,
-    npar=6,
+    kpar=5,
+    ncore=6,
     gamma=True,
     ismear=0,
     sigma=0.05,
@@ -46,6 +46,8 @@ print ('Calculation Complete, storing the run + calculator to traj file')
 
 Trajectory(f'final_{name}.traj','w').write(atoms)
 subprocess.call(f'ase convert -f final_{name}.traj final_with_calculator.json', shell=True)
+subprocess.call(f'python ~/bin/verve/bader.py', shell=True)
+subprocess.call(f'python ~/bin/get_restart3', shell=True)
 
 end_time = time.time()
 elapsed_time = end_time - start_time
