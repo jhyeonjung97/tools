@@ -16,11 +16,11 @@ import numpy as np
 
 
 ## Calculation Parameters
-neutral_electrons = 133.0 # Number of electrons in the uncharged slab
-fermi_shift = -1.1994 # Fermi shift from VaspSol (eV)
+neutral_electrons = 124.0 # Number of electrons in the uncharged slab
+fermi_shift = 0.2276048303446385 # Fermi shift from VaspSol (eV)
 
 ## Constants
-WF_SHE = 4.4 # Experimental WF of SHE (eV)
+WF_SHE = -4.4 # Experimental WF of SHE (eV)
 e_chg = 1.602e-19 # Elementary Charge (Coulombs)
 
 ## Are all charge states used for the fitting?
@@ -28,7 +28,7 @@ FULL = False
 #FULL = True
 
 ## Charge states to analyze
-num_electrons = [0.0,-0.5,-1.0,-1.5,-2.5,-3.0,-3.5]
+num_electrons = [+1.0,+0.5,0.0,-0.5,-1.0,-1.5,-2.0]
 
 folders =[]
 
@@ -71,7 +71,8 @@ for folder in folders:
    fermi_energies.append(fermi_energy)
 
    # Calculate the applied potential (vs. SHE)
-   applied_potential = (fermi_shift-fermi_energy)-WF_SHE 
+#    applied_potential = -fermi_energy-4.43 
+   applied_potential = -(fermi_energy+fermi_shift)+WF_SHE
    print(applied_potential)
    applied_potentials.append(applied_potential)
 
@@ -81,7 +82,7 @@ for folder in folders:
    energies.append(energy)
 
    # Calculate the GC free energy
-   gc_free_energies.append(energy-charge*fermi_energy) 
+   gc_free_energies.append(energy-charge*(fermi_energy+fermi_shift)) 
    
    # Extract the lattice parameters
    aLat = float(outcar.split(' length of vectors')[-1].split()[0])
