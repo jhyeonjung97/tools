@@ -13,6 +13,13 @@ h_indices = [i for i, sym in enumerate(symbols) if sym == 'H']
 other_indices = [i for i, sym in enumerate(symbols) if sym != 'Pt' and sym != 'Au' and sym != 'O' and sym != 'H' and sym != 'Li' and sym != 'Na' and sym != 'K' and sym != 'Rb' and sym != 'Cs' and sym != 'Fr']
 new_indices = pt_indices + au_indices + cation_indices + o_indices + h_indices + other_indices
 atoms = atoms[new_indices]
-cell = atoms.cell
-atoms.cell = (cell[0], cell[1], 30, cell[3], cell[4], cell[5])
+
+l1 = atoms.cell.lengths()[0]
+l2 = atoms.cell.lengths()[1]
+# l3 = atoms.cell.lengths()[2]
+a1 = atoms.cell.angles()[0]
+a2 = atoms.cell.angles()[1]
+a3 = atoms.cell.angles()[2]
+atoms.cell = (l1, l2, 30, a1, a2, a3)
+
 write('restart.json',atoms)
