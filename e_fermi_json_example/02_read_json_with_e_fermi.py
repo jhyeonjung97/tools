@@ -8,7 +8,8 @@ accesses e_fermi via atoms.info['e_fermi'].
 from read_json_with_info import read_json_with_info
 
 # ---------- Configuration (JSON file to read) ----------
-json_path = 'sample.json'
+# json_path = 'sample.json'
+json_path = '/Users/jiuy97/bin/tools/bulk-ruo2.json'
 # ------------------------------------------------------
 
 def main():
@@ -17,6 +18,7 @@ def main():
     print(f'File: {json_path}')
     print(f'atoms.info["e_fermi"] = {e_fermi}')
     print(f'Structure: {len(atoms)} atoms, formula = {atoms.get_chemical_formula()}')
+    print(atoms)
 
 
 if __name__ == '__main__':

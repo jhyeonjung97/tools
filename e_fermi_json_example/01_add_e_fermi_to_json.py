@@ -27,11 +27,11 @@ def make_sample_json_and_add_e_fermi():
     print(f'Saved: {json_path}  (e_fermi={e_fermi})')
 
 
-def add_e_fermi_to_existing_json(path, e_fermi_value, row_id=1):
+def add_e_fermi_to_existing_json(path, e_fermi, row_id=1):
     """Add e_fermi to a specific row of an existing JSON file."""
     with ase.db.connect(path, serial=True) as db:
-        db.update(row_id, e_fermi=e_fermi_value)
-    print(f'Updated: {path}  row id={row_id}, e_fermi={e_fermi_value}')
+        db.update(row_id, e_fermi=e_fermi)
+    print(f'Updated: {path}  row id={row_id}, e_fermi={e_fermi}')
 
 
 if __name__ == '__main__':
@@ -39,4 +39,4 @@ if __name__ == '__main__':
     make_sample_json_and_add_e_fermi()
 
     # To add e_fermi to an existing JSON only, use:
-    # add_e_fermi_to_existing_json('path/to/your.json', e_fermi=19.99, row_id=1)
+    add_e_fermi_to_existing_json('/Users/jiuy97/bin/tools/bulk-ruo2.json', e_fermi=1.9, row_id=1)

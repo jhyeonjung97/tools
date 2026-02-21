@@ -13,7 +13,11 @@ import numpy as np
 from ase.io import *
 from ase.visualize import *
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FormatStrFormatter
 import argparse
+
+plt.rcParams['font.family'] = 'Helvetica'
+plt.rcParams['font.sans-serif'] = ['Helvetica']
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Run GCDFT calculations with optional limited electron range')
@@ -36,7 +40,7 @@ with open(vaspout_path, 'r') as f:
 fermi_shift = float(vaspout.split('FERMI_SHIFT =')[-1].split()[0]) # Fermi shift from VaspSol (eV)
 
 ## Constants
-WF_SHE = 4.4 # Experimental WF of SHE (eV)
+WF_SHE = -4.66 # Experimental WF of SHE (eV)
 e_chg = 1.602e-19 # Elementary Charge (Coulombs)
 
 ## Are all charge states used for the fitting?
@@ -108,7 +112,7 @@ for folder in folders:
     fermi_energies.append(fermi_energy)
 
     # Calculate the applied potential (vs. SHE)
-    applied_potential = (fermi_shift-fermi_energy)-WF_SHE 
+    applied_potential = -(fermi_energy+fermi_shift)+WF_SHE # fermi_shift is positive, WF_SHE = -4.44
     applied_potentials.append(applied_potential)
 
     # Extract the DFT energy
@@ -116,7 +120,8 @@ for folder in folders:
     energies.append(energy)
 
     # Calculate the GC free energy
-    gc_free_energies.append(energy-charge*(fermi_energy))
+    gc_free_energy = energy-charge*(fermi_energy) #+fermi_shift)
+    gc_free_energies.append(gc_free_energy)
 
     # Extract the lattice parameters
     aLat = float(outcar.split(' length of vectors')[-1].split()[0])
@@ -155,30 +160,40 @@ plt.plot(charges, energies, 'ro')
 plt.plot(x_charge, y1_fit_EnVChg)
 plt.xlabel("Number of Extra Electrons")
 plt.ylabel("DFT_energy, eV")
+plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 plt.text(0.1, 0.1, r'RSS=%.2f, ' % (risid1.item()) + 'R$^{\sf 2}$ = %.2f' % (1-risid1.item()/sstot1.item()), transform=plt.gca().transAxes) # Fit statistics
-plt.tight_layout()
 
 ## Save and display the DFT energy vs. charge plot
 if FULL:
-    plt.savefig('energy.png')
+    plt.savefig('energy.png', dpi=300, bbox_inches='tight')
 else:
-    plt.savefig('energy_partial.png')
+    plt.savefig('energy_partial.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 ## Plot GC free energy vs. applied potential (vs. SHE)
 plt.figure(figsize=(4,3))
-plt.plot(applied_potentials, gc_free_energies, 'go')
-plt.plot(x, y2_fit_GCEnVPot)
-plt.xlabel("Potential vs. SHE")
-plt.ylabel("Free Energy, eV")
-plt.text(0.1, 0.1, r'RSS=%.2f, ' % (risid2.item()) + 'R$^{\sf 2}$ = %.2f' % (1-risid2.item()/sstot2.item()), transform=plt.gca().transAxes) # Fit statistics
-plt.tight_layout()
+# Format the quadratic equation with R² in parentheses
+b2_sign = '' if b2 < 0 else '+'
+c2_sign = '' if c2 < 0 else '+'
+r2_val = 1 - risid2.item() / sstot2.item()
+eq_text = r'$y = {:.2f}x^2 {}{:.2f}x {}{:.2f}$ (R² = {:.2f})'.format(
+    a2, b2_sign, b2, c2_sign, c2, r2_val
+)
+plt.scatter(applied_potentials, gc_free_energies, color='black', marker='o')
+plt.plot(x, y2_fit_GCEnVPot, color='black', linestyle='-')
+plt.plot([], [], marker='o', color='black', label=eq_text)
+plt.xlabel("Potential vs. SHE", fontsize=12)
+plt.ylabel("GC Free Energy, eV", fontsize=12)
+plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+# plt.text(0.05, 0.25, eq_text, ha='left', va='top', transform=plt.gca().transAxes)
+# plt.text(0.05, 0.15, r'(R$^2$ = {:.2f})'.format(r2_val), ha='left', va='top', transform=plt.gca().transAxes)
+plt.legend(fontsize=10, loc='lower right', bbox_to_anchor=(1.03, 1.0), ncol=1, labelspacing=0.2)
 
 ## Save and display the GC free energy vs. applied potential plot
 if FULL:
-    plt.savefig('gc_energy.png')
+    plt.savefig('gc_energy.png', dpi=300, bbox_inches='tight')
 else:
-    plt.savefig('gc_energy_partial.png')
+    plt.savefig('gc_energy_partial.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 ## Plot charge vs. applied potential (vs. SHE)
@@ -187,14 +202,14 @@ plt.plot(applied_potentials, charges, 'ro')
 plt.plot(x, y3_fit_ChgVPot)
 plt.xlabel("Potential vs. SHE")
 plt.ylabel("Number of Extra Electrons")
+plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 plt.text(0.1, 0.1, r'RSS=%.2f, ' % (risid3.item()) + 'R$^{\sf 2}$ = %.2f' % (1-risid3.item()/sstot3.item()), transform=plt.gca().transAxes) # Fit statistics
-plt.tight_layout()
 
 ## Save and display the charge vs. applied potential plot
 if FULL:
-    plt.savefig('n_electron.png')
+    plt.savefig('n_electron.png', dpi=300, bbox_inches='tight')
 else:
-    plt.savefig('n_electron_partial.png')
+    plt.savefig('n_electron_partial.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 ## Plot Fermi energy vs. applied potential (vs. SHE) 
@@ -202,13 +217,13 @@ plt.figure(figsize=(4,3))
 plt.plot(applied_potentials,fermi_energies, '-o')
 plt.xlabel("Potential vs. SHE")
 plt.ylabel("Fermi_Energy, eV")
-plt.tight_layout()
+plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
 ## Save and display the Fermi energy vs. applied potential plot
 if FULL:
-    plt.savefig('fermi_energy.png')
+    plt.savefig('fermi_energy.png', dpi=300, bbox_inches='tight')
 else:
-    plt.savefig('fermi_energy_partial.png')
+    plt.savefig('fermi_energy_partial.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 ## Plot capacitance vs. applied potential (vs. SHE)
@@ -216,23 +231,30 @@ plt.figure(figsize=(4,3))
 plt.plot(x, y4_fit_CapVPot)
 plt.xlabel("Potential vs. SHE")
 plt.ylabel(r"Capacitance, uF/cm$^2$")
-plt.tight_layout()
+plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
 ## Save and Display the Capacitance vs. Applied Potential Plot
 if FULL:
-    plt.savefig('capacitance.png')
+    plt.savefig('capacitance.png', dpi=300, bbox_inches='tight')
 else:
-    plt.savefig('capacitance_partial.png')
+    plt.savefig('capacitance_partial.png', dpi=300, bbox_inches='tight')
 plt.close()
 
-## Save the GC Free Energy Fit and Data Points 
-coeffs = 'Ax^2 + Bx + C, where A,B,C = ' + str(a2) + ', ' + str(b2) + ', ' + str(c2) # Fit coefficients of GC Free Energy vs. Applied Potential
+# ## Save the GC Free Energy Fit and Data Points 
+# coeffs = 'Ax^2 + Bx + C, where A,B,C = ' + str(a2) + ', ' + str(b2) + ', ' + str(c2) # Fit coefficients of GC Free Energy vs. Applied Potential
+
+# if FULL:
+#     np.savetxt('gc_energy_fitting.dat', np.column_stack((x, y2_fit_GCEnVPot)), header=coeffs)
+#     np.savetxt('gc_energy.dat', np.column_stack((applied_potentials, gc_free_energies)))
+# else:
+#     np.savetxt('gc_energy_fitting_partial.dat', np.column_stack((x, y2_fit_GCEnVPot)), header=coeffs)
+#     np.savetxt('gc_energy_partial.dat', np.column_stack((applied_potentials, gc_free_energies)))
 
 if FULL:
-    np.savetxt('gc_energy_fitting.dat', np.column_stack((x, y2_fit_GCEnVPot)), header=coeffs)
+    np.savetxt('gc_energy_fitting.dat', [[a2, b2, c2]])
     np.savetxt('gc_energy.dat', np.column_stack((applied_potentials, gc_free_energies)))
 else:
-    np.savetxt('gc_energy_fitting_partial.dat', np.column_stack((x, y2_fit_GCEnVPot)), header=coeffs)
+    np.savetxt('gc_energy_fitting_partial.dat', [[a2, b2, c2]])
     np.savetxt('gc_energy_partial.dat', np.column_stack((applied_potentials, gc_free_energies)))
 
 ## Plot and save dz data if needed
@@ -242,14 +264,14 @@ if not args.no_dz:
     plt.plot(applied_potentials, dz_values, 'bo-')
     plt.xlabel("Potential vs. SHE")
     plt.ylabel("dz (Å)")
+    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     plt.ylim(0, 1.0)
-    plt.tight_layout()
 
     ## Save the dz vs. applied potential plot
     if FULL:
-        plt.savefig('dz.png')
+        plt.savefig('dz.png', dpi=300, bbox_inches='tight')
     else:
-        plt.savefig('dz_partial.png')
+        plt.savefig('dz_partial.png', dpi=300, bbox_inches='tight')
     plt.close()
 
     ## Save the dz data
