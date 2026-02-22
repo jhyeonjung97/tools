@@ -21,7 +21,6 @@ labels = [labels[folders.index(f)] for f in existing_folders]
 colors = [colors[folders.index(f)] for f in existing_folders]
 folders = existing_folders
 
-print(folders, labels, colors)    
 # Plot GC Free Energy
 plt.figure(figsize=(4, 3))
 
