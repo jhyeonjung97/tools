@@ -1,8 +1,6 @@
 import os
 import time
 import subprocess
-from ase.io import read, write
-from ase.calculators.vasp import Vasp
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
