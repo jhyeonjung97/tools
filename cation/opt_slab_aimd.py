@@ -17,7 +17,7 @@ else:
 atoms.calc = vasp_calculator.Vasp(
     istart=1,
     icharg=1,
-    encut=500,
+    encut=400,
     xc='PBE',
     gga='RP',
     ivdw=12,

@@ -47,7 +47,7 @@ print ('Calculation Complete, storing the run + calculator to traj file')
 
 Trajectory(f'final_{name}.traj', 'w').write(atoms)
 subprocess.call(f'ase convert -f final_{name}.traj final_with_calculator.json', shell=True)
-subprocess.call(f'python ~/bin/get_restart3', shell=True)
+subprocess.call(f'/sdf/home/j/jiuy97/miniconda3/envs/myenv/bin/python ~/bin/get_restart3', shell=True)
 
 end_time = time.time()
 elapsed_time = end_time - start_time
