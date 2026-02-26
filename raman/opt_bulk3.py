@@ -14,7 +14,7 @@ else:
     atoms = read('start.traj')
 
 atoms.calc = vasp_calculator.Vasp(
-    encut=400,
+    encut=500,
     xc='PBE',
     gga='PE',
     kpts=(5, 5, 5),
@@ -28,8 +28,8 @@ atoms.calc = vasp_calculator.Vasp(
     ibrion=2,
     isif=3,
     ispin=2,
-    ediffg=-0.02,
-    ediff=1e-4,
+    ediffg=-0.01,
+    ediff=1e-5,
     nsw=800,
     setups='recommended',
     lorbit=11,
