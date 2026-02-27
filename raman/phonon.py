@@ -42,7 +42,7 @@ atoms.calc = vasp_calculator.Vasp(
     lwave=False,
     lcharg=False,
     lelf=False,
-    lvtots=False
+    lvtot=False
     )
 
 eng = atoms.get_potential_energy()
