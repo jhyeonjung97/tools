@@ -5,7 +5,7 @@ from ase.io import read
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk3'
+name = 'opt_bulk2_accurate'
 start_time = time.time()
 
 if os.path.exists('restart.json'):
@@ -29,7 +29,7 @@ atoms.calc = vasp_calculator.Vasp(
     lreal=False,
     ibrion=2,
     potim=0.2,
-    isif=3,
+    isif=2,
     ispin=2,
     ediffg=-1e-3,
     ediff=1e-8,
