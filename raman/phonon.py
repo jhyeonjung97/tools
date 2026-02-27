@@ -14,6 +14,8 @@ else:
     atoms = read('start.traj')
 
 atoms.calc = vasp_calculator.Vasp(
+    istart=0,
+    icharg=2,
     nwrite=3,
     encut=520,
     prec='Accurate',
@@ -26,17 +28,21 @@ atoms.calc = vasp_calculator.Vasp(
     gamma=True,
     ismear=0,
     sigma=0.05,
-    algo='fast',
-    lreal='auto',
+    algo='Normal',
+    lreal=False,
     ibrion=5,
     potim=0.01,
     isif=2,
     ispin=2,
-    ediffg=-0.02,
+    # ediffg=-0.02,
     ediff=1e-8,
     nsw=800,
     setups='recommended',
-    lorbit=11,
+    # lorbit=11,
+    lwave=False,
+    lcharg=False,
+    lelf=False,
+    lvtots=False
     )
 
 eng = atoms.get_potential_energy()
