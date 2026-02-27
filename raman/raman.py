@@ -5,7 +5,7 @@ from ase.io import read
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
 
-name = 'opt_bulk3'
+name = 'phonon'
 start_time = time.time()
 
 if os.path.exists('restart.json'):
@@ -14,28 +14,35 @@ else:
     atoms = read('start.traj')
 
 atoms.calc = vasp_calculator.Vasp(
+    istart=0,
+    icharg=2,
+    nwrite=3,
     encut=520,
     prec='Accurate',
     addgrid=True,
     xc='PBE',
     gga='PE',
-    kpts=(6, 6, 6),
+    kpts=(5, 5, 5),
     # kpar=5,
-    ncore=4,
+    # ncore=4,
     gamma=True,
     ismear=0,
     sigma=0.05,
     algo='Normal',
     lreal=False,
-    ibrion=2,
-    potim=0.2,
-    isif=3,
+    ibrion=5,
+    potim=0.01,
+    isif=2,
     ispin=2,
-    ediffg=-0.01,
+    # ediffg=-0.02,
     ediff=1e-8,
     nsw=800,
     setups='recommended',
-    lorbit=11,
+    # lorbit=11,
+    lwave=False,
+    lcharg=False,
+    lelf=False,
+    lvtot=False
     )
 
 eng = atoms.get_potential_energy()
