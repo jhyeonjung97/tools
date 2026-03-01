@@ -3,7 +3,7 @@ cp ../OUTCAR OUTCAR.phon
 cp ../INCAR INCAR
 cp ../POTCAR POTCAR
 cp ../KPOINTS KPOINTS
-cp ~/bin/run_raman.sh run_slurm.sh
+cp ~/bin/tools/raman/run_raman.sh run_slurm.sh
 
 sed -i \
 -e 's/IBRION/#IBRION/' \
