@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=20
-#SBATCH --partition=test
-#SBATCH -J raman-test8
+#SBATCH --ntasks-per-node=32
+#SBATCH --partition=g1
+#SBATCH -J raman-test
 #SBATCH --time=05-00:00
 #SBATCH -o out.%N.%j.log
 #SBATCH -e err.%N.%j.log
