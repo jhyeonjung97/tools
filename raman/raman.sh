@@ -9,5 +9,5 @@ sed -i \
 -e 's/IBRION/#IBRION/' \
 -e 's/POTIM/#POTIM/' \
 -e 's/NSW/#NSW/' \
--e '/LREAL/ a  LEPSILON = .TRUE.' \
+-e '/LREAL/ a LEPSILON = .TRUE.' \
 INCAR
