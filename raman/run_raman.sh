@@ -11,7 +11,7 @@
 . /etc/profile.d/TMI.sh
 
 export VASP_RAMAN_RUN="mpiexec.hydra -np $SLURM_NTASKS /TGM/Apps/VASP/VASP_BIN/6.4.2/vasp.6.4.2.avx51
-2.std.x"
+2.std.x &> job.out"
 export VASP_RAMAN_PARAMS='01_01_2_0.01'
 
 python ~/bin/vasp_raman.py > vasp_raman.out
