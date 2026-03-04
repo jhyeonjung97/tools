@@ -14,6 +14,11 @@ else:
     atoms = read('start.traj')
 
 atoms.calc = vasp_calculator.Vasp(
+    inimix=0,
+    amix=0.20,
+    bmix=0.0001,
+    amix_mag=0.80,
+    bmix_mag=0.0001,
     encut=400,
     xc='PBE',
     gga='PE',
