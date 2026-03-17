@@ -1,3 +1,4 @@
+sed -i -e "s/X/44/" 0_Ru/restart.json  
 sed -i -e "s/X/72/" 1_Hf/restart.json  
 sed -i -e "s/X/73/" 2_Ta/restart.json  
 sed -i -e "s/X/74/" 3_W/restart.json  
