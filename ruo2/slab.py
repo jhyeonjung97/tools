@@ -41,6 +41,7 @@ atoms.calc = vasp_calculator.Vasp(
      ismear=0,
      ispin=2,
      istart=1,
+     icharg=1,
      ldau=True,
      lmaxmix=lmaxmix,
      ldau_luj=ldau_luj,
