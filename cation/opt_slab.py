@@ -38,7 +38,6 @@ atoms.calc = vasp_calculator.Vasp(
     # isym=0,
     lorbit=11,
     # lwave=False,
-    # lsol=True,
     )
 
 eng = atoms.get_potential_energy()
