@@ -1,9 +1,9 @@
 # awk '$2 !~ /_/ && $3 !~ /_/' ICOHPLIST.lobster > icohp.txt
 
-if [ ! -e icohp_sum.txt ]; then
+if [ -e icohp_sum.txt ]; then
     rm icohp_sum.txt
 fi
-if [ ! -e icohp_dopant.txt ]; then
+if [ -e icohp_dopant.txt ]; then
     rm icohp_dopant.txt
 fi
 
