@@ -67,9 +67,12 @@ awk '$3 ~ /2p/ && $2 ~ /5d/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {
 
 for file in icohp*.txt; do
     [ -e "$file" ] || continue
+    sed -i '/^\s*$/d' "$file"
+done
+
+for file in icohp*.txt; do
+    [ -e "$file" ] || continue
     if [ "$(stat -c%s "$file")" -le 5 ]; then
         rm "$file"
-    else
-        sed -i '/^\s*$/d' "$file"
     fi
 done
