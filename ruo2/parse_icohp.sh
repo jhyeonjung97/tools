@@ -38,3 +38,9 @@ for file in icohp*.txt; do
         rm "$file"
     fi
 done
+
+for file in icohp*.txt; do
+    [ -e "$file" ] || continue
+    # Remove empty lines (in-place)
+    sed -i '/^\s*$/d' "$file"
+done
