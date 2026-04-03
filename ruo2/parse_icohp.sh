@@ -36,11 +36,7 @@ for file in icohp*.txt; do
     [ -e "$file" ] || continue
     if [ "$(stat -c%s "$file")" -le 5 ]; then
         rm "$file"
+    else
+        sed -i '/^\s*$/d' "$file"
     fi
-done
-
-for file in icohp*.txt; do
-    [ -e "$file" ] || continue
-    # Remove empty lines (in-place)
-    sed -i '/^\s*$/d' "$file"
 done
