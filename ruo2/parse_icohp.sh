@@ -18,7 +18,7 @@ awk '$2 ~ /2p/ && $3 ~ /5d/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}'
 
 for file in icohp*.txt; do
     [ -e "$file" ] || continue
-    if [ ! -s "$file" ]; then
+    if [ "$(stat -c%s "$file")" -le 5 ]; then
         rm "$file"
     fi
 done
