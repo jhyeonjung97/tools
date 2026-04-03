@@ -72,7 +72,7 @@ done
 
 for file in icohp*.txt; do
     [ -e "$file" ] || continue
-    if [ "$(stat -c%s "$file")" -le 5 ]; then
+    if [ "$(stat -c%s "$file")" -le 2 ]; then
         rm "$file"
     fi
 done
