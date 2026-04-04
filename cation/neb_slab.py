@@ -20,16 +20,31 @@ N_INTERNAL = N_IMAGES - 2
 ENDPOINT_INITIAL = os.path.join('00', 'restart.json')
 ENDPOINT_FINAL = os.path.join('04', 'restart.json')
 NEB_K = 0.1
-CLIMB = False
+CLIMB = True
 FMAX = 0.05
 NEB_METHOD = 'improvedtangent'
 USE_IDPP = False
-NEB_PARALLEL = False
+# True: launch Python with MPI — one rank per internal image, e.g.
+#   mpirun -np 3 python neb_slab.py
+# Each rank runs VASP in its own directory (01/02/03). In run_vasp.py use
+# mpirun -np $VASP_MPI_CORES with VASP_MPI_CORES = (node cores) / 3 so three
+# VASPs do not each grab the full allocation.
+NEB_PARALLEL = True
 # Use minimum-image convention for interpolation (periodic slab xy)
 INTERPOLATE_MIC = True
 
 # Restart: full band from a single trajectory written in a previous run
 RESTART_TRAJ = 'neb_restart.traj'
+
+if NEB_PARALLEL:
+    from ase.parallel import world as _mpi_world
+else:
+
+    class _SingleWorld:
+        rank = 0
+        size = 1
+
+    _mpi_world = _SingleWorld()
 
 
 def _load_endpoints():
@@ -75,7 +90,8 @@ def _write_band(path, band):
 
 if os.path.exists(RESTART_TRAJ):
     images = list(read(RESTART_TRAJ, index=':'))
-    print(f'Restart: loaded {len(images)} images from {RESTART_TRAJ}')
+    if _mpi_world.rank == 0:
+        print(f'Restart: loaded {len(images)} images from {RESTART_TRAJ}')
 else:
     initial, final = _load_endpoints()
     images = [initial]
@@ -96,35 +112,50 @@ neb = NEB(
     method=NEB_METHOD,
 )
 
-for i in range(1, len(images) - 1):
-    images[i].calc = _vasp_calc(directory=f'{i:02d}')
+if NEB_PARALLEL:
+    if _mpi_world.size != N_INTERNAL:
+        raise SystemExit(
+            'NEB_PARALLEL with VASP: set MPI size equal to the number of '
+            f'internal images ({N_INTERNAL}), e.g. mpirun -np {N_INTERNAL} '
+            f'... python neb_slab.py (got {_mpi_world.size} ranks).'
+        )
+    for k, image in enumerate(images[1:-1]):
+        if k == _mpi_world.rank:
+            image.calc = _vasp_calc(directory=f'{k + 1:02d}')
+else:
+    for i in range(1, len(images) - 1):
+        images[i].calc = _vasp_calc(directory=f'{i:02d}')
 
 # Prefer FIRE / MDMin / BFGS over BFGSLineSearch (default QuasiNewton) for NEB
-opt = FIRE(neb, trajectory=f'{name}.traj', logfile=f'{name}.log')
+_traj = f'{name}.traj' if _mpi_world.rank == 0 else None
+_log = f'{name}.log' if _mpi_world.rank == 0 else None
+opt = FIRE(neb, trajectory=_traj, logfile=_log)
 opt.run(fmax=FMAX)
 
-_write_band(RESTART_TRAJ, images)
-_write_band(f'final_{name}.traj', images)
+if _mpi_world.rank == 0:
+    _write_band(RESTART_TRAJ, images)
+    _write_band(f'final_{name}.traj', images)
 
-try:
-    tools = NEBTools(images)
-    barrier, delta_e = tools.get_barrier()
-    print(f'NEB barrier (fit): {barrier:.4f} eV, ΔE: {delta_e:.4f} eV')
-except Exception as e:
-    print(f'NEBTools analysis skipped: {e}')
+    try:
+        tools = NEBTools(images)
+        barrier, delta_e = tools.get_barrier()
+        print(f'NEB barrier (fit): {barrier:.4f} eV, ΔE: {delta_e:.4f} eV')
+    except Exception as e:
+        print(f'NEBTools analysis skipped: {e}')
 
-subprocess.call(
-    f'ase convert -f final_{name}.traj final_with_calculator.json',
-    shell=True,
-)
+    subprocess.call(
+        f'ase convert -f final_{name}.traj final_with_calculator.json',
+        shell=True,
+    )
 
 end_time = time.time()
 elapsed_time = end_time - start_time
 
-with open('time.log', 'a') as f:
-    f.write(f"Start Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))}\n")
-    f.write(f"End Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time))}\n")
-    f.write(f"Elapsed Time: {elapsed_time:.2f} seconds\n")
-    f.write("=" * 40 + "\n")
+if _mpi_world.rank == 0:
+    with open('time.log', 'a') as f:
+        f.write(f"Start Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))}\n")
+        f.write(f"End Time: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(end_time))}\n")
+        f.write(f"Elapsed Time: {elapsed_time:.2f} seconds\n")
+        f.write("=" * 40 + "\n")
 
-print(f"Execution time logged in 'time.log'.")
+    print("Execution time logged in 'time.log'.")
