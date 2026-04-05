@@ -57,9 +57,11 @@ for i in range(30):
     new_folder_path = os.path.join(root, new_folder_name)
     os.makedirs(new_folder_path, exist_ok=True)
 
-    shutil.copy2(os.path.join(old_folder_path, 'restart.json'), new_folder_path)  
-    shutil.copy2(os.path.join(old_folder_path, 'WAVECAR'), new_folder_path)
-    shutil.copy2(os.path.join(old_folder_path, 'CHGCAR'), new_folder_path)
+    for fname in ['restart.json', 'WAVECAR', 'CHGCAR']:
+        src = os.path.join(old_folder_path, fname)
+        dst = os.path.join(new_folder_path, fname)
+        if os.path.exists(src):
+            shutil.copy2(src, dst)
 
     os.chdir(new_folder_path)
     atoms = read('restart.json')
