@@ -17,8 +17,8 @@ start_time = time.time()
 # --- NEB: five images (endpoints 00/04, internal 01–03) ---
 N_IMAGES = 5
 N_INTERNAL = N_IMAGES - 2
-ENDPOINT_INITIAL = os.path.join('00', 'restart.json')
-ENDPOINT_FINAL = os.path.join('04', 'restart.json')
+ENDPOINT_INITIAL = os.path.join('00', 'final_with_calculator.json')
+ENDPOINT_FINAL = os.path.join('04', 'final_with_calculator.json')
 NEB_K = 0.1
 CLIMB = True
 FMAX = 0.05
@@ -29,7 +29,7 @@ USE_IDPP = False
 # Each rank runs VASP in its own directory (01/02/03). In run_vasp.py use
 # mpirun -np $VASP_MPI_CORES with VASP_MPI_CORES = (node cores) / 3 so three
 # VASPs do not each grab the full allocation.
-NEB_PARALLEL = True
+NEB_PARALLEL = False
 # Use minimum-image convention for interpolation (periodic slab xy)
 INTERPOLATE_MIC = True
 
@@ -52,7 +52,10 @@ def _load_endpoints():
         raise SystemExit(f'Missing initial structure: {ENDPOINT_INITIAL}')
     if not os.path.isfile(ENDPOINT_FINAL):
         raise SystemExit(f'Missing final structure: {ENDPOINT_FINAL}')
-    return read(ENDPOINT_INITIAL).copy(), read(ENDPOINT_FINAL).copy()
+    # Keep endpoint calculators/results if restart.json contains them.
+    # Using .copy() here drops attached calculators and causes NEB to fail when
+    # it queries endpoint energies.
+    return read(ENDPOINT_INITIAL), read(ENDPOINT_FINAL)
 
 
 def _vasp_calc(directory):
@@ -103,6 +106,13 @@ else:
         from ase.mep.neb import idpp_interpolate
 
         idpp_interpolate(images, steps=100)
+
+if images[0].calc is None or images[-1].calc is None:
+    raise SystemExit(
+        'NEB endpoints need calculators (or stored SinglePoint results). '
+        'Make sure 00/restart.json and 04/restart.json were written with '
+        'calculator results; do not strip them with Atoms.copy().'
+    )
 
 neb = NEB(
     images,
