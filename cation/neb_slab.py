@@ -64,7 +64,7 @@ def _vasp_calc(directory):
         ivdw=12,
         kpts=(3, 3, 1),
         kpar=5,
-        ncore=6,
+        ncore=4,
         gamma=True,
         ismear=0,
         sigma=0.05,
