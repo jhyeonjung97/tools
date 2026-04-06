@@ -1,0 +1,81 @@
+import time
+import subprocess
+import numpy as np
+from ase.io import read
+from ase.io.trajectory import Trajectory
+import ase.calculators.vasp as vasp_calculator
+
+name = 'opt_bulk3'
+atoms = read('restart.json')
+
+ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
+            'V': {'L':2, 'U':3.25, 'J':0.0},
+            'Cr':{'L':2, 'U':3.50, 'J':0.0},
+            'Mn':{'L':2, 'U':3.75, 'J':0.0},
+            'Fe':{'L':2, 'U':4.30, 'J':0.0},
+            'Co':{'L':2, 'U':3.32, 'J':0.0},
+            'Ni':{'L':2, 'U':6.45, 'J':0.0},
+            'Cu':{'L':2, 'U':9.00, 'J':0.0},
+            'Ru':{'L':2, 'U':2.50, 'J': 0.0}
+            }
+
+lmaxmix = 2
+for atom in atoms:
+    if atom.symbol in ldau_luj:
+        lmaxmix = 4
+    else:
+        ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
+
+def get_kpoints(atoms, effective_length=25, bulk=True):
+    l = effective_length
+    cell = atoms.get_cell()
+    nkx = int(round(l/np.linalg.norm(cell[0]),0))
+    nky = int(round(l/np.linalg.norm(cell[1]),0))
+    if bulk == True:
+        nkz = int(round(l/np.linalg.norm(cell[2]),0))
+    else:
+        nkz = 1
+    return((nkx, nky, nkz))
+
+kpoints = get_kpoints(atoms, effective_length=25, bulk=True)
+
+atoms.calc = vasp_calculator.Vasp(
+    istart=1,
+    inimix=0,
+    amix=0.1,
+    amix_mag=0.1,
+    bmix=0.0001,
+    bmix_mag=0.0001,
+    gga='PE',
+    lreal='Auto',
+    algo='Normal',
+    prec='Normal',
+    ncore=4,
+    ismear=0,
+    sigma=0.05,
+    encut=500,
+    ediff=1e-06,
+    ediffg=-0.01,
+    isif=3,
+    ispin=2,
+    ibrion=2,
+    nelm=250,
+    nsw=199,
+    gamma=True,
+    kpts=kpoints,
+    ldau=True,
+    lmaxmix=lmaxmix,
+    ldau_luj=ldau_luj,
+    ldautype=2,
+    ldauprint=2,
+    lorbit=11,
+    lasph=True,
+    lvtot=False,
+    laechg=True,
+    )
+
+energy = atoms.get_potential_energy()
+print ('Calculation Complete, storing the run + calculator to traj file')
+
+Trajectory(f'final_{name}.traj','w').write(atoms)
+subprocess.call(f'ase convert -f final_{name}.traj final_with_calculator.json', shell=True)
