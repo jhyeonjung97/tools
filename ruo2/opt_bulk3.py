@@ -59,7 +59,6 @@ atoms.calc = vasp_calculator.Vasp(
     isif=3,
     ispin=2,
     ibrion=2,
-    nelm=250,
     nsw=199,
     gamma=True,
     kpts=kpoints,
