@@ -73,7 +73,7 @@ def _vasp_calc(directory):
         gamma=True,
         ismear=0,
         sigma=0.05,
-        algo='fast',
+        algo='normal',
         lreal='auto',
         ibrion=-1,
         isif=2,
