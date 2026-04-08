@@ -1,6 +1,7 @@
 """
-Slab NEB (VASP + ASE NEB). Five images: endpoints from 00/restart.json and 04/restart.json;
-internal images run in 01–03. See https://ase-lib.org/ase/neb.html
+Slab NEB (VASP + ASE NEB), optimizer FIRE. Endpoints from
+00/final_with_calculator.json and 04/final_with_calculator.json; internal 01–03.
+See https://ase-lib.org/ase/neb.html
 """
 import os
 import time
@@ -11,7 +12,7 @@ from ase.mep import NEB, NEBTools
 from ase.optimize import FIRE
 import ase.calculators.vasp as vasp_calculator
 
-name = 'neb_slab'
+name = 'neb_FIRE'
 start_time = time.time()
 
 # --- NEB: five images (endpoints 00/04, internal 01–03) ---
@@ -19,13 +20,14 @@ N_IMAGES = 5
 N_INTERNAL = N_IMAGES - 2
 ENDPOINT_INITIAL = os.path.join('00', 'final_with_calculator.json')
 ENDPOINT_FINAL = os.path.join('04', 'final_with_calculator.json')
+# ASE NEB spring constant (eV/Å); ASE examples often use ~0.1.
 NEB_K = 0.1
 CLIMB = True
 FMAX = 0.05
 NEB_METHOD = 'improvedtangent'
 USE_IDPP = False
 # True: launch Python with MPI — one rank per internal image, e.g.
-#   mpirun -np 3 python neb_slab.py
+#   mpirun -np 3 python neb_FIRE.py
 # Each rank runs VASP in its own directory (01/02/03). In run_vasp.py use
 # mpirun -np $VASP_MPI_CORES with VASP_MPI_CORES = (node cores) / 3 so three
 # VASPs do not each grab the full allocation.
@@ -110,8 +112,8 @@ else:
 if images[0].calc is None or images[-1].calc is None:
     raise SystemExit(
         'NEB endpoints need calculators (or stored SinglePoint results). '
-        'Make sure 00/restart.json and 04/restart.json were written with '
-        'calculator results; do not strip them with Atoms.copy().'
+        'Make sure 00/ and 04/ final_with_calculator.json keep calculator '
+        'results; do not strip them with Atoms.copy().'
     )
 
 neb = NEB(
@@ -127,7 +129,7 @@ if NEB_PARALLEL:
         raise SystemExit(
             'NEB_PARALLEL with VASP: set MPI size equal to the number of '
             f'internal images ({N_INTERNAL}), e.g. mpirun -np {N_INTERNAL} '
-            f'... python neb_slab.py (got {_mpi_world.size} ranks).'
+            f'... python neb_FIRE.py (got {_mpi_world.size} ranks).'
         )
     for k, image in enumerate(images[1:-1]):
         if k == _mpi_world.rank:
