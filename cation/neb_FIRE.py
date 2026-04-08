@@ -48,7 +48,6 @@ else:
 
     _mpi_world = _SingleWorld()
 
-
 def _load_endpoints():
     if not os.path.isfile(ENDPOINT_INITIAL):
         raise SystemExit(f'Missing initial structure: {ENDPOINT_INITIAL}')
@@ -58,7 +57,6 @@ def _load_endpoints():
     # Using .copy() here drops attached calculators and causes NEB to fail when
     # it queries endpoint energies.
     return read(ENDPOINT_INITIAL), read(ENDPOINT_FINAL)
-
 
 def _vasp_calc(directory):
     return vasp_calculator.Vasp(
@@ -85,13 +83,11 @@ def _vasp_calc(directory):
         lorbit=11,
     )
 
-
 def _write_band(path, band):
     w = Trajectory(path, 'w')
     for atoms in band:
         w.write(atoms)
     w.close()
-
 
 if os.path.exists(RESTART_TRAJ):
     images = list(read(RESTART_TRAJ, index=':'))
