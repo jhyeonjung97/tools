@@ -89,18 +89,18 @@ def main() -> None:
     # print(f"# {args.icohplist}{spin_note}")
     # print(
     #     "# 금속별 합: icohp3와 동일한 COHP#별 (금속 s·d × 산소 p)를 "
-    #     "같은 금속 원자로 합산 (산소 번호 무관). d_mean = 해당 결합들의 distance 평균. "
+    #     "같은 금속 원자로 합산 (산소 번호 무관). distance_avg = 해당 결합들의 distance 평균. "
     #     "행 순서 = idx 오름차순"
     # )
     print(
-        f"# {'ele':>4} {'idx':>5}  n_bonds  {'d_mean':>10}  sum_ICOHP(sd×p)"
+        f"# {'ele':>4} {'idx':>5}  n_bonds  {'distance_avg':>12}  sum_ICOHP(sd×p)"
     )
     for lab in sorted(by_metal, key=sort_key_by_idx):
         ele, idx = ich.coarse_label_ele_idx(lab)
         n = counts[lab]
-        d_mean = dist_sum[lab] / n if n else 0.0
+        distance_avg = dist_sum[lab] / n if n else 0.0
         print(
-            f"  {ele:>4} {idx:>5}  {n:7d}  {d_mean:10.5f}  {by_metal[lab]:.5f}"
+            f"  {ele:>4} {idx:>5}  {n:7d}  {distance_avg:12.5f}  {by_metal[lab]:.5f}"
         )
 
 
