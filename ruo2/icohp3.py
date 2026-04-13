@@ -149,16 +149,30 @@ def coarse_metal_label(meta_row: tuple[str, str, float, int, int, int]) -> str |
 
 def sum_by_metal_site(
     sums: dict[int, float], meta: dict[int, tuple[str, str, float, int, int, int]]
-) -> dict[str, float]:
-    """각 금속 원자에 대해 관련 COHP#(이웃 O가 달라도) sd×p 합."""
-    out: dict[str, float] = defaultdict(float)
+) -> dict[str, tuple[float, int, float, float, float]]:
+    """각 금속 원자: (sd×p 합, 이웃 결합 수, d_mean, d_min, d_max). coarse 행의 distance 사용."""
+    acc_sum: dict[str, float] = defaultdict(float)
+    acc_d: dict[str, list[float]] = defaultdict(list)
     for cid, val in sums.items():
         if cid not in meta:
             continue
         mlab = coarse_metal_label(meta[cid])
-        if mlab:
-            out[mlab] += val
-    return dict(out)
+        if not mlab:
+            continue
+        acc_sum[mlab] += val
+        acc_d[mlab].append(meta[cid][2])
+    out: dict[str, tuple[float, int, float, float, float]] = {}
+    for mlab in acc_sum:
+        ds = acc_d[mlab]
+        n = len(ds)
+        out[mlab] = (
+            acc_sum[mlab],
+            n,
+            sum(ds) / n,
+            min(ds),
+            max(ds),
+        )
+    return out
 
 
 def sum_metal_sd_by_atom_mu(path: Path, spin_filter: int | None) -> dict[str, float]:
@@ -257,9 +271,16 @@ def main() -> None:
         "# 금속 원자별: 각 COHP#에서 (금속 s·d × 산소 p)만 합한 뒤, "
         "같은 금속의 모든 이웃 결합을 더함 (산소 번호 무관)."
     )
-    print(f"# {'metal':<8}  sum_ICOHP(sd×p, all neighbors)")
+    print(
+        f"# {'metal':<8}  {'n':>3}  {'d_mean':>9}  {'d_min':>9}  "
+        f"{'d_max':>9}  sum_ICOHP(sd×p, all neighbors)"
+    )
     for mlab in sorted(by_metal, key=sort_key_mu):
-        print(f"  {mlab:<8}  {by_metal[mlab]:.5f}")
+        ssum, n, dm, dmin, dmax = by_metal[mlab]
+        print(
+            f"  {mlab:<8}  {n:3d}  {dm:9.5f}  {dmin:9.5f}  "
+            f"{dmax:9.5f}  {ssum:.5f}"
+        )
 
     if args.by_cohp:
         print()
