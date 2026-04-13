@@ -43,7 +43,7 @@ def main() -> None:
         "icohplist",
         type=Path,
         nargs="?",
-        default=Path(__file__).resolve().parent / "ICOHPLIST.lobster",
+        default="ICOHPLIST.lobster",
         help="ICOHPLIST.lobster 경로",
     )
     p.add_argument(
