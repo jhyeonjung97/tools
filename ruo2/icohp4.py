@@ -53,6 +53,13 @@ def main() -> None:
         default=None,
         help="해당 스핀만 (미지정 시 스핀 1+2)",
     )
+    p.add_argument(
+        "--idx1",
+        type=int,
+        default=None,
+        metavar="N",
+        help="icohp3와 같이 coarse atomMU(am0) 원자 번호가 N인 COHP만 집계",
+    )
     args = p.parse_args()
 
     if not args.icohplist.is_file():
@@ -68,6 +75,10 @@ def main() -> None:
         if cid not in meta:
             continue
         am0, an0, dist = meta[cid]
+        if args.idx1 is not None:
+            i1 = ich.idx1_from_atom_mu_label(am0)
+            if i1 != args.idx1:
+                continue
         mlab = coarse_metal_label(am0, an0)
         if not mlab:
             continue
