@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """LOBSTER ICOHPLIST.lobster 집계.
 
-1) COHP#(같은 결합 블록)마다: 금속 s·d × 산소 p 행만 합산.
-2) 금속 원자(Ru1, Ru2, …)마다: 산소 번호가 달라도 해당 금속이 끼인 모든 COHP# 합을 한 줄로 집계 (기본 출력).
+기본: COHP#(같은 결합 블록)마다
+  - 금속 atomMU: s·d 오비탈 행만
+  - 산소 atomNU: p 오비탈 행만 (O*_2p_* 등; O*_2s 제외)
+  위 조건을 동시에 만족하는 행들의 ICOHP만 합산 (예: COHP#1의 line 4–6, 8–26).
 
-옵션: 결합별 표, 라벨별·site별 집계.
+옵션으로 라벨별·site별 예전 집계도 가능.
 """
 
 from __future__ import annotations
@@ -21,7 +23,7 @@ SHELL_P = re.compile(r"_(\d+)p_")
 
 
 def iter_icohp_rows(path: Path, spin_filter: int | None):
-    """Yields: cohp_id, atom_mu, atom_nu, distance, tx, ty, tz, icohp."""
+    """Yields: cohp_id, atom_mu, atom_nu, distance, icohp."""
     current_spin = 1
     spin_header = re.compile(r"for spin\s+(\d+)\s*$")
 
@@ -42,11 +44,10 @@ def iter_icohp_rows(path: Path, spin_filter: int | None):
             try:
                 cohp_id = int(parts[0])
                 dist = float(parts[3])
-                tx, ty, tz = int(parts[4]), int(parts[5]), int(parts[6])
                 icohp = float(parts[7])
             except ValueError:
                 continue
-            yield cohp_id, parts[1], parts[2], dist, tx, ty, tz, icohp
+            yield cohp_id, parts[1], parts[2], dist, icohp
 
 
 def is_coarse_atom(label: str) -> bool:
@@ -100,14 +101,12 @@ def oxygen_site_from_row(atom_mu: str, atom_nu: str) -> str | None:
 
 def sum_by_cohp_sd_mu_p_nu(
     path: Path, spin_filter: int | None
-) -> tuple[dict[int, float], dict[int, tuple[str, str, float, int, int, int]]]:
+) -> tuple[dict[int, float], dict[int, tuple[str, str, float]]]:
     """COHP# → (sd 금속 & p 산소) 행만 합산. 메타는 coarse Ru1–O19 행에서."""
     sums: dict[int, float] = defaultdict(float)
-    meta: dict[int, tuple[str, str, float, int, int, int]] = {}
+    meta: dict[int, tuple[str, str, float]] = {}
 
-    for cohp_id, am, an, dist, tx, ty, tz, icohp in iter_icohp_rows(
-        path, spin_filter
-    ):
+    for cohp_id, am, an, dist, icohp in iter_icohp_rows(path, spin_filter):
         if is_coarse_atom(am) and is_coarse_atom(an):
             m_mu = ATOM_MU_RE.match(am)
             m_nu = ATOM_MU_RE.match(an)
@@ -118,7 +117,7 @@ def sum_by_cohp_sd_mu_p_nu(
                 and m_nu.group(1) == "O"
                 and cohp_id not in meta
             ):
-                meta[cohp_id] = (am, an, dist, tx, ty, tz)
+                meta[cohp_id] = (am, an, dist)
             if (
                 m_mu
                 and m_nu
@@ -126,7 +125,7 @@ def sum_by_cohp_sd_mu_p_nu(
                 and m_mu.group(1) == "O"
                 and cohp_id not in meta
             ):
-                meta[cohp_id] = (am, an, dist, tx, ty, tz)
+                meta[cohp_id] = (am, an, dist)
 
         if row_metal_sd_and_oxygen_p(am, an):
             sums[cohp_id] += icohp
@@ -134,50 +133,9 @@ def sum_by_cohp_sd_mu_p_nu(
     return dict(sums), meta
 
 
-def coarse_metal_label(meta_row: tuple[str, str, float, int, int, int]) -> str | None:
-    """coarse (금속, 산소) 행에서 금속 쪽 라벨 Ru1, Hf16 등."""
-    am0, an0 = meta_row[0], meta_row[1]
-    m_mu, m_nu = ATOM_MU_RE.match(am0), ATOM_MU_RE.match(an0)
-    if not m_mu or not m_nu:
-        return None
-    if m_mu.group(1) != "O" and m_nu.group(1) == "O":
-        return am0
-    if m_nu.group(1) != "O" and m_mu.group(1) == "O":
-        return an0
-    return None
-
-
-def sum_by_metal_site(
-    sums: dict[int, float], meta: dict[int, tuple[str, str, float, int, int, int]]
-) -> dict[str, tuple[float, int, float, float, float]]:
-    """각 금속 원자: (sd×p 합, 이웃 결합 수, d_mean, d_min, d_max). coarse 행의 distance 사용."""
-    acc_sum: dict[str, float] = defaultdict(float)
-    acc_d: dict[str, list[float]] = defaultdict(list)
-    for cid, val in sums.items():
-        if cid not in meta:
-            continue
-        mlab = coarse_metal_label(meta[cid])
-        if not mlab:
-            continue
-        acc_sum[mlab] += val
-        acc_d[mlab].append(meta[cid][2])
-    out: dict[str, tuple[float, int, float, float, float]] = {}
-    for mlab in acc_sum:
-        ds = acc_d[mlab]
-        n = len(ds)
-        out[mlab] = (
-            acc_sum[mlab],
-            n,
-            sum(ds) / n,
-            min(ds),
-            max(ds),
-        )
-    return out
-
-
 def sum_metal_sd_by_atom_mu(path: Path, spin_filter: int | None) -> dict[str, float]:
     sums: dict[str, float] = defaultdict(float)
-    for _id, am, _an, *_rest, icohp in iter_icohp_rows(path, spin_filter):
+    for _id, am, _an, _dist, icohp in iter_icohp_rows(path, spin_filter):
         if is_metal_sd_atom_mu(am):
             sums[am] += icohp
     return dict(sums)
@@ -185,20 +143,26 @@ def sum_metal_sd_by_atom_mu(path: Path, spin_filter: int | None) -> dict[str, fl
 
 def sum_oxygen_p_by_site(path: Path, spin_filter: int | None) -> dict[str, float]:
     sums: dict[str, float] = defaultdict(float)
-    for _id, am, an, *_r, icohp in iter_icohp_rows(path, spin_filter):
+    for _id, am, an, _dist, icohp in iter_icohp_rows(path, spin_filter):
         site = oxygen_site_from_row(am, an)
         if site:
             sums[site] += icohp
     return dict(sums)
 
 
+def coarse_label_ele_idx(label: str) -> tuple[str, str]:
+    """coarse 라벨 Ru1, Hf16 → ('Ru','1'), ('Hf','16'). 실패 시 ('?','?')."""
+    m = ATOM_MU_RE.match(label)
+    if not m or m.group(3) is not None:
+        return ("?", "?")
+    return m.group(1), m.group(2)
+
+
 def sort_key_mu(s: str) -> tuple:
     m = re.match(r"^([A-Za-z]+)(\d+)(?:_|$)", s)
     if m:
-        el = m.group(1)
-        pref = 0 if el == "Ru" else 1  # Ru 먼저, 그다음 Hf 등
-        return (pref, el, int(m.group(2)), s)
-    return (2, "", 0, s)
+        return (m.group(1), int(m.group(2)), s)
+    return ("", 0, s)
 
 
 def sort_key_o(site: str) -> tuple:
@@ -210,7 +174,7 @@ def sort_key_o(site: str) -> tuple:
 
 def main() -> None:
     p = argparse.ArgumentParser(
-        description="ICOHPLIST: 금속 원자별 sd×p 합 (옵션: COHP#별, 라벨별, 산소 site)"
+        description="ICOHPLIST: COHP#별(sd금속×p산소) 합, 기타 옵션"
     )
     p.add_argument(
         "icohplist",
@@ -225,11 +189,6 @@ def main() -> None:
         choices=(1, 2),
         default=None,
         help="해당 스핀만 (미지정 시 스핀 1+2)",
-    )
-    p.add_argument(
-        "--by-cohp",
-        action="store_true",
-        help="COHP#(결합)별 sd×p 합 표도 출력",
     )
     p.add_argument(
         "--by-orbital-label",
@@ -255,7 +214,7 @@ def main() -> None:
 
     if args.all_orbitals:
         sums: dict[str, float] = defaultdict(float)
-        for _id, am, _n, *_r, icohp in iter_icohp_rows(args.icohplist, args.spin):
+        for _id, am, _n, _dist, icohp in iter_icohp_rows(args.icohplist, args.spin):
             sums[am] += icohp
         print(f"# {args.icohplist}{spin_note}  —  atomMU별 sum(ICOH), 전 오비탈")
         print(f"# {'atomMU':<22}  sum_ICOHP")
@@ -264,45 +223,30 @@ def main() -> None:
         return
 
     sums, meta = sum_by_cohp_sd_mu_p_nu(args.icohplist, args.spin)
-    by_metal = sum_by_metal_site(sums, meta)
 
-    print(f"# {args.icohplist}{spin_note}")
+    # print(f"# {args.icohplist}{spin_note}")
+    # print(
+    #     "# COHP#별 합: 금속 s·d (atomMU 또는 NU) × 산소 p (반대쪽) 행만 "
+    #     "(같은 COHP# = 한 결합 블록, 예: Ru1–O19의 line 4–6, 8–26 …)"
+    # )
     print(
-        "# 금속 원자별: 각 COHP#에서 (금속 s·d × 산소 p)만 합한 뒤, "
-        "같은 금속의 모든 이웃 결합을 더함 (산소 번호 무관)."
+        f"  {'COHP#':>5}  {'ele1':>4} {'idx1':>5}  "
+        f"{'ele2':>4} {'idx2':>5}  {'distance':>8}  sum_ICOHP(sd×p)"
     )
-    print(
-        f"# {'metal':<8}  {'n':>3}  {'d_mean':>9}  {'d_min':>9}  "
-        f"{'d_max':>9}  sum_ICOHP(sd×p, all neighbors)"
-    )
-    for mlab in sorted(by_metal, key=sort_key_mu):
-        ssum, n, dm, dmin, dmax = by_metal[mlab]
-        print(
-            f"  {mlab:<8}  {n:3d}  {dm:9.5f}  {dmin:9.5f}  "
-            f"{dmax:9.5f}  {ssum:.5f}"
-        )
-
-    if args.by_cohp:
-        print()
-        print(
-            "## COHP#별 (한 결합씩): 금속 s·d × 산소 p "
-            "(예: Ru1–O19 line 4–6, 8–26 …)"
-        )
-        print(
-            f"# {'COHP#':>5}  {'atomMU':<6} {'atomNU':<6}  {'dist':>8}  "
-            f"{'tx':>3}{'ty':>4}{'tz':>4}  sum_ICOHP(sd×p)"
-        )
-        for cid in sorted(sums):
-            if cid in meta:
-                am0, an0, d0, tx0, ty0, tz0 = meta[cid]
-                print(
-                    f"  {cid:5d}  {am0:<6} {an0:<6}  {d0:8.5f}  "
-                    f"{tx0:3d}{ty0:4d}{tz0:4d}  {sums[cid]:.5f}"
-                )
-            else:
-                print(
-                    f"  {cid:5d}  {'?':<6} {'?':<6}  {'':>8}  {'':>11}  {sums[cid]:.5f}"
-                )
+    for cid in sorted(sums):
+        if cid in meta:
+            am0, an0, d0 = meta[cid]
+            ele_mu, idx_mu = coarse_label_ele_idx(am0)
+            ele_nu, idx_nu = coarse_label_ele_idx(an0)
+            print(
+                f"  {cid:5d}  {ele_mu:>4} {idx_mu:>5}  "
+                f"{ele_nu:>4} {idx_nu:>5}  {d0:8.5f}  {sums[cid]:.5f}"
+            )
+        else:
+            print(
+                f"  {cid:5d}  {'?':>4} {'?':>5}  "
+                f"{'?':>4} {'?':>5}  {'':>8}  {sums[cid]:.5f}"
+            )
 
     if args.by_orbital_label:
         metal = sum_metal_sd_by_atom_mu(args.icohplist, args.spin)
