@@ -158,6 +158,17 @@ def coarse_label_ele_idx(label: str) -> tuple[str, str]:
     return m.group(1), m.group(2)
 
 
+def idx1_from_atom_mu_label(label: str) -> int | None:
+    """Ru1, Ru1_5s, Ru10_4d_xy → 원자 인덱스 1 또는 10. 파싱 실패 시 None."""
+    m = ATOM_MU_RE.match(label)
+    if not m:
+        return None
+    try:
+        return int(m.group(2))
+    except ValueError:
+        return None
+
+
 def sort_key_mu(s: str) -> tuple:
     m = re.match(r"^([A-Za-z]+)(\d+)(?:_|$)", s)
     if m:
@@ -205,6 +216,13 @@ def main() -> None:
         action="store_true",
         help="오비탈 무시하고 atomMU 문자열만 전부 합산",
     )
+    p.add_argument(
+        "--index1",
+        type=int,
+        default=None,
+        metavar="N",
+        help="파일상 atomMU 쪽 원자 번호(idx1)가 N인 것만 (기본 COHP 표·--all-orbitals·--by-orbital-label)",
+    )
     args = p.parse_args()
 
     if not args.icohplist.is_file():
@@ -215,8 +233,13 @@ def main() -> None:
     if args.all_orbitals:
         sums: dict[str, float] = defaultdict(float)
         for _id, am, _n, _dist, icohp in iter_icohp_rows(args.icohplist, args.spin):
+            if args.index1 is not None and idx1_from_atom_mu_label(am) != args.index1:
+                continue
             sums[am] += icohp
-        print(f"# {args.icohplist}{spin_note}  —  atomMU별 sum(ICOH), 전 오비탈")
+        idx_note = f", index1=={args.index1}" if args.index1 is not None else ""
+        print(
+            f"# {args.icohplist}{spin_note}  —  atomMU별 sum(ICOH), 전 오비탈{idx_note}"
+        )
         print(f"# {'atomMU':<22}  sum_ICOHP")
         for k in sorted(sums, key=sort_key_mu):
             print(f"  {k:<22}  {sums[k]:.5f}")
@@ -224,18 +247,22 @@ def main() -> None:
 
     sums, meta = sum_by_cohp_sd_mu_p_nu(args.icohplist, args.spin)
 
-    # print(f"# {args.icohplist}{spin_note}")
-    # print(
-    #     "# COHP#별 합: 금속 s·d (atomMU 또는 NU) × 산소 p (반대쪽) 행만 "
-    #     "(같은 COHP# = 한 결합 블록, 예: Ru1–O19의 line 4–6, 8–26 …)"
-    # )
+    idx1_note = f"  (index1=={args.index1}만)" if args.index1 is not None else ""
+    print(f"# {args.icohplist}{spin_note}{idx1_note}")
     print(
-        f"  {'COHP#':>5}  {'ele1':>4} {'idx1':>5}  "
+        "# COHP#별 합: 금속 s·d (atomMU 또는 NU) × 산소 p (반대쪽) 행만 "
+        "(같은 COHP# = 한 결합 블록)"
+    )
+    print(
+        f"# {'COHP#':>5}  {'ele1':>4} {'idx1':>5}  "
         f"{'ele2':>4} {'idx2':>5}  {'distance':>8}  sum_ICOHP(sd×p)"
     )
     for cid in sorted(sums):
         if cid in meta:
             am0, an0, d0 = meta[cid]
+            i1 = idx1_from_atom_mu_label(am0)
+            if args.index1 is not None and i1 != args.index1:
+                continue
             ele_mu, idx_mu = coarse_label_ele_idx(am0)
             ele_nu, idx_nu = coarse_label_ele_idx(an0)
             print(
@@ -243,6 +270,8 @@ def main() -> None:
                 f"{ele_nu:>4} {idx_nu:>5}  {d0:8.5f}  {sums[cid]:.5f}"
             )
         else:
+            if args.index1 is not None:
+                continue
             print(
                 f"  {cid:5d}  {'?':>4} {'?':>5}  "
                 f"{'?':>4} {'?':>5}  {'':>8}  {sums[cid]:.5f}"
@@ -252,8 +281,12 @@ def main() -> None:
         metal = sum_metal_sd_by_atom_mu(args.icohplist, args.spin)
         print()
         print("## 금속 atomMU (s, d) 라벨별 전역 합")
+        if args.index1 is not None:
+            print(f"# (--index1 {args.index1})")
         print(f"# {'atomMU':<22}  sum_ICOHP")
         for k in sorted(metal, key=sort_key_mu):
+            if args.index1 is not None and idx1_from_atom_mu_label(k) != args.index1:
+                continue
             print(f"  {k:<22}  {metal[k]:.5f}")
 
     if args.by_oxygen_site:
