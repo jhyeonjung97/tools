@@ -47,6 +47,10 @@ calc = Vasp(
     # lwave=False,
     )
 
+atoms = read('00_/restart.json')
+z_coords = atoms.get_positions()[:, 2]
+min_z_index = z_coords.argsort()[0]
+
 for i in range(30):
     j = i + 1
 
@@ -65,8 +69,6 @@ for i in range(30):
 
     os.chdir(new_folder_path)
     atoms = read('restart.json')
-    z_coords = atoms.get_positions()[:, 2]
-    min_z_index = z_coords.argmin()
     atoms[min_z_index].z -= 0.1
     write('restart.json', atoms)
 
