@@ -5,6 +5,13 @@ import ase.calculators.vasp as vasp_calculator
 
 atoms = read('restart.json')
 
+nbands = 0
+for atom in atoms:
+    if atom.symbol == 'O':
+        nbands += 2
+    else:
+        nbands += 6
+
 ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
             'Cr':{'L':2, 'U':3.50, 'J':0.0},
@@ -24,40 +31,41 @@ for atom in atoms:
         ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
 atoms.calc = vasp_calculator.Vasp(
+    #istart=1,
     inimix=0,
     amix=0.1,
     amix_mag=0.1,
     bmix=0.0001,
     bmix_mag=0.0001,
-    encut=500,
+    gga='PE',
+    lreal='Auto',
+    algo='Normal',
+    prec='Normal',
+    #kpar=8,
+    ncore=4,
+    ismear=0,
     sigma=0.05,
+    encut=500,
     ediff=1e-06,
     ediffg=-0.01,
-    algo='Normal',
-    gga='PE',
-    prec='Normal',
-    ibrion=-1,
     isym=0,
     isif=2,
-    ismear=0,
     ispin=2,
-    istart=1,
+    ibrion=-1,
+    nbands=nbands,
+    nelm=250,
+    nsw=0,
+    gamma=True,
+    kpts=[5,5,5],
     ldau=True,
     lmaxmix=lmaxmix,
     ldau_luj=ldau_luj,
     ldautype=2,
     ldauprint=2,
     lorbit=11,
-    nelm=250,
-    npar=6,
-    nsw=0,
-    nbands=128,
-    laechg=True,
     lasph=True,
     lvtot=False,
-    lreal='Auto',
-    kpts=[5, 5, 5],
-    gamma=True,
+    laechg=True,
     )
 
 energy = atoms.get_potential_energy()
