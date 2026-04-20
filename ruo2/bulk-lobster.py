@@ -30,6 +30,19 @@ for atom in atoms:
     else:
         ldau_luj[atom.symbol] = {'L': -1, 'U': 0.0, 'J': 0.0}
 
+def get_kpoints(atoms, effective_length=25, bulk=True):
+    l = effective_length
+    cell = atoms.get_cell()
+    nkx = int(round(l/np.linalg.norm(cell[0]),0))
+    nky = int(round(l/np.linalg.norm(cell[1]),0))
+    if bulk == True:
+        nkz = int(round(l/np.linalg.norm(cell[2]),0))
+    else:
+        nkz = 1
+    return((nkx, nky, nkz))
+
+kpoints = get_kpoints(atoms, effective_length=40, bulk=True)
+
 atoms.calc = vasp_calculator.Vasp(
     #istart=1,
     inimix=0,
@@ -56,7 +69,7 @@ atoms.calc = vasp_calculator.Vasp(
     nelm=250,
     nsw=0,
     gamma=True,
-    kpts=[5,5,5],
+    kpts=kpoints,
     ldau=True,
     lmaxmix=lmaxmix,
     ldau_luj=ldau_luj,
