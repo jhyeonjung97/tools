@@ -18,6 +18,62 @@ except ImportError:
 warnings.filterwarnings('ignore')
 
 
+def _get_theoretical_map(material_ids, api_key):
+    """
+    material_id -> theoretical(bool or None) 매핑을 가져옵니다.
+    """
+    theoretical_map = {}
+    valid_ids = []
+    for mid in material_ids:
+        if isinstance(mid, str) and mid.startswith("mp-"):
+            valid_ids.append(mid)
+    valid_ids = list(set(valid_ids))
+    if not valid_ids:
+        return theoretical_map
+
+    try:
+        with MPRester(api_key) as mpr:
+            docs = None
+
+            # 최신 mp-api 시도
+            try:
+                docs = mpr.materials.summary.search(
+                    material_ids=valid_ids,
+                    fields=["material_id", "theoretical"]
+                )
+            except Exception:
+                docs = None
+
+            # 일부 버전 호환용 대체 경로
+            if docs is None:
+                try:
+                    docs = mpr.summary.search(
+                        material_ids=valid_ids,
+                        fields=["material_id", "theoretical"]
+                    )
+                except Exception:
+                    docs = None
+
+            if docs is None:
+                return theoretical_map
+
+            for doc in docs:
+                if isinstance(doc, dict):
+                    mid = doc.get("material_id")
+                    theoretical = doc.get("theoretical")
+                else:
+                    mid = getattr(doc, "material_id", None)
+                    theoretical = getattr(doc, "theoretical", None)
+
+                if mid is not None:
+                    theoretical_map[str(mid)] = theoretical
+    except Exception:
+        # 이 조회는 보조 정보이므로 실패 시 조용히 넘어감
+        pass
+
+    return theoretical_map
+
+
 def get_favorable_metal(element, api_key=None):
     """
     Materials Project에서 해당 element의 순수 metal 구조 중 가장 안정한 구조를 찾습니다.
@@ -28,7 +84,7 @@ def get_favorable_metal(element, api_key=None):
         
     Returns:
         dict: 가장 안정한 metal 구조 정보
-            {'formula': 'Ti', 'energy_per_atom': -7.8, 'entry': entry_object, 'material_id': 'mp-1234'}
+            {'formula': 'Ti', 'energy_per_atom': -7.8, 'entry': entry_object, 'material_id': 'mp-1234', 'theoretical': False}
     """
     if api_key is None:
         api_key = os.getenv('MAPI_KEY')
@@ -117,12 +173,17 @@ def get_favorable_metal(element, api_key=None):
                     match = re.search(r'mp-\d+', entry_str)
                     if match:
                         material_id = match.group()
+
+            theoretical = None
+            if hasattr(entry, 'data') and isinstance(entry.data, dict):
+                theoretical = entry.data.get('theoretical')
             
             metal_data.append({
                 'formula': formula,
                 'entry': entry,
                 'material_id': material_id,
-                'energy_per_atom': entry.energy_per_atom
+                'energy_per_atom': entry.energy_per_atom,
+                'theoretical': theoretical
             })
         except Exception as e:
             continue
@@ -130,8 +191,27 @@ def get_favorable_metal(element, api_key=None):
     if len(metal_data) == 0:
         print(f"  {element}의 순수 metal 데이터를 처리할 수 없습니다.")
         return None
+
+    # entry 내부에 theoretical 정보가 없으면 material_id 기반으로 보강 조회
+    unknown_material_ids = [
+        x['material_id'] for x in metal_data
+        if x.get('theoretical') is None and x.get('material_id') is not None
+    ]
+    if unknown_material_ids:
+        theoretical_map = _get_theoretical_map(unknown_material_ids, api_key)
+        for x in metal_data:
+            if x.get('theoretical') is None:
+                mid = x.get('material_id')
+                if mid in theoretical_map:
+                    x['theoretical'] = theoretical_map[mid]
+
+    # theoretical == False (실험 구조)만 선택
+    experimental_metals = [x for x in metal_data if x.get('theoretical') is False]
+    if len(experimental_metals) == 0:
+        print(f"  {element}에서 theoretical == False 조건을 만족하는 metal 구조가 없습니다.")
+        return None
     
-    best_metal = min(metal_data, key=lambda x: x['energy_per_atom'])
+    best_metal = min(experimental_metals, key=lambda x: x['energy_per_atom'])
     
     print(f"  가장 안정한 metal 구조: {best_metal['formula']} "
           f"(E = {best_metal['energy_per_atom']:.4f} eV/atom)")
@@ -257,6 +337,7 @@ def main():
                 f.write(f"Element: {element}\n")
                 f.write(f"Most Stable Metal: {metal_data['formula']}\n")
                 f.write(f"Material ID: {metal_data['material_id']}\n")
+                f.write(f"Theoretical: {metal_data['theoretical']}\n")
                 f.write(f"Energy per Atom: {metal_data['energy_per_atom']:.6f} eV/atom\n")
             print(f"  결과가 {result_file}에 저장되었습니다.")
             
