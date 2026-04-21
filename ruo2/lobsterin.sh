@@ -1,15 +1,39 @@
-3d_dopants=('Sc' 'Ti' 'V' 'Cr' 'Mn' 'Fe' 'Co' 'Ni' 'Cu' 'Zn' 'Ga' 'Ge')
-4d_dopants=('Y' 'Zr' 'Nb' 'Mo' 'Tc' 'Ru' 'Rh' 'Pd' 'Ag' 'Cd' 'In' 'Sn')
-5d_dopants=('La' 'Hf' 'Ta' 'W' 'Re' 'Os' 'Ir' 'Pt' 'Au' 'Hg' 'Tl' 'Pb')
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+dopants_3d=(Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge)
+dopants_4d=(Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn)
+dopants_5d=(La Hf Ta W Re Os Ir Pt Au Hg Tl Pb)
+
+in_array() {
+    local value="$1"
+    shift
+    local item
+    for item in "$@"; do
+        if [[ "$item" == "$value" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
 
 for dir in */; do
-    IFS='_' read -r num dopant <<< "$dir"
-    if [ $dopant in ${3d_dopants[@]} ]; then
-        sed -i -e "/basisFunctions X/c\basisFunctions ${dopant} 3d 4s" $dir/lobsterin
-    elif [ $dopant in ${4d_dopants[@]} ]; then
-        sed -i -e "/basisFunctions X/c\basisFunctions ${dopant} 4d 5s" $dir/lobsterin
-    elif [ $dopant in ${5d_dopants[@]} ]; then
-        sed -i -e "/basisFunctions X/c\basisFunctions ${dopant} 5d 6s" $dir/lobsterin
+    base_dir="${dir%/}"
+    IFS='_' read -r _ dopant <<< "$base_dir"
+    target_file="${dir}lobsterin"
+
+    if [[ ! -f "$target_file" ]]; then
+        continue
     fi
-    sed -i -e "s/X/${dopant}/" $dir/lobsterin
+
+    if in_array "$dopant" "${dopants_3d[@]}"; then
+        sed -i -e "/basisFunctions X/c\\basisFunctions ${dopant} 3d 4s" "$target_file"
+    elif in_array "$dopant" "${dopants_4d[@]}"; then
+        sed -i -e "/basisFunctions X/c\\basisFunctions ${dopant} 4d 5s" "$target_file"
+    elif in_array "$dopant" "${dopants_5d[@]}"; then
+        sed -i -e "/basisFunctions X/c\\basisFunctions ${dopant} 5d 6s" "$target_file"
+    fi
+
+    sed -i -e "s/X/${dopant}/g" "$target_file"
 done
