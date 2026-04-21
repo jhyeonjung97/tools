@@ -9,9 +9,7 @@ atoms = read('restart.json')
 nbands = 2
 for atom in atoms:
     if atom.symbol == 'O':
-        nbands += 4
-    elif atom.symbol in ['Sc', 'Y', 'Zr', 'Nb', 'La']:
-        nbands += 10
+        nbands += 3
     else:
         nbands += 6
 
