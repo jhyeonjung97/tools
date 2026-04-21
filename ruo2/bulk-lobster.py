@@ -5,10 +5,12 @@ import ase.calculators.vasp as vasp_calculator
 
 atoms = read('restart.json')
 
-nbands = 0
+nbands = 2
 for atom in atoms:
     if atom.symbol == 'O':
-        nbands += 2
+        nbands += 4
+    elif atom.symbol in ['Sc', 'Y', 'Zr', 'Nb', 'La']:
+        nbands += 10
     else:
         nbands += 6
 
@@ -20,7 +22,7 @@ ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
             'Co':{'L':2, 'U':3.32, 'J':0.0},
             'Ni':{'L':2, 'U':6.45, 'J':0.0},
             'Cu':{'L':2, 'U':9.00, 'J':0.0},
-            'Ru': {'L':2, 'U':2.5, 'J': 0.0}
+            'Ru':{'L':2, 'U':2.50, 'J':0.0}
             }
 
 lmaxmix = 2
