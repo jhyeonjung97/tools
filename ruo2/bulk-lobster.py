@@ -1,4 +1,5 @@
 import subprocess
+import numpy as np
 from ase.io import read
 from ase.io.trajectory import Trajectory
 import ase.calculators.vasp as vasp_calculator
