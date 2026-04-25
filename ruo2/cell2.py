@@ -21,6 +21,8 @@ atoms = atoms.repeat((1, 1, 4))
 sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
 sorted_indices = [atom.index for atom in sorted_atoms]
 re_index = min([atom.index for atom in sorted_atoms if atom.symbol != host_metal])
+if atoms[re_index].symbol == 'O':
+    re_index = 7
 del_indices = []
 for atom in atoms:
     if atom.position[2] < atoms[re_index].position[2]-1.5:
@@ -71,6 +73,8 @@ atoms = atoms.repeat((1, 1, 4))
 sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
 sorted_indices = [atom.index for atom in sorted_atoms]
 re_index = min([atom.index for atom in sorted_atoms if atom.symbol != host_metal])
+if atoms[re_index].symbol == 'O':
+    re_index = 7
 del_indices = []
 for atom in atoms:
     if atom.position[2] < atoms[re_index].position[2]-1.5:
