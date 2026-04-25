@@ -9,7 +9,6 @@ args = parser.parse_args()
 target_element = args.element
 atoms = read('restart.json')
 
-<<<<<<< HEAD
 candidate_indices = [i for i, atom in enumerate(atoms) if atom.symbol not in {target_element, 'O'}]
 if not candidate_indices:
     raise ValueError(f"No atoms found with symbols other than {target_element} and O.")
@@ -27,12 +26,6 @@ else:
     raise ValueError(f"Unsupported target_idx for magmom mapping: {target_idx}")
 
 magmoms[target_idx] = magmoms[source_idx]
-=======
-atoms[33].symbol = 'Ru'
-
-magmoms = atoms.get_initial_magnetic_moments()
-magmoms[33] = magmoms[32]
->>>>>>> ae8f10d2ffc15ec538255b6f3c56c7bf70ecb259
 
 atoms.set_initial_magnetic_moments(magmoms)
 
