@@ -1,6 +1,8 @@
 from ase.io import read, write
 from ase.constraints import FixAtoms
 
+host_metal = 'Ru'
+
 atoms = read('restart.json')
 l1 = atoms.cell.lengths()[0]
 l2 = atoms.cell.lengths()[1]
@@ -18,7 +20,7 @@ for atom in atoms:
 atoms = atoms.repeat((1, 1, 4))
 sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
 sorted_indices = [atom.index for atom in sorted_atoms]
-re_index = min([atom.index for atom in sorted_atoms if atom.symbol != 'Ru'])
+re_index = min([atom.index for atom in sorted_atoms if atom.symbol != host_metal])
 if atoms[re_index].symbol == 'O':
     re_index = 7
 del_indices = []
@@ -70,7 +72,7 @@ for atom in atoms:
 atoms = atoms.repeat((1, 1, 4))
 sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
 sorted_indices = [atom.index for atom in sorted_atoms]
-re_index = min([atom.index for atom in sorted_atoms if atom.symbol != 'Ru'])
+re_index = min([atom.index for atom in sorted_atoms if atom.symbol != host_metal])
 if atoms[re_index].symbol == 'O':
     re_index = 7
 del_indices = []
