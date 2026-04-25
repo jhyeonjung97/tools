@@ -19,11 +19,13 @@ atoms = atoms.repeat((1, 1, 4))
 sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
 sorted_indices = [atom.index for atom in sorted_atoms]
 re_index = min([atom.index for atom in sorted_atoms if atom.symbol != 'Ru'])
+if atoms[re_index].symbol == 'O':
+    re_index = 7
 del_indices = []
 for atom in atoms:
-    if atom.position[2] < atoms[re_index].position[2]-1.5:
+    if atom.position[2] < atoms[re_index].position[2]+1.5:
         del_indices.append(atom.index)
-    elif atom.position[2] > atoms[re_index+48].position[2]+2.5:
+    elif atom.position[2] > atoms[re_index+72].position[2]-0.5:
         del_indices.append(atom.index)
 for index in sorted(del_indices, reverse=True):
     del atoms[index]
@@ -42,13 +44,13 @@ atoms.wrap()
 sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
 fixed = FixAtoms(indices=[atom.index for atom in sorted_atoms[:24]])
 atoms.set_constraint(fixed)
-write('o-top-cus.json', atoms)
+write('o-sub-cus.json', atoms)
 
 sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
 del_indices = [sorted_atoms[-1].index, sorted_atoms[-2].index]
 for index in sorted(del_indices, reverse=True):
     del atoms[index]
-write('v-top-cus.json', atoms)
+write('v-sub-cus.json', atoms)
 
 
 atoms = read('restart.json')
@@ -69,11 +71,13 @@ atoms = atoms.repeat((1, 1, 4))
 sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
 sorted_indices = [atom.index for atom in sorted_atoms]
 re_index = min([atom.index for atom in sorted_atoms if atom.symbol != 'Ru'])
+if atoms[re_index].symbol == 'O':
+    re_index = 7
 del_indices = []
 for atom in atoms:
-    if atom.position[2] < atoms[re_index].position[2]-1.5:
+    if atom.position[2] < atoms[re_index].position[2]+1.5:
         del_indices.append(atom.index)
-    elif atom.position[2] > atoms[re_index+48].position[2]+2.5:
+    elif atom.position[2] > atoms[re_index+72].position[2]-0.5:
         del_indices.append(atom.index)
 for index in sorted(del_indices, reverse=True):
     del atoms[index]
@@ -92,10 +96,10 @@ atoms.wrap()
 sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
 fixed = FixAtoms(indices=[atom.index for atom in sorted_atoms[:24]])
 atoms.set_constraint(fixed)
-write('o-brg-top.json', atoms)
+write('o-sub-brg.json', atoms)
 
 sorted_atoms = sorted(atoms, key=lambda atom: atom.position[2])
 del_indices = [sorted_atoms[-1].index, sorted_atoms[-2].index]
 for index in sorted(del_indices, reverse=True):
     del atoms[index]
-write('v-brg-top.json', atoms)
+write('v-sub-brg.json', atoms)
