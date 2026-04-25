@@ -8,4 +8,4 @@ magmoms[45] = magmoms[44]
 
 atoms.set_initial_magnetic_moments(magmoms)
 
-write('restart.json', atoms)
+write('restart-m2ru.json', atoms)
