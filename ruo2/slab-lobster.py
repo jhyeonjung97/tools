@@ -5,6 +5,15 @@ import ase.calculators.vasp as vasp_calculator
 
 atoms = read('restart.json')
 
+nbands = 2
+for atom in atoms:
+    if atom.symbol == 'O':
+        nbands += 4
+    elif atom.symbol in ['Sc', 'Y', 'Zr', 'Nb', 'La']:
+        nbands += 10
+    else:
+        nbands += 6
+
 ldau_luj = {'Ti':{'L':2, 'U':3.00, 'J':0.0},
             'V': {'L':2, 'U':3.25, 'J':0.0},
             'Cr':{'L':2, 'U':3.50, 'J':0.0},
