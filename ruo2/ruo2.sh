@@ -11,5 +11,5 @@ jiuy97@suncat:/sdf/data/suncat/suncatlustre/hailey/7_prediction/0_Hubbard_U/ ./3
 jiuy97@suncat:/sdf/data/suncat/suncatlustre/hailey/7_prediction/3_surface_Ru/preemptable/ ./3_RuO2/7_prediction/3_surface_Ru
 
 /usr/bin/rsync -e ssh -avzpl \
---include='*.lobster' --include='*.json' --include='*/' --exclude='*' \
+--include='*.txt' --include='*.lobster' --include='*.json' --include='*/' --exclude='*' \
 jiuy97@suncat:/sdf/data/suncat/suncatlustre/hailey/7_prediction/3_surface_Ru/icohp/ ./3_RuO2/7_prediction/5_surface_Ru_icohp
