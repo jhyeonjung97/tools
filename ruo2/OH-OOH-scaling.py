@@ -78,12 +78,14 @@ def collect_energy_data(base_path):
     """
     # ~를 홈 디렉토리로 확장
     base_path = os.path.expanduser(base_path)
-    folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OO_OH"]
-    semi_folders = ["0_V_V", "6_V_OH", "1_O_V", "2_O_OH", "3_O_O", "4_O_OOH", "5_OO_OH"]
+    folders_a = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OO_OH"]
+    folders_b = ["0_V_V", "6_V_OH", "1_O_V", "2_O_OH", "3_O_O", "4_O_OOH", "5_OO_OH"]
+    folders_c = ["0_V_V", "6_V_OH", "1_O_V", "2_O_OH", "3_O_O", "5_O_OOH", "6_OO_OH"]
+    
     subfolders = ["0_", "1_", "2_", "3_", "4_"]
     energy_data = {}
     
-    for i, folder in enumerate(folders):
+    for i, folder in enumerate(folders_a):
         folder_path = os.path.join(base_path, "1_RuO2_Ueff", folder)
         if not os.path.exists(folder_path):
             print(f"폴더가 존재하지 않습니다: {folder_path}")
@@ -109,7 +111,7 @@ def collect_energy_data(base_path):
                 energy = extract_energy_from_json(json_path)
                 energy_data[folder][f"2.{ueff}_"] = energy
 
-        semi_folder = semi_folders[i]
+        semi_folder = folders_b[i]
 
         subfolder_path = os.path.join(base_path, "2_RuO2_OER", "7_RuO2", semi_folder)
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
@@ -146,7 +148,23 @@ def collect_energy_data(base_path):
         json_path = os.path.join(subfolder_path, "final_with_calculator.json")
         energy = extract_energy_from_json(json_path)
         energy_data[folder]["ReRuO2_alloy"] = energy
-        
+
+        semi_folder = folders_c[i]
+        # subfolder_path = os.path.join(base_path, "7_prediction", "0_Hubbard_U", "1_Ru", semi_folder)
+        # json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        # energy = extract_energy_from_json(json_path)
+        # energy_data[folder]["RuO2_pred"] = energy
+
+        subfolder_path = os.path.join(base_path, "7_prediction", "0_Hubbard_U", "2_Ir", semi_folder)
+        json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        energy = extract_energy_from_json(json_path)
+        energy_data[folder]["IrO2_pred"] = energy
+
+        # subfolder_path = os.path.join(base_path, "7_prediction", "0_Hubbard_U", "3_Ti", semi_folder)
+        # json_path = os.path.join(subfolder_path, "final_with_calculator.json")
+        # energy = extract_energy_from_json(json_path)
+        # energy_data[folder]["TiO2_pred"] = energy
+
     return energy_data
 
 def create_dataframe(energy_data):
@@ -175,9 +193,9 @@ def create_dataframe(energy_data):
     df = pd.DataFrame(data_dict).T
     
     # 인덱스 순서 정렬
-    df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'RuO2_1%', 'RuO2_2%', 'ReRuO2', 'ReRuO2_1%', 'ReRuO2_2%', 'ReRuO2_alloy'])
+    df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'RuO2_1%', 'RuO2_2%', 'ReRuO2', 'ReRuO2_1%', 'ReRuO2_2%', 'ReRuO2_alloy', 'RuO2_pred', 'IrO2_pred', 'TiO2_pred'])
     # df = df.reindex(index=['0', '1', '2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9', '3', '4', 'RuO2', 'ReRuO2', 'RuO2_1%', 'RuO2_2%'])
-    
+
     return df
 
 def main():
@@ -191,7 +209,7 @@ def main():
 
     print(df)
 
-    # folders = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OO_OH"]
+    # folders_a = ["1_V_V", "2_V_OH", "3_O_V", "4_O_OH", "5_O_O", "6_O_OOH", "7_OO_OH"]
     gibbs_correction_o_v = 0.058092 - 0.033706
     gibbs_correction_o_oh = 0.439910 - 0.128005
     gibbs_correction_o_o = 0.156862 - 0.100681
@@ -223,13 +241,13 @@ def main():
     df_scaling = df_dg.loc[ueff_rows]
 
     # Scaling relationship plot: x=(ΔG_O_O - ΔG_O_OH), y in [ΔG1..ΔG5]
-    if "ΔG_OH" in df_dg.columns:
+    if "ΔG_O_OH" in df_dg.columns:
         x_series = df_dg["ΔG_O_OH"]
         y_columns = [c for c in ["ΔG_O_OOH", "ΔG_OO_OH"] if c in df.columns]
         if len(y_columns) > 0:
             plt.figure(figsize=(6, 4))
             xmin, xmax = 0.0, 1.0
-            ymin, ymax = 3.0, 4.0
+            ymin, ymax = 2.5, 4.0 # 3.0, 4.0
             colors = ["black", "red", "C5", "C1", "C9", "C11", "C13"]
             for idx, ycol in enumerate(y_columns):
                 xy = pd.concat([x_series, df_dg[ycol]], axis=1).dropna()
@@ -253,7 +271,12 @@ def main():
                     # elif row_name == "ReRuO2_2%" and idx == 3:
                     #     plt.scatter(x, y, color='blue', zorder=10)
                     # else:
-                    plt.scatter(x, y, marker='s', color=colors[idx % len(colors)], zorder=9)
+                    if 'pred' in row_name and ycol == "ΔG_O_OOH":
+                        plt.scatter(x, y, marker='s', color='blue', zorder=9)
+                    elif 'pred' in row_name and ycol == "ΔG_OO_OH":
+                        plt.scatter(x, y, marker='s', color='green', zorder=9)
+                    else:
+                        plt.scatter(x, y, marker='s', color=colors[idx % len(colors)], zorder=9)
                     # plt.annotate(row_name, (x, y), xytext=(0, 7), textcoords='offset points', fontsize=8, ha='center', va='top')
                     # print(row_name,  x, y)
 
@@ -279,6 +302,7 @@ def main():
             print(f"스케일링 플롯 저장됨: {out_png}")
 
     print(df_dg)
+    df_dg.to_csv("OH-OOH-scaling_dg.csv", index=True)
 
     return df, energy_data
 
