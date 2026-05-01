@@ -26,10 +26,12 @@ from collections import Counter
 
 # Scientific computing imports
 import numpy as np
-import pandas as pd
 
 # Visualization imports
 import matplotlib.pyplot as plt
+from matplotlib.collections import LineCollection, PolyCollection
+from matplotlib.path import Path
+from matplotlib.text import Annotation
 
 # Materials science and chemistry imports
 from ase.io import read
@@ -58,12 +60,8 @@ def load_jsonc(file_path):
 parser = argparse.ArgumentParser(description='Generate Pourbaix diagram using pymatgen plotter')
 parser.add_argument('--json-dir', type=str, default='.', 
                     help='Folder path containing JSON structure files (default: current folder)')
-parser.add_argument('--csv-dir', type=str, default='.', 
-                    help='Folder path containing label.csv with species information (default: current folder)')
 parser.add_argument('--suffix', type=str, default='', 
                     help='Suffix for the output filename')
-parser.add_argument('--label-csv', type=str, 
-                    help='Custom path to label.csv file (default: ./label.csv)')
 parser.add_argument('--thermo-data', type=str, 
                     help='Custom path to thermodynamic data file (default: ./thermodynamic_data.json)')
 parser.add_argument('--ref-energies', type=str, 
@@ -72,10 +70,10 @@ parser.add_argument('--pHmin', type=float, default=0,
                     help='Minimum pH value for the diagram (default: 0)')
 parser.add_argument('--pHmax', type=float, default=14, 
                     help='Maximum pH value for the diagram (default: 14)')
-parser.add_argument('--Umin', type=float, default=-1.5, 
-                    help='Minimum potential value in V vs SHE (default: -1.5)')
-parser.add_argument('--Umax', type=float, default=+2.0, 
-                    help='Maximum potential value in V vs SHE (default: +2.0)')
+parser.add_argument('--Umin', type=float, default=-0.5, 
+                    help='Minimum potential on the figure in V vs Zn/Zn2+ (default: -1.5)')
+parser.add_argument('--Umax', type=float, default=+3.0, 
+                    help='Maximum potential on the figure in V vs Zn/Zn2+ (default: +2.0)')
 parser.add_argument('--show-fig', action='store_true', 
                     help='Display the generated plot in a window')
 parser.add_argument('--conc', action='store_true', 
@@ -103,6 +101,54 @@ calmol = 23.061
 kb = 8.617e-5
 T = 298.15
 const = kb * T * np.log(10)
+
+# pymatgen PourbaixPlotter uses V vs SHE; add this to every plotted y to show V vs Zn/Zn2+
+SHE_TO_ZN_DISPLAY_SHIFT_V = 0.76
+
+
+def she_limits_for_pourbaix_plot(Umin_vs_zn, Umax_vs_zn):
+    """Convert figure limits (vs Zn/Zn2+) to SHE limits for pymatgen."""
+    return Umin_vs_zn - SHE_TO_ZN_DISPLAY_SHIFT_V, Umax_vs_zn - SHE_TO_ZN_DISPLAY_SHIFT_V
+
+
+def shift_ax_potential_from_she_to_zn(ax, dy):
+    """Add dy to all y coordinates (SHE -> vs Zn/Zn2+), then fix y-axis to user limits.
+
+    PourbaixPlotter uses ax.annotate() for domain labels. Annotation.draw() skips drawing
+    when the anchor self.xy is outside the axes; we must move both xy and the text position.
+
+    Draw any extra reference lines after this call, using V vs Zn/Zn2+ (add dy to SHE formulas).
+    """
+    for line in ax.lines:
+        y = np.asarray(line.get_ydata(), dtype=float)
+        line.set_ydata(y + dy)
+    for coll in ax.collections:
+        if isinstance(coll, PolyCollection):
+            new_paths = []
+            for path in coll.get_paths():
+                v = path.vertices.copy()
+                v[:, 1] += dy
+                new_paths.append(Path(v, path.codes))
+            coll.set_paths(new_paths)
+        elif isinstance(coll, LineCollection):
+            segs = coll.get_segments()
+            new_segs = [np.asarray(s, dtype=float).copy() for s in segs]
+            for seg in new_segs:
+                seg[:, 1] += dy
+            coll.set_segments(new_segs)
+    for patch in ax.patches:
+        if hasattr(patch, 'get_xy'):
+            xy = np.asarray(patch.get_xy(), dtype=float).copy()
+            xy[:, 1] += dy
+            patch.set_xy(xy)
+    for text in ax.texts:
+        x, y = text.get_position()
+        text.set_position((x, float(y) + dy))
+        if isinstance(text, Annotation):
+            x0, y0 = text.xy
+            text.xy = (float(x0), float(y0) + dy)
+    # args.Umin/Umax are the final figure range (vs Zn/Zn2+), not SHE
+    ax.set_ylim(args.Umin, args.Umax)
 
 """
 All computational values from PBE, afm Mn ordering
@@ -152,34 +198,10 @@ def main():
         return
     
     # ========================================
-    # SECTION 2: LABEL PROCESSING
+    # SECTION 2: OPTIONAL PER-FILE CORRECTIONS (NO label.csv)
     # ========================================
-    csv_dir = args.csv_dir
-    if hasattr(args, 'label_csv') and args.label_csv:
-        label_csv_path = args.label_csv
-    else:
-        label_csv_path = os.path.join(csv_dir, 'label.csv')
-    
-    file_labels = {}
     file_oh_counts = {}
     file_gibbs_corrections = {}
-    
-    if os.path.exists(label_csv_path):
-        label_df = pd.read_csv(label_csv_path, header=None, 
-                              names=['json_name', 'label', '#OH', 'G_corr'])
-        for idx, row in label_df.iterrows():
-            json_name = row['json_name']
-            file_labels[json_name] = row['label']
-            if '#OH' in row and not pd.isna(row['#OH']):
-                file_oh_counts[json_name] = float(row['#OH'])
-            if 'G_corr' in row and not pd.isna(row['G_corr']):
-                file_gibbs_corrections[json_name] = float(row['G_corr'])
-    else:
-        print(f"Warning: Label file {label_csv_path} not found. Using chemical formulas as labels.")
-        for json_file in json_files:
-            atoms = read(json_file)
-            formula = atoms.get_chemical_formula()
-            file_labels[os.path.basename(json_file)] = formula
     
     # ========================================
     # SECTION 3: ELEMENT ANALYSIS
@@ -230,7 +252,7 @@ def main():
         # Normalize composition and energy by GCD
         normalized_comp_dict = {el: count // gcd_value for el, count in comp_dict.items()}
         normalized_energy = energy / gcd_value
-        print("gcd_value: ", gcd_value)
+        # print("gcd_value: ", gcd_value)
         comp_str = ''.join([f"{el}{count}" if count > 1 else el 
                             for el, count in sorted(normalized_comp_dict.items())])
         
@@ -254,7 +276,7 @@ def main():
             'name': label_name,
             'json_basename': json_basename
         })
-        print(f"composition: {comp_str} (normalized by GCD={gcd_value}), energy: {normalized_energy:.6f} eV/atom, name: {label_name}")
+        # print(f"composition: {comp_str} (normalized by GCD={gcd_value}), energy: {normalized_energy:.6f} eV/atom, name: {label_name}")
         # print(f"composition: {comp_str}, energy: {energy:.6f} eV/atom, name: {label_name}")
     
     elapsed = time.time() - start_time
@@ -293,52 +315,7 @@ def main():
     # SECTION 9: CONVERT TO PYMATGEN ENTRIES
     # ========================================
     print(f"\n[In progress] Converting to pymatgen PourbaixEntry...")
-    
-    # Bulk entries from JSON files - convert to formation energy
-    bulk_entries = []
-    for data in bulk_data:
-        if not '_R' in data['name']:
-            comp_str = data['composition']
-            total_energy = data['energy']
-            
-            # Parse composition to get element counts
-            comp = Composition(comp_str)
-            
-            # Calculate formation energy: E_form = E_total - sum(n_i * E_ref_i)
-            # For H and O, use gh and go (chemical potentials from H2O/H2)
-            # For other elements, use reference_energies.json
-            formation_energy = total_energy
-            for el, count in comp.items():
-                el_symbol = str(el)
-                if el_symbol == 'H':
-                    formation_energy -= count * gh
-                elif el_symbol == 'O':
-                    formation_energy -= count * go
-                elif el_symbol in ref_energies:
-                    formation_energy -= count * ref_energies[el_symbol]
-                else:
-                    print(f"Warning: Reference energy for {el_symbol} not found in reference_energies.json")
-            
-            entry = PourbaixEntry(ComputedEntry(comp_str, formation_energy), entry_id=data['name'])
-            bulk_entries.append(entry)
 
-    exp_entries = []
-    
-    # exp_entries.append(PourbaixEntry(ComputedEntry('MnO2', -465.138/kjmol), entry_id='B-MnO2_exp'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('MnOOH', -557.7272/kjmol), entry_id='B-MnOOH_exp'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('Mn(OH)2', -615.63376/kjmol), entry_id='D-Mn(OH)2_exp'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('Mn3O4', -1283.232/kjmol), entry_id='Mn3O4_exp'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('Mn2O3', -881.114/kjmol), entry_id='Mn2O3_exp'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn8O16', -481.6435639588431*8/kjmol), entry_id='A-ZnMn8O16'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn4O8', -516.324975188399*4/kjmol), entry_id='Sp-ZnMn4O8'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -584.5695268490117*2/kjmol), entry_id='Sp-ZnMn2O4')) # -590.7756684152241
-    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMnO2', -584.1993931540368/kjmol), entry_id='D-ZnMnO2'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('HMn8O16', -472.454106166424*8/kjmol), entry_id='HMn8O16'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('HMn4O8', -482.1357496267614*4/kjmol), entry_id='HMn4O8'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('HMn2O4', -505.35005103608654*2/kjmol), entry_id='HMn2O4'))
-
-    print(f"  Bulk entries: {len(bulk_entries)}")
-    
     # Solid entries from thermodynamic data
     solid_entries = []
     for el in unique_elements:
@@ -362,16 +339,64 @@ def main():
                     energy_ev = energy / calmol
                     comp = Ion.from_formula(ion_formula)
                     concentration = 1e-6
-                    if args.conc and ion_formula in ['Zn++', 'Mn++']:
-                    # if args.conc:
+                    if args.conc:
                         energy_ev = energy_ev + const * (log10(1) - log10(1e-6))
                         concentration = 1.0
+                    else:
+                        if ion_formula in ['Zn++', 'Mn++']:
+                            energy_ev = energy_ev + const * (log10(1) - log10(1e-6))
+                            concentration = 1.0
+                    if ion_formula == 'MnO4-':
+                        energy_mno41 = energy_ev
+                    elif ion_formula == 'MnO4--':
+                        energy_mno42 = energy_ev
                     entry = PourbaixEntry(IonEntry(comp, energy_ev), concentration=concentration)
                     ion_entries.append(entry)
                 except Exception as e:
                     print(f"Warning: Failed to process ion '{ion_formula}': {e}")
 
     print(f"  Ion entries: {len(ion_entries)}")
+
+    # Bulk entries from JSON files - convert to formation energy
+    bulk_entries = []
+    for data in bulk_data:
+        comp_str = data['composition']
+        total_energy = data['energy']
+        
+        # Parse composition to get element counts
+        comp = Composition(comp_str)
+        
+        # Calculate formation energy: E_form = E_total - sum(n_i * E_ref_i)
+        # For H and O, use gh and go (chemical potentials from H2O/H2)
+        # For other elements, use reference_energies.json
+        formation_energy = total_energy
+        for el, count in comp.items():
+            el_symbol = str(el)
+            if el_symbol == 'H':
+                formation_energy -= count * gh
+            elif el_symbol == 'O':
+                formation_energy -= count * go
+            elif el_symbol in ref_energies:
+                formation_energy -= count * ref_energies[el_symbol]
+            else:
+                print(f"Warning: Reference energy for {el_symbol} not found in reference_energies.json")
+        
+        entry = PourbaixEntry(ComputedEntry(comp_str, formation_energy), entry_id=data['name'])
+        bulk_entries.append(entry)
+    
+    exp_entries = []
+    
+    # exp_entries.append(PourbaixEntry(ComputedEntry('MnO2', -465.138/kjmol), entry_id='B-MnO2_exp'))
+    exp_entries.append(PourbaixEntry(ComputedEntry('MnOOH', -557.7272/kjmol), entry_id='B-MnOOH_exp'))
+    exp_entries.append(PourbaixEntry(ComputedEntry('Mn(OH)2', -615.63376/kjmol), entry_id='D-Mn(OH)2_exp'))
+    exp_entries.append(PourbaixEntry(ComputedEntry('Mn3O4', -1283.232/kjmol), entry_id='Mn3O4_exp'))
+    exp_entries.append(PourbaixEntry(ComputedEntry('Mn2O3', -881.114/kjmol), entry_id='Mn2O3_exp'))
+    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -12.61), entry_id='ZnMn2O4_jpcc'))
+    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn3O7', -17.83), entry_id='ZnMn3O7_jpcc'))
+
+    print(f"  Bulk entries: {len(bulk_entries)}")
+    
+
     
     # Print all entries list
     print("\n" + "="*70)
@@ -523,13 +548,14 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
     plotter = PourbaixPlotter(pourbaix)
     
     fig, ax = plt.subplots(figsize=(args.figx, args.figy))
-    plotter.get_pourbaix_plot(limits=[[args.pHmin, args.pHmax], [args.Umin, args.Umax]], 
+    Umin_she, Umax_she = she_limits_for_pourbaix_plot(args.Umin, args.Umax)
+    plotter.get_pourbaix_plot(limits=[[args.pHmin, args.pHmax], [Umin_she, Umax_she]],
                               label_domains=label_domains, label_fontsize=10,
                               show_water_lines=False, show_neutral_axes=False, ax=ax)
     
     stable_entries = pourbaix.stable_entries
     
-    # Create mapping from entry names to label.csv names
+    # Create mapping from entry names to entry_id names
     # pymatgen formats entry.name with LaTeX subscripts/superscripts (e.g., MnO$_{2}$(s))
     # We need to convert LaTeX format to plain format for matching
     def remove_latex_formatting(text):
@@ -600,13 +626,21 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
             'Mn4HO8': 'gold',
             'Mn8HO16': 'gold',
             'ZnMnO2': 'greenyellow',
-            'ZnMn2O4': 'greenyellow',
+            # 'ZnMn2O4': 'greenyellow',
+            'ZnMn3O6': 'greenyellow',
+            'Zn2Mn3O6': 'greenyellow',
             'ZnMn4O8': 'greenyellow',
             'ZnMn8O16': 'greenyellow',
             'MnZnO2': 'greenyellow',
-            'Mn2ZnO4': 'greenyellow',
+            'Mn3ZnO6': 'greenyellow',
+            'Mn3Zn2O8': 'greenyellow',
+            # 'Mn2ZnO4': 'greenyellow',
             'Mn4ZnO8': 'greenyellow',
             'Mn8ZnO16': 'greenyellow',
+            'ZnMn2O4': 'lime',
+            'Mn2ZnO4': 'lime',
+            'ZnMn3O7': 'lime',
+            'Mn3ZnO7': 'lime',
             'Mn[+2]': 'white',
             'Mn[+3]': 'white',
             'MnO4[-1]': 'white',
@@ -691,7 +725,7 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
         text.set_color('black')
         text.set_fontweight('bold')
         
-        # Replace entry name with label.csv name if available
+        # Replace entry name with entry_id name if available
         old_text = text.get_text()
         
         # Convert old_text from LaTeX format to plain format for matching
@@ -712,19 +746,20 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
                     # If exact match and LaTeX not found, replace entire text
                     text.set_text(label_name)
                     break
-    
+
+    shift_ax_potential_from_she_to_zn(ax, SHE_TO_ZN_DISPLAY_SHIFT_V)
+
+    # Reference lines in V vs Zn/Zn2+ (same frame as axis after shift): U_zn = U_she + shift
     pH2 = np.arange(args.pHmin, args.pHmax + 0.01, 0.01)
     if args.OER:
-        plt.plot(pH2, 1.23 - pH2 * const, linestyle='--', color='red', lw=2.0)
+        ax.plot(pH2, 1.23 - pH2 * const, linestyle='--', color='red', lw=2.0)
     if args.HER:
-        plt.plot(pH2, 0 - pH2 * const, linestyle='--', color='red', lw=2.0)
-    plt.plot(pH2, 2.6 -0.76 -1*const -pH2 * const, linestyle='--', color='blue')
-    plt.plot(pH2, 2.3 -0.76 -1*const -pH2 * const, linestyle='--', color='blue')
+        ax.plot(pH2, 0 - pH2 * const, linestyle='--', color='red', lw=2.0)
+    ax.plot(pH2, 2.6 - pH2 * const, linestyle='--', color='blue')
+    ax.plot(pH2, 2.3 - pH2 * const, linestyle='--', color='blue')
 
-    
-    
     ax.set_xlabel("pH", fontsize=14)
-    ax.set_ylabel("Potential (V vs SHE)", fontsize=14)
+    ax.set_ylabel(r"Potential (V vs Zn/Zn$^{2+}$)", fontsize=14)
     ax.set_xticks(np.arange(args.pHmin, args.pHmax + 0.1, 2))
     ax.tick_params(axis='both', labelsize=14)
     

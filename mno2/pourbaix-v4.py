@@ -364,10 +364,13 @@ def main():
                     energy_ev = energy / calmol
                     comp = Ion.from_formula(ion_formula)
                     concentration = 1e-6
-                    if args.conc and ion_formula in ['Zn++', 'Mn++']:
-                    # if args.conc:
+                    if args.conc:
                         energy_ev = energy_ev + const * (log10(1) - log10(1e-6))
                         concentration = 1.0
+                    else:
+                        if ion_formula in ['Zn++', 'Mn++']:
+                            energy_ev = energy_ev + const * (log10(1) - log10(1e-6))
+                            concentration = 1.0
                     entry = PourbaixEntry(IonEntry(comp, energy_ev), concentration=concentration)
                     ion_entries.append(entry)
                 except Exception as e:
@@ -603,9 +606,13 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
             'Mn8HO16': 'gold',
             'ZnMnO2': 'greenyellow',
             'ZnMn2O4': 'greenyellow',
+            'ZnMn3O6': 'greenyellow',
+            'Zn2Mn3O6': 'greenyellow',
             'ZnMn4O8': 'greenyellow',
             'ZnMn8O16': 'greenyellow',
             'MnZnO2': 'greenyellow',
+            'Mn3ZnO6': 'greenyellow',
+            'Mn3Zn2O8': 'greenyellow',
             'Mn2ZnO4': 'greenyellow',
             'Mn4ZnO8': 'greenyellow',
             'Mn8ZnO16': 'greenyellow',
