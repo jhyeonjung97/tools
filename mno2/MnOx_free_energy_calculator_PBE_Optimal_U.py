@@ -140,7 +140,7 @@ S_MnOH2_PBE = 0.0008545 #eV/atom/K close to 23.7*4.184/1000/96.485=0.00102773
 ################################
 #MnOxHy Bulk Energies (eV/fu) (PBE+U, U=3.75)
 Mn_metal = -5.929491398 #PBE
-Zn_metal = -1.10773959 #PBE
+Zn_metal = -1.10773959-0.1286446873 #PBE, added by Hailey
 B_MnOH2 = -30.2613637+MnOH2_ZPE
 
 
