@@ -261,7 +261,7 @@ def main():
     print(f"✓ Structure files processed ({elapsed:.1f} seconds)")
     
     # Determine unique elements for thermodynamic data
-    unique_elements = [el for el in sorted_elements if el not in ['H', 'O']]
+    # unique_elements = [el for el in sorted_elements if el not in ['H', 'O']]
     unique_elements = ['Mn', 'Zn']
     
     # ========================================
@@ -273,7 +273,7 @@ def main():
         if args.simple:
             thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data_simple.json')
         else:
-            thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data_evan2.json')
+            thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data.json')
         if not os.path.exists(thermo_data_path):
             thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data.jsonc')
             
@@ -326,15 +326,15 @@ def main():
 
     exp_entries = []
     
-    exp_entries.append(PourbaixEntry(ComputedEntry('MnO2', -465.138/kjmol), entry_id='B-MnO2_exp'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('MnO2', -465.138/kjmol), entry_id='B-MnO2_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('MnOOH', -557.7272/kjmol), entry_id='B-MnOOH_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn(OH)2', -615.63376/kjmol), entry_id='D-Mn(OH)2_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn3O4', -1283.232/kjmol), entry_id='Mn3O4_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn2O3', -881.114/kjmol), entry_id='Mn2O3_exp'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn8O16', -481.6435639588431*8/kjmol), entry_id='ZnMn8O16'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn4O8', -516.324975188399*4/kjmol), entry_id='ZnMn4O8'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -584.5695268490117*2/kjmol), entry_id='ZnMn2O4'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMnO2', -584.1993931540368/kjmol), entry_id='ZnMnO2'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn8O16', -481.6435639588431*8/kjmol), entry_id='A-ZnMn8O16'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn4O8', -516.324975188399*4/kjmol), entry_id='Sp-ZnMn4O8'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -584.5695268490117*2/kjmol), entry_id='Sp-ZnMn2O4')) # -590.7756684152241
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMnO2', -584.1993931540368/kjmol), entry_id='D-ZnMnO2'))
     # exp_entries.append(PourbaixEntry(ComputedEntry('HMn8O16', -472.454106166424*8/kjmol), entry_id='HMn8O16'))
     # exp_entries.append(PourbaixEntry(ComputedEntry('HMn4O8', -482.1357496267614*4/kjmol), entry_id='HMn4O8'))
     # exp_entries.append(PourbaixEntry(ComputedEntry('HMn2O4', -505.35005103608654*2/kjmol), entry_id='HMn2O4'))
@@ -364,8 +364,8 @@ def main():
                     energy_ev = energy / calmol
                     comp = Ion.from_formula(ion_formula)
                     concentration = 1e-6
-                    # if args.conc and ion_formula in ['Zn++', 'Mn++']:
-                    if args.conc:
+                    if args.conc and ion_formula in ['Zn++', 'Mn++']:
+                    # if args.conc:
                         energy_ev = energy_ev + const * (log10(1) - log10(1e-6))
                         concentration = 1.0
                     entry = PourbaixEntry(IonEntry(comp, energy_ev), concentration=concentration)
