@@ -262,6 +262,7 @@ def main():
     
     # Determine unique elements for thermodynamic data
     unique_elements = [el for el in sorted_elements if el not in ['H', 'O']]
+    unique_elements = ['Mn', 'Zn']
     
     # ========================================
     # SECTION 8: THERMODYNAMIC DATA LOADING
@@ -337,18 +338,18 @@ def main():
     # exp_entries.append(PourbaixEntry(ComputedEntry('Mn(OH)2', -604.871812020137/kjmol), entry_id='D-Mn(OH)2', concentration=1))
     # exp_entries.append(PourbaixEntry(ComputedEntry('Mn3O4', -1283.232/kjmol), entry_id='Mn3O4', concentration=1))
     # exp_entries.append(PourbaixEntry(ComputedEntry('Mn2O3', -881.114/kjmol), entry_id='Mn2O3', concentration=1))
-    exp_entries.append(PourbaixEntry(ComputedEntry('MnO2', -465.138/kjmol), entry_id='B-MnO2_exp', concentration=1))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('MnO2', -465.138/kjmol), entry_id='B-MnO2_exp', concentration=1))
     exp_entries.append(PourbaixEntry(ComputedEntry('MnOOH', -557.7272/kjmol), entry_id='B-MnOOH_exp', concentration=1))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn(OH)2', -615.63376/kjmol), entry_id='D-Mn(OH)2_exp', concentration=1))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn3O4', -1283.232/kjmol), entry_id='Mn3O4_exp', concentration=1))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn2O3', -881.114/kjmol), entry_id='Mn2O3_exp', concentration=1))
-    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn8O16', -481.6435639588431*8/kjmol), entry_id='ZnMn8O16', concentration=1))
-    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn4O8', -516.324975188399*4/kjmol), entry_id='ZnMn4O8', concentration=1))
-    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -584.5695268490117*2/kjmol), entry_id='ZnMn2O4', concentration=1))
-    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMnO2', -584.1993931540368/kjmol), entry_id='ZnMnO2', concentration=1))
-    exp_entries.append(PourbaixEntry(ComputedEntry('HMn8O16', -472.454106166424*8/kjmol), entry_id='HMn8O16', concentration=1))
-    exp_entries.append(PourbaixEntry(ComputedEntry('HMn4O8', -482.1357496267614*4/kjmol), entry_id='HMn4O8', concentration=1))
-    exp_entries.append(PourbaixEntry(ComputedEntry('HMn2O4', -505.35005103608654*2/kjmol), entry_id='HMn2O4', concentration=1))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn8O16', -481.6435639588431*8/kjmol), entry_id='ZnMn8O16', concentration=1))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn4O8', -516.324975188399*4/kjmol), entry_id='ZnMn4O8', concentration=1))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -584.5695268490117*2/kjmol), entry_id='ZnMn2O4', concentration=1))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMnO2', -584.1993931540368/kjmol), entry_id='ZnMnO2', concentration=1))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('HMn8O16', -472.454106166424*8/kjmol), entry_id='HMn8O16', concentration=1))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('HMn4O8', -482.1357496267614*4/kjmol), entry_id='HMn4O8', concentration=1))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('HMn2O4', -505.35005103608654*2/kjmol), entry_id='HMn2O4', concentration=1))
 
     print(f"  Bulk entries: {len(bulk_entries)}")
     

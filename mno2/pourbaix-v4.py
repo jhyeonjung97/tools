@@ -40,7 +40,6 @@ from pymatgen.core.composition import Composition
 from pymatgen.analysis.pourbaix_diagram import PourbaixEntry, PourbaixDiagram, PourbaixPlotter
 from pymatgen.analysis.pourbaix_diagram import IonEntry, PDEntry, ComputedEntry
 
-mpr = MPRester('GKTSHzQ7vI80w3OGAA0WThmeiG9OuX5w')
 plt.rcParams['font.family'] = 'Helvetica'
 plt.rcParams['font.sans-serif'] = ['Helvetica']
 
@@ -53,6 +52,7 @@ def load_jsonc(file_path):
     # Remove single-line comments (// ...)
     content = re.sub(r'//.*', '', content)
     return json.loads(content)
+
 
 # Command line argument parser
 parser = argparse.ArgumentParser(description='Generate Pourbaix diagram using pymatgen plotter')
@@ -230,7 +230,7 @@ def main():
         # Normalize composition and energy by GCD
         normalized_comp_dict = {el: count // gcd_value for el, count in comp_dict.items()}
         normalized_energy = energy / gcd_value
-        
+        print("gcd_value: ", gcd_value)
         comp_str = ''.join([f"{el}{count}" if count > 1 else el 
                             for el, count in sorted(normalized_comp_dict.items())])
         
@@ -262,6 +262,7 @@ def main():
     
     # Determine unique elements for thermodynamic data
     unique_elements = [el for el in sorted_elements if el not in ['H', 'O']]
+    unique_elements = ['Mn', 'Zn']
     
     # ========================================
     # SECTION 8: THERMODYNAMIC DATA LOADING
@@ -272,7 +273,7 @@ def main():
         if args.simple:
             thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data_simple.json')
         else:
-            thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data.json')
+            thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data_evan2.json')
         if not os.path.exists(thermo_data_path):
             thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data.jsonc')
             
@@ -325,24 +326,18 @@ def main():
 
     exp_entries = []
     
-    # DFT-calculated data
-    # exp_entries.append(PourbaixEntry(ComputedEntry('MnO2', -465.71638408058675/kjmol), entry_id='A-MnO2'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('MnOOH', -558.8619486482868/kjmol), entry_id='D-MnOOH'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('Mn(OH)2', -604.871812020137/kjmol), entry_id='D-Mn(OH)2'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('Mn3O4', -1283.232/kjmol), entry_id='Mn3O4'))
-    # exp_entries.append(PourbaixEntry(ComputedEntry('Mn2O3', -881.114/kjmol), entry_id='Mn2O3'))
     exp_entries.append(PourbaixEntry(ComputedEntry('MnO2', -465.138/kjmol), entry_id='B-MnO2_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('MnOOH', -557.7272/kjmol), entry_id='B-MnOOH_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn(OH)2', -615.63376/kjmol), entry_id='D-Mn(OH)2_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn3O4', -1283.232/kjmol), entry_id='Mn3O4_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn2O3', -881.114/kjmol), entry_id='Mn2O3_exp'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn8O16', -481.6435639588431*8/kjmol), entry_id='ZnMn8O16'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn4O8', -516.324975188399*4/kjmol), entry_id='ZnMn4O8'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -584.5695268490117*2/kjmol), entry_id='ZnMn2O4'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMnO2', -584.1993931540368/kjmol), entry_id='ZnMnO2'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('HMn8O16', -472.454106166424*8/kjmol), entry_id='HMn8O16'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('HMn4O8', -482.1357496267614*4/kjmol), entry_id='HMn4O8'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('HMn2O4', -505.35005103608654*2/kjmol), entry_id='HMn2O4'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn8O16', -481.6435639588431*8/kjmol), entry_id='ZnMn8O16'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn4O8', -516.324975188399*4/kjmol), entry_id='ZnMn4O8'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -584.5695268490117*2/kjmol), entry_id='ZnMn2O4'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMnO2', -584.1993931540368/kjmol), entry_id='ZnMnO2'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('HMn8O16', -472.454106166424*8/kjmol), entry_id='HMn8O16'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('HMn4O8', -482.1357496267614*4/kjmol), entry_id='HMn4O8'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('HMn2O4', -505.35005103608654*2/kjmol), entry_id='HMn2O4'))
 
     print(f"  Bulk entries: {len(bulk_entries)}")
     
@@ -369,8 +364,9 @@ def main():
                     energy_ev = energy / calmol
                     comp = Ion.from_formula(ion_formula)
                     concentration = 1e-6
-                    if args.conc and ion_formula in ['Zn++', 'Mn++']:
-                        # energy_ev = energy_ev + const * (log10(1) - log10(1e-6))
+                    # if args.conc and ion_formula in ['Zn++', 'Mn++']:
+                    if args.conc:
+                        energy_ev = energy_ev + const * (log10(1) - log10(1e-6))
                         concentration = 1.0
                     entry = PourbaixEntry(IonEntry(comp, energy_ev), concentration=concentration)
                     ion_entries.append(entry)
@@ -408,7 +404,7 @@ def main():
     if args.exp:
         all_entries = exp_entries + solid_entries + ion_entries
     else:
-        all_entries = bulk_entries + solid_entries + ion_entries
+        all_entries = bulk_entries + exp_entries + solid_entries + ion_entries
         
     # Remove duplicate entry names, keep only the one with lowest energy
     print(f"\n[In progress] Removing duplicate entry_names...")
@@ -731,6 +727,7 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
     
     ax.set_xlabel("pH", fontsize=14)
     ax.set_ylabel("Potential (V vs SHE)", fontsize=14)
+    ax.set_xticks(np.arange(args.pHmin, args.pHmax + 0.1, 2))
     ax.tick_params(axis='both', labelsize=14)
     
     print(f"  - Saving plot...")
