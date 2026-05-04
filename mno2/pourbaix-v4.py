@@ -331,6 +331,8 @@ def main():
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn(OH)2', -615.63376/kjmol), entry_id='D-Mn(OH)2_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn3O4', -1283.232/kjmol), entry_id='Mn3O4_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn2O3', -881.114/kjmol), entry_id='Mn2O3_exp'))
+    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -12.61), entry_id='ZnMn2O4_jpcc'))
+    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn3O7', -17.83), entry_id='ZnMn3O7_jpcc'))
     # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn8O16', -481.6435639588431*8/kjmol), entry_id='A-ZnMn8O16'))
     # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn4O8', -516.324975188399*4/kjmol), entry_id='Sp-ZnMn4O8'))
     # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -584.5695268490117*2/kjmol), entry_id='Sp-ZnMn2O4')) # -590.7756684152241
@@ -605,7 +607,7 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
             'Mn4HO8': 'gold',
             'Mn8HO16': 'gold',
             'ZnMnO2': 'greenyellow',
-            'ZnMn2O4': 'greenyellow',
+            # 'ZnMn2O4': 'greenyellow',
             'ZnMn3O6': 'greenyellow',
             'Zn2Mn3O6': 'greenyellow',
             'ZnMn4O8': 'greenyellow',
@@ -613,9 +615,13 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
             'MnZnO2': 'greenyellow',
             'Mn3ZnO6': 'greenyellow',
             'Mn3Zn2O8': 'greenyellow',
-            'Mn2ZnO4': 'greenyellow',
+            # 'Mn2ZnO4': 'greenyellow',
             'Mn4ZnO8': 'greenyellow',
             'Mn8ZnO16': 'greenyellow',
+            'ZnMn2O4': 'lime',
+            'Mn2ZnO4': 'lime',
+            'ZnMn3O7': 'lime',
+            'Mn3ZnO7': 'lime',
             'Mn[+2]': 'white',
             'Mn[+3]': 'white',
             'MnO4[-1]': 'white',
@@ -625,10 +631,14 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
             'Mn(HO)2': 'lightblue',
             'MnOOH': 'lightblue',
             'MnO2': 'mediumpurple',
+            'MnHO3[-0.25]': 'rebeccapurple',
+            'MnHO3[-0.5]': 'rebeccapurple',
+            'Mn2HO5[-0.25]': 'rebeccapurple',
+            'Mn2HO5[-0.5]': 'rebeccapurple',
             'Mn2O3': 'silver',
             'Mn3O4': 'silver',
             'Mn': 'silver',
-        }        
+        }             
         # for color_group in color_groups:
         #     print(f"  - {color_group}: {color_groups[color_group]}")
 
