@@ -258,6 +258,8 @@ def main():
         
         if 'MnO2' in label_name or 'Mn2O4' in label_name or 'Mn4O8' in label_name or 'Mn8O16' in label_name:
             normalized_energy += (ZPE_MnO2 - TdS_MnO2) * normalized_comp_dict['Mn']
+        elif 'H4MnO4' in label_name or 'H4Mn3O8' in label_name or 'H4Mn7O16' in label_name:
+            normalized_energy += (ZPE_MnO2 - TdS_MnO2) * (normalized_comp_dict['Mn']+1)
         elif 'MnOOH' in label_name:
             normalized_energy += (ZPE_MnOOH - TdS_MnOOH) * normalized_comp_dict['Mn']
         elif 'Mn(OH)2' in label_name:
@@ -268,6 +270,8 @@ def main():
             normalized_energy += (ZPE_Mn3O4 - TdS_Mn3O4) * normalized_comp_dict['Mn'] / 3
         elif 'Mn2O3' in label_name:
             normalized_energy += (ZPE_Mn2O3 - TdS_Mn2O3) * normalized_comp_dict['Mn'] / 2
+        else:
+            print("Gibbs correction not found for ", label_name)
             
         bulk_data.append({
             'atoms': atoms,
@@ -348,8 +352,10 @@ def main():
                             concentration = 1.0
                     if ion_formula == 'MnO4-':
                         energy_mno41 = energy_ev
+                        concentration_mno41 = concentration
                     elif ion_formula == 'MnO4--':
                         energy_mno42 = energy_ev
+                        concentration_mno42 = concentration
                     entry = PourbaixEntry(IonEntry(comp, energy_ev), concentration=concentration)
                     ion_entries.append(entry)
                 except Exception as e:
@@ -378,13 +384,12 @@ def main():
         if 'H4' in data['name']:
             comp_str1 = comp_str + 'MnO4-'
             comp_str2 = comp_str + 'MnO4--'
-            print(f"comp_str1: {comp_str1}, comp_str2: {comp_str2}")
             comp1 = Ion.from_formula(comp_str1)
             comp2 = Ion.from_formula(comp_str2)
-            formation_energy1 = formation_energy + energy_mno41 / 4
-            formation_energy2 = formation_energy + energy_mno42 / 4
-            entry1 = PourbaixEntry(IonEntry(comp1, formation_energy1), entry_id=data['name'] + '_1')
-            entry2 = PourbaixEntry(IonEntry(comp2, formation_energy2), entry_id=data['name'] + '_2')
+            formation_energy1 = formation_energy + energy_mno41
+            formation_energy2 = formation_energy + energy_mno42
+            entry1 = PourbaixEntry(IonEntry(comp1, formation_energy1), concentration=concentration_mno41, entry_id=data['name'] + '_MnO4-')
+            entry2 = PourbaixEntry(IonEntry(comp2, formation_energy2), concentration=concentration_mno42, entry_id=data['name'] + '_MnO4--')
             bulk_entries.append(entry1)
             bulk_entries.append(entry2)
         else:

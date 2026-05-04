@@ -230,11 +230,12 @@ def main():
         # Normalize composition and energy by GCD
         normalized_comp_dict = {el: count // gcd_value for el, count in comp_dict.items()}
         normalized_energy = energy / gcd_value
-        print("gcd_value: ", gcd_value)
         comp_str = ''.join([f"{el}{count}" if count > 1 else el 
                             for el, count in sorted(normalized_comp_dict.items())])
         
         if 'MnO2' in label_name or 'Mn2O4' in label_name or 'Mn4O8' in label_name or 'Mn8O16' in label_name:
+            normalized_energy += (ZPE_MnO2 - TdS_MnO2) * normalized_comp_dict['Mn']
+        elif 'H4MnO4' in label_name or 'H4Mn3O8' in label_name or 'H4Mn7O16' in label_name:
             normalized_energy += (ZPE_MnO2 - TdS_MnO2) * normalized_comp_dict['Mn']
         elif 'MnOOH' in label_name:
             normalized_energy += (ZPE_MnOOH - TdS_MnOOH) * normalized_comp_dict['Mn']
@@ -246,6 +247,8 @@ def main():
             normalized_energy += (ZPE_Mn3O4 - TdS_Mn3O4) * normalized_comp_dict['Mn'] / 3
         elif 'Mn2O3' in label_name:
             normalized_energy += (ZPE_Mn2O3 - TdS_Mn2O3) * normalized_comp_dict['Mn'] / 2
+        else:
+            print("Gibbs correction not found for ", label_name)
             
         bulk_data.append({
             'atoms': atoms,
@@ -254,7 +257,7 @@ def main():
             'name': label_name,
             'json_basename': json_basename
         })
-        print(f"composition: {comp_str} (normalized by GCD={gcd_value}), energy: {normalized_energy:.6f} eV/atom, name: {label_name}")
+        # print(f"composition: {comp_str} (normalized by GCD={gcd_value}), energy: {normalized_energy:.6f} eV/atom, name: {label_name}")
         # print(f"composition: {comp_str}, energy: {energy:.6f} eV/atom, name: {label_name}")
     
     elapsed = time.time() - start_time
