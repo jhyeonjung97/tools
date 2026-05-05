@@ -270,29 +270,41 @@ def main():
         comp_str = ''.join([f"{el}{count}" if count > 1 else el 
                             for el, count in sorted(normalized_comp_dict.items())])
         
-        if 'MnO2' in label_name or 'Mn3O6' in label_name or 'Mn2O4' in label_name or 'Mn4O8' in label_name or 'Mn8O16' in label_name:
-            normalized_energy += (ZPE_MnO2 - TdS_MnO2) * normalized_comp_dict['Mn']
-        elif 'H4MnO4' in label_name or 'H4Mn3O8' in label_name or 'H4Mn7O16' in label_name:
-            normalized_energy += (ZPE_MnO2 - TdS_MnO2) * (normalized_comp_dict['Mn']+1)
-        elif label_name == 'C-ZnMn3O7':
-            normalized_energy += (ZPE_MnO2 - TdS_MnO2)*2 + (ZPE_Mn2O3 - TdS_Mn2O3) # + (zpeoh + cvoh - tsoh + zpeh + cvh - tsh) * 3 +1.0
-            # normalized_energy += (ZPE_MnO2 - TdS_MnO2)*2 + (ZPE_Mn2O3 - TdS_Mn2O3) + (zpeoh + cvoh - tsoh + zpeh + cvh - tsh) * 3
-        elif 'ZnMn3O7' in label_name:
-            normalized_energy += (ZPE_MnO2 - TdS_MnO2) * 3.5
-        elif 'Zn2Mn3O8' in label_name:
-            normalized_energy += (ZPE_MnO2 - TdS_MnO2) * 4
-        elif 'MnOOH' in label_name:
-            normalized_energy += (ZPE_MnOOH - TdS_MnOOH) * normalized_comp_dict['Mn']
-        elif 'Mn(OH)2' in label_name:
-            normalized_energy += (ZPE_MnOH2 - TdS_MnOH2) * normalized_comp_dict['Mn']
-        elif 'MnO' in label_name:
-            normalized_energy += (ZPE_MnO - TdS_MnO) * normalized_comp_dict['Mn']
-        elif 'Mn3O4' in label_name:
-            normalized_energy += (ZPE_Mn3O4 - TdS_Mn3O4) * normalized_comp_dict['Mn'] / 3
-        elif 'Mn2O3' in label_name:
-            normalized_energy += (ZPE_Mn2O3 - TdS_Mn2O3) * normalized_comp_dict['Mn'] / 2
+        if 'Zn' in label_name:
+            if label_name == 'C-ZnMn3O7':
+                normalized_energy += (ZPE_MnO2 - TdS_MnO2)*2 + (ZPE_Mn2O3 - TdS_Mn2O3) + (zpeoh + cvoh - tsoh + zpeh + cvh - tsh) * 3 +1.0
+                # normalized_energy += (ZPE_MnO2 - TdS_MnO2)*2 + (ZPE_Mn2O3 - TdS_Mn2O3) + (zpeoh + cvoh - tsoh + zpeh + cvh - tsh) * 3
+            elif 'ZnMnO2' in label_name:
+                normalized_energy += (ZPE_MnO - TdS_MnO) * 2
+            elif 'ZnMn2O4' in label_name:
+                normalized_energy += (ZPE_Mn3O4 - TdS_Mn3O4)
+            elif 'ZnMn4O8' in label_name:
+                normalized_energy += (ZPE_MnO2 - TdS_MnO2) * 3 + (ZPE_MnO - TdS_MnO) * 2
+            elif 'ZnMn8O16' in label_name:
+                normalized_energy += (ZPE_MnO2 - TdS_MnO2) * 7 + (ZPE_MnO - TdS_MnO) * 2
+            elif 'ZnMn3O6' in label_name:
+                normalized_energy += (ZPE_MnO2 - TdS_MnO2) * 2 + (ZPE_MnO - TdS_MnO) * 2
+                # normalized_energy += (ZPE_Mn2O3 - TdS_Mn2O3) * 2
+            elif 'Zn2Mn3O6' in label_name:
+                normalized_energy += (ZPE_MnO2 - TdS_MnO2) * 1 + (ZPE_MnO - TdS_MnO) * 4
+                # normalized_energy += (ZPE_Mn3O4 - TdS_Mn3O4) * 1 + (ZPE_MnO - TdS_MnO) * 2
         else:
-            print("Gibbs correction not found for ", label_name)
+            if 'MnO2' in label_name or 'Mn3O6' in label_name or 'Mn2O4' in label_name or 'Mn4O8' in label_name or 'Mn8O16' in label_name:
+                normalized_energy += (ZPE_MnO2 - TdS_MnO2) * normalized_comp_dict['Mn']
+            elif 'H4MnO4' in label_name or 'H4Mn3O8' in label_name or 'H4Mn7O16' in label_name:
+                normalized_energy += (ZPE_MnO2 - TdS_MnO2) * (normalized_comp_dict['Mn']+1)
+            elif 'MnOOH' in label_name:
+                normalized_energy += (ZPE_MnOOH - TdS_MnOOH) * normalized_comp_dict['Mn']
+            elif 'Mn(OH)2' in label_name:
+                normalized_energy += (ZPE_MnOH2 - TdS_MnOH2) * normalized_comp_dict['Mn']
+            elif 'MnO' in label_name:
+                normalized_energy += (ZPE_MnO - TdS_MnO) * normalized_comp_dict['Mn']
+            elif 'Mn3O4' in label_name:
+                normalized_energy += (ZPE_Mn3O4 - TdS_Mn3O4) * normalized_comp_dict['Mn'] / 3
+            elif 'Mn2O3' in label_name:
+                normalized_energy += (ZPE_Mn2O3 - TdS_Mn2O3) * normalized_comp_dict['Mn'] / 2
+            else:
+                print("Gibbs correction not found for ", label_name)
             
         bulk_data.append({
             'atoms': atoms,
@@ -424,8 +436,8 @@ def main():
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn(OH)2', -615.63376/kjmol), entry_id='D-Mn(OH)2_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn3O4', -1283.232/kjmol), entry_id='Mn3O4_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn2O3', -881.114/kjmol), entry_id='Mn2O3_exp'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -12.61), entry_id='ZnMn2O4_jpcc'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn3O7', -17.83), entry_id='ZnMn3O7_jpcc'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -12.61), entry_id='ZnMn2O4_jpcc'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn3O7', -17.83), entry_id='ZnMn3O7_jpcc'))
 
     print(f"  Bulk entries: {len(bulk_entries)}")
     
