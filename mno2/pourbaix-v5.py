@@ -424,8 +424,8 @@ def main():
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn(OH)2', -615.63376/kjmol), entry_id='D-Mn(OH)2_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn3O4', -1283.232/kjmol), entry_id='Mn3O4_exp'))
     exp_entries.append(PourbaixEntry(ComputedEntry('Mn2O3', -881.114/kjmol), entry_id='Mn2O3_exp'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -12.61), entry_id='ZnMn2O4_jpcc'))
-    exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn3O7', -17.83), entry_id='ZnMn3O7_jpcc'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -12.61), entry_id='ZnMn2O4_jpcc'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn3O7', -17.83), entry_id='ZnMn3O7_jpcc'))
 
     print(f"  Bulk entries: {len(bulk_entries)}")
     
