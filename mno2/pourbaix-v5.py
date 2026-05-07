@@ -191,6 +191,8 @@ TdS_MnOOH = -0.8010447219775086
 TdS_MnOH2 = -0.8303986596880345
 TdS_Mn3O4 = -1.084090519251697
 TdS_Mn2O3 = -0.8075002699901537
+TdS_ZnMn3O7_3H2O = -5.045770/6
+
 
 ZPE_MnO = 0.2867
 ZPE_MnO2 = 0.2867
@@ -198,6 +200,7 @@ ZPE_MnOOH = 0.5779
 ZPE_MnOH2 = 0.8617
 ZPE_Mn3O4 = 0.6573
 ZPE_Mn2O3 = 0.4937
+ZPE_ZnMn3O7_3H2O = 17.261094/6
 
 def main():
     # ========================================
@@ -272,10 +275,11 @@ def main():
         
         if 'MnO2' in label_name or 'Mn3O6' in label_name or 'Mn2O4' in label_name or 'Mn4O8' in label_name or 'Mn8O16' in label_name:
             normalized_energy += (ZPE_MnO2 - TdS_MnO2) * normalized_comp_dict['Mn']
-        elif 'H4MnO4' in label_name or 'H4Mn3O8' in label_name or 'H4Mn7O16' in label_name:
+        elif 'H4MnO4' in label_name or 'H4Mn3O8' in label_name or 'H4Mn5O12' in label_name or 'H4Mn7O16' in label_name:
             normalized_energy += (ZPE_MnO2 - TdS_MnO2) * (normalized_comp_dict['Mn']+1)
         elif label_name == 'C-ZnMn3O7':
-            normalized_energy += (ZPE_MnO2 - TdS_MnO2)*2 + (ZPE_Mn2O3 - TdS_Mn2O3) # + (zpeoh + cvoh - tsoh + zpeh + cvh - tsh) * 3 +1.0
+            normalized_energy += (ZPE_ZnMn3O7_3H2O - TdS_ZnMn3O7_3H2O) * normalized_comp_dict['Zn']
+            print(f"ZPE_ZnMn3O7_3H2O: {ZPE_ZnMn3O7_3H2O}, TdS_ZnMn3O7_3H2O: {TdS_ZnMn3O7_3H2O}, normalized_comp_dict['Zn']: {normalized_comp_dict['Zn']}")
             # normalized_energy += (ZPE_MnO2 - TdS_MnO2)*2 + (ZPE_Mn2O3 - TdS_Mn2O3) + (zpeoh + cvoh - tsoh + zpeh + cvh - tsh) * 3
         elif 'ZnMn3O7' in label_name:
             normalized_energy += (ZPE_MnO2 - TdS_MnO2) * 3.5
@@ -393,14 +397,24 @@ def main():
 
         for el, count in comp.items():
             el_symbol = str(el)
-            if el_symbol == 'H':
-                formation_energy -= count * gh
-            elif el_symbol == 'O':
-                formation_energy -= count * go
-            elif el_symbol in ref_energies:
-                formation_energy -= count * ref_energies[el_symbol]
+            if 'C-ZnMn3O7' in data['name']:
+                if el_symbol == 'H':
+                    formation_energy -= count * (gh2o - go)/2
+                elif el_symbol == 'O':
+                    formation_energy -= count * go
+                elif el_symbol in ref_energies:
+                    formation_energy -= count * ref_energies[el_symbol]
+                else:
+                    print(f"Warning: Reference energy for {el_symbol} not found in reference_energies.json")
             else:
-                print(f"Warning: Reference energy for {el_symbol} not found in reference_energies.json")
+                if el_symbol == 'H':
+                    formation_energy -= count * gh
+                elif el_symbol == 'O':
+                    formation_energy -= count * go
+                elif el_symbol in ref_energies:
+                    formation_energy -= count * ref_energies[el_symbol]
+                else:
+                    print(f"Warning: Reference energy for {el_symbol} not found in reference_energies.json")
 
         if 'H4' in data['name']:
             comp_str1 = comp_str + 'MnO4-'
