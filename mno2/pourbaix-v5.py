@@ -191,7 +191,7 @@ TdS_MnOOH = -0.8010447219775086
 TdS_MnOH2 = -0.8303986596880345
 TdS_Mn3O4 = -1.084090519251697
 TdS_Mn2O3 = -0.8075002699901537
-TdS_ZnMn3O7_3H2O = -5.045770/6
+TdS_ZnMn3O7_3H2O = 5.045770/6
 
 
 ZPE_MnO = 0.2867
@@ -277,7 +277,7 @@ def main():
             normalized_energy += (ZPE_MnO2 - TdS_MnO2) * normalized_comp_dict['Mn']
         elif 'H4MnO4' in label_name or 'H4Mn3O8' in label_name or 'H4Mn5O12' in label_name or 'H4Mn7O16' in label_name:
             normalized_energy += (ZPE_MnO2 - TdS_MnO2) * (normalized_comp_dict['Mn']+1)
-        elif label_name == 'C-ZnMn3O7':
+        elif label_name == 'C-ZnMn3O7-3H2O':
             normalized_energy += (ZPE_ZnMn3O7_3H2O - TdS_ZnMn3O7_3H2O) * normalized_comp_dict['Zn']
             print(f"ZPE_ZnMn3O7_3H2O: {ZPE_ZnMn3O7_3H2O}, TdS_ZnMn3O7_3H2O: {TdS_ZnMn3O7_3H2O}, normalized_comp_dict['Zn']: {normalized_comp_dict['Zn']}")
             # normalized_energy += (ZPE_MnO2 - TdS_MnO2)*2 + (ZPE_Mn2O3 - TdS_Mn2O3) + (zpeoh + cvoh - tsoh + zpeh + cvh - tsh) * 3
@@ -369,8 +369,9 @@ def main():
                     comp = Ion.from_formula(ion_formula)
                     concentration = 1e-6
                     if args.conc:
-                        energy_ev = energy_ev + const * (log10(1) - log10(1e-6))
-                        concentration = 1.0
+                        if ion_formula in ['Zn++', 'Mn++', 'MnO4-']:
+                            energy_ev = energy_ev + const * (log10(1) - log10(1e-6))
+                            concentration = 1.0
                     else:
                         if ion_formula in ['Zn++', 'Mn++']:
                             energy_ev = energy_ev + const * (log10(1) - log10(1e-6))
@@ -667,27 +668,31 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
 
         color_groups = {
             'HMn2O4': 'gold',
+            'HMn3O6': 'gold',
             'HMn4O8': 'gold',
+            'HMn5O12': 'gold',
             'HMn8O16': 'gold',
             'Mn2HO4': 'gold',
+            'Mn3HO6': 'gold',
             'Mn4HO8': 'gold',
+            'Mn5HO12': 'gold',
             'Mn8HO16': 'gold',
-            'ZnMnO2': 'greenyellow',
-            # 'ZnMn2O4': 'greenyellow',
-            'ZnMn3O6': 'greenyellow',
-            'Zn2Mn3O6': 'greenyellow',
-            'ZnMn4O8': 'greenyellow',
-            'ZnMn8O16': 'greenyellow',
-            'MnZnO2': 'greenyellow',
-            'Mn3ZnO6': 'greenyellow',
-            'Mn3Zn2O8': 'greenyellow',
-            # 'Mn2ZnO4': 'greenyellow',
-            'Mn4ZnO8': 'greenyellow',
-            'Mn8ZnO16': 'greenyellow',
-            'ZnMn2O4': 'lime',
-            'Mn2ZnO4': 'lime',
-            'ZnMn3O7': 'lime',
-            'Mn3ZnO7': 'lime',
+            'ZnMnO2': 'lime',
+            # 'ZnMn2O4': 'lime',
+            'ZnMn3O6': 'lime',
+            'Zn2Mn3O6': 'lime',
+            'ZnMn4O8': 'lime',
+            'ZnMn8O16': 'lime',
+            'MnZnO2': 'lime',
+            'Mn3ZnO6': 'lime',
+            'Mn3Zn2O8': 'lime',
+            # 'Mn2ZnO4': 'lime',
+            'Mn4ZnO8': 'lime',
+            'Mn8ZnO16': 'lime',
+            'ZnMn2O4': 'greenyellow',
+            'Mn2ZnO4': 'greenyellow',
+            'ZnMn3O7': 'greenyellow',
+            'Mn3ZnO7': 'greenyellow',
             'Mn[+2]': 'white',
             'Mn[+3]': 'white',
             'MnO4[-1]': 'white',
@@ -701,6 +706,8 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
             'MnHO3[-0.5]': 'rebeccapurple',
             'Mn2HO5[-0.25]': 'rebeccapurple',
             'Mn2HO5[-0.5]': 'rebeccapurple',
+            'Mn3(HO4)2[-1]': 'rebeccapurple',
+            'Mn3(HO4)2[-0.5]': 'rebeccapurple',
             'Mn2O3': 'silver',
             'Mn3O4': 'silver',
             'Mn': 'silver',

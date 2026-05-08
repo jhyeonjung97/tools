@@ -5,18 +5,15 @@ from collections import Counter
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import seaborn as sns
 from ase.io import read
 
 
 ZN_REFERENCE_ENERGY = -1.2363842773  # eV per Zn atom
 ANNOTATION_INCLUDE_ZN_STEMS = {
-    "sp-znmn4o8",
     "e-znmn4o8",
-    "e-znmn2o4",
-    "r-znmn2o4",
     "h-znmn2o4",
     "sp-znmn2o4",
-    "sp-znmno2",
     "d-znmno2",
 }
 
@@ -27,7 +24,7 @@ def get_counts(atoms):
 
 def normalize_phase_name(phase: str) -> str:
     """Normalize aliases used in filenames."""
-    if phase in {"Sp", "Spinel"}:
+    if phase in {"Sp", "Spinel", "H"}:
         return "Spinel"
     return phase
 
@@ -48,7 +45,7 @@ def display_phase_name(phase: str) -> str:
 def display_structure_name(name: str) -> str:
     """Display label for structure names in annotations."""
     if name.lower() == "h-znmn2o4":
-        return "Hetaerolite (ZnMn2O4)"
+        return "Sp-ZnMn2O4 (Hetaerolite)"
 
     prefix_map = {
         "A-": "α-",
@@ -185,13 +182,19 @@ def main():
     parser.add_argument(
         "--sherry-dir",
         type=str,
-        default=str(Path(__file__).resolve().parent / "figures" / "sherry"),
-        help="Directory containing sherry JSON files (default: ./figures/sherry)",
+        default=str(Path.cwd()),
+        help="Directory containing sherry JSON files (default: current working directory)",
     )
     parser.add_argument(
         "--include-no-dash",
         action="store_true",
         help="Include files whose JSON filename has no '-' (default: excluded).",
+    )
+    parser.add_argument(
+        "--palette",
+        type=str,
+        default="colorblind",
+        help="Color palette name (seaborn or matplotlib, default: colorblind)",
     )
     args = parser.parse_args()
 
@@ -217,9 +220,10 @@ def main():
         print(f"  {name:30s} {energy: .8f}")
 
     plt.figure(figsize=(10, 6))
-    phases = sorted({p["phase"] for p in points})
-    cmap = plt.get_cmap("tab20")
-    phase_colors = {phase: cmap(i % 20) for i, phase in enumerate(phases)}
+    phase_order = ["A", "B", "D", "E", "G", "NO_PHASE", "R", "H", "Sp"]
+    phases = sorted({p["phase"] for p in points}, key=lambda x: phase_order.index(x) if x in phase_order else len(phase_order))
+    palette = sns.color_palette(args.palette, len(phases))
+    phase_colors = {phase: palette[i] for i, phase in enumerate(phases)}
     mno2_by_phase = {}
     for energy, name in mn02_candidates:
         stem = name.replace(".json", "")
@@ -233,19 +237,27 @@ def main():
         xs = [p["x"] for p in phase_points]
         ys = [p["y"] for p in phase_points]
 
-        # Connect phase-specific MnO2 -> phase points -> shared Zn endpoint.
-        # Skip line connection for H phase.
-        if phase != "H":
-            line_xs = []
-            line_ys = []
-            if phase in mno2_by_phase:
-                line_xs.append(0.0)
-                line_ys.append(mno2_by_phase[phase] - mn02_ref_energy)
-            line_xs.extend(xs)
-            line_ys.extend(ys)
-            line_xs.append(1.0)
-            line_ys.append(0.0)
-            plt.plot(line_xs, line_ys, color=phase_colors[phase], lw=1.0, alpha=0.85, zorder=2)
+        # Draw phase-specific lower convex hull instead of simple line connections.
+        phase_hull_candidates = list(phase_points)
+        if phase in mno2_by_phase:
+            phase_hull_candidates.append(
+                {
+                    "name": f"{phase}-MnO2_ref",
+                    "x": 0.0,
+                    "y": mno2_by_phase[phase] - mn02_ref_energy,
+                }
+            )
+        phase_hull_candidates.append({"name": "Zn_ref", "x": 1.0, "y": 0.0})
+        phase_hull = lower_hull(phase_hull_candidates)
+        if len(phase_hull) >= 2:
+            plt.plot(
+                [p["x"] for p in phase_hull],
+                [p["y"] for p in phase_hull],
+                color=phase_colors[phase],
+                lw=1.2,
+                alpha=0.9,
+                zorder=2,
+            )
 
         plt.scatter(
             xs,
@@ -271,37 +283,49 @@ def main():
                 linewidths=0.3,
                 zorder=4,
             )
+            mn02_label = f"{display_phase_name(phase)}-MnO2"
+            xytext = (-6, 0)
+            ha = "right"
+            if phase == "D":
+                va = "bottom"
+            elif phase == "B":
+                va = "center"
+            elif phase == "G":
+                va = "bottom"
+            elif phase == "A":
+                va = "top"
+            else:
+                va = "center"
             plt.annotate(
-                subscript_digits(f"{display_phase_name(phase)}-MnO2"),
+                subscript_digits(mn02_label),
                 (0.0, y_mno2),
-                xytext=(-6, 0) if phase in {"G", "R"} else (6, 0),
+                xytext=xytext,
                 textcoords="offset points",
                 fontsize=9,
                 alpha=0.95,
-                va="center",
-                ha="right" if phase in {"G", "R"} else "left",
+                va=va,
+                ha=ha,
             )
 
     for p in points:
         if p["name"].lower() not in ANNOTATION_INCLUDE_ZN_STEMS:
             continue
-        is_left_label = p["name"].lower() == "sp-znmno2"
-        label_offset = (-6, 0) if is_left_label else (6, 0)
+        is_left = p["x"] <= 0.33
         plt.annotate(
             subscript_digits(display_structure_name(p["name"])),
             (p["x"], p["y"]),
-            xytext=label_offset,
+            xytext=(-6, 0) if is_left else (6, 0),
             textcoords="offset points",
             fontsize=9,
             alpha=0.9,
-            va="center",
-            ha="right" if is_left_label else "left",
+            va="top",
+            ha="right" if is_left else "left",
         )
 
     hx = [p["x"] for p in hull_points]
     hy = [p["y"] for p in hull_points]
-    plt.plot(hx, hy, "--", color="black", lw=1.0, label="lower convex hull", zorder=0)
-    plt.scatter([1.0], [0.0], s=55, marker="s", facecolors="white", edgecolors="black", linewidths=0.3, zorder=4)
+    plt.plot(hx, hy, "--", color="black", lw=1.0, label="overall", zorder=0)
+    plt.scatter([1.0], [0.0], s=55, marker="s", facecolors="silver", edgecolors="black", linewidths=0.3, zorder=4)
     plt.annotate(
         subscript_digits("Zn"),
         (1.0, 0.0),
@@ -312,14 +336,14 @@ def main():
         va="center",
     )
 
-    plt.axhline(0.0, color="silver", lw=0.8, ls="--", zorder=-1)
+    plt.plot([0.0, 1.0], [0.0, 0.0], color="silver", lw=0.5, linestyle="-", zorder=-1)
     plt.xlim(-0.1, 1.1)
     plt.ylim(-0.9, 0.3)
     plt.xlabel("Zn composition, Zn$_x$Mn$_{1-x}$O$_2$")
-    plt.ylabel("Formation energy (ΔE, eV/metal)")
-    plt.legend()
+    plt.ylabel(r"Formation energy ($\Delta E$, eV per $n_\mathrm{Mn}+n_{\mathrm{Zn}}$)")
+    plt.legend(loc="lower right")
     plt.tight_layout()
-    output_path = sherry_dir / "convex-hull-mno2-zn.png"
+    output_path = sherry_dir / f"convex-hull-mno2-zn-{args.palette}.png"
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
     print(f"Figure saved to: {output_path}")
     plt.show()
