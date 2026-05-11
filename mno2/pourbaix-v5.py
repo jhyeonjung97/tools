@@ -275,11 +275,14 @@ def main():
         
         if 'MnO2' in label_name or 'Mn3O6' in label_name or 'Mn2O4' in label_name or 'Mn4O8' in label_name or 'Mn8O16' in label_name:
             normalized_energy += (ZPE_MnO2 - TdS_MnO2) * normalized_comp_dict['Mn']
+            # if 'H(' in label_name:
+            #     print(label_name, "has H")
+            #     normalized_energy += (zpeh + cvh - tsh) * normalized_comp_dict['H']
         elif 'H4MnO4' in label_name or 'H4Mn3O8' in label_name or 'H4Mn5O12' in label_name or 'H4Mn7O16' in label_name:
+            # normalized_energy += (ZPE_MnO2 - TdS_MnO2) * (normalized_comp_dict['Mn']+1) + (zpeh + cvh - tsh) * (normalized_comp_dict['H'])
             normalized_energy += (ZPE_MnO2 - TdS_MnO2) * (normalized_comp_dict['Mn']+1)
         elif label_name == 'C-ZnMn3O7-3H2O':
             normalized_energy += (ZPE_ZnMn3O7_3H2O - TdS_ZnMn3O7_3H2O) * normalized_comp_dict['Zn']
-            print(f"ZPE_ZnMn3O7_3H2O: {ZPE_ZnMn3O7_3H2O}, TdS_ZnMn3O7_3H2O: {TdS_ZnMn3O7_3H2O}, normalized_comp_dict['Zn']: {normalized_comp_dict['Zn']}")
             # normalized_energy += (ZPE_MnO2 - TdS_MnO2)*2 + (ZPE_Mn2O3 - TdS_Mn2O3) + (zpeoh + cvoh - tsoh + zpeh + cvh - tsh) * 3
         elif 'ZnMn3O7' in label_name:
             normalized_energy += (ZPE_MnO2 - TdS_MnO2) * 3.5
@@ -677,22 +680,22 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
             'Mn4HO8': 'gold',
             'Mn5HO12': 'gold',
             'Mn8HO16': 'gold',
-            'ZnMnO2': 'lime',
-            # 'ZnMn2O4': 'lime',
-            'ZnMn3O6': 'lime',
-            'Zn2Mn3O6': 'lime',
-            'ZnMn4O8': 'lime',
-            'ZnMn8O16': 'lime',
-            'MnZnO2': 'lime',
-            'Mn3ZnO6': 'lime',
-            'Mn3Zn2O8': 'lime',
-            # 'Mn2ZnO4': 'lime',
-            'Mn4ZnO8': 'lime',
-            'Mn8ZnO16': 'lime',
+            'ZnMnO2': 'greenyellow',
             'ZnMn2O4': 'greenyellow',
+            'ZnMn3O6': 'greenyellow',
+            'Zn2Mn3O6': 'greenyellow',
+            'ZnMn4O8': 'greenyellow',
+            'ZnMn8O16': 'greenyellow',
+            'MnZnO2': 'greenyellow',
+            'Mn3ZnO6': 'greenyellow',
+            'Mn3Zn2O8': 'greenyellow',
             'Mn2ZnO4': 'greenyellow',
-            'ZnMn3O7': 'greenyellow',
-            'Mn3ZnO7': 'greenyellow',
+            'Mn4ZnO8': 'greenyellow',
+            'Mn8ZnO16': 'greenyellow',
+            # 'ZnMn2O4': 'lime',
+            # 'Mn2ZnO4': 'lime',
+            'ZnMn3O7': 'lime',
+            'Mn3ZnO7': 'lime',
             'Mn[+2]': 'white',
             'Mn[+3]': 'white',
             'MnO4[-1]': 'white',

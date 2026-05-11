@@ -378,7 +378,7 @@ def main():
     plt.plot([0.0, 1.0], [0.0, 0.0], color="silver", lw=0.5, linestyle="-", zorder=-1)
     plt.xlim(-0.1, 1.1)
     plt.ylim(-0.2, 0.3)
-    plt.xlabel(r"H$_4$ composition, (H$_4$)$_x$(Mn)$_{1-x}$O$_2$")
+    plt.xlabel(r"Ruetchi defect composition, (H$_2$O)$_{2x}$(MnO$_2$)$_{1-x}$")
     plt.ylabel(r"Formation energy ($\Delta E$, eV per $n_\mathrm{Mn}+n_{\mathrm{H}_4}$)")
     plt.legend(loc="upper right")
     plt.tight_layout()

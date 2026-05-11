@@ -220,6 +220,14 @@ def main():
         print(f"  {name:30s} {energy: .8f}")
 
     plt.figure(figsize=(10, 6))
+    plt.axvspan(
+        0.33,
+        1.1,
+        facecolor="whitesmoke",
+        zorder=-2,
+        linewidth=0,
+        edgecolor="none",
+    )
     phase_order = ["A", "B", "D", "E", "G", "NO_PHASE", "R", "H", "Sp"]
     phases = sorted({p["phase"] for p in points}, key=lambda x: phase_order.index(x) if x in phase_order else len(phase_order))
     palette = sns.color_palette(args.palette, len(phases))
@@ -339,7 +347,7 @@ def main():
     plt.plot([0.0, 1.0], [0.0, 0.0], color="silver", lw=0.5, linestyle="-", zorder=-1)
     plt.xlim(-0.1, 1.1)
     plt.ylim(-0.9, 0.3)
-    plt.xlabel("Zn composition, Zn$_x$Mn$_{1-x}$O$_2$")
+    plt.xlabel(r"Zn composition, Zn$_x$(MnO$_2$)$_{1-x}$")
     plt.ylabel(r"Formation energy ($\Delta E$, eV per $n_\mathrm{Mn}+n_{\mathrm{Zn}}$)")
     plt.legend(loc="lower right")
     plt.tight_layout()
