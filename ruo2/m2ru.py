@@ -18,7 +18,9 @@ target_idx = max(candidate_indices, key=lambda i: atoms.positions[i][2])
 atoms[target_idx].symbol = target_element
 
 magmoms = atoms.get_initial_magnetic_moments()
-if target_idx == 45:
+if target_idx == 59:
+    source_idx = 53
+elif target_idx == 45:
     source_idx = 44
 elif target_idx == 19:
     source_idx = 16
