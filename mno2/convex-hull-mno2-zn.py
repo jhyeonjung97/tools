@@ -29,8 +29,8 @@ MNO2_ANNOTATION_BY_PHASE = {row["phase"]: row for row in MNO2_ANNOTATIONS}
 # Selected hull scatter points: JSON stem (lowercase) + text offset / alignment
 ZN_STRUCTURE_ANNOTATIONS = [
     {"stem": "e-znmn4o8", "xytext": (-6, 0), "va": "top", "ha": "right"},
-    {"stem": "h-znmn2o4", "xytext": (6, 0), "va": "top", "ha": "left"},
-    {"stem": "sp-znmn2o4", "xytext": (6, 0), "va": "top", "ha": "left"},
+    {"stem": "h-znmn2o4", "xytext": (-6, 0), "va": "top", "ha": "right"},
+    {"stem": "sp-znmn2o4", "xytext": (-6, 0), "va": "top", "ha": "right"},
     {"stem": "d-znmno2", "xytext": (6, 0), "va": "top", "ha": "left"},
 ]
 
@@ -241,6 +241,13 @@ def main():
     for energy, name in mn02_candidates:
         print(f"  {name:30s} {energy: .8f}")
 
+    if args.half:
+        ZN_STRUCTURE_ANNOTATIONS = [
+            {"stem": "e-znmn4o8", "xytext": (-6, 0), "va": "top", "ha": "right"},
+            {"stem": "h-znmn2o4", "xytext": (-6, 0), "va": "top", "ha": "right"},
+            {"stem": "sp-znmn2o4", "xytext": (-6, 0), "va": "top", "ha": "right"},
+        ]
+
     fig_w = 5 if args.half else 10
     x_max = 0.5 if args.half else 1.1
     plt.figure(figsize=(fig_w, 6))
@@ -365,7 +372,7 @@ def main():
     plt.ylabel(r"Formation energy ($\Delta E$, eV per $n_\mathrm{Mn}+n_{\mathrm{Zn}}$)")
     plt.legend(loc="upper right" if args.half else "lower right")
     plt.tight_layout()
-    output_path = sherry_dir / f"convex-hull-mno2-zn-{args.palette}.png"
+    output_path = sherry_dir / f"convex-hull-mno2-zn-{args.palette}{'-half' if args.half else ''}.png"
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
     print(f"Figure saved to: {output_path}")
     plt.show()
