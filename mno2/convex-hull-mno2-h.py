@@ -368,6 +368,8 @@ def main():
 
     plt.plot([0.0, 1.0], [0.0, 0.0], color="silver", lw=0.5, linestyle="-", zorder=-1)
     plt.xlim(-0.1, x_max)
+    if args.half:
+        plt.xticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5])
     plt.ylim(-0.5, 0.3)
     plt.xlabel(r"Coleman defect composition, H$_x$(MnO$_2$)$_{1-x}$")
     plt.ylabel(r"Formation energy ($\Delta E$, eV per $n_\mathrm{Mn}+n_{\mathrm{H}}$)")

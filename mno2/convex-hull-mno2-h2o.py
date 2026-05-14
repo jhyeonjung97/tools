@@ -29,9 +29,9 @@ MNO2_ANNOTATION_BY_PHASE = {row["phase"]: row for row in MNO2_ANNOTATIONS}
 # Selected hull scatter points: JSON stem (lowercase) + text offset / alignment
 H2O_STRUCTURE_ANNOTATIONS = [
     {"stem": "r-h4mn3o8", "xytext": (6, 0), "va": "top", "ha": "left"},
-    {"stem": "a-h4mn7o16", "xytext": (-6, 0), "va": "top", "ha": "right"},
+    {"stem": "a-h4mn7o16", "xytext": (6, 0), "va": "top", "ha": "left"},
     {"stem": "r-h4mn7o16", "xytext": (-6, 0), "va": "top", "ha": "right"},
-    {"stem": "g-h4mn5o12", "xytext": (-6, 0), "va": "top", "ha": "right"},
+    {"stem": "g-h4mn5o12", "xytext": (6, 0), "va": "top", "ha": "left"},
 ]
 
 
@@ -402,6 +402,8 @@ def main():
 
     plt.plot([0.0, 1.0], [0.0, 0.0], color="silver", lw=0.5, linestyle="-", zorder=-1)
     plt.xlim(-0.1, x_max)
+    if args.half:
+        plt.xticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5])
     plt.ylim(-0.2, 0.3)
     plt.xlabel(r"Ruetchi defect composition, (H$_2$O)$_{2x}$(MnO$_2$)$_{1-x}$")
     plt.ylabel(r"Formation energy ($\Delta E$, eV per $n_\mathrm{Mn}+n_{\mathrm{H}_4}$)")

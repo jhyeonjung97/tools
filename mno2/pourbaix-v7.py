@@ -199,6 +199,17 @@ TdS_H3 = (TdS_MnOH2 - TdS_MnO2) / 2
 TdS_H = TdS_H2
 TdS_Mn = TdS_Mn3O4 - TdS_MnO2 * 2
 
+S_MnO2_PBE = 0.0006337 #eV/atom/K close to 53.049/1000/96.485=0.00054982
+S_MnOOH_PBE = 0.0005301 #eV/atom/K 
+S_MnOH2_PBE = 0.0008545 #eV/atom/K close to 23.7*4.184/1000/96.485=0.00102773
+
+S_MnO2_exp = 53.049/kjmol/1000 	#Barin 		#52.75 Robie and Hemingway (1995)
+S_Mn2O3_exp = 110.499/kjmol/1000 		#Barin J/molK 	#113.7 Robie and Hemingway (1995)
+S_Mn3O4_exp = 155.599/kjmol/1000 		#Barin
+S_MnOH2_exp = 23.7*kcalTokJ/kjmol/1000 	#Oswald & Asper
+S_MnO_exp = 59.710/kjmol/1000 		#Barin 
+S_Mn_exp = 32.008/kjmol/1000  	#Barin
+
 ZPE_MnO = 0.2867
 ZPE_MnO2 = 0.2867
 ZPE_MnOOH = 0.5779
@@ -691,22 +702,22 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
             'Mn4HO8': 'gold',
             'Mn5HO12': 'gold',
             'Mn8HO16': 'gold',
-            'ZnMnO2': 'lime',
-            'ZnMn2O4': 'lime',
-            'ZnMn3O6': 'lime',
-            'Zn2Mn3O6': 'lime',
-            'ZnMn4O8': 'lime',
-            'ZnMn8O16': 'lime',
-            'MnZnO2': 'lime',
-            'Mn3ZnO6': 'lime',
-            'Mn3Zn2O8': 'lime',
-            'Mn2ZnO4': 'lime',
-            'Mn4ZnO8': 'lime',
-            'Mn8ZnO16': 'lime',
-            # 'ZnMn2O4': 'greenyellow',
-            # 'Mn2ZnO4': 'greenyellow',
-            'ZnMn3O7': 'greenyellow',
-            'Mn3ZnO7': 'greenyellow',
+            'ZnMnO2': 'greenyellow',
+            'ZnMn2O4': 'greenyellow',
+            'ZnMn3O6': 'greenyellow',
+            'Zn2Mn3O6': 'greenyellow',
+            'ZnMn4O8': 'greenyellow',
+            'ZnMn8O16': 'greenyellow',
+            'MnZnO2': 'greenyellow',
+            'Mn3ZnO6': 'greenyellow',
+            'Mn3Zn2O8': 'greenyellow',
+            'Mn2ZnO4': 'greenyellow',
+            'Mn4ZnO8': 'greenyellow',
+            'Mn8ZnO16': 'greenyellow',
+            # 'ZnMn2O4': 'lime',
+            # 'Mn2ZnO4': 'lime',
+            'ZnMn3O7': 'lime',
+            'Mn3ZnO7': 'lime',
             'Mn[+2]': 'white',
             'Mn[+3]': 'white',
             'MnO4[-1]': 'white',

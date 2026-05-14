@@ -241,13 +241,6 @@ def main():
     for energy, name in mn02_candidates:
         print(f"  {name:30s} {energy: .8f}")
 
-    if args.half:
-        ZN_STRUCTURE_ANNOTATIONS = [
-            {"stem": "e-znmn4o8", "xytext": (-6, 0), "va": "top", "ha": "right"},
-            {"stem": "h-znmn2o4", "xytext": (-6, 0), "va": "top", "ha": "right"},
-            {"stem": "sp-znmn2o4", "xytext": (-6, 0), "va": "top", "ha": "right"},
-        ]
-
     fig_w = 5 if args.half else 10
     x_max = 0.5 if args.half else 1.1
     plt.figure(figsize=(fig_w, 6))
@@ -335,7 +328,16 @@ def main():
                 ha=style["ha"],
             )
 
-    zn_ann_by_stem = {row["stem"].lower(): row for row in ZN_STRUCTURE_ANNOTATIONS}
+    zn_structure_annotations = (
+        [
+            {"stem": "e-znmn4o8", "xytext": (-6, 0), "va": "top", "ha": "right"},
+            {"stem": "h-znmn2o4", "xytext": (-6, 0), "va": "top", "ha": "right"},
+            {"stem": "sp-znmn2o4", "xytext": (-6, 0), "va": "top", "ha": "right"},
+        ]
+        if args.half
+        else ZN_STRUCTURE_ANNOTATIONS
+    )
+    zn_ann_by_stem = {row["stem"].lower(): row for row in zn_structure_annotations}
     for p in points:
         row = zn_ann_by_stem.get(p["name"].lower())
         if row is None:
@@ -367,6 +369,8 @@ def main():
 
     plt.plot([0.0, 1.0], [0.0, 0.0], color="silver", lw=0.5, linestyle="-", zorder=-1)
     plt.xlim(-0.1, x_max)
+    if args.half:
+        plt.xticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5])
     plt.ylim(-0.9, 0.3)
     plt.xlabel(r"Zn composition, Zn$_x$(MnO$_2$)$_{1-x}$")
     plt.ylabel(r"Formation energy ($\Delta E$, eV per $n_\mathrm{Mn}+n_{\mathrm{Zn}}$)")
