@@ -580,6 +580,9 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
         print(f"  Warning: Cannot generate diagram - no entries available.")
         return
     
+    # for entry in entries:
+    #     print(entry.name, entry.energy)
+
     # Get exp_entry names for color grouping
     exp_entry_names = set()
     if exp_entries:
