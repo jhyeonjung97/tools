@@ -213,6 +213,11 @@ def main():
         default="colorblind",
         help="Color palette name (seaborn or matplotlib, default: colorblind)",
     )
+    parser.add_argument(
+        "--half",
+        action="store_true",
+        help="Narrow figure width (half) and show x-axis only up to 0.5.",
+    )
     args = parser.parse_args()
 
     sherry_dir = Path(args.sherry_dir).expanduser().resolve()
@@ -236,10 +241,12 @@ def main():
     for energy, name in mn02_candidates:
         print(f"  {name:30s} {energy: .8f}")
 
-    plt.figure(figsize=(10, 6))
+    fig_w = 5 if args.half else 10
+    x_max = 0.5 if args.half else 1.1
+    plt.figure(figsize=(fig_w, 6))
     plt.axvspan(
         0.33,
-        1.1,
+        x_max,
         facecolor="whitesmoke",
         zorder=-2,
         linewidth=0,
@@ -352,11 +359,11 @@ def main():
     )
 
     plt.plot([0.0, 1.0], [0.0, 0.0], color="silver", lw=0.5, linestyle="-", zorder=-1)
-    plt.xlim(-0.1, 1.1)
+    plt.xlim(-0.1, x_max)
     plt.ylim(-0.9, 0.3)
     plt.xlabel(r"Zn composition, Zn$_x$(MnO$_2$)$_{1-x}$")
     plt.ylabel(r"Formation energy ($\Delta E$, eV per $n_\mathrm{Mn}+n_{\mathrm{Zn}}$)")
-    plt.legend(loc="lower right")
+    plt.legend(loc="upper right" if args.half else "lower right")
     plt.tight_layout()
     output_path = sherry_dir / f"convex-hull-mno2-zn-{args.palette}.png"
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
