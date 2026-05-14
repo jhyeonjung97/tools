@@ -11,12 +11,28 @@ from ase.io import read
 
 H2O_REFERENCE_ENERGY = -14.23091949  # eV per H2O
 
-STRUCTURE_ANNOTATION_STEMS = {
-    "r-h4mn3o8",
-    "a-h4mn7o16",
-    "r-h4mn7o16",
-    "g-h4mn5o12",
-}
+# MnO2 reference square markers: phase key after normalize_phase_name
+MNO2_ANNOTATIONS = [
+    {"phase": "A", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "B", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "D", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "E", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "G", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "Spinel", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "R", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "H", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "NO_PHASE", "xytext": (-6, 0), "va": "center", "ha": "right"},
+]
+MNO2_ANNOTATION_DEFAULT = {"xytext": (-6, 0), "va": "center", "ha": "right"}
+MNO2_ANNOTATION_BY_PHASE = {row["phase"]: row for row in MNO2_ANNOTATIONS}
+
+# Selected hull scatter points: JSON stem (lowercase) + text offset / alignment
+H2O_STRUCTURE_ANNOTATIONS = [
+    {"stem": "r-h4mn3o8", "xytext": (6, 0), "va": "top", "ha": "left"},
+    {"stem": "a-h4mn7o16", "xytext": (-6, 0), "va": "top", "ha": "right"},
+    {"stem": "r-h4mn7o16", "xytext": (-6, 0), "va": "top", "ha": "right"},
+    {"stem": "g-h4mn5o12", "xytext": (-6, 0), "va": "top", "ha": "right"},
+]
 
 
 def get_counts(atoms):
@@ -335,30 +351,32 @@ def main():
                 linewidths=0.3,
                 zorder=4,
             )
+            style = MNO2_ANNOTATION_BY_PHASE.get(phase, MNO2_ANNOTATION_DEFAULT)
             plt.annotate(
                 subscript_digits(f"{display_phase_name(phase)}-MnO2"),
                 (0.0, y_mno2),
-                xytext=(-6, 0),
+                xytext=style["xytext"],
                 textcoords="offset points",
                 fontsize=9,
                 alpha=0.95,
-                va="center",
-                ha="right",
+                va=style["va"],
+                ha=style["ha"],
             )
 
+    h2o_ann_by_stem = {row["stem"].lower(): row for row in H2O_STRUCTURE_ANNOTATIONS}
     for p in points:
-        if p["name"].lower() not in STRUCTURE_ANNOTATION_STEMS:
+        row = h2o_ann_by_stem.get(p["name"].lower())
+        if row is None:
             continue
-        is_left = p["x"] < 0.25
         plt.annotate(
             sanitize_annotation_text(subscript_digits(display_structure_name(p["name"]))),
             (p["x"], p["y"]),
-            xytext=(-6, 0) if is_left else (6, 0),
+            xytext=row["xytext"],
             textcoords="offset points",
             fontsize=9,
             alpha=0.9,
-            va="top",
-            ha="right" if is_left else "left",
+            va=row["va"],
+            ha=row["ha"],
         )
 
     hx = [p["x"] for p in hull_points]

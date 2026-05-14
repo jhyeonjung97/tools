@@ -10,12 +10,29 @@ from ase.io import read
 
 
 ZN_REFERENCE_ENERGY = -1.2363842773  # eV per Zn atom
-ANNOTATION_INCLUDE_ZN_STEMS = {
-    "e-znmn4o8",
-    "h-znmn2o4",
-    "sp-znmn2o4",
-    "d-znmno2",
-}
+
+# MnO2 reference square markers: (phase key after normalize_phase_name) -> offset & alignment
+MNO2_ANNOTATIONS = [
+    {"phase": "A", "xytext": (-6, 0), "va": "top", "ha": "right"},
+    {"phase": "B", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "D", "xytext": (-6, 0), "va": "bottom", "ha": "right"},
+    {"phase": "E", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "G", "xytext": (-6, 0), "va": "bottom", "ha": "right"},
+    {"phase": "Spinel", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "R", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "H", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "NO_PHASE", "xytext": (-6, 0), "va": "center", "ha": "right"},
+]
+MNO2_ANNOTATION_DEFAULT = {"xytext": (-6, 0), "va": "center", "ha": "right"}
+MNO2_ANNOTATION_BY_PHASE = {row["phase"]: row for row in MNO2_ANNOTATIONS}
+
+# Selected hull scatter points: JSON stem (lowercase) + text offset / alignment
+ZN_STRUCTURE_ANNOTATIONS = [
+    {"stem": "e-znmn4o8", "xytext": (-6, 0), "va": "top", "ha": "right"},
+    {"stem": "h-znmn2o4", "xytext": (6, 0), "va": "top", "ha": "left"},
+    {"stem": "sp-znmn2o4", "xytext": (6, 0), "va": "top", "ha": "left"},
+    {"stem": "d-znmno2", "xytext": (6, 0), "va": "top", "ha": "left"},
+]
 
 
 def get_counts(atoms):
@@ -292,42 +309,32 @@ def main():
                 zorder=4,
             )
             mn02_label = f"{display_phase_name(phase)}-MnO2"
-            xytext = (-6, 0)
-            ha = "right"
-            if phase == "D":
-                va = "bottom"
-            elif phase == "B":
-                va = "center"
-            elif phase == "G":
-                va = "bottom"
-            elif phase == "A":
-                va = "top"
-            else:
-                va = "center"
+            style = MNO2_ANNOTATION_BY_PHASE.get(phase, MNO2_ANNOTATION_DEFAULT)
             plt.annotate(
                 subscript_digits(mn02_label),
                 (0.0, y_mno2),
-                xytext=xytext,
+                xytext=style["xytext"],
                 textcoords="offset points",
                 fontsize=9,
                 alpha=0.95,
-                va=va,
-                ha=ha,
+                va=style["va"],
+                ha=style["ha"],
             )
 
+    zn_ann_by_stem = {row["stem"].lower(): row for row in ZN_STRUCTURE_ANNOTATIONS}
     for p in points:
-        if p["name"].lower() not in ANNOTATION_INCLUDE_ZN_STEMS:
+        row = zn_ann_by_stem.get(p["name"].lower())
+        if row is None:
             continue
-        is_left = p["x"] <= 0.33
         plt.annotate(
             subscript_digits(display_structure_name(p["name"])),
             (p["x"], p["y"]),
-            xytext=(-6, 0) if is_left else (6, 0),
+            xytext=row["xytext"],
             textcoords="offset points",
             fontsize=9,
             alpha=0.9,
-            va="top",
-            ha="right" if is_left else "left",
+            va=row["va"],
+            ha=row["ha"],
         )
 
     hx = [p["x"] for p in hull_points]

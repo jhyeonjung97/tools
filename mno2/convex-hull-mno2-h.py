@@ -10,17 +10,30 @@ from ase.io import read
 
 
 H_REFERENCE_ENERGY = -6.77149190 / 2  # eV per H atom
-ANNOTATION_INCLUDE_H_STEMS = {
-    "e-hmn4o8",
-    "h-hmn2o4",
-    "sp-hmn2o4",
-    "d-hmno2",
-}
-EXTRA_STRUCTURE_ANNOTATIONS = {
-    "a-h(0.25)mno2",
-    "e-h(0.33)mno2",
-    "spinel-h(0.5)mno2",
-}
+
+# MnO2 reference square markers: phase key after normalize_phase_name
+MNO2_ANNOTATIONS = [
+    {"phase": "A", "xytext": (-6, 0), "va": "top", "ha": "right"},
+    {"phase": "B", "xytext": (-6, 0), "va": "top", "ha": "right"},
+    {"phase": "D", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "E", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "G", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "Spinel", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "R", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "H", "xytext": (-6, 0), "va": "center", "ha": "right"},
+    {"phase": "NO_PHASE", "xytext": (-6, 0), "va": "center", "ha": "right"},
+]
+MNO2_ANNOTATION_DEFAULT = {"xytext": (-6, 0), "va": "center", "ha": "right"}
+MNO2_ANNOTATION_BY_PHASE = {row["phase"]: row for row in MNO2_ANNOTATIONS}
+
+# Extra hull scatter points: JSON stem (lowercase) + text offset / alignment
+H_EXTRA_STRUCTURE_ANNOTATIONS = [
+    {"stem": "a-h(0.25)mno2", "xytext": (-6, 0), "va": "bottom", "ha": "right"},
+    {"stem": "r-h(0.25)mno2", "xytext": (-6, 0), "va": "top", "ha": "right"},
+    {"stem": "e-h(0.33)mno2", "xytext": (-6, 0), "va": "bottom", "ha": "right"},
+    {"stem": "g-h(0.33)mno2", "xytext": (-6, 0), "va": "top", "ha": "right"},
+    {"stem": "spinel-h(0.5)mno2", "xytext": (6, 0), "va": "top", "ha": "left"},
+]
 
 
 def get_counts(atoms):
@@ -304,51 +317,32 @@ def main():
                 zorder=z_mno2,
             )
             mn02_label = f"{display_phase_name(phase)}-MnO2"
-            xytext = (-6, 0)
-            ha = "right"
-            va = "top" if phase in {"A", "B"} else "center"
+            style = MNO2_ANNOTATION_BY_PHASE.get(phase, MNO2_ANNOTATION_DEFAULT)
             plt.annotate(
                 subscript_digits(mn02_label),
                 (0.0, y_mno2),
-                xytext=xytext,
+                xytext=style["xytext"],
                 textcoords="offset points",
                 fontsize=9,
                 alpha=0.95,
-                va=va,
-                ha=ha,
+                va=style["va"],
+                ha=style["ha"],
             )
-    most_stable_by_composition = {}
-    for p in points:
-        key = p["composition_key"]
-        if key not in most_stable_by_composition or p["y"] < most_stable_by_composition[key]["y"]:
-            most_stable_by_composition[key] = p
 
-    for p in sorted(most_stable_by_composition.values(), key=lambda item: item["x"]):
-        is_left = 0.05 < p["x"] <= 0.25
-        plt.annotate(
-            sanitize_annotation_text(subscript_digits(display_structure_name(p["name"]))),
-            (p["x"], p["y"]),
-            xytext=(-6, 0) if is_left else (6, 0),
-            textcoords="offset points",
-            fontsize=9,
-            alpha=0.9,
-            va="top",
-            ha="right" if is_left else "left",
-        )
-
+    h_extra_ann_by_stem = {row["stem"].lower(): row for row in H_EXTRA_STRUCTURE_ANNOTATIONS}
     for p in points:
-        if p["name"].lower() not in EXTRA_STRUCTURE_ANNOTATIONS:
+        row = h_extra_ann_by_stem.get(p["name"].lower())
+        if row is None:
             continue
-        is_left = 0.05 < p["x"] <= 0.25
         plt.annotate(
             sanitize_annotation_text(subscript_digits(display_structure_name(p["name"]))),
             (p["x"], p["y"]),
-            xytext=(-6, 0) if is_left else (6, 0),
+            xytext=row["xytext"],
             textcoords="offset points",
             fontsize=9,
             alpha=0.9,
-            va="bottom",
-            ha="right" if is_left else "left",
+            va=row["va"],
+            ha=row["ha"],
         )
 
     hx = [p["x"] for p in hull_points]
