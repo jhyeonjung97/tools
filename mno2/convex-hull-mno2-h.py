@@ -324,7 +324,7 @@ def main():
             most_stable_by_composition[key] = p
 
     for p in sorted(most_stable_by_composition.values(), key=lambda item: item["x"]):
-        is_left = p["x"] <= 0.25
+        is_left = 0.05 < p["x"] <= 0.25
         plt.annotate(
             sanitize_annotation_text(subscript_digits(display_structure_name(p["name"]))),
             (p["x"], p["y"]),
@@ -339,7 +339,7 @@ def main():
     for p in points:
         if p["name"].lower() not in EXTRA_STRUCTURE_ANNOTATIONS:
             continue
-        is_left = p["x"] <= 0.25
+        is_left = 0.05 < p["x"] <= 0.25
         plt.annotate(
             sanitize_annotation_text(subscript_digits(display_structure_name(p["name"]))),
             (p["x"], p["y"]),
