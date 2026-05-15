@@ -430,20 +430,20 @@ def main():
                 else:
                     print(f"Warning: Reference energy for {el_symbol} not found in reference_energies.json")
 
-        if 'H4' in data['name']:
-            comp_str1 = comp_str + 'MnO4-'
-            comp_str2 = comp_str + 'MnO4--'
-            comp1 = Ion.from_formula(comp_str1)
-            comp2 = Ion.from_formula(comp_str2)
-            formation_energy1 = formation_energy + energy_mno41
-            formation_energy2 = formation_energy + energy_mno42
-            entry1 = PourbaixEntry(IonEntry(comp1, formation_energy1), concentration=concentration_mno41, entry_id=data['name'] + '_MnO4-')
-            entry2 = PourbaixEntry(IonEntry(comp2, formation_energy2), concentration=concentration_mno42, entry_id=data['name'] + '_MnO4--')
-            bulk_entries.append(entry1)
-            bulk_entries.append(entry2)
-        else:
-            entry = PourbaixEntry(ComputedEntry(comp_str, formation_energy), entry_id=data['name'])
-            bulk_entries.append(entry)
+        # if 'H4' in data['name']:
+        #     comp_str1 = comp_str + 'MnO4-'
+        #     comp_str2 = comp_str + 'MnO4--'
+        #     comp1 = Ion.from_formula(comp_str1)
+        #     comp2 = Ion.from_formula(comp_str2)
+        #     formation_energy1 = formation_energy + energy_mno41
+        #     formation_energy2 = formation_energy + energy_mno42
+        #     entry1 = PourbaixEntry(IonEntry(comp1, formation_energy1), concentration=concentration_mno41, entry_id=data['name'] + '_MnO4-')
+        #     entry2 = PourbaixEntry(IonEntry(comp2, formation_energy2), concentration=concentration_mno42, entry_id=data['name'] + '_MnO4--')
+        #     bulk_entries.append(entry1)
+        #     bulk_entries.append(entry2)
+        # else:
+        entry = PourbaixEntry(ComputedEntry(comp_str, formation_energy), entry_id=data['name'])
+        bulk_entries.append(entry)
     
     exp_entries = []
     
