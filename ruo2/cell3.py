@@ -1,7 +1,7 @@
 from ase.io import read, write
 from ase.constraints import FixAtoms
 
-host_metal = 'Ir'
+host_metal = 'Ru'
 
 atoms = read('restart.json')
 l1 = atoms.cell.lengths()[0]
