@@ -1160,7 +1160,6 @@ if __name__ == "__main__":
     kb = 8.617e-5 # eV/K
     T = 298.15 # K
     const = kb * T * np.log(10) # 0.0592 eV
-    print(const)
     water = 56.690/calmol
 
     # gas

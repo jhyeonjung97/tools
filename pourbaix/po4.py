@@ -1,0 +1,1 @@
+g_po4_ads = -149.31791415 + 0.316844 # DFT energy + gibbs free energy correction
