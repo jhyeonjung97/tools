@@ -92,11 +92,8 @@ def init_thermo_constants():
     kb = 8.617e-5  # eV/K
     T = 298.15  # K
     const = kb * T * np.log(10)  # 0.0592 eV
-    water_formation_energy = 56.690 / calmol # 2.46 eV at 300 K
+    water_formation_energy = 56.690 / calmol
 
-    if T != 298.15:
-        print(f"Warning: Temperature is not 300 K. The water formation energy is not valid.")
-        
     h2 = -6.77149190
     h2o = -14.23091949
     gh2o = h2o + 0.558 - 0.675 + 0.103
@@ -122,8 +119,7 @@ def parse_thermo_entry(formula, energy, el, remaining_elements,
 
     o_count = reduced_dict.get('O', 0)
     row = {
-        # 'dG': energy / calmol + o_count * 4.92/2 + const * log10(conc), # water formation energy at 300 K
-        'dG': energy / calmol + o_count * water_formation_energy + const * log10(conc),
+        'dG': energy / calmol + water_formation_energy * o_count + const * log10(conc),
         'e': int(reduced_dict.get('charge', 0)),
         'conc': conc,
         'name': format_name(formula) + phase_suffix,
