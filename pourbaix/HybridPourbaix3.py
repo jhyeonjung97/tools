@@ -84,27 +84,6 @@ def dg(surf, pH, U, ref_surf):
     return surface_term + U_coeff * U + const * pH_coeff * pH
 
 
-def count_oh_bonds(atoms, oh_min=0.0, oh_max=1.1):
-    """Count O-H bonds by VESTA distance criteria (Å) with periodic boundaries."""
-    symbols = atoms.get_chemical_symbols()
-    o_indices = [i for i, s in enumerate(symbols) if s == 'O']
-    h_indices = [i for i, s in enumerate(symbols) if s == 'H']
-    return sum(
-        1 for o in o_indices for h in h_indices
-        if oh_min < atoms.get_distance(o, h, mic=True) <= oh_max
-    )
-
-
-def compute_oh_counts(json_files, oh_min, oh_max):
-    """Count O-H bonds for each JSON structure file."""
-    counts = {}
-    for json_file in json_files:
-        counts[os.path.basename(json_file)] = count_oh_bonds(
-            read(json_file), oh_min, oh_max,
-        )
-    return counts
-
-
 def init_thermo_constants():
     """Initialize module-level thermodynamic constants."""
     global const, water_formation_energy, gh, go, goh, dgh, dgo, dgoh
@@ -274,8 +253,6 @@ def parse_args():
                         help='Path to conditions.jsonc (per-species activity/pressure overrides)')
     thermo.add_argument('--gibbs', action='store_true', help='Apply G_corr from label.csv')
     thermo.add_argument('--ref-json', type=str, help='JSON filename for reference surface (default: auto-detect)')
-    thermo.add_argument('--oh-min', type=float, default=0.0, help='Min O-H distance (Å) for bond counting (VESTA default: 0)')
-    thermo.add_argument('--oh-max', type=float, default=1.1, help='Max O-H distance (Å) for bond counting (VESTA default: 1.1)')
 
     axis = parser.add_argument_group('axis range')
     axis.add_argument('--tick', type=float, default=0.01, help='Grid tick size')
@@ -289,7 +266,7 @@ def parse_args():
 
     figure = parser.add_argument_group('figure')
     figure.add_argument('--figx', type=float, default=4, help='Figure width (inches)')
-    figure.add_argument('--figy', type=float, default=4, help='Figure height (inches)')
+    figure.add_argument('--figy', type=float, default=3, help='Figure height (inches)')
     figure.add_argument('--HER', action='store_true', help='Draw hydrogen evolution reaction line')
     figure.add_argument('--OER', action='store_true', help='Draw oxygen evolution reaction line')
     figure.add_argument('--legend-in', action='store_true', help='Place legend inside plot')
@@ -320,7 +297,6 @@ def parse_args():
     display.add_argument('--show-element', action='store_true', help='Print element list')
     display.add_argument('--show-count', action='store_true', help='Print atom counts per structure')
     display.add_argument('--show-label', action='store_true', help='Print structure labels')
-    display.add_argument('--show-oh', action='store_true', help='Print auto-detected O-H bond counts')
     display.add_argument('--show-min-coord', action='store_true', help='Print minimum coordination info')
 
     output = parser.add_argument_group('output')
@@ -340,15 +316,18 @@ def load_labels(args, json_files):
     file_labels = {}
     file_gibbs_corrections = {}
     file_gc_params = {}
+    file_oh_counts = {}
 
     if os.path.exists(label_csv_path):
         label_df = pd.read_csv(
             label_csv_path, header=None,
-            names=['json_name', 'label', 'G_corr', 'A', 'B', 'C'],
+            names=['json_name', 'label', '#OH', 'G_corr', 'A', 'B', 'C'],
         )
         for _, row in label_df.iterrows():
             json_name = row['json_name']
             file_labels[json_name] = row['label']
+            if pd.notna(row.get('#OH')):
+                file_oh_counts[json_name] = int(row['#OH'])
             if args.gibbs and pd.notna(row.get('G_corr')):
                 file_gibbs_corrections[json_name] = float(row['G_corr'])
             if args.gc and all(pd.notna(row.get(col)) for col in ('A', 'B', 'C')):
@@ -359,7 +338,7 @@ def load_labels(args, json_files):
         for json_file in json_files:
             file_labels[os.path.basename(json_file)] = read(json_file).get_chemical_formula()
 
-    return file_labels, file_gibbs_corrections, file_gc_params
+    return file_labels, file_gibbs_corrections, file_gc_params, file_oh_counts
 
 
 def build_surfs(json_files, file_labels, file_gibbs_corrections, file_gc_params, args):
@@ -853,13 +832,9 @@ def main(args, png_name, suffix):
     target_pH = args.pH
 
     json_files = sorted(glob.glob(os.path.join(args.json_dir, "*.json")), key=os.path.basename)
-    file_labels, file_gibbs_corrections, file_gc_params = load_labels(args, json_files)
-    file_oh_counts = compute_oh_counts(json_files, args.oh_min, args.oh_max)
-
-    if args.show_oh:
-        print(f"\nO-H bond counts (VESTA: {args.oh_min} < d <= {args.oh_max} Å):")
-        for fname in sorted(file_oh_counts):
-            print(f"  {fname}: {file_oh_counts[fname]}")
+    file_labels, file_gibbs_corrections, file_gc_params, file_oh_counts = load_labels(
+        args, json_files,
+    )
 
     if args.show_label:
         print("\nFile labels:")

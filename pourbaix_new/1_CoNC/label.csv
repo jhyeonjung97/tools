@@ -1,0 +1,12 @@
+﻿oh-oh-adj.json,*OH+*OH(adj),2
+oh-o-adj.json,*OH+*O(adj),1
+oh-oh-anti.json,*OH+*OH(anti),2
+oh-o-anti.json,*OH+*O(anti),1
+o-o-anti.json,*O+*O(anti),0
+clean.json,clean,0
+mh.json,*H(@M),0
+nh.json,*H(@N),0
+oh.json,*OH,1
+o.json,*O,0
+vac.json,vac,0
+vac-h2.json,vac*H₂,0

@@ -684,17 +684,13 @@ def main():
                         # Add water energy for each O
                         if 'O' in reduced_dict:
                             energy_correction += water * reduced_dict['O']
-                        print("energy_correction:", energy_correction)
-
                         # Add energy for elements in reference_energies
                         for elem in remaining_elements:
                             if elem in ref_energies and elem in reduced_dict:
                                 energy_correction += ref_energies[elem] * reduced_dict[elem]
-                                print(elem, ref_energies[elem], reduced_dict[elem])
                         
                         # Create row (using corrected energy)
                         row = {'E_DFT': energy/calmol + energy_correction, 'e': 0}
-                        print(energy/calmol + energy_correction)
                         for elem in remaining_elements:
                             row[elem] = int(reduced_dict.get(elem, 0))
                         if 'charge' in reduced_dict:
@@ -720,7 +716,7 @@ def main():
                     except:
                         if args.show_thermo:
                             print(f"    {ion_formula}: parsing failed, energy: {energy}")
-            print(ions)
+
             # Process solids
             if 'solids' in thermo_data[el] and thermo_data[el]['solids'] != {}:
                 if args.show_thermo:
@@ -1747,7 +1743,6 @@ if __name__ == "__main__":
     kb = 8.617e-5    # Boltzmann constant in eV/K
     T = 298.15       # Standard temperature in K (25°C)
     const = kb * T * np.log(10)  # RT×ln(10) ≈ 0.0592 eV (for Nernst equation)
-    print(const)
     water = 56.690/calmol  # Molar volume of water in eV units
 
     # ========================================

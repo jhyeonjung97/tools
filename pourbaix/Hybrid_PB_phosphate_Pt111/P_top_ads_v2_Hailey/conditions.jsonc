@@ -1,0 +1,19 @@
+{
+  // Phase defaults: override --concentration / --pressure when this file is loaded
+  "defaults": {
+    "ions": 1e-6,
+    "gases": 1e-6
+  },
+
+  // Per-element overrides for all species in that phase
+  "elements": {
+    // "N": { "gases": 0.79 },
+    // "P": { "ions": 1e-3 }
+  },
+
+  // Per-species overrides (highest priority; key = thermodynamic_data formula)
+  "species": {
+    // "NO3-": 1e-2,
+    // "Fe++": 1e-8
+  }
+}
