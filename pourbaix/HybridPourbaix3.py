@@ -20,18 +20,9 @@ from pymatgen.core.ion import Ion
 # Constants
 # ---------------------------------------------------------------------------
 
-SUBSCRIPT_NUMS = {
-    '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄',
-    '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉',
-}
-SUPERSCRIPT_NUMS = {
-    '0': '₀', '1': '₁', '2': '²', '3': '³', '4': '⁴',
-    '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹',
-}
-DIVERGING_COLORMAPS = [
-    'RdBu', 'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy',
-    'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic',
-]
+SUBSCRIPT_NUMS = {'0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'}
+SUPERSCRIPT_NUMS = {'0': '₀', '1': '₁', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'}
+DIVERGING_COLORMAPS = ['RdBu', 'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic']
 
 # Thermodynamic constants (set by init_thermo_constants)
 const = water_formation_energy = gh = go = goh = dgh = dgo = dgoh = None
@@ -90,7 +81,7 @@ def dg(surf, pH, U, ref_surf):
     )
     U_coeff = surf['H'] - 2 * surf['O'] - surf['e']
     pH_coeff = surf['H'] - 2 * surf['O']
-    return surface_term + U_coeff * U + const * pH_coeff * pH + const * log10(surf['conc'])
+    return surface_term + U_coeff * U + const * pH_coeff * pH
 
 
 def count_oh_bonds(atoms, oh_min=0.0, oh_max=1.1):
@@ -138,33 +129,25 @@ def init_thermo_constants():
     dgh = dgoh - dgo
 
 
-def calc_energy_correction(reduced_dict, remaining_elements, ref_energies):
-    """Apply reference-energy correction to a species reduced formula."""
-    correction = 0
-    if 'O' in reduced_dict:
-        correction += water_formation_energy * reduced_dict['O']
-    for elem in remaining_elements:
-        if elem in ref_energies and elem in reduced_dict:
-            correction += ref_energies[elem] * reduced_dict[elem]
-    return correction
-
-
-def parse_thermo_entry(formula, energy, el, remaining_elements, ref_energies, calmol,
+def parse_thermo_entry(formula, energy, el, remaining_elements,
                        conc, phase_suffix):
     """Parse one thermodynamic entry into a row dict, or None on failure."""
+    calmol = 23.061
     try:
-        reduced_dict = Ion.from_formula(formula).as_reduced_dict()
+        reduced_dict = Ion.from_formula(formula).to_reduced_dict
     except Exception:
         return None, None
 
+    o_count = reduced_dict.get('O', 0)
     row = {
-        'E_DFT': energy / calmol + calc_energy_correction(reduced_dict, remaining_elements, ref_energies),
+        'E_DFT': energy / calmol + water_formation_energy * o_count + const * log10(conc),
         'e': int(reduced_dict.get('charge', 0)),
         'conc': conc,
         'name': format_name(formula) + phase_suffix,
         'A': 0.0,
         'B': 0.0,
     }
+    
     for elem in remaining_elements:
         row[elem] = int(reduced_dict.get(elem, 0))
 
@@ -283,15 +266,16 @@ def parse_args():
     mode.add_argument('--suffix', type=str, default='', help='Output filename suffix')
 
     thermo = parser.add_argument_group('thermodynamics')
-    thermo.add_argument('--concentration', type=float, default=1e-6, help='Ion concentration (M)')
-    thermo.add_argument('--pressure', type=float, default=1e-6, help='Gas pressure (atm)')
+    thermo.add_argument('--concentration', type=float, default=1e-6,
+                        help='Default ion activity (M); used when conditions.jsonc has no override')
+    thermo.add_argument('--pressure', type=float, default=1e-6,
+                        help='Default gas activity (atm); used when conditions.jsonc has no override')
+    thermo.add_argument('--conditions', type=str,
+                        help='Path to conditions.jsonc (per-species activity/pressure overrides)')
     thermo.add_argument('--gibbs', action='store_true', help='Apply G_corr from label.csv')
-    thermo.add_argument('--ref-json', type=str,
-                        help='JSON filename for reference surface (default: auto-detect)')
-    thermo.add_argument('--oh-min', type=float, default=0.0,
-                        help='Min O-H distance (Å) for bond counting (VESTA default: 0)')
-    thermo.add_argument('--oh-max', type=float, default=1.1,
-                        help='Max O-H distance (Å) for bond counting (VESTA default: 1.1)')
+    thermo.add_argument('--ref-json', type=str, help='JSON filename for reference surface (default: auto-detect)')
+    thermo.add_argument('--oh-min', type=float, default=0.0, help='Min O-H distance (Å) for bond counting (VESTA default: 0)')
+    thermo.add_argument('--oh-max', type=float, default=1.1, help='Max O-H distance (Å) for bond counting (VESTA default: 1.1)')
 
     axis = parser.add_argument_group('axis range')
     axis.add_argument('--tick', type=float, default=0.01, help='Grid tick size')
@@ -305,7 +289,7 @@ def parse_args():
 
     figure = parser.add_argument_group('figure')
     figure.add_argument('--figx', type=float, default=4, help='Figure width (inches)')
-    figure.add_argument('--figy', type=float, default=3, help='Figure height (inches)')
+    figure.add_argument('--figy', type=float, default=4, help='Figure height (inches)')
     figure.add_argument('--HER', action='store_true', help='Draw hydrogen evolution reaction line')
     figure.add_argument('--OER', action='store_true', help='Draw oxygen evolution reaction line')
     figure.add_argument('--legend-in', action='store_true', help='Place legend inside plot')
@@ -333,7 +317,6 @@ def parse_args():
     display = parser.add_argument_group('display / debug')
     display.add_argument('--show-fig', action='store_true', help='Show matplotlib figure interactively')
     display.add_argument('--show-thermo', action='store_true', help='Print thermodynamic corrections')
-    display.add_argument('--show-ref', action='store_true', help='Print reference energies')
     display.add_argument('--show-element', action='store_true', help='Print element list')
     display.add_argument('--show-count', action='store_true', help='Print atom counts per structure')
     display.add_argument('--show-label', action='store_true', help='Print structure labels')
@@ -342,8 +325,7 @@ def parse_args():
 
     output = parser.add_argument_group('output')
     output.add_argument('--png', action='store_true', help='Export structure PNGs from JSON files')
-    output.add_argument('--png-rotation', type=str, default='-90x, -90y, 0z',
-                        help='ASE view rotation for structure PNGs')
+    output.add_argument('--png-rotation', type=str, default='-90x, -90y, 0z', help='ASE view rotation for structure PNGs')
 
     return parser.parse_args()
 
@@ -386,6 +368,10 @@ def build_surfs(json_files, file_labels, file_gibbs_corrections, file_gc_params,
     for json_file in json_files:
         elements.update(read(json_file).get_chemical_symbols())
     sorted_elements = sorted(elements, key=lambda x: element(x).atomic_number)
+    if 'H' not in sorted_elements:
+        sorted_elements.append('H')
+    if 'O' not in sorted_elements:
+        sorted_elements.append('O')
     min_counts = {el: None for el in sorted_elements}
 
     surfs = []
@@ -415,7 +401,7 @@ def build_surfs(json_files, file_labels, file_gibbs_corrections, file_gc_params,
         for el in sorted_elements:
             row[el] -= min_counts[el]
 
-    zero_cols = [el for el in sorted_elements if all(row[el] == 0 for row in surfs)]
+    zero_cols = [el for el in sorted_elements if all(row[el] == 0 for row in surfs) and el not in ('H', 'O')]
     remaining_elements = [el for el in sorted_elements if el not in zero_cols]
     for row in surfs:
         for col in zero_cols:
@@ -425,25 +411,14 @@ def build_surfs(json_files, file_labels, file_gibbs_corrections, file_gc_params,
     return surfs, sorted_elements, remaining_elements, unique_elements, min_counts
 
 
-def find_ref_surface(surfs, unique_elements, remaining_elements, args):
+def find_ref_surface(surfs, unique_elements, args):
     """Find reference surface (highest energy among pure-metal surfaces)."""
-    def print_ref_info(ref_surf_idx, ref_surf, ref_surf_energy):
-        if args.show_ref:
-            comp = ", ".join(
-                f"{elem}: {ref_surf[elem]}" for elem in remaining_elements if elem in ref_surf
-            )
-            print(f"\nReference surface (index {ref_surf_idx}): {ref_surf['name']}, "
-                  f"E_DFT: {ref_surf_energy:.2f} eV")
-            print(f"Composition: {comp}")
-
     if args.ref_json:
         ref_name = os.path.basename(args.ref_json)
         if not ref_name.endswith('.json'):
             ref_name += '.json'
         for i, row in enumerate(surfs):
             if row.get('_json') == ref_name:
-                ref_surf_energy = float(row['E_DFT'])
-                print_ref_info(i, surfs[i], ref_surf_energy)
                 return i, surfs[i]
         raise SystemExit(f"Reference surface not found: {ref_name}")
 
@@ -453,17 +428,64 @@ def find_ref_surface(surfs, unique_elements, remaining_elements, args):
         if all(row.get(elem, 0.0) == 0.0 for elem in unique_elements)
     ]
     if not ref_candidates:
-        if args.show_ref:
-            print("No reference surface found (no surface with all unique_elements = 0)")
         return None, None
 
-    ref_surf_idx, ref_surf_energy = max(ref_candidates, key=lambda x: x[1])
-    ref_surf = surfs[ref_surf_idx]
-    print_ref_info(ref_surf_idx, ref_surf, ref_surf_energy)
-    return ref_surf_idx, ref_surf
+    ref_surf_idx, _ = max(ref_candidates, key=lambda x: x[1])
+    return ref_surf_idx, surfs[ref_surf_idx]
 
 
-def apply_formation_corrections(surfs, ref_surf, file_oh_counts, args, unique_elements, ref_energies):
+def _is_ref_surf_combination(surf, ref_surf):
+    """Return True if surf is a compound built from ref_surf."""
+    return surf['name'].startswith(ref_surf['name'] + '+')
+
+
+def _has_basic_solid_elements(surf, unique_elements):
+    """Return True if every unique element is present as a pure (s) phase (e.g. clean+P(s)+N(s))."""
+    if not all(surf.get(el, 0.0) > 0.0 for el in unique_elements):
+        return False
+    solid_parts = [part for part in surf['name'].split('+')[1:] if part.endswith('(s)')]
+    for el in unique_elements:
+        el_solid = format_name(el) + '(s)'
+        if not any(part == el_solid for part in solid_parts):
+            return False
+    return True
+
+
+def find_new_ref_surface(surfs, ref_surf, unique_elements):
+    """Pick a new reference surface from ref_surf-based combinations.
+
+    Priority:
+    1. All unique_elements present as basic solids (e.g. clean+P(s)+N(s))
+    2. charge=0 with lowest E_DFT among ref_surf combinations
+    3. Lowest E_DFT among all surfaces
+    """
+    ref_combos = [
+        (i, surf) for i, surf in enumerate(surfs)
+        if _is_ref_surf_combination(surf, ref_surf)
+    ]
+
+    def pick_lowest(candidates):
+        idx, surf = min(candidates, key=lambda item: float(item[1]['E_DFT']))
+        return surf, idx
+
+    basic_solid = [
+        item for item in ref_combos
+        if _has_basic_solid_elements(item[1], unique_elements)
+    ]
+    if basic_solid:
+        return pick_lowest(basic_solid)
+
+    neutral = [
+        item for item in ref_combos
+        if int(item[1].get('e', 0)) == 0
+    ]
+    if neutral:
+        return pick_lowest(neutral)
+
+    return pick_lowest(list(enumerate(surfs)))
+
+
+def surface_formation_corrections(surfs, ref_surf, file_oh_counts, args, unique_elements, ref_energies):
     """Apply formation energy and optional Gibbs corrections."""
     ref_surf_energy = ref_surf['E_DFT']
 
@@ -481,19 +503,60 @@ def apply_formation_corrections(surfs, ref_surf, file_oh_counts, args, unique_el
         row['E_DFT'] = row['E_DFT'] + gibbs_correction + formation_correction - ref_surf_energy
 
 
-def process_thermo_phase(phase_data, phase_suffix, conc, el, remaining_elements,
-                         ref_energies, calmol, args):
+def load_conditions(args):
+    """Load activity/pressure overrides from conditions.jsonc."""
+    script_dir = os.path.dirname(__file__)
+    cond_path = args.conditions or os.path.join(script_dir, 'conditions.jsonc')
+    return load_jsonc(cond_path) if os.path.exists(cond_path) else {}
+
+
+def _cli_phase_default(phase_key, args):
+    """CLI fallback activity for a thermodynamic phase."""
+    if phase_key == 'ions':
+        return args.concentration
+    if phase_key == 'gases':
+        return args.pressure
+    return 1.0
+
+
+def resolve_activity(formula, el, phase_key, conditions, args):
+    """Resolve species activity: species > element+phase > defaults > CLI.
+
+    Solids and liquids are always activity 1 (pure condensed phases).
+    """
+    if phase_key in ('solids', 'liquids'):
+        return 1.0
+
+    species_overrides = conditions.get('species', {})
+    if formula in species_overrides:
+        return float(species_overrides[formula])
+
+    element_overrides = conditions.get('elements', {}).get(el, {})
+    if phase_key in element_overrides:
+        return float(element_overrides[phase_key])
+
+    defaults = conditions.get('defaults', {})
+    if phase_key in defaults:
+        return float(defaults[phase_key])
+
+    return float(_cli_phase_default(phase_key, args))
+
+
+def process_thermo_phase(phase_data, phase_suffix, phase_key, el, remaining_elements,
+                         conditions, args):
     """Process one phase (ions/solids/gases/liquids) from thermodynamic data."""
     rows = []
     for formula, energy in phase_data.items():
+        conc = resolve_activity(formula, el, phase_key, conditions, args)
         row, reduced_dict = parse_thermo_entry(
-            formula, energy, el, remaining_elements, ref_energies, calmol, conc, phase_suffix,
+            formula, energy, el, remaining_elements, conc, phase_suffix,
         )
         if args.show_thermo:
             if reduced_dict is not None:
-                print(f"    {formula}: {reduced_dict}, energy: {energy}")
+                print(f"    {formula}: {reduced_dict}, energy: {energy} kcal/mol, "
+                      f"activity: {conc:.0e}")
             else:
-                print(f"    {formula}: parsing failed, energy: {energy}")
+                print(f"    {formula}: parsing failed, energy: {energy} kcal/mol")
         if row is not None:
             rows.append(row)
     return rows
@@ -518,13 +581,13 @@ def load_thermo_data(args):
 
 def load_thermo_species(unique_elements, remaining_elements, thermo_data, ref_energies, args):
     """Load ions, solids, gases, liquids from thermodynamic data."""
-    calmol = 23.061
+    conditions = load_conditions(args)
     ions, solids, gases, liquids = [], [], [], []
     phase_config = [
-        ('ions', '(aq)', args.concentration, ions),
-        ('solids', '(s)', 1, solids),
-        ('gases', '(g)', args.pressure, gases),
-        ('liquids', '(l)', 1, liquids),
+        ('ions', '(aq)', ions),
+        ('solids', '(s)', solids),
+        ('gases', '(g)', gases),
+        ('liquids', '(l)', liquids),
     ]
 
     for el in unique_elements:
@@ -545,14 +608,14 @@ def load_thermo_species(unique_elements, remaining_elements, thermo_data, ref_en
         el_ions, el_solids, el_gases, el_liquids = [], [], [], []
         el_lists = {'ions': el_ions, 'solids': el_solids, 'gases': el_gases, 'liquids': el_liquids}
 
-        for phase_key, suffix, conc, target_list in phase_config:
+        for phase_key, suffix, target_list in phase_config:
             phase_data = thermo_data[el].get(phase_key, {})
             if not phase_data:
                 continue
             if args.show_thermo:
                 print(f"  {phase_key.capitalize()} reduced dict:")
             rows = process_thermo_phase(
-                phase_data, suffix, conc, el, remaining_elements, ref_energies, calmol, args,
+                phase_data, suffix, phase_key, el, remaining_elements, conditions, args,
             )
             target_list.extend(rows)
             el_lists[phase_key].extend(rows)
@@ -573,7 +636,7 @@ def plot_bulk_diagram(el, bulks, pHrange, Urange, pHmin, pHmax, Umin, Umax, args
     fig, ax = plt.subplots(figsize=(args.figx, args.figy))
     ax.axis([pHmin, pHmax, Umin, Umax])
     ax.set_xlabel('pH')
-    ax.set_ylabel('E (V vs. SHE)')
+    ax.set_ylabel('Potential (V vs. SHE)')
     plt.xticks(np.arange(pHmin, pHmax + 1, 2))
 
     lowest_bulks = find_lowest_indices(bulks, pHrange, Urange, bulks[0])
@@ -610,20 +673,20 @@ def plot_bulk_diagram(el, bulks, pHrange, Urange, pHmin, pHmax, Umin, Umax, args
     plt.close(fig)
 
 
-def build_hybrid_combinations(surfs, nsurfs, unique_elements, ions, solids, gases):
+def build_hybrid_combinations(surfs, nsurfs, unique_elements, ions, solids, gases, liquids):
     """Build surface+bulk hybrid combinations."""
     new_surfs = []
     for unique_elem in unique_elements:
         for k in range(nsurfs):
             if surfs[k][unique_elem] != 0:
                 continue
-            for compound in ions + solids + gases:
+            for compound in ions + solids + gases + liquids:
                 if compound[unique_elem] == 1:
                     new_surfs.append(combine_surface_with_compound(surfs[k], compound))
     return new_surfs
 
 
-def build_surface_combinations(surfs, nsurfs, unique_elements, remaining_elements, solids, gases, liquids):
+def build_surface_combinations(surfs, nsurfs, unique_elements, remaining_elements, ions, solids, gases, liquids):
     """Build surface+pure-element combinations (non-hybrid mode)."""
     ref_compounds = {elem: [] for elem in unique_elements}
     for phase_list in (solids, gases, liquids):
@@ -659,7 +722,7 @@ def plot_2d_diagram(surfs, save_surfs, lowest_surfaces, pHrange, Urange,
     fig, ax = plt.subplots(figsize=(args.figx, args.figy))
     ax.axis([pHmin, pHmax, Umin, Umax])
     ax.set_xlabel('pH')
-    ax.set_ylabel('E (V vs. SHE)')
+    ax.set_ylabel('Potential (V vs. SHE)')
     plt.xticks(np.arange(pHmin, pHmax + 1, 2))
 
     unique_ids = []
@@ -827,10 +890,10 @@ def main(args, png_name, suffix):
         print("remaining_elements:", remaining_elements)
         print("unique_elements:", unique_elements)
 
-    ref_surf_idx, ref_surf = find_ref_surface(surfs, unique_elements, remaining_elements, args)
+    ref_surf_idx, ref_surf = find_ref_surface(surfs, unique_elements, args)
     ref_energies = load_ref_energies(args)
     thermo_data = load_thermo_data(args)
-    apply_formation_corrections(surfs, ref_surf, file_oh_counts, args, unique_elements, ref_energies)
+    surface_formation_corrections(surfs, ref_surf, file_oh_counts, args, unique_elements, ref_energies)
 
     ions, solids, gases, liquids = [], [], [], []
     for el, el_ions, el_solids, el_gases, el_liquids in load_thermo_species(
@@ -858,14 +921,17 @@ def main(args, png_name, suffix):
     if args.hybrid:
         species_cols = ['E_DFT', 'e'] + remaining_elements + ['conc', 'name']
         for name, data in [('Ions', ions), ('Solids', solids), ('Gases', gases), ('Liquids', liquids)]:
-            print(format_df_for_display(pd.DataFrame(data, columns=species_cols)))
+            if len(data) > 0:
+                print(format_df_for_display(pd.DataFrame(data, columns=species_cols)))
             print(f"{name}: {len(data)} entries\n")
 
     if args.hybrid:
-        new_surfs = build_hybrid_combinations(surfs, nsurfs, unique_elements, ions, solids, gases)
+        new_surfs = build_hybrid_combinations(
+            surfs, nsurfs, unique_elements, ions, solids, gases, liquids,
+        )
     else:
         new_surfs = build_surface_combinations(
-            surfs, nsurfs, unique_elements, remaining_elements, solids, gases, liquids,
+            surfs, nsurfs, unique_elements, remaining_elements, ions, solids, gases, liquids,
         )
 
     surfs.extend(new_surfs)
@@ -876,6 +942,9 @@ def main(args, png_name, suffix):
         print(format_df_for_display(pd.DataFrame(surfs, columns=cols)))
         print(f"After adding combinations: {nsurfs} surfs entries\n")
 
+    new_ref_surf, new_ref_surf_idx = find_new_ref_surface(surfs, ref_surf, unique_elements)
+    ref_surf_idx = new_ref_surf_idx
+    ref_surf = new_ref_surf
     lowest_surfaces = find_lowest_indices(surfs, pHrange, Urange, surfs[ref_surf_idx])
 
     if args.show_min_coord:
@@ -905,16 +974,6 @@ def main(args, png_name, suffix):
         surfs, nsurfs, Urange, Umin, Umax, target_pH, surfs[ref_surf_idx],
         unique_ids, args, png_name, suffix, tick,
     )
-
-    print(f"\n=== Entry Energies at pH=0, U=0 V vs SHE ===")
-    energies = sorted(
-        ((k, s['name'], dg(s, pH=0, U=0, ref_surf=surfs[ref_surf_idx])) for k, s in enumerate(surfs)),
-        key=lambda x: x[2],
-    )
-    for _, name, energy in energies:
-        print(f"  {name}: {energy:.6f} eV")
-    print(f"Total: {nsurfs} entries")
-
 
 if __name__ == "__main__":
     init_thermo_constants()
