@@ -2,6 +2,8 @@ import os
 import pandas as pd
 from ase.io import read
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 from matplotlib.ticker import MultipleLocator, FuncFormatter
 
 base_path = "~/Desktop/3_RuO2/4_high_valence/1_M-RuO2/0_Ru"
@@ -38,5 +40,6 @@ ax.xaxis.set_major_formatter(FuncFormatter(lambda x, p: f'{x:.2f}'))
 ax.yaxis.set_major_formatter(FuncFormatter(lambda x, p: f'{x:.2f}'))
 plt.tight_layout()
 plt.savefig('eos-ac.png', dpi=300, bbox_inches='tight')
+plt.savefig('eos-ac.pdf', dpi=300, bbox_inches='tight')
 plt.show()
 plt.close()

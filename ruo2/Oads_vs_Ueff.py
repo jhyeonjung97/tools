@@ -1,5 +1,7 @@
 from ase.io import read
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 from pathlib import Path
 
 root = "~/Desktop/3_RuO2/1_RuO2"
@@ -183,6 +185,7 @@ def plot_o_adsorption_energies_vs_ueff(ueff_values, o_energies_1, o_energies_2, 
         
     plt.tight_layout()
     plt.savefig('O_adsorption_energies_vs_Ueff.png', dpi=300, bbox_inches='tight')
+    plt.savefig('O_adsorption_energies_vs_Ueff.pdf', dpi=300, bbox_inches='tight')
     plt.show()
     
     # 결과를 텍스트 파일로 저장

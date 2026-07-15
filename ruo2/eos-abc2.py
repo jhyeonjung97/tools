@@ -2,6 +2,8 @@ import os
 import pandas as pd
 from ase.io import read
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.ticker import FormatStrFormatter, MultipleLocator
 
@@ -42,5 +44,6 @@ plt.xlabel('Lattice constant b (Å)')
 plt.ylabel('Lattice constant c (Å)')
 plt.tight_layout()
 plt.savefig('eos-bc.png', dpi=300, bbox_inches='tight')
+plt.savefig('eos-bc.pdf', dpi=300, bbox_inches='tight')
 plt.show()
 plt.close()

@@ -8,6 +8,8 @@ convex hull을 계산하고 분석합니다.
 
 import numpy as np
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 from scipy.spatial import ConvexHull
 from typing import List, Tuple, Dict, Optional
 from pathlib import Path
@@ -254,6 +256,7 @@ def plot_binary_phase_diagram(compounds: List[Dict], m1: str, m2: str,
     
     if output_file:
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        plt.savefig(output_file.replace('.png', '.pdf'), dpi=300, bbox_inches='tight')
         print(f"Phase diagram이 {output_file}에 저장되었습니다.")
     
     if show_plot:
@@ -365,6 +368,7 @@ def plot_combined_mo2_diagram(base_path: str, pairs: List[Tuple[str, str]],
     
     if output_file:
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        plt.savefig(output_file.replace('.png', '.pdf'), dpi=300, bbox_inches='tight')
         print(f"Combined phase diagram이 {output_file}에 저장되었습니다.")
     
     if show_plot:

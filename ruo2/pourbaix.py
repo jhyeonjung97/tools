@@ -48,6 +48,8 @@ import pandas as pd
 
 # Visualization imports
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 import matplotlib.colors as mcolors
 
 # Materials science and chemistry imports
@@ -927,6 +929,7 @@ def main():
                             fontsize='small', ncol=3, handlelength=3, edgecolor='black')
 
                 plt.savefig(f'pourbaix_bulk_{el}{suffix}.png', dpi=300, bbox_inches='tight')
+                plt.savefig(f'pourbaix_bulk_{el}{suffix}.pdf', dpi=300, bbox_inches='tight')
                 print(f"Bulk Pourbaix diagram saved as pourbaix_bulk_{el}{suffix}.png")
                 if args.show_fig:
                     plt.tight_layout()
@@ -1289,6 +1292,7 @@ def main():
                 fontsize='small', ncol=3, handlelength=3, edgecolor='black')
 
     plt.savefig(f'{png_name}{suffix}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'{png_name}{suffix}.pdf', dpi=300, bbox_inches='tight')
     print(f"Pourbaix diagram saved as {png_name}{suffix}.png")
     if args.show_fig:
         plt.tight_layout()
@@ -1494,6 +1498,7 @@ def main():
         ax2.legend(bbox_to_anchor=(0.5, 1.02), loc='lower center', borderaxespad=0., 
                 fontsize='small', ncol=3, handlelength=3, edgecolor='black')
     plt.savefig(f'{png_name}_pH{target_pH}{suffix}.png', dpi=300, bbox_inches='tight', transparent=True)
+    plt.savefig(f'{png_name}_pH{target_pH}{suffix}.pdf', dpi=300, bbox_inches='tight', transparent=True)
     print(f"Pourbaix diagram saved as {png_name}_pH{target_pH}{suffix}.png")
     if args.show_fig:
         plt.tight_layout()

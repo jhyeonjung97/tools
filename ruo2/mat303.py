@@ -5,6 +5,8 @@ Pourbaix 형태의 pH–전위도: x = pH, y = 전위 (V vs. SHE).
 import os
 
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 import numpy as np
 
 # 298.15 K에서 RT/F * ln(10) [V] (Nernst 기울기)
@@ -37,6 +39,7 @@ def main() -> None:
 
     plt.tight_layout()
     plt.savefig("mat303_pourbaix.png", dpi=220, bbox_inches="tight")
+    plt.savefig("mat303_pourbaix.pdf", dpi=220, bbox_inches="tight")
     plt.show()
 
 

@@ -11,17 +11,17 @@ from optparse import OptionParser
 import matplotlib as mpl
 mpl.use('agg')
 mpl.rcParams['axes.unicode_minus'] = False
-# Set font to Helvetica
-mpl.rcParams['font.family'] = 'Helvetica'
-mpl.rcParams['font.sans-serif'] = ['Helvetica']
+# Set font to Arial
+mpl.rcParams['font.family'] = 'Arial'
+mpl.rcParams['font.sans-serif'] = ['Arial']
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
 from matplotlib.patches import Polygon
 from matplotlib.font_manager import FontProperties
 import matplotlib.colors as mcolors
-plt.rcParams['font.family'] = 'Helvetica'
-plt.rcParams['font.sans-serif'] = ['Helvetica']
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 
 ############################################################
 __version__ = "1.0"

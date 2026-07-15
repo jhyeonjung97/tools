@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 mpl.rcParams["axes.prop_cycle"] = plt.cycler(color=plt.get_cmap("tab20").colors)
-plt.rcParams['font.family'] = 'Helvetica'
-plt.rcParams['font.sans-serif'] = ['Helvetica']
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190
@@ -247,7 +247,7 @@ def main():
         if len(y_columns) > 0:
             plt.figure(figsize=(6, 4))
             xmin, xmax = 0.0, 1.0
-            ymin, ymax = 2.5, 4.0 # 3.0, 4.0
+            ymin, ymax = 3.0, 4.0
             colors = ["black", "red", "C5", "C1", "C9", "C11", "C13"]
             for idx, ycol in enumerate(y_columns):
                 xy = pd.concat([x_series, df_dg[ycol]], axis=1).dropna()
@@ -272,9 +272,11 @@ def main():
                     #     plt.scatter(x, y, color='blue', zorder=10)
                     # else:
                     if 'pred' in row_name and ycol == "ΔG_O_OOH":
-                        plt.scatter(x, y, marker='s', color='blue', zorder=9)
+                        pass
+                        # plt.scatter(x, y, marker='s', color='blue', zorder=9)
                     elif 'pred' in row_name and ycol == "ΔG_OO_OH":
-                        plt.scatter(x, y, marker='s', color='green', zorder=9)
+                        pass
+                        # plt.scatter(x, y, marker='s', color='green', zorder=9)
                     else:
                         plt.scatter(x, y, marker='s', color=colors[idx % len(colors)], zorder=9)
                     # plt.annotate(row_name, (x, y), xytext=(0, 7), textcoords='offset points', fontsize=8, ha='center', va='top')
@@ -297,6 +299,7 @@ def main():
             plt.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.12)
             out_png = "OER_scaling.png"
             plt.savefig(out_png, dpi=300, bbox_inches='tight')
+            plt.savefig(out_png.replace('.png', '.pdf'), dpi=300, bbox_inches='tight')
             plt.show()
             plt.close()
             print(f"스케일링 플롯 저장됨: {out_png}")

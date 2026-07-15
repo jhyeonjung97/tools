@@ -1,5 +1,7 @@
 from ase.io import read
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 from pathlib import Path
 import numpy as np
 
@@ -924,6 +926,7 @@ def plot_oer_energies(all_paths):
     
     plt.tight_layout()
     plt.savefig('OER_energies_comparison.png', dpi=300, bbox_inches='tight')
+    plt.savefig('OER_energies_comparison.pdf', dpi=300, bbox_inches='tight')
     # plt.show()
     
     # 두 번째 그래프: 각 경로의 최대 에너지 비교
@@ -948,6 +951,7 @@ def plot_oer_energies(all_paths):
     
     plt.tight_layout()
     plt.savefig('OER_overpotential_comparison.png', dpi=300, bbox_inches='tight')
+    plt.savefig('OER_overpotential_comparison.pdf', dpi=300, bbox_inches='tight')
     # plt.show()
 
 def plot_individual_energetics_diagrams(all_paths, oer_data):
@@ -1005,6 +1009,7 @@ def plot_individual_energetics_diagrams(all_paths, oer_data):
         # 파일명에 path 정보 포함하여 저장
         filename = f'energetics_diagram_{path_name.lower()}_{path_data["surface"].lower()}.png'
         plt.savefig(filename, dpi=300, bbox_inches='tight')
+        plt.savefig(filename.replace('.png', '.pdf'), dpi=300, bbox_inches='tight')
         # plt.show()
         plt.close()
         
@@ -1080,6 +1085,7 @@ def plot_ooh_otop2_pathways(all_paths, oer_data):
     plt.legend(loc='lower right', bbox_to_anchor=(1.0, 0.0), fontsize=10)
     plt.tight_layout()
     plt.savefig('OOH_Otop2_pathways_comparison.png', dpi=300, bbox_inches='tight')
+    plt.savefig('OOH_Otop2_pathways_comparison.pdf', dpi=300, bbox_inches='tight')
     print("Saved: OOH_Otop2_pathways_comparison.png")
 
 def plot_ooh_otop3_pathways(all_paths, oer_data):
@@ -1152,6 +1158,7 @@ def plot_ooh_otop3_pathways(all_paths, oer_data):
     plt.legend(loc='lower right', bbox_to_anchor=(1.0, 0.0), fontsize=10)
     plt.tight_layout()
     plt.savefig('OOH_Otop3_pathways_comparison.png', dpi=300, bbox_inches='tight')
+    plt.savefig('OOH_Otop3_pathways_comparison.pdf', dpi=300, bbox_inches='tight')
     print("Saved: OOH_Otop3_pathways_comparison.png")
 
 def plot_all_energetics_diagrams_combined(all_paths, oer_data):
@@ -1201,6 +1208,7 @@ def plot_all_energetics_diagrams_combined(all_paths, oer_data):
     
     plt.tight_layout()
     plt.savefig('all_energetics_diagrams_combined.png', dpi=300, bbox_inches='tight')
+    plt.savefig('all_energetics_diagrams_combined.pdf', dpi=300, bbox_inches='tight')
     # plt.show()
     
     print("Saved: all_energetics_diagrams_combined.png")

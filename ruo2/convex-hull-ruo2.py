@@ -2,6 +2,8 @@ from ase.io import read
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 from math import gcd
 
 import argparse
@@ -111,6 +113,7 @@ plt.xlim(-0.1, 1.1)
 # plt.ylim(-0.16, 0.14)
 plt.ylim(-0.2, 0.3)
 plt.savefig('RuO2_MO2_convex_hull.png', dpi=300, bbox_inches='tight')
+plt.savefig('RuO2_MO2_convex_hull.pdf', dpi=300, bbox_inches='tight')
 plt.tight_layout()
 # plt.show()
 plt.close()
@@ -145,6 +148,7 @@ for element in non_ru_elements:
     plt.xlim(-0.1, 1.1)
     plt.ylim(-0.2, 0.3)
     plt.savefig(f'{element}-RuO2_MO2_convex_hull.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'{element}-RuO2_MO2_convex_hull.pdf', dpi=300, bbox_inches='tight')
     plt.tight_layout()
     # plt.show()
     plt.close()

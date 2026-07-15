@@ -6,8 +6,8 @@ from math import gcd
 import mendeleev
 import argparse
 
-plt.rcParams['font.family'] = 'Helvetica'
-plt.rcParams['font.sans-serif'] = ['Helvetica']
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 
 # dH of molecular references at 300K:
 # 1/2 O2 derived from H2O/H2:  -4.658724749999999
@@ -139,6 +139,7 @@ def main():
             plt.ylim(-1.2, 0.2)
             plt.xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
             plt.savefig(f'RuO2_5d_{atomic_number}_{element}xOy_convex_hull.png', dpi=300, bbox_inches='tight')
+            plt.savefig(f'RuO2_5d_{atomic_number}_{element}xOy_convex_hull.pdf', dpi=300, bbox_inches='tight')
             plt.tight_layout()
             if show:
                 plt.show()

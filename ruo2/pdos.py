@@ -2,6 +2,8 @@ import csv
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 import argparse
 
 # Parse command-line arguments
@@ -105,6 +107,7 @@ plt.xticks(x_ticks)       # Apply the range to the ticks
 # Adjust layout
 if args.output:
     plt.savefig(f"{args.output}.png", dpi=300, bbox_inches='tight')  # Save with high resolution
+    plt.savefig(f"{args.output}.pdf", dpi=300, bbox_inches='tight')
     print(f"Plot saved as {args.output}.png")
 else:
     plt.show()
