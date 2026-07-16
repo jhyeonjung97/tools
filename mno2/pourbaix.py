@@ -1,36 +1,17 @@
 #!/usr/bin/env python3
 """
-HybridPB: Hybrid Pourbaix Diagram Generation Tool
+Pourbaix Diagram Generation Tool using pymatgen Plotter
 
-This script generates Pourbaix diagrams (potential-pH diagrams) for electrochemical systems,
-with support for both surface and bulk phases. The tool can handle hybrid calculations
-incorporating Grand Canonical DFT corrections and thermodynamic data.
+This script generates Pourbaix diagrams using pymatgen's PourbaixPlotter,
+based on the general structure from pourbaix.py.
 
 Key Features:
-- Surface and bulk Pourbaix diagram generation
-- Grand Canonical DFT corrections (--gc flag)
-- Thermodynamic data integration
-- Customizable visualization options
-- Support for aqueous species and gas phases
-- Export capabilities for publication-ready figures
+- Surface Pourbaix diagram generation from JSON structure files
+- Automatic element detection
+- Thermodynamic data integration from JSON files
+- pymatgen PourbaixPlotter for visualization
 
-Author: Hyeonjung Jung
-Last modified: 2025
-
-Copyright (C) 2025 Hyeonjung Jung
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <https://www.gnu.org/licenses/>.
+Author: Based on pourbaix.py by Hyeonjung Jung
 """
 
 # Standard library imports
@@ -39,1781 +20,837 @@ import re
 import argparse
 import json
 import glob
+import time
 from math import log10
 from collections import Counter
 
 # Scientific computing imports
 import numpy as np
-import pandas as pd
 
 # Visualization imports
 import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
+from matplotlib.collections import LineCollection, PolyCollection
+from matplotlib.path import Path
+from matplotlib.text import Annotation
 
 # Materials science and chemistry imports
 from ase.io import read
 from mendeleev import element
 from pymatgen.core.ion import Ion
+from pymatgen.core.composition import Composition
+from pymatgen.analysis.pourbaix_diagram import PourbaixEntry, PourbaixDiagram, PourbaixPlotter
+from pymatgen.analysis.pourbaix_diagram import IonEntry, PDEntry, ComputedEntry
 
 plt.rcParams['font.family'] = 'Helvetica'
 plt.rcParams['font.sans-serif'] = ['Helvetica']
 
 def load_jsonc(file_path):
-    """
-    Load JSON file with comments (JSONC format).
-    
-    This function reads a JSON file that may contain single-line comments
-    starting with '//', which are not supported by standard JSON parsers.
-    
-    Args:
-        file_path (str): Path to the JSONC file
-        
-    Returns:
-        dict: Parsed JSON data with comments removed
-        
-    Raises:
-        json.JSONDecodeError: If the file is not valid JSON after comment removal
-        FileNotFoundError: If the specified file doesn't exist
-    """
+    """Load JSON file with comments (JSONC format)"""
+    if not os.path.exists(file_path):
+        return {}
     with open(file_path, 'r') as f:
         content = f.read()
-    
     # Remove single-line comments (// ...)
     content = re.sub(r'//.*', '', content)
-    
-    # Parse the cleaned JSON
     return json.loads(content)
 
-# Global constants for chemical formula formatting
-# Unicode subscript characters for chemical formulas
-SUBSCRIPT_NUMS = {'0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'}
 
-# Unicode superscript characters for ion charges
-SUPERSCRIPT_NUMS = {'0': '₀', '1': '₁', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'}
-
-# Available diverging color schemes for visualization
-Diverging_colors = ['RdBu', 'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic',
-'RdBu_r', 'PiYG_r', 'PRGn_r', 'BrBG_r', 'PuOr_r', 'RdGy_r', 'RdYlBu_r', 'RdYlGn_r', 'Spectral_r', 'coolwarm_r', 'bwr_r', 'seismic_r']
-
-# Command line argument parser configuration
-# This extensive argument parser allows users to customize every aspect of the Pourbaix diagram generation
-parser = argparse.ArgumentParser(description='Generate Pourbaix diagram for electrochemical systems')
-
-# Input/Output file paths
+# Command line argument parser
+parser = argparse.ArgumentParser(description='Generate Pourbaix diagram using pymatgen plotter')
 parser.add_argument('--json-dir', type=str, default='.', 
                     help='Folder path containing JSON structure files (default: current folder)')
-parser.add_argument('--csv-dir', type=str, default='.', 
-                    help='Folder path containing label.csv with species information (default: current folder)')
 parser.add_argument('--suffix', type=str, default='', 
-                    help='Suffix for the output filename (e.g., --suffix "Co" for Co_pourbaix.png)')
-
-# Calculation modes
-parser.add_argument('--hybrid', action='store_true', 
-                    help='Enable hybrid mode for surface-bulk hybrid calculations')
-parser.add_argument('--gc', action='store_true', 
-                    help='Apply Grand Canonical DFT corrections using A, B, C columns from label.csv')
-
-# Thermodynamic conditions
-parser.add_argument('--pH', type=int, default=0, # float
-                    help='pH value for the plot (default: 0)')
-parser.add_argument('--concentration', type=float, default=1e-6, 
-                    help='Ion concentration in M (default: 10^-6 M)')
-parser.add_argument('--pressure', type=float, default=1e-6, 
-                    help='Gas pressure in atm (default: 10^-6 atm)')
-
-# Plot range and resolution
-parser.add_argument('--tick', type=float, default=0.01, 
-                    help='Grid resolution for pH and potential ranges (default: 0.01)')
-parser.add_argument('--pHmin', type=float, default=0, 
-                    help='Minimum pH value for the diagram (default: 0)')
-parser.add_argument('--pHmax', type=float, default=14, 
-                    help='Maximum pH value for the diagram (default: 14)')
-parser.add_argument('--Umin', type=float, default=-1, 
-                    help='Minimum potential value in V vs SHE (default: -1)')
-parser.add_argument('--Umax', type=float, default=3, 
-                    help='Maximum potential value in V vs SHE (default: 3)')
-
-# 1D plot specific ranges
-parser.add_argument('--Gmin', type=float, 
-                    help='Minimum Gibbs free energy value for 1D stability plots')
-parser.add_argument('--Gmax', type=float, 
-                    help='Maximum Gibbs free energy value for 1D stability plots')
-
-# Figure dimensions and layout
-parser.add_argument('--figx', type=float, default=4, 
-                    help='Figure width in inches (default: 4)')
-parser.add_argument('--figy', type=float, default=4, 
-                    help='Figure height in inches (default: 4)')
-
-# Electrochemical reference lines
-parser.add_argument('--HER', action='store_true', 
-                    help='Show Hydrogen Evolution Reaction line (H+/H2 equilibrium)')
-parser.add_argument('--OER', action='store_true', 
-                    help='Show Oxygen Evolution Reaction line (O2/H2O equilibrium)')
-
-# Legend positioning options
-parser.add_argument('--legend-in', action='store_true', 
-                    help='Show legend inside the plot area')
-parser.add_argument('--legend-out', action='store_true', 
-                    help='Show legend outside the plot area')
-parser.add_argument('--legend-up', action='store_true', 
-                    help='Show legend above the plot')
-
-# Color scheme customization for bulk plots
-parser.add_argument('--cmap', type=str, default='Greys', 
-                    help='Matplotlib colormap for bulk stability regions (default: Greys)')
-parser.add_argument('--cmin', type=float, default=0.1, 
-                    help='Minimum value for color mapping in bulk plots (default: 0.1)')
-parser.add_argument('--cmax', type=float, default=0.7, 
-                    help='Maximum value for color mapping in bulk plots (default: 0.7)')
-parser.add_argument('--cgap', type=float, default=0.0, 
-                    help='Fraction of colormap to skip in the center (e.g., 0.2 skips middle 20 percent)')
-parser.add_argument('--colors-bulk', type=str, nargs='+', 
-                    help='Explicit color names for bulk plots (e.g., --colors-bulk red blue green orange). Overrides --cmap.')
-
-# Color scheme customization for 2D plots
-parser.add_argument('--cmap-2d', type=str, default='RdBu', 
-                    help='Matplotlib colormap for 2D phase diagrams (default: RdBu)')
-parser.add_argument('--cmin-2d', type=float, default=0.0, 
-                    help='Minimum value for color mapping in 2D plots (default: 0.0)')
-parser.add_argument('--cmax-2d', type=float, default=1.0, 
-                    help='Maximum value for color mapping in 2D plots (default: 1.0)')
-parser.add_argument('--cgap-2d', type=float, default=0.2, 
-                    help='Color gap for 2D plots (default: 0.2)')
-parser.add_argument('--colors-2d', type=str, nargs='+', 
-                    help='Explicit color names for 2D plots (e.g., --colors-2d red blue green orange). Overrides --cmap-2d.')
-
-# Color scheme customization for 1D plots
-parser.add_argument('--cmap-1d', type=str, default='Spectral', 
-                    help='Matplotlib colormap for 1D stability plots (default: Spectral)')
-parser.add_argument('--cmin-1d', type=float, default=0.0, 
-                    help='Minimum value for color mapping in 1D plots (default: 0.0)')
-parser.add_argument('--cmax-1d', type=float, default=1.0, 
-                    help='Maximum value for color mapping in 1D plots (default: 1.0)')
-parser.add_argument('--cgap-1d', type=float, default=0.0, 
-                    help='Color gap for 1D plots (default: 0.0)')
-parser.add_argument('--colors-1d', type=str, nargs='+', 
-                    help='Explicit color names for 1D plots (e.g., --colors-1d red blue green orange). Overrides --cmap-1d.')
-
-# Display options
-parser.add_argument('--no-bulk', action='store_true', 
-                    help='Skip bulk phase calculations and display only surface phases')
-parser.add_argument('--show-fig', action='store_true', 
-                    help='Display the generated plot in a window')
-
-# Debug and information display options
-parser.add_argument('--show-thermo', action='store_true', 
-                    help='Print detailed thermodynamic data information')
-parser.add_argument('--show-ref', action='store_true', 
-                    help='Print reference surface selection information')
-parser.add_argument('--show-element', action='store_true', 
-                    help='Print element composition analysis')
-parser.add_argument('--show-count', action='store_true', 
-                    help='Print minimum count of each element across all structures')
-parser.add_argument('--show-label', action='store_true', 
-                    help='Print file labels and their assignments')
-parser.add_argument('--show-min-coord', action='store_true', 
-                    help='Print minimum coordination analysis for each surface')
-parser.add_argument('--show-transitions', action='store_true', 
-                    help='Print most stable surface transition points in 1D plots')
-
-# Structure visualization
-parser.add_argument('--png', action='store_true', 
-                    help='Generate PNG images of all JSON structure files')
-parser.add_argument('--png-rotation', type=str, default='-90x, -90y, 0z', 
-                    help='Rotation angles for PNG structure images (default: "-90x, -90y, 0z")')
-
-# Custom file paths (override defaults)
-parser.add_argument('--label-csv', type=str, 
-                    help='Custom path to label.csv file (default: ./label.csv)')
+                    help='Suffix for the output filename')
 parser.add_argument('--thermo-data', type=str, 
                     help='Custom path to thermodynamic data file (default: ./thermodynamic_data.json)')
 parser.add_argument('--ref-energies', type=str, 
                     help='Custom path to reference energies file (default: ./reference_energies.json)')
-
-# Parse command line arguments
+parser.add_argument('--pHmin', type=float, default=0, 
+                    help='Minimum pH value for the diagram (default: 0)')
+parser.add_argument('--pHmax', type=float, default=14, 
+                    help='Maximum pH value for the diagram (default: 14)')
+parser.add_argument('--Umin', type=float, default=-0.5, 
+                    help='Minimum potential on the figure in V vs Zn/Zn2+ (default: -1.5)')
+parser.add_argument('--Umax', type=float, default=+3.0, 
+                    help='Maximum potential on the figure in V vs Zn/Zn2+ (default: +2.0)')
+parser.add_argument('--show-fig', action='store_true', 
+                    help='Display the generated plot in a window')
+parser.add_argument('--conc', action='store_true', 
+                    help='Use concentration for ions')
+parser.add_argument('--label', action='store_true', 
+                    help='Label domains in the Pourbaix diagram')
+parser.add_argument('--HER', action='store_true', 
+                    help='Show HER line (0-pH*const)')
+parser.add_argument('--OER', action='store_true', 
+                    help='Show OER line (1.23-pH*const)')
+parser.add_argument('--figx', type=float, default=6, 
+                    help='Figure width in inches (default: 6)')
+parser.add_argument('--figy', type=float, default=5, 
+                    help='Figure height in inches (default: 5)')
+parser.add_argument('--exp', action='store_true', 
+                    help='Include experimental entries')
+parser.add_argument('--simple', action='store_true', 
+                    help='Use simple entries')
+parser.add_argument('--no-color', action='store_true', 
+                    help='Do not color the plot')
+                    
 args = parser.parse_args()
 
-# Extract key calculation modes from arguments
-is_hybrid = args.hybrid      # Hybrid surface-bulk calculations
-is_gc = args.gc              # Apply Grand Canonical DFT corrections
+# Physical constants
+kjmol = 96.485
+calmol = 23.061
+kb = 8.617e-5
+T = 298.15
+const = kb * T * np.log(10)
 
-# Build output filename based on calculation modes and options
-png_name = 'pourbaix'
-suffix = ''
+# pymatgen PourbaixPlotter uses V vs SHE; add this to every plotted y to show V vs Zn/Zn2+
+SHE_TO_ZN_DISPLAY_SHIFT_V = 0.76
 
-# Add mode indicators to filename
-if hasattr(args, 'hybrid') and is_hybrid:
-    png_name += '_hybrid'
-else:
-    png_name += '_surface'
 
-if hasattr(args, 'gc') and is_gc:
-    suffix += '_gc'
+def she_limits_for_pourbaix_plot(Umin_vs_zn, Umax_vs_zn):
+    """Convert figure limits (vs Zn/Zn2+) to SHE limits for pymatgen."""
+    return Umin_vs_zn - SHE_TO_ZN_DISPLAY_SHIFT_V, Umax_vs_zn - SHE_TO_ZN_DISPLAY_SHIFT_V
 
-if hasattr(args, 'legend_in') and args.legend_in:
-    suffix += '_legend_in'
-elif hasattr(args, 'legend_out') and args.legend_out:
-    suffix += '_legend_out'
-elif hasattr(args, 'legend_up') and args.legend_up:
-    suffix += '_legend_up'
 
-if hasattr(args, 'suffix') and args.suffix:
-    suffix += '_' + args.suffix
+def shift_ax_potential_from_she_to_zn(ax, dy):
+    """Add dy to all y coordinates (SHE -> vs Zn/Zn2+), then fix y-axis to user limits.
+
+    PourbaixPlotter uses ax.annotate() for domain labels. Annotation.draw() skips drawing
+    when the anchor self.xy is outside the axes; we must move both xy and the text position.
+
+    Draw any extra reference lines after this call, using V vs Zn/Zn2+ (add dy to SHE formulas).
+    """
+    for line in ax.lines:
+        y = np.asarray(line.get_ydata(), dtype=float)
+        line.set_ydata(y + dy)
+    for coll in ax.collections:
+        if isinstance(coll, PolyCollection):
+            new_paths = []
+            for path in coll.get_paths():
+                v = path.vertices.copy()
+                v[:, 1] += dy
+                new_paths.append(Path(v, path.codes))
+            coll.set_paths(new_paths)
+        elif isinstance(coll, LineCollection):
+            segs = coll.get_segments()
+            new_segs = [np.asarray(s, dtype=float).copy() for s in segs]
+            for seg in new_segs:
+                seg[:, 1] += dy
+            coll.set_segments(new_segs)
+    for patch in ax.patches:
+        if hasattr(patch, 'get_xy'):
+            xy = np.asarray(patch.get_xy(), dtype=float).copy()
+            xy[:, 1] += dy
+            patch.set_xy(xy)
+    for text in ax.texts:
+        x, y = text.get_position()
+        text.set_position((x, float(y) + dy))
+        if isinstance(text, Annotation):
+            x0, y0 = text.xy
+            text.xy = (float(x0), float(y0) + dy)
+    # args.Umin/Umax are the final figure range (vs Zn/Zn2+), not SHE
+    ax.set_ylim(args.Umin, args.Umax)
+
+"""
+All computational values from PBE, afm Mn ordering
+
+Error in dH of O2 PBE value:  0.19268103743612963  (if not close to zero: error in O2 PBE energy)
+Error in dH of O2 from H2O/H2 PBE values:  0.00019267243612963725  (should be close to zero!)
+
+dH of molecular references at 300K:
+1/2 O2 derived from H2O/H2:  -4.658724749999999
+1/2 O2 derived from PBE:  -4.851213114999999
+1/2 H2 derived from PBE:  -3.2067375399999998
+H2O derived from PBE:  -13.578199829999999
+
+Error in dG of O2 PBE value:      0.19014237339508666  (if not close to zero: error in O2 PBE energy)
+Error in dG of O2 from H2O/H2 PBE values:  -0.0023459916049133334  (should be close to zero!)
+
+"""
+
+gh2o = -13.578199829999999
+gh = -3.2067375399999998
+go = -4.658724749999999
+
+zpeoh =  0.376
+zpeo  =  0.064
+zpeooh=  0.471
+# zpeh = 0.268
+zpeh = zpeoh - zpeo
+cvoh  =  0.042
+cvo   =  0.034
+cvooh =  0.077
+cvh = cvoh - cvo
+tsoh  =  0.066
+tso   =  0.060
+tsooh =  0.134
+tsh = tsoh - tso
+
+TdS_MnO = -0.2314436306161579
+TdS_MnO2 = -0.5690729735191998
+TdS_MnOOH = -0.8010447219775086
+TdS_MnOH2 = -0.8303986596880345
+TdS_Mn3O4 = -1.084090519251697
+TdS_Mn2O3 = -0.8075002699901537
+TdS_ZnMn3O7_3H2O = 5.045770/6
+TdS_H1 = TdS_MnOOH - TdS_MnO2
+TdS_H2 = TdS_MnOH2 - TdS_MnOOH
+TdS_H3 = (TdS_MnOH2 - TdS_MnO2) / 2
+# print(TdS_H1, TdS_H2, TdS_H3)
+TdS_H = TdS_H2
+TdS_Mn = TdS_Mn3O4 - TdS_MnO2 * 2
+
+ZPE_MnO = 0.2867
+ZPE_MnO2 = 0.2867
+ZPE_MnOOH = 0.5779
+ZPE_MnOH2 = 0.8617
+ZPE_Mn3O4 = 0.6573
+ZPE_Mn2O3 = 0.4937
+ZPE_ZnMn3O7_3H2O = 17.261094/6
+ZPE_H1 = ZPE_MnOOH - ZPE_MnO2
+ZPE_H2 = ZPE_MnOH2 - ZPE_MnOOH
+ZPE_H3 = (ZPE_MnOH2 - ZPE_MnO2) / 2
+# print(ZPE_H1, ZPE_H2, ZPE_H3)
+ZPE_H = ZPE_H2
+ZPE_Mn = ZPE_Mn3O4 - ZPE_MnO2 * 2
 
 def main():
-    """
-    Main function that orchestrates the entire Pourbaix diagram generation process.
-    
-    This function handles:
-    1. Grid setup for pH and potential ranges
-    2. File discovery and structure reading
-    3. Label processing from CSV files
-    4. Energy calculations and corrections
-    5. Thermodynamic data integration
-    6. Bulk and surface phase analysis
-    7. Plot generation and export
-    """
-    
     # ========================================
-    # SECTION 1: GRID SETUP AND INITIALIZATION
+    # SECTION 1: FILE DISCOVERY
     # ========================================
-    
-    # Set up pH and potential grid for diagram calculation
-    # The grid resolution is controlled by the --tick argument
-    tick = args.tick if hasattr(args, 'tick') else 0.01
-    pHmin, pHmax = args.pHmin, args.pHmax
-    pHrange = np.arange(pHmin, pHmax + tick, tick)  # pH range array
-    
-    # Potential range setup (V vs SHE - Standard Hydrogen Electrode)
-    Umin, Umax = args.Umin, args.Umax
-    # Extra range added (0.06 * 14) to accommodate thermodynamic boundaries
-    Urange = np.arange(Umin, Umax + 0.06 * 14, tick)  # Potential range array
-    
-    # Target pH for specific calculations
-    target_pH = args.pH if hasattr(args, 'pH') else 0
-    
-    # ========================================
-    # SECTION 2: FILE DISCOVERY AND STRUCTURE READING
-    # ========================================
-    
-    # Initialize element tracking and file discovery
-    elements = set()  # Track all unique elements found in structures
     json_dir = args.json_dir
-    
-    # Find and sort all JSON structure files
     json_files = glob.glob(os.path.join(json_dir, "*.json"))
     json_files = sorted(json_files, key=lambda x: os.path.basename(x))
-
-    # ========================================
-    # SECTION 3: LABEL PROCESSING FROM CSV FILES
-    # ========================================
     
-    # Determine path to label.csv file containing species information
-    csv_dir = args.csv_dir
-    if hasattr(args, 'label_csv') and args.label_csv:
-        label_csv_path = args.label_csv  # Use custom path if provided
-    else:
-        label_csv_path = os.path.join(csv_dir, 'label.csv')  # Default path
+    if len(json_files) == 0:
+        print("Error: No JSON files found!")
+        return
     
-    # Initialize dictionaries to store species information
-    file_labels = {}              # Maps filenames to display labels
-    file_oh_counts = {}           # Maps filenames to OH group counts
-    file_gibbs_corrections = {}   # Maps filenames to Gibbs free energy corrections
-    file_gc_params = {}           # Maps filenames to Grand Canonical DFT parameters (A, B, C)
-    
-    # Process label.csv file if it exists
-    if os.path.exists(label_csv_path):
-        # Read CSV file with predefined column structure:
-        # json_name, label, #OH, G_corr, A, B, C
-        label_df = pd.read_csv(label_csv_path, header=None, 
-                              names=['json_name', 'label', '#OH', 'G_corr', 'A', 'B', 'C'])
-        
-        # Process each row in the CSV file
-        for idx, row in label_df.iterrows():
-            json_name = row['json_name']
-            file_labels[json_name] = row['label']  # Store display label
-            
-            # Store OH group count if available
-            if '#OH' in row and not pd.isna(row['#OH']):
-                file_oh_counts[json_name] = float(row['#OH'])
-            
-            # Store Gibbs free energy correction if available
-            if 'G_corr' in row and not pd.isna(row['G_corr']):
-                file_gibbs_corrections[json_name] = float(row['G_corr'])
-            
-            # Store Grand Canonical DFT parameters if GC mode is enabled
-            if is_gc and all(col in row for col in ['A', 'B', 'C']):
-                if all(not pd.isna(row[col]) for col in ['A', 'B', 'C']):
-                    file_gc_params[json_name] = {
-                        'A': float(row['A']),  # Chemical potential coefficient
-                        'B': float(row['B']),  # pH-dependent term
-                        'C': float(row['C']),  # Energy correction
-                    }
-    else:
-        # Fallback: Generate labels from chemical formulas if no CSV file exists
-        print(f"Warning: Label file {label_csv_path} not found. Using chemical formulas as labels.")
-        for json_file in json_files:
-            atoms = read(json_file)
-            formula = atoms.get_chemical_formula()
-            file_labels[os.path.basename(json_file)] = formula
     # ========================================
-    # SECTION 4: ELEMENT ANALYSIS AND STRUCTURE VISUALIZATION
+    # SECTION 2: OPTIONAL PER-FILE CORRECTIONS (NO label.csv)
     # ========================================
+    file_oh_counts = {}
+    file_gibbs_corrections = {}
     
-    # Analyze all elements present in the structures
+    # ========================================
+    # SECTION 3: ELEMENT ANALYSIS
+    # ========================================
+    elements = set()
     for json_file in json_files:
         atoms = read(json_file)
-        elements.update(atoms.get_chemical_symbols())  # Collect unique elements
+        elements.update(atoms.get_chemical_symbols())
     
-    # Sort elements by atomic number for consistent ordering
-    sorted_elements = sorted(elements, key=lambda x: element(x).atomic_number)
-    
-    # Display file labels if requested (debug option)
-    if args.show_label:
-        print("\nFile labels:")
-        for fname, label in file_labels.items():
-            print(f"{fname}: {label}")
-
-    # Generate PNG images of structures if requested
-    if args.png:
-        print("\nSaving PNG images of structures...")
-        for json_file in json_files:
-            atoms = read(json_file)
-            json_basename = os.path.basename(json_file)
-            png_filename = json_basename.replace('.json', '.png')
-            try:
-                from ase.io import write
-                # Generate PNG with specified rotation and no unit cell display
-                write(png_filename, atoms, rotation=args.png_rotation, show_unit_cell=0)
-                print(f"  Generated: {png_filename}")
-            except Exception as e:
-                print(f"  Failed to save {png_filename}: {e}")
-        print("PNG image generation completed.\n")
-
-    # ========================================
-    # SECTION 5: SURFACE DATA STRUCTURE CONSTRUCTION
-    # ========================================
-    
-    # Build comprehensive surface data structure
-    # This section creates the main data structure that will be used for all calculations
-    
-    # Re-sort elements by atomic number for consistency
-    # Ensure H and O are always included for electrochemical calculations
     sorted_elements = sorted(elements, key=lambda x: element(x).atomic_number)
     if 'H' not in sorted_elements:
         sorted_elements.append('H')
     if 'O' not in sorted_elements:
         sorted_elements.append('O')
-    # Re-sort to maintain atomic number ordering
     sorted_elements = sorted(sorted_elements, key=lambda x: element(x).atomic_number)
     
-    # Track minimum count of each element across all structures
-    # This is used later for reference energy calculations
-    min_counts = {el: None for el in sorted_elements}
+    # ========================================
+    # SECTION 4: BULK DATA CONSTRUCTION FROM JSON FILES
+    # ========================================
+    print(f"Processing {len(json_files)} bulk structure files...")
+    start_time = time.time()
     
-    # Main surface data list - each entry represents one structure
-    surfs = []
-    
-    print(f"Processing {len(json_files)} structure files...")
-    
-    for json_file in json_files:
-        # Read structure and extract basic information
+    bulk_data = []
+    for json_file in json_files:        
         atoms = read(json_file)
-        energy = atoms.get_potential_energy()  # DFT total energy
-        symbols = atoms.get_chemical_symbols()  # List of atomic symbols
+        energy = atoms.get_potential_energy()
+        symbols = atoms.get_chemical_symbols()
         
-        # Initialize data row for this structure
-        row = {}
-        row['E_DFT'] = energy  # DFT total energy (eV)
-        row['e'] = 0           # Number of electrons (will be calculated later)
-        
-        # Count atoms of each element in this structure
-        symbol_count = Counter(symbols)
-        for el in sorted_elements:
-            count = symbol_count.get(el, 0)  # Get count, default to 0 if element not present
-            row[el] = float(count)
-            
-            # Track minimum count across all structures for each element
-            if min_counts[el] is None:
-                min_counts[el] = count
-            else:
-                min_counts[el] = min(min_counts[el], count)
-        
-        # Store metadata
-        row['conc'] = 1  # Concentration (default: 1, may be modified later)
         json_basename = os.path.basename(json_file)
-        row['name'] = file_labels.get(json_basename, json_file)  # Display name
-            
-        # Apply Grand Canonical DFT parameters if available
-        if is_gc and json_basename in file_gc_params:
-            # GC-DFT modifies the energy based on chemical potentials
-            gc_params = file_gc_params[json_basename]
-            row['A'] = gc_params['A']  # Chemical potential coefficient
-            row['B'] = gc_params['B']  # pH-dependent correction
-            row['E_DFT'] = gc_params['C']  # Use corrected energy instead of DFT energy
-        else:
-            row['A'] = 0.0
-            row['B'] = 0.0 
-
-        # Apply Gibbs free energy correction if available
+        label_name = json_basename.replace('.json', '')
+        
+        # Apply Gibbs correction if available
         if json_basename in file_gibbs_corrections:
-            row['E_DFT'] += file_gibbs_corrections[json_basename]
-
-        surfs.append(row)
-
-    # ========================================
-    # SECTION 6: ELEMENT COUNT NORMALIZATION
-    # ========================================
-    
-    # Display minimum element counts if requested (debug option)
-    if args.show_count:
-        print("\nMinimum count of each element across all files:")
-        for el in sorted_elements:
-            print(f"{el}: {min_counts[el]}")
-
-    # Normalize element counts by subtracting minimum counts
-    # This step converts absolute counts to relative counts for formation energy calculations
-    if args.show_count:
-        print("Normalizing element counts relative to reference...")
-    for row in surfs:
-        for el in sorted_elements:
-            row[el] = row[el] - min_counts[el]
-    
-    # Remove element columns that are zero for all structures after normalization
-    # These elements don't contribute to the phase equilibria
-    # Note: H and O are always kept for electrochemical calculations even if count is 0
-    zero_cols = [el for el in sorted_elements if el not in ['H', 'O'] and all(row[el] == 0 for row in surfs)]
-    remaining_elements = [el for el in sorted_elements if el not in zero_cols]
-    
-    if zero_cols and args.show_element:
-        print(f"Removing elements with zero variation: {zero_cols}")
-    
-    # Clean up the data structure by removing zero columns
-    for row in surfs:
-        for col in zero_cols:
-            del row[col]
-    
-    # Define unique_elements as non-H, non-O elements for phase diagram construction
-    # H and O are typically treated as reservoir species in electrochemical systems
-    unique_elements = [el for el in remaining_elements if el not in ['O', 'H']]
-    
-    # Display element analysis if requested (debug option)
-    if args.show_element:
-        print(f"\nElement analysis:")
-        print(f"  All elements found: {sorted_elements}")
-        print(f"  Elements with variation: {remaining_elements}")  
-        print(f"  Phase-determining elements (non-H, non-O): {unique_elements}")
-
-    # ========================================
-    # SECTION 7: REFERENCE SURFACE SELECTION
-    # ========================================
-    
-    # Select reference surface for formation energy calculations
-    # The reference surface should have all unique_elements = 0 (i.e., contains only H and O)
-    # Among such surfaces, we choose the one with the highest energy for numerical stability
-    
-    ref_candidates = []
-    if args.show_ref:
-        print("Searching for reference surface candidates...")
-    
-    for i, row in enumerate(surfs):
-        # Check if this surface contains only H and O (all unique elements = 0)
-        if all(row.get(elem, 0) == 0.0 for elem in unique_elements):
-            ref_candidates.append((i, float(row['E_DFT']), row['name']))
-            if args.show_ref:
-                print(f"  Candidate {i}: {row['name']} (E_DFT: {row['E_DFT']:.3f} eV)")
-
-    if ref_candidates:
-        # Select the candidate with highest energy as reference surface
-        # Higher energy reference makes all formation energies more negative, improving numerical stability
-        ref_surf_idx, ref_energy, ref_name = max(ref_candidates, key=lambda x: x[1])
-        ref_surf = surfs[ref_surf_idx]
+            energy += file_gibbs_corrections[json_basename]
         
-        if args.show_ref:
-            print(f"\nSelected reference surface: {ref_name} (index {ref_surf_idx})")
-            print(f"  Reference energy: {ref_energy:.3f} eV")
+        # Get composition from atoms
+        comp_dict = Counter(symbols)
         
-        if args.show_ref:
-            print(f"  Detailed composition:")
-            for elem in remaining_elements:
-                if elem in ref_surf:
-                    print(f"    {elem}: {ref_surf[elem]}")
-    else:
-        # No suitable reference surface found - this is problematic
-        ref_surf = None
-        print("WARNING: No reference surface found!")
-        print("  A reference surface should contain only H and O atoms.")
-        print("  This may indicate an issue with the input structures.")
+        # Calculate GCD of all element counts for normalization
+        counts = list(comp_dict.values())
+        if len(counts) > 0:
+            from math import gcd
+            from functools import reduce
+            gcd_value = reduce(gcd, counts)
+        else:
+            gcd_value = 1
         
-        if args.show_ref:
-            print("\nAll surface compositions:")
-            for i, row in enumerate(surfs):
-                composition = ", ".join([f"{elem}: {row[elem]}" for elem in unique_elements if elem in row and row[elem] != 0])
-                print(f"  {i}: {row['name']} - {composition if composition else 'Only H/O'}")
-
-    # ========================================
-    # SECTION 8: FORMATION ENERGY CORRECTIONS
-    # ========================================
-    
-    # Apply formation energy corrections to convert DFT total energies to formation energies
-    # This is crucial for comparing structures with different compositions
-    
-    if ref_surf is None:
-        print("ERROR: Cannot proceed without a reference surface!")
-        return
-    
-    reference_surface_energy = ref_surf['E_DFT']
-    if args.show_ref:
-        print(f"\nApplying formation energy corrections...")
-        print(f"Using reference energy: {reference_surface_energy:.3f} eV")
-    
-    for k in range(len(surfs)):
-        json_basename = None
+        # Normalize composition and energy by GCD
+        normalized_comp_dict = {el: count // gcd_value for el, count in comp_dict.items()}
+        normalized_energy = energy / gcd_value
+        # print("gcd_value: ", gcd_value)
+        comp_str = ''.join([f"{el}{count}" if count > 1 else el 
+                            for el, count in sorted(normalized_comp_dict.items())])
         
-        # Find the corresponding filename for this surface
-        for fname, label in file_labels.items():
-            if label == surfs[k]['name']:
-                json_basename = fname
-                break
-
-        if not file_gibbs_corrections or all(pd.isna(value) for value in file_gibbs_corrections.values()):  # If no Gibbs corrections are provided or all values are NaN
-            # print("No Gibbs corrections provided, using thermodynamic reference states")
-            # Determine OH group count for this surface
-            oh_count = 0  # Default: no OH groups
+        if 'MnO2' in label_name or 'Mn3O6' in label_name or 'Mn2O4' in label_name or 'Mn4O8' in label_name or 'Mn8O16' in label_name:
+            normalized_energy += (ZPE_MnO2 - TdS_MnO2) * normalized_comp_dict['Mn']
+            if 'H(' in label_name:
+                normalized_energy += (ZPE_H - TdS_H) * normalized_comp_dict['H']
+        elif 'H4MnO4' in label_name or 'H4Mn3O8' in label_name or 'H4Mn5O12' in label_name or 'H4Mn7O16' in label_name:
+            normalized_energy += (ZPE_MnO2 - TdS_MnO2) * (normalized_comp_dict['Mn'] + 1) \
+                + (ZPE_H - TdS_H) * normalized_comp_dict['H']
+            # normalized_energy += (ZPE_MnO2 - TdS_MnO2) * (normalized_comp_dict['Mn']+1)
+        elif label_name == 'C-ZnMn3O7-3H2O':
+            normalized_energy += (ZPE_ZnMn3O7_3H2O - TdS_ZnMn3O7_3H2O) * normalized_comp_dict['Zn']
+            # normalized_energy += (ZPE_MnO2 - TdS_MnO2)*2 + (ZPE_Mn2O3 - TdS_Mn2O3) + (ZPE_H - TdS_H) * 3
+        elif 'ZnMn3O7' in label_name:
+            normalized_energy += (ZPE_MnO2 - TdS_MnO2) * 3.5
+        elif 'Zn2Mn3O8' in label_name:
+            normalized_energy += (ZPE_MnO2 - TdS_MnO2) * 4
+        elif 'MnOOH' in label_name:
+            normalized_energy += (ZPE_MnOOH - TdS_MnOOH) * normalized_comp_dict['Mn']
+        elif 'Mn(OH)2' in label_name:
+            normalized_energy += (ZPE_MnOH2 - TdS_MnOH2) * normalized_comp_dict['Mn']
+        elif 'MnO' in label_name:
+            normalized_energy += (ZPE_MnO - TdS_MnO) * normalized_comp_dict['Mn']
+        elif 'Mn3O4' in label_name:
+            normalized_energy += (ZPE_Mn3O4 - TdS_Mn3O4) * normalized_comp_dict['Mn'] / 3
+        elif 'Mn2O3' in label_name:
+            normalized_energy += (ZPE_Mn2O3 - TdS_Mn2O3) * normalized_comp_dict['Mn'] / 2
+        else:
+            print("Gibbs correction not found for ", label_name)
             
-            # Use OH count from CSV file if available
-            if json_basename and json_basename in file_oh_counts:
-                if not np.isnan(file_oh_counts[json_basename]):
-                    oh_count = file_oh_counts[json_basename]
-            
-            # Calculate formation energy correction using thermodynamic reference states
-            # The correction accounts for the chemical potentials of H, O, and OH
-            formation_energy_correction = (
-                - (surfs[k]['H'] - oh_count) * (gh - dgh)  # H atoms (excluding those in OH)
-                - (surfs[k]['O'] - oh_count) * (go - dgo)  # O atoms (excluding those in OH) 
-                - oh_count * (goh - dgoh)                  # OH groups
-            )
-        else:  # If Gibbs corrections are provided, use simpler correction
-            # print("Using Gibbs corrections")
-            # Determine gibbs correction for this surface
-            gibbs_correction = 0
-
-            # Use gibbs correction from CSV file if available
-            if json_basename and json_basename in file_gibbs_corrections:
-                if not np.isnan(file_gibbs_corrections[json_basename]):
-                    gibbs_correction = file_gibbs_corrections[json_basename]
-
-            # Calculate formation energy correction using Gibbs corrections
-            formation_energy_correction = (
-                - surfs[k]['H'] * gh  # H atoms
-                - surfs[k]['O'] * go  # O atoms
-                + gibbs_correction
-            )
-        
-        # Update the energy to formation energy
-        original_energy = surfs[k]['E_DFT']
-        surfs[k]['E_DFT'] = (original_energy - reference_surface_energy + 
-                           formation_energy_correction)
-        
-        if args.show_ref and k < 5:  # Show details for first few surfaces
-            print(f"  {surfs[k]['name']}: {original_energy:.3f} → {surfs[k]['E_DFT']:.3f} eV")
+        bulk_data.append({
+            'atoms': atoms,
+            'energy': normalized_energy,
+            'composition': comp_str,
+            'name': label_name,
+            'json_basename': json_basename
+        })
+        # print(f"composition: {comp_str} (normalized by GCD={gcd_value}), energy: {normalized_energy:.6f} eV/atom, name: {label_name}")
+        # print(f"composition: {comp_str}, energy: {energy:.6f} eV/atom, name: {label_name}")
+    
+    elapsed = time.time() - start_time
+    print(f"✓ Structure files processed ({elapsed:.1f} seconds)")
+    
+    # Determine unique elements for thermodynamic data
+    # unique_elements = [el for el in sorted_elements if el not in ['H', 'O']]
+    unique_elements = ['Mn', 'Zn']
 
     # ========================================
-    # SECTION 9: THERMODYNAMIC DATA LOADING
+    # SECTION 8: THERMODYNAMIC DATA LOADING
     # ========================================
-    
-    # Load thermodynamic data for bulk species (ions, gases, solids)
-    # This data is essential for constructing the complete Pourbaix diagram
-    
-    # Determine path to thermodynamic data file
     if hasattr(args, 'thermo_data') and args.thermo_data:
         thermo_data_path = args.thermo_data
     else:
-        # Default: look in same directory as script
-        thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data.json')
-        # Fallback to .jsonc extension
+        if args.simple:
+            thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data_simple.json')
+        else:
+            thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data.json')
         if not os.path.exists(thermo_data_path):
             thermo_data_path = os.path.join(os.path.dirname(__file__), 'thermodynamic_data.jsonc')
-    
-    if args.show_thermo:
-        print(f"\nLoading thermodynamic data from: {thermo_data_path}")
+            
     thermo_data = {}
     if os.path.exists(thermo_data_path):
         thermo_data = load_jsonc(thermo_data_path)
+        print(f"Thermodynamic data loaded: {thermo_data_path}")
     
-    # Read reference_energies.json
     ref_energies_path = args.ref_energies if hasattr(args, 'ref_energies') and args.ref_energies else os.path.join(os.path.dirname(__file__), 'reference_energies.json')
     ref_energies = {}
     if os.path.exists(ref_energies_path):
         with open(ref_energies_path, 'r') as f:
             ref_energies = json.load(f)
+        print(f"Reference energies loaded: {ref_energies_path}")
     
-    # Create solids, ions, gases, liquids lists
-    ions = []
-    solids = []
-    gases = []
-    liquids = []
-    
-    # Process thermodynamic data for unique_elements
+    # ========================================
+    # SECTION 9: CONVERT TO PYMATGEN ENTRIES
+    # ========================================
+    print(f"\n[In progress] Converting to pymatgen PourbaixEntry...")
+
+    # Solid entries from thermodynamic data
+    solid_entries = []
     for el in unique_elements:
-        ions_el = []
-        solids_el = []
-        gases_el = []
-        liquids_el = []
-        # Check if element exists in reference energies
-        if el not in ref_energies:
-            print(f"WARNING: Element '{el}' not found in reference_energies.json! Energy corrections may be inaccurate.")
-            
-        if el in thermo_data:
-            if args.show_thermo:
-                print(f"\n{el} thermodynamic data:")
-                
-            # Process ions
-            if 'ions' in thermo_data[el] and thermo_data[el]['ions'] != {}:
-                if args.show_thermo:
-                    print(f"  Ions reduced dict:")
-                for ion_formula, energy in thermo_data[el]['ions'].items():
-                    try:
-                        reduced_dict = Ion.from_formula(ion_formula).to_reduced_dict
-                        if args.show_thermo:
-                            print(f"    {ion_formula}: {reduced_dict}, energy: {energy}")
-                        
-                        # Calculate energy correction
-                        energy_correction = 0
-                        # Add water energy for each O
-                        if 'O' in reduced_dict:
-                            energy_correction += water * reduced_dict['O']
-                        # Add energy for elements in reference_energies
-                        for elem in remaining_elements:
-                            if elem in ref_energies and elem in reduced_dict:
-                                energy_correction += ref_energies[elem] * reduced_dict[elem]
-                        
-                        # Create row (using corrected energy)
-                        row = {'E_DFT': energy/calmol + energy_correction, 'e': 0}
-                        for elem in remaining_elements:
-                            row[elem] = int(reduced_dict.get(elem, 0))
-                        if 'charge' in reduced_dict:
-                            row['e'] = int(reduced_dict['charge'])
-                        row['conc'] = args.concentration                        
-                        row['name'] = format_name(ion_formula) + '(aq)'
-                        row['A'] = 0.0
-                        row['B'] = 0.0
-                        
-                        # Normalize by el count
-                        el_count = reduced_dict.get(el, 1)  # Set to 1 if el is not present
-                        if el_count > 1:
-                            row['E_DFT'] = row['E_DFT'] / el_count
-                            row['e'] = row['e'] / el_count
-                            for elem in remaining_elements:
-                                row[elem] = row[elem] / el_count
-                            # # Display fractions as superscript/subscript
-                            # subscript_count = SUBSCRIPT_NUMS.get(str(int(el_count)), str(int(el_count)))
-                            # row['name'] = f'¹⁄{subscript_count}' + row['name']
+        if el in thermo_data and 'solids' in thermo_data[el]:
+            for solid_formula, energy in thermo_data[el]['solids'].items():
+                try:
+                    energy_ev = energy / calmol
+                    entry = PourbaixEntry(PDEntry(solid_formula, energy_ev))
+                    solid_entries.append(entry)
+                except Exception as e:
+                    print(f"Warning: Failed to process solid '{solid_formula}': {e}")
 
-                        ions.append(row)
-                        ions_el.append(row)
-                    except:
-                        if args.show_thermo:
-                            print(f"    {ion_formula}: parsing failed, energy: {energy}")
-
-            # Process solids
-            if 'solids' in thermo_data[el] and thermo_data[el]['solids'] != {}:
-                if args.show_thermo:
-                    print(f"  Solids reduced dict:")
-                for solid_formula, energy in thermo_data[el]['solids'].items():
-                    try:
-                        reduced_dict = Ion.from_formula(solid_formula).to_reduced_dict
-                        if args.show_thermo:
-                            print(f"    {solid_formula}: {reduced_dict}, energy: {energy}")
-                        
-                        # Calculate energy correction
-                        energy_correction = 0
-                        # Add water energy for each O
-                        if 'O' in reduced_dict:
-                            energy_correction += water * reduced_dict['O']
-                        # Add energy for elements in reference_energies
-                        for elem in remaining_elements:
-                            if elem in ref_energies and elem in reduced_dict:
-                                energy_correction += ref_energies[elem] * reduced_dict[elem]
-                        
-                        # Create row (using corrected energy)
-                        row = {'E_DFT': energy/calmol + energy_correction, 'e': 0}
-                        for elem in remaining_elements:
-                            row[elem] = int(reduced_dict.get(elem, 0))
-                        if 'charge' in reduced_dict:
-                            row['e'] = int(reduced_dict['charge'])
-                        row['conc'] = 1
-                        row['name'] = format_name(solid_formula) + '(s)'
-                        row['A'] = 0.0
-                        row['B'] = 0.0
-
-                        # Normalize by el count
-                        el_count = reduced_dict.get(el, 1)  # Set to 1 if el is not present
-                        if el_count > 1:
-                            row['E_DFT'] = row['E_DFT'] / el_count
-                            row['e'] = row['e'] / el_count
-                            for elem in remaining_elements:
-                                row[elem] = row[elem] / el_count
-                            # # Display fractions as superscript/subscript
-                            # subscript_count = SUBSCRIPT_NUMS.get(str(int(el_count)), str(int(el_count)))
-                            # row['name'] = f'¹⁄{subscript_count}' + row['name']
-                        
-                        solids.append(row)
-                        solids_el.append(row)
-                    except:
-                        if args.show_thermo:
-                            print(f"    {solid_formula}: parsing failed, energy: {energy}")
-
-            # Process gases
-            if 'gases' in thermo_data[el] and thermo_data[el]['gases'] != {}:
-                if args.show_thermo:
-                    print(f"  Gases reduced dict:")
-                for gas_formula, energy in thermo_data[el]['gases'].items():
-                    try:
-                        reduced_dict = Ion.from_formula(gas_formula).to_reduced_dict
-                        if args.show_thermo:
-                            print(f"    {gas_formula}: {reduced_dict}, energy: {energy}")
-                        
-                        # Calculate energy correction
-                        energy_correction = 0
-                        # Add water energy for each O
-                        if 'O' in reduced_dict:
-                            energy_correction += water * reduced_dict['O']
-                        # Add energy for elements in reference_energies
-                        for elem in remaining_elements:
-                            if elem in ref_energies and elem in reduced_dict:
-                                energy_correction += ref_energies[elem] * reduced_dict[elem]
-                        
-                        # Create row (using corrected energy)
-                        row = {'E_DFT': energy/calmol + energy_correction, 'e': 0}
-                        for elem in remaining_elements:
-                            row[elem] = int(reduced_dict.get(elem, 0))
-                        if 'charge' in reduced_dict:
-                            row['e'] = int(reduced_dict['charge'])
-                        row['conc'] = args.pressure
-                        row['name'] = format_name(gas_formula) + '(g)'
-                        row['A'] = 0.0
-                        row['B'] = 0.0
-
-                        # Normalize by el count
-                        el_count = reduced_dict.get(el, 1)  # Set to 1 if el is not present
-                        if el_count > 1:
-                            row['E_DFT'] = row['E_DFT'] / el_count
-                            row['e'] = row['e'] / el_count
-                            for elem in remaining_elements:
-                                row[elem] = row[elem] / el_count
-                            # # Display fractions as superscript/subscript
-                            # subscript_count = SUBSCRIPT_NUMS.get(str(int(el_count)), str(int(el_count)))
-                            # row['name'] = f'¹⁄{subscript_count}' + row['name']
-
-                        gases.append(row)
-                        gases_el.append(row)
-                    except:
-                        if args.show_thermo:
-                            print(f"    {gas_formula}: parsing failed, energy: {energy}")
-
-            # Process liquids
-            if 'liquids' in thermo_data[el] and thermo_data[el]['liquids'] != {}:
-                if args.show_thermo:
-                    print(f"  Liquids reduced dict:")
-                for liquid_formula, energy in thermo_data[el]['liquids'].items():
-                    try:
-                        reduced_dict = Ion.from_formula(liquid_formula).to_reduced_dict
-                        if args.show_thermo:
-                            print(f"    {liquid_formula}: {reduced_dict}, energy: {energy}")
-                        
-                        # Calculate energy correction
-                        energy_correction = 0
-                        # Add water energy for each O
-                        if 'O' in reduced_dict:
-                            energy_correction += water * reduced_dict['O']
-                        # Add energy for elements in reference_energies
-                        for elem in remaining_elements:
-                            if elem in ref_energies and elem in reduced_dict:
-                                energy_correction += ref_energies[elem] * reduced_dict[elem]
-                        
-                        # Create row (using corrected energy)
-                        row = {'E_DFT': energy/calmol + energy_correction, 'e': 0}
-                        for elem in remaining_elements:
-                            row[elem] = int(reduced_dict.get(elem, 0))
-                        if 'charge' in reduced_dict:
-                            row['e'] = int(reduced_dict['charge'])
-                        row['conc'] = 1
-                        row['name'] = format_name(liquid_formula) + '(l)'
-                        row['A'] = 0.0
-                        row['B'] = 0.0
-
-                        # Normalize by el count
-                        el_count = reduced_dict.get(el, 1)  # Set to 1 if el is not present
-                        if el_count > 1:
-                            row['E_DFT'] = row['E_DFT'] / el_count
-                            row['e'] = row['e'] / el_count
-                            for elem in remaining_elements:
-                                row[elem] = row[elem] / el_count
-                            # Display fractions as superscript/subscript
-                            # subscript_count = SUBSCRIPT_NUMS.get(str(int(el_count)), str(int(el_count)))
-                            # row['name'] = f'¹⁄{subscript_count}' + row['name']
-
-                        liquids.append(row)
-                        liquids_el.append(row)
-                    except:
-                        if args.show_thermo:
-                            print(f"    {liquid_formula}: parsing failed, energy: {energy}")
-            
-            if is_hybrid and not args.no_bulk:
-                bulks = ions_el + solids_el + gases_el + liquids_el
-                nbulks = len(bulks)
-
-                fig, ax = plt.subplots(figsize=(args.figx, args.figy))
-                ax.axis([pHmin, pHmax, Umin, Umax])
-                ax.set_xlabel('pH', fontsize=12)
-                ax.set_ylabel('E (V vs. SHE)', fontsize=12)
-                plt.xticks(np.arange(pHmin, pHmax + 1, 2))
-
-                # Calculate lowest bulks
-                lowest_bulks = np.full((len(Urange), len(pHrange)), np.nan)
-                pHindex = 0
-                for pH in pHrange:
-                    Uindex = 0
-                    for U in Urange:
-                        values = []
-                        for k in range(nbulks):
-                            value = dg(bulks[k], pH, U, bulks[0])
-                            values.append(value)
-                        sorted_values = sorted(range(len(values)), key=lambda k: values[k])
-                        lowest_bulks[Uindex][pHindex] = sorted_values[0]
-                        Uindex += 1
-                    pHindex += 1
-
-                unique_ids = []
-                for i in range(len(Urange)):
-                    for j in range(len(pHrange)):
-                        bulk_id = int(lowest_bulks[i, j])
-                        if bulk_id not in unique_ids:
-                            unique_ids.append(bulk_id)
-
-                n_colors = len(unique_ids)
-                
-                # Check if explicit colors are provided
-                if hasattr(args, 'colors_bulk') and args.colors_bulk:
-                    explicit_colors = parse_colors(args.colors_bulk)
-                    # Cycle colors if not enough provided
-                    colors = [explicit_colors[i % len(explicit_colors)] for i in range(n_colors)]
-                else:
-                    # Use colormap as before
-                    colormap = getattr(plt.cm, args.cmap, plt.cm.Greys)
-                    if args.cgap > 0 and args.cmap in Diverging_colors:
-                        gap = args.cgap
-                        left_end = 0.5 - gap/2
-                        right_start = 0.5 + gap/2
-                        
-                        # Calculate how many colors go to left and right
-                        n_left = int(np.ceil(n_colors / 2))
-                        n_right = n_colors - n_left
-                        
-                        # Create color values avoiding the gap
-                        if n_left > 0:
-                            left = np.linspace(args.cmin, left_end, n_left, endpoint=True)
-                        else:
-                            left = []
-                        
-                        if n_right > 0:
-                            right = np.linspace(right_start, args.cmax, n_right, endpoint=True)
-                        else:
-                            right = []
-                        
-                        color_values = np.concatenate([left, right]) if len(left) > 0 and len(right) > 0 else (left if len(left) > 0 else right)
+    print(f"  Solid entries: {len(solid_entries)}")
+    
+    # Ion entries from thermodynamic data
+    ion_entries = []
+    for el in unique_elements:
+        if el in thermo_data and 'ions' in thermo_data[el]:
+            for ion_formula, energy in thermo_data[el]['ions'].items():
+                try:
+                    energy_ev = energy / calmol
+                    comp = Ion.from_formula(ion_formula)
+                    concentration = 1e-6
+                    if args.conc:
+                        if ion_formula in ['Zn++', 'Mn++', 'MnO4-']:
+                            energy_ev = energy_ev + const * (log10(1) - log10(1e-6))
+                            concentration = 1.0
                     else:
-                        color_values = np.linspace(args.cmin, args.cmax, n_colors)
-                    colors = colormap(color_values)
-                cmap = mcolors.ListedColormap(colors)
-                bounds = np.arange(n_colors + 1) - 0.5
-                norm = mcolors.BoundaryNorm(bounds, cmap.N)
-                id_map = {val: idx for idx, val in enumerate(unique_ids)}
-                mapped_bulks = np.vectorize(id_map.get)(lowest_bulks)
+                        if ion_formula in ['Zn++', 'Mn++']:
+                            energy_ev = energy_ev + const * (log10(1) - log10(1e-6))
+                            concentration = 1.0
+                    if ion_formula == 'MnO4-':
+                        energy_mno41 = energy_ev
+                        concentration_mno41 = concentration
+                    elif ion_formula == 'MnO4--':
+                        energy_mno42 = energy_ev
+                        concentration_mno42 = concentration
+                    entry = PourbaixEntry(IonEntry(comp, energy_ev), concentration=concentration)
+                    ion_entries.append(entry)
+                except Exception as e:
+                    print(f"Warning: Failed to process ion '{ion_formula}': {e}")
 
-                # Generate legend (bulk, based on pH=0)
-                for idx, bulk_id in enumerate(reversed(unique_ids)):
-                    label = bulks[int(bulk_id)]['name']
-                    plt.plot([], [], color=colors[len(unique_ids)-1-idx], linewidth=5, label=label)
+    print(f"  Ion entries: {len(ion_entries)}")
 
-                # pcolormesh
-                pH_grid, U = np.meshgrid(pHrange, Urange)
-                plt.pcolormesh(pH_grid, U, mapped_bulks, cmap=cmap, norm=norm)
+    # Bulk entries from JSON files - convert to formation energy
+    bulk_entries = []
+    for data in bulk_data:
+        comp_str = data['composition']
+        formation_energy = data['energy']
+        comp = Composition(data['composition'])
 
-                # Show water stability region
-                if args.OER:
-                    plt.plot(pHrange, 1.23-pHrange*const, '--', lw=1, color='blue')
-                if args.HER:
-                    plt.plot(pHrange, 0-pHrange*const, '--', lw=1, color='blue')
-
-                if args.legend_in:
-                    plt.legend(fontsize=12, ncol=1, handlelength=3, edgecolor='black', loc='upper right')
-                elif args.legend_out:
-                    plt.legend(bbox_to_anchor=(1.02, 1), loc=2, borderaxespad=0., 
-                            fontsize=12, ncol=1, handlelength=3, edgecolor='black')
-                elif args.legend_up:
-                    plt.legend(bbox_to_anchor=(0.5, 1.02), loc='lower center', borderaxespad=0., 
-                            fontsize=12, ncol=3, handlelength=3, edgecolor='black')
-
-                plt.savefig(f'2D_pourbaix_bulk_{el}{suffix}.png', dpi=300, bbox_inches='tight')
-                print(f"Bulk Pourbaix diagram saved as pourbaix_bulk_{el}{suffix}.png")
-                if args.show_fig:
-                    plt.tight_layout()
-                    plt.show()
-                plt.close(fig)
-        else:
-            print(f"WARNING: Element '{el}' not found in thermodynamic data! This element will be ignored in Pourbaix diagram calculations.")
-            if args.show_thermo:
-                print(f"\n{el}: No thermodynamic data found")
-                
-    save_surfs = surfs.copy()
-    n_original_surfs = len(surfs)  # Store the number of original surfaces
-    nsurfs, nions, nsolids, ngases, nliquids = len(surfs), len(ions), len(solids), len(gases), len(liquids)
-    if is_gc:
-        surfs_df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name', 'A', 'B'])
-    else:
-        surfs_df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
-
-    print()
-    print(format_df_for_display(surfs_df))
-    print(f"Surfs: {nsurfs} entries\n")
-
-    if is_hybrid:
-        ions_df = pd.DataFrame(ions, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
-        solids_df = pd.DataFrame(solids, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
-        gases_df = pd.DataFrame(gases, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
-        liquids_df = pd.DataFrame(liquids, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
-        print(format_df_for_display(ions_df))
-        print(f"Ions: {nions} entries\n")
-        print(format_df_for_display(solids_df))
-        print(f"Solids: {nsolids} entries\n")
-        print(format_df_for_display(gases_df))
-        print(f"Gases: {ngases} entries\n")
-        print(format_df_for_display(liquids_df))
-        print(f"Liquids: {nliquids} entries\n")
-
-    unique_elements_count = {}
-    for unique_elem in unique_elements:
-        unique_elements_count[unique_elem] = max(surfs, key=lambda x: x[unique_elem])[unique_elem]
-
-    # unique_elements_list = []
-    # for unique_elem in unique_elements:
-    #     count = int(unique_elements_count[unique_elem])
-    #     unique_elements_list.extend([unique_elem] * count)
-    # print(unique_elements_list)
-
-    new_surfs = []
-    if is_hybrid:
-        # Process each unique_element
-        for unique_elem in unique_elements:
-            print(f"Processing unique_element: {unique_elem}")
-            # print("Original surfs:")
-            # for surf in surfs:
-            #     print(surf)
-            # print("--------------------------------")
-            new_surfs = []
-            nsurfs = len(surfs)
-            # Find surfs where the unique_element is 0
-            for k in range(nsurfs):
-                if surfs[k][unique_elem] < unique_elements_count[unique_elem]:
-                    diff = unique_elements_count[unique_elem] - surfs[k][unique_elem]
-                    # Combine with compounds having 1 unique_element from ions
-                    for ion in ions:
-                        if ion[unique_elem] == 1:
-                            new_surf = {}
-                            for key in surfs[k]:
-                                if key == 'name':
-                                    new_surf[key] = surfs[k][key] + '+' + ion[key]
-                                elif key == 'conc':
-                                    new_surf[key] = surfs[k][key] * ion[key]**diff
-                                elif key in ['A', 'B']:
-                                    new_surf[key] = surfs[k][key]  # Keep original surface values
-                                else:
-                                    new_surf[key] = surfs[k][key] + ion[key]*diff
-                            new_surfs.append(new_surf)
-                    
-                    # Combine with compounds having 1 unique_element from solids
-                    for solid in solids:
-                        if solid[unique_elem] == 1:
-                            new_surf = {}
-                            for key in surfs[k]:
-                                if key == 'name':
-                                    new_surf[key] = surfs[k][key] + '+' + solid[key]
-                                elif key == 'conc':
-                                    new_surf[key] = surfs[k][key] * solid[key]**diff
-                                elif key in ['A', 'B']:
-                                    new_surf[key] = surfs[k][key]  # Keep original surface values
-                                else:
-                                    new_surf[key] = surfs[k][key] + solid[key]*diff
-                            new_surfs.append(new_surf)
-                    
-                    # Combine with compounds having 1 unique_element from gases
-                    for gas in gases:
-                        if gas[unique_elem] == 1:
-                            new_surf = {}
-                            for key in surfs[k]:
-                                if key == 'name':
-                                    new_surf[key] = surfs[k][key] + '+' + gas[key]
-                                elif key == 'conc':
-                                    new_surf[key] = surfs[k][key] * gas[key]**diff
-                                elif key in ['A', 'B']:
-                                    new_surf[key] = surfs[k][key]  # Keep original surface values
-                                else:
-                                    new_surf[key] = surfs[k][key] + gas[key]*diff
-                            new_surfs.append(new_surf)
-            # print("New surfs:")
-            # for surf in new_surfs:
-            #     print(surf)
-            # print("--------------------------------")
-            surfs.extend(new_surfs)
-    else:
-        # When is_hybrid is False: use only pure forms of each element
-        # Find pure form compounds of each element (1 of the element, 0 of others)
-        ref_solids = []
-        ref_gases = []
-        ref_liquids = []
-        
-        for elem in unique_elements:
-            # Find solids with only 1 of this element and 0 of others
-            for solid in solids:
-                if solid[elem] == 1 and all(solid[other_elem] == 0 for other_elem in remaining_elements if other_elem != elem):
-                    if solid not in ref_solids:
-                        ref_solids.append(solid)
-            
-            # Find gases with only 1 of this element and 0 of others
-            for gas in gases:
-                if gas[elem] == 1 and all(gas[other_elem] == 0 for other_elem in remaining_elements if other_elem != elem):
-                    if gas not in ref_gases:
-                        ref_gases.append(gas)
-            
-            # Find liquids with only 1 of this element and 0 of others
-            for liquid in liquids:
-                if liquid[elem] == 1 and all(liquid[other_elem] == 0 for other_elem in remaining_elements if other_elem != elem):
-                    if liquid not in ref_liquids:
-                        ref_liquids.append(liquid)
-        
-        # Process each unique_element
-        for unique_elem in unique_elements:
-            # Find surfs where the unique_element is 0
-            for k in range(nsurfs):
-                if surfs[k][unique_elem] == 0:
-
-                    # Combine with compounds having 1 unique_element from ref_solids
-                    for solid in ref_solids:
-                        if solid[unique_elem] == 1:
-                            new_surf = {}
-                            for key in surfs[k]:
-                                if key == 'name':
-                                    new_surf[key] = surfs[k][key] + '+' + solid[key]
-                                elif key == 'conc':
-                                    new_surf[key] = surfs[k][key] * solid[key]
-                                elif key in ['A', 'B']:
-                                    new_surf[key] = surfs[k][key]  # Keep original surface values
-                                else:
-                                    new_surf[key] = surfs[k][key] + solid[key]
-                            new_surfs.append(new_surf)
-                    
-                    # Combine with compounds having 1 unique_element from ref_gases
-                    for gas in ref_gases:
-                        if gas[unique_elem] == 1:
-                            new_surf = {}
-                            for key in surfs[k]:
-                                if key == 'name':
-                                    new_surf[key] = surfs[k][key] + '+' + gas[key]
-                                elif key == 'conc':
-                                    new_surf[key] = surfs[k][key] * gas[key]
-                                elif key in ['A', 'B']:
-                                    new_surf[key] = surfs[k][key]  # Keep original surface values
-                                else:
-                                    new_surf[key] = surfs[k][key] + gas[key]
-                            new_surfs.append(new_surf)
-                    
-                    # Combine with compounds having 1 unique_element from ref_liquids
-                    for liquid in ref_liquids:
-                        if liquid[unique_elem] == 1:
-                            new_surf = {}
-                            for key in surfs[k]:
-                                if key == 'name':
-                                    new_surf[key] = surfs[k][key] + '+' + liquid[key]
-                                elif key == 'conc':
-                                    new_surf[key] = surfs[k][key] * liquid[key]
-                                elif key in ['A', 'B']:
-                                    new_surf[key] = surfs[k][key]  # Keep original surface values
-                                else:
-                                    new_surf[key] = surfs[k][key] + liquid[key]
-                            new_surfs.append(new_surf)
-        surfs.extend(new_surfs)
-
-    # Keep only those where surf[elem] matches unique_elements_count[elem] for all unique_elements
-    unique_surfs = [surf for surf in surfs if all(surf[elem] == unique_elements_count[elem] for elem in unique_elements)]
-    if len(unique_surfs) > 0:
-        surfs = unique_surfs
-
-    # for surf in surfs:
-    #     print(surf)
-
-    nsurfs = len(surfs)
-    if is_gc:
-        df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name', 'A', 'B'])
-    else:
-        df = pd.DataFrame(surfs, columns=['E_DFT', 'e'] + remaining_elements + ['conc', 'name'])
-    if is_hybrid and args.show_thermo:
-        print(format_df_for_display(df))
-        print(f"After adding combinations: {nsurfs} surfs entries\n")
-
-    # Calculate lowest surfaces
-    lowest_surfaces = np.full((len(Urange), len(pHrange)), np.nan)
-
-    pHindex = 0
-    for pH in pHrange:
-        Uindex = 0
-        for U in Urange:
-            values = []
-            for k in range(nsurfs):
-                value = dg(surfs[k], pH, U, surfs[ref_surf_idx])
-                values.append(value)
-            sorted_values = sorted(range(len(values)), key=lambda k: values[k])
-            lowest_surfaces[Uindex][pHindex] = sorted_values[0]
-            Uindex += 1
-        pHindex += 1
-
-    # Find minimum coordinates
-    min_coords = {}
-    n_rows, n_cols = lowest_surfaces.shape
-
-    for j in range(n_cols):
-        for i in range(n_rows):
-            sid = int(lowest_surfaces[i, j])
-            x = pHrange[j]
-            y = Urange[i]
-            if sid not in min_coords:
-                min_coords[sid] = (x, y)
+        for el, count in comp.items():
+            el_symbol = str(el)
+            if 'C-ZnMn3O7' in data['name']:
+                if el_symbol == 'H':
+                    formation_energy -= count * (gh2o - go)/2
+                elif el_symbol == 'O':
+                    formation_energy -= count * go
+                elif el_symbol in ref_energies:
+                    formation_energy -= count * ref_energies[el_symbol]
+                else:
+                    print(f"Warning: Reference energy for {el_symbol} not found in reference_energies.json")
             else:
-                current_x, current_y = min_coords[sid]
-                if x < current_x or (x == current_x and y < current_y):
-                    min_coords[sid] = (x, y)
+                if el_symbol == 'H':
+                    formation_energy -= count * gh
+                elif el_symbol == 'O':
+                    formation_energy -= count * go
+                elif el_symbol in ref_energies:
+                    formation_energy -= count * ref_energies[el_symbol]
+                else:
+                    print(f"Warning: Reference energy for {el_symbol} not found in reference_energies.json")
 
-    for sid in sorted(min_coords):
-        x, y = min_coords[sid]
-        name = surfs[int(sid)]['name']
-        if args.show_min_coord:
-            print(f"Surface {sid}: x = {x:.2f}, y = {y:.2f}, name = {name}")
+        # if 'H4' in data['name']:
+        #     comp_str1 = comp_str + 'MnO4-'
+        #     comp_str2 = comp_str + 'MnO4--'
+        #     comp1 = Ion.from_formula(comp_str1)
+        #     comp2 = Ion.from_formula(comp_str2)
+        #     formation_energy1 = formation_energy + energy_mno41
+        #     formation_energy2 = formation_energy + energy_mno42
+        #     entry1 = PourbaixEntry(IonEntry(comp1, formation_energy1), concentration=concentration_mno41, entry_id=data['name'] + '_MnO4-')
+        #     entry2 = PourbaixEntry(IonEntry(comp2, formation_energy2), concentration=concentration_mno42, entry_id=data['name'] + '_MnO4--')
+        #     bulk_entries.append(entry1)
+        #     bulk_entries.append(entry2)
+        # else:
+        entry = PourbaixEntry(ComputedEntry(comp_str, formation_energy), entry_id=data['name'])
+        bulk_entries.append(entry)
+    
+    exp_entries = []
+    
+    # exp_entries.append(PourbaixEntry(ComputedEntry('MnO2', -465.138/kjmol), entry_id='B-MnO2_exp'))
+    exp_entries.append(PourbaixEntry(ComputedEntry('MnOOH', -557.7272/kjmol), entry_id='B-MnOOH_exp'))
+    exp_entries.append(PourbaixEntry(ComputedEntry('Mn(OH)2', -615.63376/kjmol), entry_id='D-Mn(OH)2_exp'))
+    exp_entries.append(PourbaixEntry(ComputedEntry('Mn3O4', -1283.232/kjmol), entry_id='Mn3O4_exp'))
+    exp_entries.append(PourbaixEntry(ComputedEntry('Mn2O3', -881.114/kjmol), entry_id='Mn2O3_exp'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn2O4', -12.61), entry_id='ZnMn2O4_jpcc'))
+    # exp_entries.append(PourbaixEntry(ComputedEntry('ZnMn3O7', -17.83), entry_id='ZnMn3O7_jpcc'))
 
-    # Draw Pourbaix diagram
+    print(f"  Bulk entries: {len(bulk_entries)}")
+    
+
+    
+    # Print all entries list
+    print("\n" + "="*70)
+    print("All entries list")
+    print("="*70)
+    
+    print(f"\n[Bulk Entries from JSON files] ({len(bulk_entries)}):")
+    for i, entry in enumerate(bulk_entries, 1):
+        energy = entry.energy if hasattr(entry, 'energy') else entry.entry.energy
+        print(f"  {i}. {entry.name} (composition: {entry.composition}, energy: {energy:.6f} eV), entry_id: {entry.entry_id}")
+    
+    print(f"\n[Exp Entries from JSON files] ({len(exp_entries)}):")
+    for i, entry in enumerate(exp_entries, 1):
+        energy = entry.energy if hasattr(entry, 'energy') else entry.entry.energy
+        print(f"  {i}. {entry.name} (composition: {entry.composition}, energy: {energy:.6f} eV), entry_id: {entry.entry_id}")
+    
+    print(f"\n[Solid Entries from thermodynamic_data.json] ({len(solid_entries)}):")
+    for i, entry in enumerate(solid_entries, 1):
+        energy = entry.energy if hasattr(entry, 'energy') else entry.entry.energy
+        print(f"  {i}. {entry.name} (composition: {entry.composition}, energy: {energy:.6f} eV)")
+    
+    print(f"\n[Ion Entries from thermodynamic_data.json] ({len(ion_entries)}):")
+    for i, entry in enumerate(ion_entries, 1):
+        energy = entry.energy if hasattr(entry, 'energy') else entry.entry.energy
+        conc = entry.concentration if hasattr(entry, 'concentration') else 'N/A'
+        print(f"  {i}. {entry.name} (composition: {entry.composition}, energy: {energy:.6f} eV, conc: {conc})")
+    
+    if args.exp:
+        all_entries = exp_entries + solid_entries + ion_entries
+    else:
+        all_entries = bulk_entries + exp_entries + solid_entries + ion_entries
+        
+    # Remove duplicate entry names, keep only the one with lowest energy
+    print(f"\n[In progress] Removing duplicate entry_names...")
+    print(f"  Original entry count: {len(all_entries)}")
+    
+    # Group entries by entry name
+    name_groups = {}
+    for entry in all_entries:
+        entry_name = entry.name if hasattr(entry, 'name') else (entry.entry_id if hasattr(entry, 'entry_id') else 'Unknown')
+        energy = entry.energy if hasattr(entry, 'energy') else entry.entry.energy
+        entry_id = entry.entry_id if hasattr(entry, 'entry_id') else 'N/A'
+        comp_str = str(entry.composition)
+
+        if entry_name not in name_groups:
+            name_groups[entry_name] = []
+        name_groups[entry_name].append((entry, energy, entry_id, comp_str))
+    
+    # Find duplicates and keep only the lowest energy one
+    name_dict = {}
+    removed_count = 0
+    removed_entries = []
+    kept_duplicate_entries = []
+    
+    for entry_name, entries_list in name_groups.items():
+        if len(entries_list) > 1:
+            # Multiple entries with same name - keep the lowest energy one
+            entries_list.sort(key=lambda x: x[1])  # Sort by energy
+            
+            # Debug output for duplicates
+            print(f"\n  Duplicate found: entry_name='{entry_name}' ({len(entries_list)})")
+            for i, (entry, energy, entry_id, comp_str) in enumerate(entries_list):
+                status = "✓ Keep" if i == 0 else "✗ Remove"
+                print(f"    {status}: entry_id={entry_id}, comp={comp_str}, energy={energy:.6f} eV")
+            
+            kept_entry, kept_energy, kept_entry_id, kept_comp = entries_list[0]
+            kept_duplicate_entries.append((entry_name, kept_comp, kept_energy, kept_entry_id))
+            
+            # Mark removed entries
+            for entry, energy, entry_id, comp_str in entries_list[1:]:
+                removed_entries.append((entry_name, comp_str, energy, entry_id))
+                removed_count += 1
+            
+            name_dict[entry_name] = kept_entry
+        else:
+            # Single entry, keep it
+            name_dict[entry_name] = entries_list[0][0]
+    
+    all_entries = list(name_dict.values())
+    
+    # Print removed entries
+    print(f"\n  Removed entry count: {removed_count}")
+    print(f"  Remaining entry count: {len(all_entries)}")
+    print(f"\n[Total Entries] ({len(all_entries)})")
+    print("="*70)
+    
+    # ========================================
+    # SECTION 10: PLOT GENERATION
+    # ========================================
+    print("\n" + "="*70)
+    print("Starting diagram generation")
+    print("="*70)
+    
+    # Combined diagram (all entries)
+    print("\n[In progress] Generating Pourbaix diagram...")
+    # Add _label suffix if label is enabled
+    filename_suffix = args.suffix
+    if filename_suffix != '':
+        filename_suffix = f'_{filename_suffix}'
+    if args.label:
+        filename_suffix = f'{filename_suffix}_label' if filename_suffix else '_label'
+    plot_pourbaix(all_entries, f'pourbaix{filename_suffix}.pdf', label_domains=args.label, exp_entries=exp_entries, ion_entries=ion_entries)
+    
+    print("="*70)
+    print("All diagrams generated!")
+    print("="*70)
+
+def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_entries=None):
+    """Plot Pourbaix diagram using pymatgen PourbaixPlotter
+    
+    Args:
+        entries: List of PourbaixEntry objects
+        png_name: Output filename
+        label_domains: If True, label domains in the diagram
+        exp_entries: List of experimental entries to group by color
+        ion_entries: List of ion entries to extract names from
+    """
+    if len(entries) == 0:
+        print(f"  Warning: Cannot generate diagram - no entries available.")
+        return
+    
+    # for entry in entries:
+    #     print(entry.name, entry.energy)
+
+    # Get exp_entry names for color grouping
+    exp_entry_names = set()
+    if exp_entries:
+        for exp_entry in exp_entries:
+            exp_entry_names.add(exp_entry.entry_id if hasattr(exp_entry, 'entry_id') and exp_entry.entry_id else exp_entry.name)
+    
+    # Get ion entry names directly from ion_entries (only Mn species)
+    ion_entry_names = set()
+    if ion_entries:
+        for ion_entry in ion_entries:
+            # Get the name from entry (could be entry.name or entry.entry_id)
+            ion_name = ion_entry.name if hasattr(ion_entry, 'name') else (ion_entry.entry_id if hasattr(ion_entry, 'entry_id') else str(ion_entry))
+            # Only add Mn species to ion_entry_names
+            if ion_name.startswith('Mn'):
+                ion_entry_names.add(ion_name)
+    
+    print(f"\n[In progress] Starting {png_name} diagram generation...")
+    print(f"  - Entry count: {len(entries)}")
+    
+    print(f"  - Calculating PourbaixDiagram (convex hull calculation, this may take some time)...")
+    start_time = time.time()
+    pourbaix = PourbaixDiagram(entries, filter_solids=False)
+    elapsed = time.time() - start_time
+    print(f"  ✓ PourbaixDiagram calculation completed ({elapsed:.1f} seconds)")
+    print(f"  - Stable entry count: {len(pourbaix.stable_entries)}")
+    
+    print(f"  - Initializing Plotter...")
+    plotter = PourbaixPlotter(pourbaix)
+    
     fig, ax = plt.subplots(figsize=(args.figx, args.figy))
-    ax.axis([pHmin, pHmax, Umin, Umax])
-    ax.set_xlabel('pH', fontsize=12)
-    ax.set_ylabel('E (V vs. SHE)', fontsize=12)
-    # ax.tick_params(right=True, direction="in")
-    plt.xticks(np.arange(pHmin, pHmax + 1, 2))
+    Umin_she, Umax_she = she_limits_for_pourbaix_plot(args.Umin, args.Umax)
+    plotter.get_pourbaix_plot(limits=[[args.pHmin, args.pHmax], [Umin_she, Umax_she]],
+                              label_domains=label_domains, label_fontsize=10,
+                              show_water_lines=False, show_neutral_axes=False, ax=ax)
 
-    # Generate unique_ids from 2D lowest_surfaces and sort by energy at pH=0
-    # Find all unique surface IDs in diagonal order of first appearance in lowest_surfaces
-    unique_ids = []
-    for i in range(len(Urange)):
-        for j in range(len(pHrange)):
-            surf_id = int(lowest_surfaces[i, j])
-            if surf_id not in unique_ids:
-                unique_ids.append(surf_id)
-
-    # Separate unique_ids into two groups: save_surfs vs new combinations
-    save_surfs_ids = []
-    new_surfs_ids = []
+    stable_entries = pourbaix.stable_entries
     
-    for surf_id in unique_ids:
-        # Check if this surface is in save_surfs
-        surf_name = surfs[surf_id]['name']
-        is_in_save_surfs = any(save_surf['name'] == surf_name for save_surf in save_surfs)
+    # Create mapping from entry names to entry_id names
+    # pymatgen formats entry.name with LaTeX subscripts/superscripts (e.g., MnO$_{2}$(s))
+    # We need to convert LaTeX format to plain format for matching
+    def remove_latex_formatting(text):
+        """Remove LaTeX formatting from text"""
+        # Remove LaTeX subscripts: $_{...}$
+        text = re.sub(r'\$_{([^}]+)}\$', r'\1', text)
+        # Remove LaTeX superscripts: $^{...}$ or $^{-...}$
+        text = re.sub(r'\$[^{]*\{([^}]+)\}\$', r'\1', text)
+        # Remove remaining $ signs
+        text = text.replace('$', '')
+        return text
+    
+    # Extract ion patterns from stable entries for color grouping
+    # Pattern: Mn[2+], Mn++, Mn[+2], Mn(aq), etc.
+    def extract_ion_patterns(entry_name):
+        """Extract ion patterns like Mn[2+], Mn++, Zn[2+], etc. from entry name"""
+        patterns = []
+        plain_name = remove_latex_formatting(entry_name)
         
-        if is_in_save_surfs:
-            save_surfs_ids.append(surf_id)
-        else:
-            new_surfs_ids.append(surf_id)
+        # Pattern 1: Mn[2+], Zn[3+], etc. (with brackets)
+        matches1 = re.findall(r'([A-Z][a-z]?)\[(\d+)\+?\]', plain_name)
+        for element, charge in matches1:
+            patterns.append(f"{element}[{charge}+]")
+        
+        # Pattern 2: Mn++, Zn+++, etc. (multiple + signs without brackets)
+        # Match element followed by ++ or +++, etc.
+        matches2 = re.findall(r'([A-Z][a-z]?)(\+\+)', plain_name)
+        for element, _ in matches2:
+            patterns.append(f"{element}[2+]")
+        
+        # Pattern 3: Mn(aq), Zn(aq), etc.
+        matches3 = re.findall(r'([A-Z][a-z]?)\(aq\)', plain_name)
+        for element in matches3:
+            patterns.append(f"{element}(aq)")
+        
+        # Pattern 4: Mn$^{2+}$ (LaTeX format in original entry_name)
+        matches4 = re.findall(r'([A-Z][a-z]?)\$[^{]*\{(\d+)\+?\}\$', entry_name)
+        for element, charge in matches4:
+            patterns.append(f"{element}[{charge}+]")
+        
+        return list(set(patterns))  # Remove duplicates
+    
+    entry_name_mapping = {}  # Plain format -> entry_id
+    entry_latex_mapping = {}  # Plain format -> LaTeX format (for replacement)
+    for entry in entries:
+        if hasattr(entry, 'entry_id') and entry.entry_id:
+            # Convert entry.name from LaTeX to plain format for matching
+            plain_name = remove_latex_formatting(entry.name)
+            entry_name_mapping[plain_name] = entry.entry_id
+            entry_latex_mapping[plain_name] = entry.name  # Store LaTeX format for replacement
+    
+    # Prepare colors: use Spectral colormap for all entries
+    # Group by exp_entry names and ion entry names
+    if exp_entry_names or ion_entry_names:
+        # Create color map for exp_entries and ion entries using Spectral colormap
+        color_groups = {}
+        all_groups = list(exp_entry_names) + sorted(list(ion_entry_names))
+        n_groups = len(all_groups)
+        spectral_colors = [plt.cm.Spectral(i) for i in np.linspace(0.1, 0.9, n_groups)] if n_groups > 0 else []
+        for i, group_name in enumerate(all_groups):
+            color_groups[group_name] = spectral_colors[i] if spectral_colors else 'silver'
 
-    # Create colormaps for each group
-    # Group 1: save_surfs (original surfaces) - use cmap_2d or explicit colors
-    n_save = len(save_surfs_ids)
-    if n_save > 0:
-        # Check if explicit colors are provided for 2D plots
-        if hasattr(args, 'colors_2d') and args.colors_2d:
-            explicit_colors_2d = parse_colors(args.colors_2d)
-            # Cycle colors if not enough provided
-            colors_save = [explicit_colors_2d[i % len(explicit_colors_2d)] for i in range(n_save)]
-        else:
-            # Use colormap as before
-            colormap_2d = getattr(plt.cm, args.cmap_2d, plt.cm.RdBu)
-            if args.cgap_2d > 0 and args.cmap_2d in Diverging_colors:
-                gap = args.cgap_2d
-                left_end = 0.5 - gap/2
-                right_start = 0.5 + gap/2
-                
-                # Calculate how many colors go to left and right
-                n_left = int(np.ceil(n_save / 2))
-                n_right = n_save - n_left
-                
-                # Create color values avoiding the gap
-                if n_left > 0:
-                    left = np.linspace(args.cmin_2d, left_end, n_left, endpoint=True)
-                else:
-                    left = []
-                
-                if n_right > 0:
-                    right = np.linspace(right_start, args.cmax_2d, n_right, endpoint=True)
-                else:
-                    right = []
-                
-                color_values_save = np.concatenate([left, right]) if len(left) > 0 and len(right) > 0 else (left if len(left) > 0 else right)
+        color_groups = {
+            'HMn2O4': 'gold',
+            'HMn3O6': 'gold',
+            'HMn4O8': 'gold',
+            'HMn5O12': 'gold',
+            'HMn8O16': 'gold',
+            'Mn2HO4': 'gold',
+            'Mn3HO6': 'gold',
+            'Mn4HO8': 'gold',
+            'Mn5HO12': 'gold',
+            'Mn8HO16': 'gold',
+            'ZnMnO2': 'lime',
+            'ZnMn2O4': 'lime',
+            'ZnMn3O6': 'lime',
+            'Zn2Mn3O6': 'lime',
+            'ZnMn4O8': 'lime',
+            'ZnMn8O16': 'lime',
+            'MnZnO2': 'lime',
+            'Mn3ZnO6': 'lime',
+            'Mn3Zn2O8': 'lime',
+            'Mn2ZnO4': 'lime',
+            'Mn4ZnO8': 'lime',
+            'Mn8ZnO16': 'lime',
+            # 'ZnMn2O4': 'greenyellow',
+            # 'Mn2ZnO4': 'greenyellow',
+            'ZnMn3O7': 'greenyellow',
+            'Mn3ZnO7': 'greenyellow',
+            'Mn[+2]': 'white',
+            'Mn[+3]': 'white',
+            'MnO4[-1]': 'white',
+            'MnO4[-2]': 'white',
+            'MnHO2[-1]': 'white',
+            'Mn(OH)2': 'lightblue',
+            'Mn(HO)2': 'lightblue',
+            'MnOOH': 'lightblue',
+            'MnO2': 'mediumpurple',
+            'MnHO3[-0.25]': 'rebeccapurple',
+            'MnHO3[-0.5]': 'rebeccapurple',
+            'Mn2HO5[-0.25]': 'rebeccapurple',
+            'Mn2HO5[-0.5]': 'rebeccapurple',
+            'Mn3(HO4)2[-1]': 'rebeccapurple',
+            'Mn3(HO4)2[-0.5]': 'rebeccapurple',
+            'Mn3(HO2)4': 'rebeccapurple',
+            'Mn2O3': 'silver',
+            'Mn3O4': 'silver',
+            'Mn': 'silver',
+        }        
+        # for color_group in color_groups:
+        #     print(f"  - {color_group}: {color_groups[color_group]}")
+
+        # Create color mapping: entries containing same Mn species get same color
+        # Don't distinguish between exp_entry and ion_entry - prioritize Mn species
+        entry_color_map = {}
+        unmatched_entries = []
+        
+        # Sort stable_entries by energy for consistent processing
+        stable_entries_sorted = sorted(stable_entries, key=lambda e: e.energy if hasattr(e, 'energy') else (e.entry.energy if hasattr(e, 'entry') and hasattr(e.entry, 'energy') else 0))
+        
+        # Convert color_groups keys to list for iteration (preserves insertion order)
+        # This ensures we check color groups in the order they are defined above
+        color_group_list = list(color_groups.keys())
+
+        # Single pass: process all entries with priority (Mn species > exp_entry)
+        for entry in stable_entries_sorted:
+            entry_name = entry.name            
+            matched_group = None
+            
+            for color_group in color_group_list:
+                # print(f"  - {color_group} in {entry_name}")
+                if color_group in entry_name:
+                    matched_group = color_group
+                    break
+            # print(f"  - {entry_name} matched to {matched_group}")
+
+            # Assign color from color_groups if matched
+            if matched_group and matched_group in color_groups:
+                entry_color_map[entry_name] = color_groups[matched_group]
             else:
-                color_values_save = np.linspace(args.cmin_2d, args.cmax_2d, n_save)
-            colors_save = colormap_2d(color_values_save)
+                # Track unmatched entries to assign colors later
+                unmatched_entries.append(entry_name)
+        
+        # Assign Spectral colors to unmatched entries
+        n_unmatched = len(unmatched_entries)
+        if n_unmatched > 0:
+            unmatched_colors = [plt.cm.Grays(i) for i in np.linspace(0.1, 0.9, n_unmatched)]
+            for i, entry_name in enumerate(unmatched_entries):
+                # entry_color_map[entry_name] = unmatched_colors[i]
+                entry_color_map[entry_name] = 'silver'
     else:
-        colors_save = []
-
-    # Group 2: new combinations - use cmap or explicit colors
-    n_new = len(new_surfs_ids)
-    if n_new > 0:
-        # Check if explicit colors are provided for bulk plots (new combinations use bulk colormap)
-        if hasattr(args, 'colors_bulk') and args.colors_bulk:
-            explicit_colors_bulk = parse_colors(args.colors_bulk)
-            # Cycle colors if not enough provided
-            colors_new = [explicit_colors_bulk[i % len(explicit_colors_bulk)] for i in range(n_new)]
-        else:
-            # Use colormap as before
-            colormap_new = getattr(plt.cm, args.cmap, plt.cm.Greys)
-            if args.cgap > 0 and args.cmap in Diverging_colors:
-                gap = args.cgap
-                left_end = 0.5 - gap/2
-                right_start = 0.5 + gap/2
-                
-                # Calculate how many colors go to left and right
-                n_left = int(np.ceil(n_new / 2))
-                n_right = n_new - n_left
-                
-                # Create color values avoiding the gap
-                if n_left > 0:
-                    left = np.linspace(args.cmin, left_end, n_left, endpoint=True)
-                else:
-                    left = []
-                
-                if n_right > 0:
-                    right = np.linspace(right_start, args.cmax, n_right, endpoint=True)
-                else:
-                    right = []
-                
-                color_values_new = np.concatenate([left, right]) if len(left) > 0 and len(right) > 0 else (left if len(left) > 0 else right)
-            else:
-                color_values_new = np.linspace(args.cmin, args.cmax, n_new)
-            colors_new = colormap_new(color_values_new)
-    else:
-        colors_new = []
-
-    # Combine colors and create colormap
-    all_colors = []
-    id_map = {}
-    
-    # Add save_surfs colors
-    for i, surf_id in enumerate(save_surfs_ids):
-        all_colors.append(colors_save[i])
-        id_map[surf_id] = len(all_colors) - 1
-    
-    # Add new_surfs colors
-    for i, surf_id in enumerate(new_surfs_ids):
-        all_colors.append(colors_new[i])
-        id_map[surf_id] = len(all_colors) - 1
-
-    cmap = mcolors.ListedColormap(all_colors)
-    bounds = np.arange(len(all_colors) + 1) - 0.5
-    norm = mcolors.BoundaryNorm(bounds, cmap.N)
-    mapped_surfaces = np.vectorize(id_map.get)(lowest_surfaces)
-
-    # Generate legend (2D, based on pH=0)
-    # First show save_surfs (reversed)
-    for i, surf_id in enumerate(reversed(save_surfs_ids)):
-        label = surfs[int(surf_id)]['name']
-        plt.plot([], [], color=colors_save[len(save_surfs_ids)-1-i], linewidth=5, label=label)
-    
-    # Then show new combinations (reversed)
-    for i, surf_id in enumerate(reversed(new_surfs_ids)):
-        label = surfs[int(surf_id)]['name']
-        plt.plot([], [], color=colors_new[len(new_surfs_ids)-1-i], linewidth=5, label=label)
-    
-    # pcolormesh
-    pH_grid, U = np.meshgrid(pHrange, Urange)
-    plt.pcolormesh(pH_grid, U, mapped_surfaces, cmap=cmap, norm=norm)
-
-    # Show water stability region
-    if args.OER:
-        plt.plot(pHrange, 1.23-pHrange*const, '--', lw=1, color='blue')
-    if args.HER:
-        plt.plot(pHrange, 0-pHrange*const, '--', lw=1, color='blue')
-    # plt.plot(pHrange, -0.7-pHrange*const, '--', lw=1, color='blue') #NO3RR
-    # plt.plot(pHrange, -0.768925499892501+pHrange*0, '--', lw=1, color='white') #oh(hs)
-    # plt.plot(pHrange, -1.10346332406801+pHrange*0, '--', lw=1, color='white') #clean(hs)
-    # plt.plot(pHrange, -1.01280687446284+pHrange*0, '--', lw=1, color='white') #clean(is)
-    plt.plot(pHrange, -1.01280687446284+pHrange*0, '--', lw=1, color='green') #clean(is)
-    # plt.plot(pHrange, -0.092131432+pHrange*0, '--', lw=1, color='green') #vac(*)
-    # plt.plot(pHrange, -0.934679247+pHrange*0, '--', lw=1, color='green') #vac(*H2)
-
-    # Plot two lines and fill between them
-    line1 = 0.720-pHrange*const
-    line2 = 0.920-pHrange*const
-    # plt.plot(pHrange, line1, '--', lw=1, color='red')
-    # plt.plot(pHrange, line2, '--', lw=1, color='red')
-    plt.fill_between(pHrange, line1, line2, alpha=0.2, color='red')
-
-    if args.legend_in:
-        plt.legend(fontsize=12, ncol=1, handlelength=3, edgecolor='black', loc='upper right')
-    elif args.legend_out:
-        plt.legend(bbox_to_anchor=(1.02, 1), loc=2, borderaxespad=0., 
-                fontsize=12, ncol=1, handlelength=3, edgecolor='black')
-    elif args.legend_up:
-        plt.legend(bbox_to_anchor=(0.5, 1.02), loc='lower center', borderaxespad=0., 
-                fontsize=12, ncol=3, handlelength=3, edgecolor='black')
-
-    plt.savefig(f'2D_{png_name}{suffix}.png', dpi=300, bbox_inches='tight')
-    print(f"Pourbaix diagram saved as {png_name}{suffix}.png")
-    if args.show_fig:
-        plt.tight_layout()
-        plt.show()
-
-    # === 1D Pourbaix diagram at specific pH ===
-    # Calculate lowest and second lowest surfaces at target_pH for 1D plot
-    lowest_surfaces_pH = np.zeros(len(Urange))
-    second_lowest_surfaces_pH = np.zeros(len(Urange))
-    for Uindex, U in enumerate(Urange):
-        values = []
-        for k in range(nsurfs):
-            value = dg(surfs[k], pH=target_pH, U=U, ref_surf=surfs[ref_surf_idx])
-            values.append(value)
-        sorted_values = sorted(range(len(values)), key=lambda k: values[k])
-        lowest_surfaces_pH[Uindex] = sorted_values[0]
-        if len(sorted_values) > 1:
-            second_lowest_surfaces_pH[Uindex] = sorted_values[1]
-    
-    # Calculate energy at specific pH
-    all_energies = []
-    unique_second_ids_pH = np.unique(second_lowest_surfaces_pH.astype(int))
-    unique_ids_set = set(unique_ids)
-    unique_second_ids_set = set(unique_second_ids_pH)
-
-    # Find transition points where most stable surface changes (if requested)
-    if args.show_transitions:
-        print(f"\n=== Most Stable Surface Transitions at pH {target_pH} ===")
+        # Use Spectral colormap for all entries
+        n_entries = len(stable_entries)
+        spectral_colors = [plt.cm.Spectral(i) for i in np.linspace(0.1, 0.9, n_entries)] if n_entries > 0 else []
         
-        def find_transition_point(surf1_id, surf2_id, U_start, U_end):
-            """Find transition point between two surfaces in given potential range"""
-            surf1 = surfs[surf1_id]
-            surf2 = surfs[surf2_id]
-            
-            # Calculate coefficients for quadratic equation: a*U^2 + b*U + c = 0
-            a = surf1['A'] - surf2['A']
-            b = (surf1['B'] - surf2['B']) + (surf1['H'] - 2*surf1['O'] - surf1['e']) - (surf2['H'] - 2*surf2['O'] - surf2['e'])
-            c = (surf1['E_DFT'] - surf2['E_DFT']) + const * (surf1['H'] - 2*surf1['O'] - surf2['H'] + 2*surf2['O']) * target_pH + const * (log10(surf1['conc']) - log10(surf2['conc']))
-            
-            # Solve quadratic equation
-            if abs(a) > 1e-10:  # Quadratic case
-                discriminant = b*b - 4*a*c
-                if discriminant >= 0:
-                    U1 = (-b + np.sqrt(discriminant)) / (2*a)
-                    U2 = (-b - np.sqrt(discriminant)) / (2*a)
-                    for U_sol in [U1, U2]:
-                        if U_start <= U_sol <= U_end:
-                            # Verify this is actually a transition point
-                            E1 = dg(surf1, pH=target_pH, U=U_sol, ref_surf=surfs[ref_surf_idx])
-                            E2 = dg(surf2, pH=target_pH, U=U_sol, ref_surf=surfs[ref_surf_idx])
-                            if abs(E1 - E2) < 1e-6:  # Energies are equal
-                                return U_sol
-            else:  # Linear case
-                if abs(b) > 1e-10:
-                    U_sol = -c / b
-                    if U_start <= U_sol <= U_end:
-                        # Verify this is actually a transition point
-                        E1 = dg(surf1, pH=target_pH, U=U_sol, ref_surf=surfs[ref_surf_idx])
-                        E2 = dg(surf2, pH=target_pH, U=U_sol, ref_surf=surfs[ref_surf_idx])
-                        if abs(E1 - E2) < 1e-6:  # Energies are equal
-                            return U_sol
-            return None
-        
-        # Sequential transition finding: start from lowest potential and find next transition
-        transition_points = []
-        current_surf_id = int(lowest_surfaces_pH[0])  # Most stable surface at Umin
-        current_U = Umin
-        
-        print(f"Starting from {surfs[current_surf_id]['name']} at U = {current_U:.3f} V")
-        
-        while current_U < Umax:
-            # Find the next transition point from current surface
-            next_transition = None
-            next_surf_id = None
-            min_next_U = Umax + 1
-            
-            # Check all other surfaces for the next transition
-            for other_surf_id in unique_ids_set:
-                if other_surf_id != current_surf_id:
-                    U_trans = find_transition_point(current_surf_id, other_surf_id, current_U + 1e-6, Umax)
-                    if U_trans is not None and U_trans < min_next_U:
-                        # Verify this is actually the next transition by checking stability
-                        U_test = U_trans + 1e-6
-                        if U_test <= Umax:
-                            E_current = dg(surfs[current_surf_id], pH=target_pH, U=U_test, ref_surf=surfs[ref_surf_idx])
-                            E_other = dg(surfs[other_surf_id], pH=target_pH, U=U_test, ref_surf=surfs[ref_surf_idx])
-                            if E_other < E_current:  # Other surface becomes more stable
-                                min_next_U = U_trans
-                                next_transition = U_trans
-                                next_surf_id = other_surf_id
-            
-            if next_transition is not None:
-                transition_points.append((next_transition, current_surf_id, next_surf_id))
-                print(f"  Transition at U = {next_transition:.3f} V: {surfs[current_surf_id]['name']} → {surfs[next_surf_id]['name']}")
-                current_surf_id = next_surf_id
-                current_U = next_transition
-            else:
-                break  # No more transitions found
-        
-        # Print transition information
-        if transition_points:
-            print(f"\nFound {len(transition_points)} sequential transition point(s):")
-            for i, (U_trans, surf_from, surf_to) in enumerate(transition_points):
-                print(f"  {i+1}. U = {U_trans:.3f} V vs SHE")
-                print(f"     {surfs[surf_from]['name']} → {surfs[surf_to]['name']}")
-        else:
-            print("No transitions found in the potential range.")
-        
-        # Print stability range for each surface
-        print(f"\n=== Stability Ranges at pH {target_pH} ===")
-        unique_surfaces = np.unique(lowest_surfaces_pH.astype(int))
-        for surf_id in unique_surfaces:
-            # Find where this surface is stable
-            stable_indices = np.where(lowest_surfaces_pH == surf_id)[0]
-            if len(stable_indices) > 0:
-                U_start = Urange[stable_indices[0]]
-                U_end = Urange[stable_indices[-1]]
-                print(f"  {surfs[surf_id]['name']}: {U_start:.3f} to {U_end:.3f} V vs SHE")
+        # Create color mapping for each entry
+        entry_color_map = {}
+        for i, entry in enumerate(stable_entries):
+            entry_color_map[entry.name] = spectral_colors[i] if spectral_colors else 'silver'
     
-    # Calculate energy at specific pH for plotting
-    all_energies = []
-    
-    # 1D plot for projected to target_pH: Sort unique_ids_set, unique_second_ids_set by 'e' value first, then by energy at U=0
-    energies_at_U0 = [(k,surfs[k]['e'] - surfs[k]['H'] + 2*surfs[k]['O'], dg(surfs[k], pH=target_pH, U=0, ref_surf=surfs[ref_surf_idx])) for k in unique_ids_set | unique_second_ids_set]
-    sorted_unique_ids = [k for k, _, _ in sorted(energies_at_U0, key=lambda x: (x[1], x[2]))]  # Sort by 'e' first, then by energy
-
-    fig2, ax2 = plt.subplots(figsize=(args.figx, args.figy))
-    ax2.axis([Umin, Umax, None, None])
-    # if target_pH == 0.:
-    #     ax2.set_xlabel('Potential (V vs. RHE)', fontsize=12)
-    # else:
-    ax2.set_xlabel('Potential (V vs. SHE)', fontsize=12)
-    ax2.set_ylabel('Relative Energy (ΔG, eV)', fontsize=12)
-    ax2.tick_params()
-
-    Urange = np.arange(Umin, Umax, tick)
-    
-    # 1D plot colormap/color range
-    n_colors_1d = len(sorted_unique_ids)
-    
-    # Check if explicit colors are provided for 1D plots
-    if hasattr(args, 'colors_1d') and args.colors_1d:
-        explicit_colors_1d = parse_colors(args.colors_1d)
-        # Cycle colors if not enough provided
-        colors_1d = [explicit_colors_1d[i % len(explicit_colors_1d)] for i in range(n_colors_1d)]
-    else:
-        # Use colormap as before
-        colormap_1d = getattr(plt.cm, args.cmap_1d, plt.cm.RdBu)
-        if args.cgap_1d > 0 and args.cmap_1d in Diverging_colors:
-            gap = args.cgap_1d
-            left_end = 0.5 - gap/2
-            right_start = 0.5 + gap/2
-            
-            # Calculate how many colors go to left and right
-            n_left = int(np.ceil(n_colors_1d / 2))
-            n_right = n_colors_1d - n_left
-            
-            # Create color values avoiding the gap
-            if n_left > 0:
-                left = np.linspace(args.cmin_1d, left_end, n_left, endpoint=True)
-            else:
-                left = []
-            
-            if n_right > 0:
-                right = np.linspace(right_start, args.cmax_1d, n_right, endpoint=True)
-            else:
-                right = []
-            
-            color_values_1d = np.concatenate([left, right]) if len(left) > 0 and len(right) > 0 else (left if len(left) > 0 else right)
-        else:
-            color_values_1d = np.linspace(args.cmin_1d, args.cmax_1d, n_colors_1d)
-        colors_1d = colormap_1d(color_values_1d)
-    
-    for k in range(nsurfs):
-        energies = np.zeros(len(Urange))
-        for i, U in enumerate(Urange):
-            value = dg(surfs[k], pH=target_pH, U=U, ref_surf=surfs[ref_surf_idx])
-            energies[i] = value
-        all_energies.extend(energies)
-        if not k in sorted_unique_ids:
-            ax2.plot(Urange, energies, color='lightgray', alpha=0.3, lw=0.5)
-    
-    for j, k in enumerate(sorted_unique_ids):
-        energies = np.zeros(len(Urange))
-        for i, U in enumerate(Urange):
-            value = dg(surfs[k], pH=target_pH, U=U, ref_surf=surfs[ref_surf_idx])
-            energies[i] = value
-        if k in unique_ids_set:
-            ax2.plot(Urange, energies, label=surfs[k]['name'], lw=1, color=colors_1d[j])
-        elif k in unique_second_ids_set:
-            ax2.plot(Urange, energies, '--', label=surfs[k]['name'], lw=1, color=colors_1d[j])
-        else:
-            ax2.plot(Urange, energies, color='lightgray', alpha=0.3, lw=0.5)
-
-    # Adjust y-axis range
-    if args.Gmin:
-        Gmin = args.Gmin
-    else:
-        Gmin = min(all_energies)
-    if args.Gmax:
-        Gmax = args.Gmax
-    else:
-        Gmax = max(all_energies)
-
-    ax2.set_ylim(Gmin, Gmax)
-    ax2.set_xlim(Umin, Umax)
-    # Generate legend (1D)
-    if args.legend_in:
-        ax2.legend(fontsize=10, ncol=1, handlelength=3, edgecolor='black', loc='upper right')
-    elif args.legend_out:
-        ax2.legend(bbox_to_anchor=(1.02, 1), loc=2, borderaxespad=0., 
-                fontsize=10, ncol=1, handlelength=3, edgecolor='black')
-    elif args.legend_up:
-        ax2.legend(bbox_to_anchor=(0.5, 1.02), loc='lower center', borderaxespad=0., 
-                fontsize=10, ncol=3, handlelength=3, edgecolor='black')
-    plt.savefig(f'1D_{png_name}_pH{target_pH}{suffix}.png', dpi=300, bbox_inches='tight', transparent=True)
-    print(f"Pourbaix diagram saved as 1D_{png_name}_pH{target_pH}{suffix}.png")
-    if args.show_fig:
-        plt.tight_layout()
-        plt.show()
-
-# Define dg function (Gibbs free energy calculation)
-def dg(surf, pH, U, ref_surf):
-    surface_term = (surf['A']*(U**2) + surf['B']*U + surf['E_DFT']) - (ref_surf['A']*(U**2) + ref_surf['B']*U + ref_surf['E_DFT'])
-    U_coeff = surf['H'] - 2*surf['O'] - surf['e']
-    pH_coeff = surf['H'] - 2*surf['O']
-    dg_value = surface_term + U_coeff*U + const*pH_coeff*pH + const*log10(surf['conc'])
-    return dg_value
-
-# ========================================
-# UTILITY FUNCTIONS
-# ========================================
-
-def parse_colors(color_names):
-    """
-    Convert color name strings to matplotlib color format (RGBA tuples).
-    
-    Args:
-        color_names (list): List of color name strings (e.g., ['red', 'blue', 'green'])
-        
-    Returns:
-        list: List of RGBA tuples representing colors
-        
-    Examples:
-        >>> parse_colors(['red', 'blue', 'green'])
-        [(1.0, 0.0, 0.0, 1.0), (0.0, 0.0, 1.0, 1.0), (0.0, 0.5, 0.0, 1.0)]
-    """
-    if color_names is None:
-        return None
-    
-    colors = []
-    for color_name in color_names:
-        try:
-            # Try to convert color name to RGBA tuple
-            rgba = mcolors.to_rgba(color_name)
-            colors.append(rgba)
-        except ValueError:
-            # If color name is invalid, try as hex code or default to black
+    # Fill each domain with color
+    if not args.no_color:
+        for entry in stable_entries:
             try:
-                rgba = mcolors.to_rgba('#' + color_name if not color_name.startswith('#') else color_name)
-                colors.append(rgba)
-            except ValueError:
-                print(f"Warning: Invalid color name '{color_name}', using black instead.")
-                colors.append(mcolors.to_rgba('black'))
+                vertices = plotter.domain_vertices(entry)
+                if len(vertices) > 0:
+                    x, y = zip(*vertices)
+                    color = entry_color_map.get(entry.name, 'silver')
+                    ax.fill(x, y, color=color, alpha=0.6, edgecolor='black', linewidth=0.5)
+            except Exception as e:
+                print(f"Warning: Could not fill domain for {entry.name}: {e}")
     
-    return colors
-
-def format_name(formula):
-    """
-    Format chemical formula with proper subscripts and superscripts for display.
-    
-    This function converts ion formulas into properly formatted strings using Unicode
-    characters for subscripts (numbers) and superscripts (charges).
-    
-    Args:
-        formula (str): Chemical formula string (e.g., "Fe2+", "SO42-", "H2O")
+    # Style adjustments and label replacement
+    for line in ax.lines:
+        line.set_linewidth(0.5)
+    for text in ax.texts:
+        # Reduce font size
+        text.set_fontsize(10)
+        text.set_color('black')
+        text.set_fontweight('bold')
         
-    Returns:
-        str: Formatted formula with Unicode subscripts and superscripts
-             (e.g., "Fe²⁺", "SO₄²⁻", "H₂O")
-    
-    Examples:
-        >>> format_name("Fe2+")
-        'Fe₂⁺'
-        >>> format_name("SO42-")
-        'SO₄²⁻'
-        >>> format_name("H2O")
-        'H₂O'
-    """
-    # Count charge indicators
-    plus_count = formula.count('+')   # Number of positive charges
-    minus_count = formula.count('-')  # Number of negative charges
-    
-    # Remove charge indicators to get base formula
-    base_formula = formula.replace('+', '').replace('-', '')
-    
-    # Convert numbers to Unicode subscripts
-    formatted_formula = ''
-    for char in base_formula:
-        if char.isdigit():
-            formatted_formula += SUBSCRIPT_NUMS[char]
-        else:
-            formatted_formula += char
-    
-    # Add charge display using Unicode superscripts
-    if plus_count > 0:
-        if plus_count == 1:
-            return formatted_formula + '⁺'
-        else:
-            # Multi-charge positive ion (e.g., Fe²⁺)
-            superscript_num = SUPERSCRIPT_NUMS.get(str(plus_count), str(plus_count))
-            return formatted_formula + superscript_num + '⁺'
-    elif minus_count > 0:
-        if minus_count == 1:
-            return formatted_formula + '⁻'
-        else:
-            # Multi-charge negative ion (e.g., SO₄²⁻)
-            superscript_num = SUPERSCRIPT_NUMS.get(str(minus_count), str(minus_count))
-            return formatted_formula + superscript_num + '⁻'
-    else:
-        # Neutral species
-        return formatted_formula
-
-def format_df_for_display(df):
-    """
-    Format DataFrame for display with appropriate number formatting.
-    
-    This function formats numerical columns in a DataFrame for better readability,
-    using scientific notation for concentration values and fixed decimal places
-    for other numerical data.
-    
-    Args:
-        df (pandas.DataFrame): Input DataFrame with numerical data
+        # Replace entry name with entry_id name if available
+        old_text = text.get_text()
         
-    Returns:
-        pandas.DataFrame: Formatted DataFrame with string representations
+        # Convert old_text from LaTeX format to plain format for matching
+        plain_text = remove_latex_formatting(old_text)
+        
+        # Try to match with entry names in plain format
+        for plain_name, label_name in entry_name_mapping.items():
+            if plain_name in plain_text:
+                # Get the LaTeX format for this entry
+                latex_name = entry_latex_mapping.get(plain_name, plain_name)
+                
+                # Replace LaTeX formatted name with label_name in old_text
+                if latex_name in old_text:
+                    new_text = old_text.replace(latex_name, label_name)
+                    text.set_text(new_text)
+                    break
+                elif plain_name == plain_text:
+                    # If exact match and LaTeX not found, replace entire text
+                    text.set_text(label_name)
+                    break
+
+    shift_ax_potential_from_she_to_zn(ax, SHE_TO_ZN_DISPLAY_SHIFT_V)
+
+    # Reference lines in V vs Zn/Zn2+ (same frame as axis after shift): U_zn = U_she + shift
+    pH2 = np.arange(args.pHmin, args.pHmax + 0.01, 0.01)
+    if args.OER:
+        ax.plot(pH2, 1.23 - pH2 * const, linestyle='--', color='red', lw=2.0)
+    if args.HER:
+        ax.plot(pH2, 0 - pH2 * const, linestyle='--', color='red', lw=2.0)
+    ax.plot(pH2, 2.6 - pH2 * const, linestyle='--', color='blue')
+    ax.plot(pH2, 2.3 - pH2 * const, linestyle='--', color='blue')
+
+    ax.set_xlabel("pH", fontsize=12)
+    ax.set_ylabel(r"Potential (V vs Zn/Zn$^{2+}$)", fontsize=12)
+    # ax.set_xticks(np.arange(args.pHmin+1, args.pHmax-1 + 0.1, 2))
+    ax.set_xticks(np.arange(0.0, 4.0 + 0.1, 1))
+    ax.tick_params(axis='both', labelsize=10)
     
-    Notes:
-        - Concentration ('conc') column uses scientific notation (e.g., 1.0e-06)
-        - Other numerical columns use 2 decimal places (e.g., 1.23)
-        - Non-numerical columns remain unchanged
-    """
-    df_copy = df.copy()
+    print(f"  - Saving plot...")
+    plt.tight_layout()
+    plt.savefig(png_name, dpi=200, bbox_inches='tight', transparent=True)
+    if args.show_fig:
+        plt.show()
+    plt.close()
     
-    # Identify numerical columns for formatting
-    numeric_cols = df_copy.select_dtypes(include=[np.number]).columns
-    
-    for col in numeric_cols:
-        if col == 'conc':
-            # Use scientific notation for concentration values
-            df_copy[col] = df_copy[col].apply(lambda x: f"{x:.0e}")
-        else:
-            # Use fixed decimal places for other numerical values
-            df_copy[col] = df_copy[col].apply(lambda x: f"{x:.2f}")
-    
-    return df_copy
+    total_time = time.time() - start_time
+    print(f"  ✓ {png_name} diagram generation completed! (Total {total_time:.1f} seconds)\n")
 
 if __name__ == "__main__":
-    # ========================================
-    # PHYSICAL AND THERMODYNAMIC CONSTANTS
-    # ========================================
-    
-    # Unit conversion factors
-    kjmol = 96.485   # Conversion factor from kJ/mol to eV
-    calmol = 23.061  # Conversion factor from cal/mol to eV
-
-    # Fundamental physical constants
-    kb = 8.617e-5    # Boltzmann constant in eV/K
-    T = 298.15       # Standard temperature in K (25°C)
-    const = kb * T * np.log(10)  # RT×ln(10) ≈ 0.0592 eV (for Nernst equation)
-    water = 56.690/calmol  # Molar volume of water in eV units
-
-    # ========================================
-    # GAS PHASE REFERENCE ENERGIES (DFT calculated)
-    # ========================================
-    
-    # DFT total energies for gas phase molecules (eV)
-    h2 = -6.77149190   # H₂ molecule total energy
-    h2o = -14.23091949 # H₂O molecule total energy
-
-    # ========================================
-    # THERMODYNAMIC CORRECTIONS FOR GAS PHASES
-    # ========================================
-    
-    # Zero-point energy (ZPE), heat capacity (CV), and entropy (TS) corrections
-    # for H₂O gas at standard conditions
-    zpeh2o = 0.558  # Zero-point energy correction (eV)
-    cvh2o = 0.103   # Heat capacity correction (eV)
-    tsh2o = 0.675   # Entropy correction T×S (eV)
-
-    # Corrections for H₂ gas at standard conditions
-    zpeh2 = 0.268   # Zero-point energy correction (eV)
-    cvh2 = 0.0905   # Heat capacity correction (eV)
-    tsh2 = 0.408    # Entropy correction T×S (eV)
-
-    # ========================================
-    # GIBBS FREE ENERGIES OF GAS PHASES
-    # ========================================
-    
-    # Calculate Gibbs free energies: G = E_DFT + ZPE + CV - TS
-    gh2o = h2o + zpeh2o - tsh2o + cvh2o  # G(H₂O) gas phase
-    gh2 = h2 + zpeh2 - tsh2 + cvh2       # G(H₂) gas phase
-
-    # Derived chemical potentials for electrochemical reactions
-    gh = gh2 / 2                    # μ(H) = ½G(H₂) - chemical potential of atomic H
-    go = gh2o - gh2                 # μ(O) = G(H₂O) - G(H₂) - chemical potential of atomic O
-    goh = gh2o - gh2 / 2           # μ(OH) = G(H₂O) - ½G(H₂) - chemical potential of OH
-    gooh = 2 * gh2o - 1.5 * gh2    # μ(OOH) = 2G(H₂O) - 1.5G(H₂) - chemical potential of OOH
-
-    # ========================================
-    # ADSORBATE THERMODYNAMIC CORRECTIONS
-    # ========================================
-    
-    # Zero-point energy, heat capacity, and entropy corrections for surface-bound species
-    # OH adsorbate corrections
-    zpeoh = 0.376   # Zero-point energy (eV)
-    cvoh = 0.042    # Heat capacity (eV)
-    tsoh = 0.066    # Entropy T×S (eV)
-
-    # O adsorbate corrections
-    zpeo = 0.064    # Zero-point energy (eV)
-    cvo = 0.034     # Heat capacity (eV)
-    tso = 0.060     # Entropy T×S (eV)
-
-    # OOH adsorbate corrections
-    zpeooh = 0.471  # Zero-point energy (eV)
-    cvooh = 0.077   # Heat capacity (eV)
-    tsooh = 0.134   # Entropy T×S (eV)
-
-    # ========================================
-    # ADSORBATE GIBBS FREE ENERGY CORRECTIONS
-    # ========================================
-    
-    # Calculate Gibbs free energy corrections for adsorbates: ΔG = ZPE + CV - TS
-    dgo = zpeo + cvo - tso        # Gibbs correction for O* adsorbate
-    dgoh = zpeoh + cvoh - tsoh    # Gibbs correction for OH* adsorbate
-    dgooh = zpeooh + cvooh - tsooh # Gibbs correction for OOH* adsorbate
-    dgh = dgoh - dgo              # Gibbs correction for H* adsorbate (derived)
-
-    # ========================================
-    # MAIN PROGRAM EXECUTION
-    # ========================================
-        
     main()

@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from ase.io import read
 
+plt.rcParams["font.family"] = "Helvetica"
+plt.rcParams["font.sans-serif"] = ["Helvetica"]
 
 H_REFERENCE_ENERGY = -6.77149190 / 2  # eV per H atom
 
@@ -247,7 +249,7 @@ def main():
     for energy, name in mn02_candidates:
         print(f"  {name:30s} {energy: .8f}")
 
-    fig_w = 5 if args.half else 10
+    fig_w = 5 if args.half else 8
     x_max = 0.5 if args.half else 1.1
     plt.figure(figsize=(fig_w, 6))
     plt.axvspan(
@@ -274,8 +276,12 @@ def main():
         phase_points = sorted(phase_points, key=lambda p: p["x"])
         xs = [p["x"] for p in phase_points]
         ys = [p["y"] for p in phase_points]
-        is_spinel = phase == "Spinel"
-        z_line, z_scatter, z_mno2 = (1, 2, 3) if is_spinel else (2, 3, 4)
+        if phase == "Spinel":
+            z_line, z_scatter, z_mno2 = (1, 2, 3)
+        elif phase == "E":
+            z_line, z_scatter, z_mno2 = (5, 6, 7)
+        else:
+            z_line, z_scatter, z_mno2 = (2, 3, 4)
 
         # Draw phase-specific lower convex hull instead of simple line connections.
         phase_hull_candidates = list(phase_points)
@@ -330,7 +336,7 @@ def main():
                 (0.0, y_mno2),
                 xytext=style["xytext"],
                 textcoords="offset points",
-                fontsize=9,
+                fontsize=10,
                 alpha=0.95,
                 va=style["va"],
                 ha=style["ha"],
@@ -346,7 +352,7 @@ def main():
             (p["x"], p["y"]),
             xytext=row["xytext"],
             textcoords="offset points",
-            fontsize=9,
+            fontsize=10,
             alpha=0.9,
             va=row["va"],
             ha=row["ha"],
@@ -355,13 +361,13 @@ def main():
     hx = [p["x"] for p in hull_points]
     hy = [p["y"] for p in hull_points]
     plt.plot(hx, hy, "--", color="black", lw=1.0, label="overall", zorder=0)
-    plt.scatter([1.0], [0.0], s=55, marker="s", facecolors="silver", edgecolors="black", linewidths=0.3, zorder=4)
+    plt.scatter([1.0], [0.0], s=55, marker="s", facecolors="silver", edgecolors="black", linewidths=0.3, zorder=7)
     plt.annotate(
         subscript_digits("H"),
         (1.0, 0.0),
         xytext=(6, 0),
         textcoords="offset points",
-        fontsize=9,
+        fontsize=10,
         alpha=0.95,
         va="center",
     )
@@ -371,11 +377,12 @@ def main():
     if args.half:
         plt.xticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5])
     plt.ylim(-0.5, 0.3)
-    plt.xlabel(r"Coleman defect composition, H$_x$(MnO$_2$)$_{1-x}$")
-    plt.ylabel(r"Formation energy ($\Delta E$, eV per $n_\mathrm{Mn}+n_{\mathrm{H}}$)")
-    plt.legend(loc="upper right" if args.half else "lower right")
+    plt.tick_params(labelsize=10)
+    plt.xlabel(r"Coleman defect composition, H$_x$(MnO$_2$)$_{1-x}$", fontsize=12)
+    plt.ylabel(r"Formation energy ($\Delta E$, eV per $n_\mathrm{Mn}+n_{\mathrm{H}}$)", fontsize=12)
+    plt.legend(loc="upper right" if args.half else "lower right", fontsize=10)
     plt.tight_layout()
-    output_path = sherry_dir / f"convex-hull-mno2-h-{args.palette}{'-half' if args.half else ''}.png"
+    output_path = sherry_dir / f"convex-hull-mno2-h-{args.palette}{'-half' if args.half else ''}.pdf"
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
     print(f"Figure saved to: {output_path}")
     plt.show()

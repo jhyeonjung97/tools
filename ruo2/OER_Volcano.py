@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 mpl.rcParams["axes.prop_cycle"] = plt.cycler(color=plt.get_cmap("tab20").colors)
-plt.rcParams['font.family'] = 'Helvetica'
-plt.rcParams['font.sans-serif'] = ['Helvetica']
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190
@@ -229,33 +229,33 @@ def main():
                 xvals = xy[x_series.name].to_numpy()
                 yvals = xy[ycol].to_numpy()
                 # Ueff 관련 데이터는 흰색, RuO2/ReRuO2 관련 데이터는 색칠
-                # for i, (x, y) in enumerate(zip(xvals, yvals)):
-                #     row_name = xy.index[i]
-                #     if row_name == "RuO2" and idx == 3:
-                #         plt.scatter(x, y, marker='o', facecolor='black', edgecolor='black', zorder=10)
-                #         plt.scatter(x, y, marker='x', s=20, color='black', zorder=10, linewidth=1.0)
-                #     elif row_name == "RuO2_1%" and idx == 3:
-                #         plt.scatter(x, y, marker='o', facecolor='orange', edgecolor='orange', zorder=10)
-                #         # plt.scatter(x, y, marker='x', s=20, color='orange', zorder=10, linewidth=1.0)
-                #     elif row_name == "RuO2_2%" and idx == 3:
-                #         plt.scatter(x, y, marker='o', facecolor='green', edgecolor='green', zorder=10)
-                #         # plt.scatter(x, y, marker='x', s=20, color='green', zorder=10, linewidth=1.0)
-                #     elif row_name == "ReRuO2" and idx == 3:
-                #         plt.scatter(x, y, marker='o', facecolor='red', edgecolor='red', zorder=10)
-                #     # elif row_name == "ReRuO2_1%" and idx == 3:
-                #     #     plt.scatter(x, y, marker='o', facecolor='orange', edgecolor='orange', zorder=10)
-                #     # elif row_name == "ReRuO2_2%" and idx == 3:
-                #     #     plt.scatter(x, y, marker='o', facecolor='green', edgecolor='green', zorder=10)
-                #     elif row_name == "ReRuO2_alloy" and idx == 1:
-                #         plt.scatter(x, y, marker='o', facecolor='blue', edgecolor='blue', zorder=10)
-                #     # else:
-                #     #     plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
+                for i, (x, y) in enumerate(zip(xvals, yvals)):
+                    row_name = xy.index[i]
+                    if row_name == "RuO2" and idx == 3:
+                        plt.scatter(x, y, marker='o', facecolor='black', edgecolor='black', zorder=10)
+                        plt.scatter(x, y, marker='x', s=20, color='black', zorder=10, linewidth=1.0)
+                    elif row_name == "RuO2_1%" and idx == 3:
+                        plt.scatter(x, y, marker='o', facecolor='orange', edgecolor='orange', zorder=10)
+                        # plt.scatter(x, y, marker='x', s=20, color='orange', zorder=10, linewidth=1.0)
+                    elif row_name == "RuO2_2%" and idx == 3:
+                        plt.scatter(x, y, marker='o', facecolor='green', edgecolor='green', zorder=10)
+                        # plt.scatter(x, y, marker='x', s=20, color='green', zorder=10, linewidth=1.0)
+                    elif row_name == "ReRuO2" and idx == 3:
+                        plt.scatter(x, y, marker='o', facecolor='red', edgecolor='red', zorder=10)
+                    # elif row_name == "ReRuO2_1%" and idx == 3:
+                    #     plt.scatter(x, y, marker='o', facecolor='orange', edgecolor='orange', zorder=10)
+                    # elif row_name == "ReRuO2_2%" and idx == 3:
+                    #     plt.scatter(x, y, marker='o', facecolor='green', edgecolor='green', zorder=10)
+                    elif row_name == "ReRuO2_alloy" and idx == 1:
+                        plt.scatter(x, y, marker='o', facecolor='blue', edgecolor='blue', zorder=10)
+                    # else:
+                    #     plt.scatter(x, y, facecolor='white', edgecolor=colors[idx % len(colors)], zorder=9)
                 # if xvals.size >= 2:
                 #     if idx!= 0 and idx != 4:
                 #         m, b = np.polyfit(xvals, yvals, 1)
                 #         xs = np.linspace(xmin, xmax, 100)
                 #         plt.plot(xs, m*xs + b, color=colors[idx % len(colors)], label=f"{ycol}", zorder=zorders[idx])
-                plt.plot([xmin, xmax], [1.23+0.343, 1.23+0.343], color='blue', linewidth=1.0, zorder=1)
+                # plt.plot([xmin, xmax], [1.23+0.343, 1.23+0.343], color='blue', linewidth=1.0, zorder=1)
                 plt.plot([1.45, 2], [1.45, 2], color='black', linewidth=1.0, zorder=0)
                 plt.plot([1, 1.6], [2.2, 1.6], color='black', linewidth=1.0, zorder=0, linestyle='--')      
                 plt.plot([1, 1.45], [1.9, 1.45], color='red', linewidth=1.0, zorder=0, linestyle='--')
@@ -279,6 +279,7 @@ def main():
             plt.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.12)
             out_png = "OER_volcano.png"
             plt.savefig(out_png, dpi=300, bbox_inches='tight')
+            plt.savefig(out_png.replace('.png', '.pdf'), dpi=300, bbox_inches='tight')
             plt.tight_layout()
             plt.show()
             plt.close()

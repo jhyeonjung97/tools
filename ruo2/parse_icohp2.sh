@@ -1,0 +1,63 @@
+files=(icohp.txt icohp_all.txt icohp_all_dopant.txt icohp_spd.txt icohp_spd_dopant.txt icohp_spd_Ru.txt)
+for file in ${files[@]}; do
+    if [ -e $file ]; then
+        rm $file
+    else
+        touch $file
+    fi
+done
+
+awk '$2 !~ /_/ && $3 !~ /_/' ICOHPLIST.lobster > icohp.txt
+awk '$2 !~ /_/ && $3 !~ /_/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_all.txt
+awk '$2 !~ /_/ && $3 !~ /_/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_all_dopant.txt
+
+awk '$2 ~ /2p/ && $3 ~ /4s/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd.txt
+awk '$2 ~ /2p/ && $3 ~ /5s/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd.txt
+awk '$2 ~ /2p/ && $3 ~ /6s/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd.txt
+awk '$3 ~ /2p/ && $2 ~ /4s/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd.txt
+awk '$3 ~ /2p/ && $2 ~ /5s/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd.txt
+awk '$3 ~ /2p/ && $2 ~ /6s/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd.txt
+awk '$2 ~ /2p/ && $3 ~ /3d/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd.txt
+awk '$2 ~ /2p/ && $3 ~ /4d/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd.txt
+awk '$2 ~ /2p/ && $3 ~ /5d/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd.txt
+awk '$3 ~ /2p/ && $2 ~ /3d/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd.txt
+awk '$3 ~ /2p/ && $2 ~ /4d/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd.txt
+awk '$3 ~ /2p/ && $2 ~ /5d/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd.txt
+
+awk '$2 ~ /2p/ && $3 ~ /4s/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_dopant.txt
+awk '$2 ~ /2p/ && $3 ~ /5s/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_dopant.txt
+awk '$2 ~ /2p/ && $3 ~ /6s/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_dopant.txt
+awk '$3 ~ /2p/ && $2 ~ /4s/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_dopant.txt
+awk '$3 ~ /2p/ && $2 ~ /5s/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_dopant.txt
+awk '$3 ~ /2p/ && $2 ~ /6s/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_dopant.txt
+awk '$2 ~ /2p/ && $3 ~ /3d/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_dopant.txt
+awk '$2 ~ /2p/ && $3 ~ /4d/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_dopant.txt
+awk '$2 ~ /2p/ && $3 ~ /5d/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_dopant.txt
+awk '$3 ~ /2p/ && $2 ~ /3d/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_dopant.txt
+awk '$3 ~ /2p/ && $2 ~ /4d/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_dopant.txt
+awk '$3 ~ /2p/ && $2 ~ /5d/ && $2 !~ /Ru/ && $3 !~ /Ru/ && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_dopant.txt
+
+awk '$2 ~ /2p/ && $3 ~ /4s/ && ($2 ~ /Ru/ || $3 ~ /Ru/) && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_Ru.txt
+awk '$2 ~ /2p/ && $3 ~ /5s/ && ($2 ~ /Ru/ || $3 ~ /Ru/) && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_Ru.txt
+awk '$2 ~ /2p/ && $3 ~ /6s/ && ($2 ~ /Ru/ || $3 ~ /Ru/) && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_Ru.txt
+awk '$3 ~ /2p/ && $2 ~ /4s/ && ($2 ~ /Ru/ || $3 ~ /Ru/) && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_Ru.txt
+awk '$3 ~ /2p/ && $2 ~ /5s/ && ($2 ~ /Ru/ || $3 ~ /Ru/) && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_Ru.txt
+awk '$3 ~ /2p/ && $2 ~ /6s/ && ($2 ~ /Ru/ || $3 ~ /Ru/) && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_Ru.txt
+awk '$2 ~ /2p/ && $3 ~ /3d/ && ($2 ~ /Ru/ || $3 ~ /Ru/) && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_Ru.txt
+awk '$2 ~ /2p/ && $3 ~ /4d/ && ($2 ~ /Ru/ || $3 ~ /Ru/) && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_Ru.txt
+awk '$2 ~ /2p/ && $3 ~ /5d/ && ($2 ~ /Ru/ || $3 ~ /Ru/) && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_Ru.txt
+awk '$3 ~ /2p/ && $2 ~ /3d/ && ($2 ~ /Ru/ || $3 ~ /Ru/) && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_Ru.txt
+awk '$3 ~ /2p/ && $2 ~ /4d/ && ($2 ~ /Ru/ || $3 ~ /Ru/) && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_Ru.txt
+awk '$3 ~ /2p/ && $2 ~ /5d/ && ($2 ~ /Ru/ || $3 ~ /Ru/) && $NF ~ /^-?[0-9.]+$/ {sum += $NF} END {print sum}' ICOHPLIST.lobster >> icohp_spd_Ru.txt
+
+for file in icohp*.txt; do
+    [ -e "$file" ] || continue
+    sed -i '/^\s*$/d' "$file"
+done
+
+for file in icohp*.txt; do
+    [ -e "$file" ] || continue
+    if [ "$(stat -c%s "$file")" -le 2 ]; then
+        rm "$file"
+    fi
+done

@@ -836,10 +836,11 @@ def plot_pourbaix(entries, png_name, label_domains=False, exp_entries=None, ion_
     ax.plot(pH2, 2.6 - pH2 * const, linestyle='--', color='blue')
     ax.plot(pH2, 2.3 - pH2 * const, linestyle='--', color='blue')
 
-    ax.set_xlabel("pH", fontsize=14)
-    ax.set_ylabel(r"Potential (V vs Zn/Zn$^{2+}$)", fontsize=14)
-    ax.set_xticks(np.arange(args.pHmin, args.pHmax + 0.1, 2))
-    ax.tick_params(axis='both', labelsize=14)
+    ax.set_xlabel("pH", fontsize=12)
+    ax.set_ylabel(r"Potential (V vs Zn/Zn$^{2+}$)", fontsize=12)
+    ax.set_xticks(np.arange(args.pHmin+1, args.pHmax-1 + 0.1, 2))
+    # ax.set_xticks(np.arange(0.0, 8.0 + 0.1, 2))
+    ax.tick_params(axis='both', labelsize=10)
     
     print(f"  - Saving plot...")
     plt.tight_layout()

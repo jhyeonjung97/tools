@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from ase.io import read
 
+plt.rcParams["font.family"] = "Helvetica"
+plt.rcParams["font.sans-serif"] = ["Helvetica"]
 
 H2O_REFERENCE_ENERGY = -14.23091949  # eV per H2O
 
@@ -284,7 +286,7 @@ def main():
     for energy, name in mn02_candidates:
         print(f"  {name:30s} {energy: .8f}")
 
-    fig_w = 5 if args.half else 10
+    fig_w = 5 if args.half else 8
     x_max = 0.5 if args.half else 1.1
     plt.figure(figsize=(fig_w, 6))
     plt.axvspan(
@@ -364,7 +366,7 @@ def main():
                 (0.0, y_mno2),
                 xytext=style["xytext"],
                 textcoords="offset points",
-                fontsize=9,
+                fontsize=10,
                 alpha=0.95,
                 va=style["va"],
                 ha=style["ha"],
@@ -380,7 +382,7 @@ def main():
             (p["x"], p["y"]),
             xytext=row["xytext"],
             textcoords="offset points",
-            fontsize=9,
+            fontsize=10,
             alpha=0.9,
             va=row["va"],
             ha=row["ha"],
@@ -395,7 +397,7 @@ def main():
         (1.0, 0.0),
         xytext=(6, 0),
         textcoords="offset points",
-        fontsize=9,
+        fontsize=10,
         alpha=0.95,
         va="center",
     )
@@ -405,11 +407,12 @@ def main():
     if args.half:
         plt.xticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5])
     plt.ylim(-0.2, 0.3)
-    plt.xlabel(r"Ruetchi defect composition, (H$_2$O)$_{2x}$(MnO$_2$)$_{1-x}$")
-    plt.ylabel(r"Formation energy ($\Delta E$, eV per $n_\mathrm{Mn}+n_{\mathrm{H}_4}$)")
-    plt.legend(loc="upper right")
+    plt.tick_params(labelsize=10)
+    plt.xlabel(r"Ruetchi defect composition, (H$_2$O)$_{2x}$(MnO$_2$)$_{1-x}$", fontsize=12)
+    plt.ylabel(r"Formation energy ($\Delta E$, eV per $n_\mathrm{Mn}+n_{\mathrm{H}_4}$)", fontsize=12)
+    plt.legend(loc="upper right", fontsize=10)
     plt.tight_layout()
-    output_path = sherry_dir / f"convex-hull-mno2-h2o-{args.palette}{'-half' if args.half else ''}.png"
+    output_path = sherry_dir / f"convex-hull-mno2-h2o-{args.palette}{'-half' if args.half else ''}.pdf"
     plt.savefig(output_path, dpi=300, bbox_inches="tight")
     print(f"Figure saved to: {output_path}")
     plt.show()

@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 mpl.rcParams["axes.prop_cycle"] = plt.cycler(color=plt.get_cmap("tab20").colors)
-plt.rcParams['font.family'] = 'Helvetica'
-plt.rcParams['font.sans-serif'] = ['Helvetica']
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 
 # gas (전역 상수: 두 스크립트에서 동일 값 사용)
 h2 = -6.77149190
@@ -80,6 +80,7 @@ def main():
     plt.grid(True, alpha=0.1)
     plt.gca().invert_yaxis()
     plt.savefig("volcano-scheme.png", dpi=300, bbox_inches='tight')
+    plt.savefig("volcano-scheme.pdf", dpi=300, bbox_inches='tight')
     plt.tight_layout()
     plt.show()
 

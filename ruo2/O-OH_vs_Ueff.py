@@ -1,5 +1,7 @@
 from ase.io import read
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 from pathlib import Path
 
 # 사용자 환경에 맞춰 경로를 변경하세요
@@ -215,6 +217,7 @@ def plot_o_minus_oh_vs_ueff(ueff_values, O_series, OH_series):
 
     plt.tight_layout()
     plt.savefig('OminusOH_adsorption_energies_vs_Ueff.png', dpi=300, bbox_inches='tight')
+    plt.savefig('OminusOH_adsorption_energies_vs_Ueff.pdf', dpi=300, bbox_inches='tight')
     plt.show()
 
     # 결과 저장 (차이값)

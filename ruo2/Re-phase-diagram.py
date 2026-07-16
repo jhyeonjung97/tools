@@ -11,6 +11,8 @@ import sys
 import re
 import numpy as np
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 from pymatgen.analysis.phase_diagram import PhaseDiagram, PDPlotter
 from contextlib import nullcontext
 import warnings
@@ -393,6 +395,7 @@ def plot_phase_diagram(pd, elements, entries=None, output_file=None, show_plot=T
         
         if output_file:
             plt.savefig(output_file, dpi=300, bbox_inches='tight')
+            plt.savefig(output_file.replace('.png', '.pdf'), dpi=300, bbox_inches='tight')
             print(f"Phase diagram이 {output_file}에 저장되었습니다.")
         
         if show_plot:
@@ -406,6 +409,7 @@ def plot_phase_diagram(pd, elements, entries=None, output_file=None, show_plot=T
         
         if output_file:
             plt.savefig(output_file, dpi=300, bbox_inches='tight')
+            plt.savefig(output_file.replace('.png', '.pdf'), dpi=300, bbox_inches='tight')
             print(f"Phase diagram이 {output_file}에 저장되었습니다.")
         
         if show_plot:
@@ -419,6 +423,7 @@ def plot_phase_diagram(pd, elements, entries=None, output_file=None, show_plot=T
         
         if output_file:
             plt.savefig(output_file, dpi=300, bbox_inches='tight')
+            plt.savefig(output_file.replace('.png', '.pdf'), dpi=300, bbox_inches='tight')
             print(f"Phase diagram이 {output_file}에 저장되었습니다.")
         
         if show_plot:

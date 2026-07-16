@@ -2,8 +2,8 @@ from ase.io import read
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-plt.rcParams['font.family'] = 'Helvetica'
-plt.rcParams['font.sans-serif'] = ['Helvetica']
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 
 root = "~/Desktop/3_RuO2/1_RuO2_Ueff"
 
@@ -133,6 +133,7 @@ def plot_o_minus_oh_vs_ueff(ueff_values, O_Ocovered, OH_Ocovered):
 
     plt.tight_layout()
     plt.savefig('OminusOH_adsorption_energies_vs_Ueff.png', dpi=300, bbox_inches='tight')
+    plt.savefig('OminusOH_adsorption_energies_vs_Ueff.pdf', dpi=300, bbox_inches='tight')
     plt.show()
 
     # 결과 저장 (차이값)

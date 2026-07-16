@@ -7,6 +7,8 @@ Ru-Re-O Ternary Phase Diagram Generator
 
 import numpy as np
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 import matplotlib.patches as patches
 from matplotlib.patches import Polygon
 from scipy.spatial import ConvexHull
@@ -195,6 +197,7 @@ class TernaryPhaseDiagram:
         
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
+            plt.savefig(save_path.replace('.png', '.pdf'), dpi=300, bbox_inches='tight')
             print(f"다이어그램이 {save_path}에 저장되었습니다.")
         
         return fig

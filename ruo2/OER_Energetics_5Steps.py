@@ -4,8 +4,8 @@ from pathlib import Path
 import numpy as np
 
 # 폰트 설정: Arial
-plt.rcParams['font.family'] = 'Helvetica'
-plt.rcParams['font.sans-serif'] = ['Helvetica']
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 
 # 사용자 환경에 맞춰 경로를 변경하세요
 root = "~/Desktop/3_RuO2"
@@ -530,6 +530,7 @@ def plot_individual_energetics_diagrams(all_paths, oer_data):
         # 파일명에 path 정보 포함하여 저장
         filename = f'energetics_diagram_5steps_{path_name.lower()}_{path_data["surface"].lower()}.png'
         plt.savefig(filename, dpi=300, bbox_inches='tight')
+        plt.savefig(filename.replace('.png', '.pdf'), dpi=300, bbox_inches='tight')
         # plt.show()
         plt.close()
         
@@ -617,6 +618,7 @@ def plot_all_pathways_combined_RuO2(all_paths, oer_data):
     plt.tight_layout()
     # plt.show()
     plt.savefig('all_pathways_combined_5steps_RuO2.png', dpi=300, bbox_inches='tight')
+    plt.savefig('all_pathways_combined_5steps_RuO2.pdf', dpi=300, bbox_inches='tight')
     print("Saved: all_pathways_combined_5steps_RuO2.png")
 
 def plot_all_pathways_combined_ReRuO2(all_paths, oer_data):
@@ -701,6 +703,7 @@ def plot_all_pathways_combined_ReRuO2(all_paths, oer_data):
     plt.tight_layout()
     # plt.show()
     plt.savefig('all_pathways_combined_5steps_ReRuO2.png', dpi=300, bbox_inches='tight')
+    plt.savefig('all_pathways_combined_5steps_ReRuO2.pdf', dpi=300, bbox_inches='tight')
     print("Saved: all_pathways_combined_5steps_ReRuO2.png")
 
 def plot_ruo2_pathways(all_paths, oer_data):
@@ -774,6 +777,7 @@ def plot_ruo2_pathways(all_paths, oer_data):
     plt.legend(loc='upper left', bbox_to_anchor=(0.0, 1.0), fontsize=12)
     plt.tight_layout()
     plt.savefig('RuO2_pathways_comparison.png', dpi=300, bbox_inches='tight')
+    plt.savefig('RuO2_pathways_comparison.pdf', dpi=300, bbox_inches='tight')
     # plt.show()
     print("Saved: RuO2_pathways_comparison.png")
 

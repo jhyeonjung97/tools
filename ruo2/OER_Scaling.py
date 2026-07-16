@@ -3,6 +3,8 @@ import pandas as pd
 from ase.io import read
 import numpy as np
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 import matplotlib as mpl
 
 mpl.rcParams["axes.prop_cycle"] = plt.cycler(color=plt.get_cmap("tab20").colors)
@@ -302,6 +304,7 @@ def main():
             plt.subplots_adjust(left=0.12, right=0.95, top=0.95, bottom=0.12)
             out_png = "OER_scaling.png"
             plt.savefig(out_png, dpi=300, bbox_inches='tight')
+            plt.savefig(out_png.replace('.png', '.pdf'), dpi=300, bbox_inches='tight')
             plt.show()
             plt.close()
             print(f"스케일링 플롯 저장됨: {out_png}")

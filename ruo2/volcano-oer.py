@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Arial'
+plt.rcParams['font.sans-serif'] = ['Arial']
 
 # Scaling relationship for OER
 a1, b1 = 1.63, 0.952  # OH → O
@@ -294,6 +296,7 @@ def volcano_oer(df):
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
     plt.savefig('volcano_oer.png', dpi=300, bbox_inches='tight')
+    plt.savefig('volcano_oer.pdf', dpi=300, bbox_inches='tight')
     plt.show()
 
 if __name__ == "__main__":
