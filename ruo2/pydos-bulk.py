@@ -11,17 +11,19 @@ from optparse import OptionParser
 import matplotlib as mpl
 mpl.use('agg')
 mpl.rcParams['axes.unicode_minus'] = False
-# Set font to Arial
-mpl.rcParams['font.family'] = 'Arial'
-mpl.rcParams['font.sans-serif'] = ['Arial']
+# Set font to Arial (family must be 'sans-serif'; Arial goes first in the list.
+# Setting font.family='Arial' directly is not recognized as a generic family and
+# silently falls back to DejaVu Sans.)
+mpl.rcParams['font.family'] = 'sans-serif'
+mpl.rcParams['font.sans-serif'] = ['Arial', 'Helvetica', 'DejaVu Sans']
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import AutoMinorLocator
 from matplotlib.patches import Polygon
 from matplotlib.font_manager import FontProperties
 import matplotlib.colors as mcolors
-plt.rcParams['font.family'] = 'Arial'
-plt.rcParams['font.sans-serif'] = ['Arial']
+plt.rcParams['font.family'] = 'sans-serif'
+plt.rcParams['font.sans-serif'] = ['Arial', 'Helvetica', 'DejaVu Sans']
 
 ############################################################
 __version__ = "1.0"
@@ -582,6 +584,10 @@ def dosplot_bulk(xen1, tdos1, pdos1, opts1, xen2, tdos2, pdos2, opts2):
     plt.style.use(opts1.mpl_style)
     # DO NOT use unicode minus regardless of the style
     mpl.rcParams['axes.unicode_minus'] = False
+    # Re-apply Arial: plt.style.use() above resets rcParams to the style's font,
+    # so the font.family set at import time is lost and must be restored here.
+    mpl.rcParams['font.family'] = 'sans-serif'
+    mpl.rcParams['font.sans-serif'] = ['Arial', 'Helvetica', 'DejaVu Sans']
 
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(width, height))
     
